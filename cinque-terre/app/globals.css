@@ -1197,6 +1197,49 @@ section {
   color: #3c2414;
   font-weight: 700;
 }
+/* ---------- CONFIRM STEP (same glass card) ---------- */
+.confirm {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 6px;
+}
+.confirm__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 15px 2px;
+  border-bottom: 1px solid rgba(255, 246, 236, 0.1);
+}
+.confirm__row span {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+.confirm__row b {
+  font-family: "Fraunces", serif;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+.confirm__back {
+  display: block;
+  width: fit-content;
+  margin: 16px auto 0;
+  padding: 6px 10px;
+  border: none;
+  background: none;
+  color: var(--cream);
+  font-size: 0.76rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  cursor: none;
+  transition: opacity 0.2s;
+}
+.confirm__back:hover {
+  opacity: 1;
+}
+
 .book-form .total-row {
   display: flex;
   justify-content: space-between;
@@ -1397,6 +1440,7 @@ footer .copy {
   .book-form select,
   .dq__opt,
   .gq-chip,
+  .confirm__back,
   .cta,
   .book-form .pay {
     cursor: auto;

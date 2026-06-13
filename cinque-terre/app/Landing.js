@@ -110,11 +110,21 @@ function BookingForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [days, setDays] = useState([]);
+  const [confirming, setConfirming] = useState(false);
 
   useEffect(() => {
     setDays(buildDays(21));
     setDate((d) => d || todayISO()); // default to today, set on the client
   }, []);
+
+  function startConfirm() {
+    setError("");
+    if (!date) {
+      setError("Please pick a date for your tour.");
+      return;
+    }
+    setConfirming(true);
+  }
 
   async function handlePay() {
     setError("");
@@ -140,6 +150,48 @@ function BookingForm() {
       setError("Could not start payment. Please try again.");
       setLoading(false);
     }
+  }
+
+  const sel = days.find((d) => d.iso === date);
+
+  if (confirming) {
+    return (
+      <div className="book-form reveal">
+        <p className="meta">Bekreft reservasjonen</p>
+        <div className="confirm">
+          <div className="confirm__row">
+            <span>Dato</span>
+            <b>{sel ? `${sel.label} · ${sel.small}` : date}</b>
+          </div>
+          <div className="confirm__row">
+            <span>Gjester</span>
+            <b>{guests}</b>
+          </div>
+          <div className="confirm__row">
+            <span>Tur</span>
+            <b>Monterosso sea tour</b>
+          </div>
+        </div>
+        <div className="total-row">
+          <span className="t-label">Total</span>
+          <span className="t-val">€{tour.priceEur * guests}</span>
+        </div>
+        <button className="pay" onClick={handlePay} disabled={loading}>
+          {loading ? "Tar deg til betaling…" : "Verifiser & betal"}
+        </button>
+        <button
+          type="button"
+          className="confirm__back"
+          onClick={() => setConfirming(false)}
+        >
+          Endre
+        </button>
+        <p className="err">{error}</p>
+        <p className="reassure">
+          Secure payment via Stripe · €{tour.priceEur} / head
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -177,8 +229,8 @@ function BookingForm() {
         <span className="t-label">Total</span>
         <span className="t-val">€{tour.priceEur * guests}</span>
       </div>
-      <button className="pay" onClick={handlePay} disabled={loading}>
-        {loading ? "Taking you to checkout…" : "Pay & reserve"}
+      <button className="pay" onClick={startConfirm} disabled={loading}>
+        Pay &amp; reserve
       </button>
       <p className="err">{error}</p>
       <p className="reassure">Secure payment via Stripe · €{tour.priceEur} / head</p>
