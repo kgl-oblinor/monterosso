@@ -202,12 +202,13 @@ export default function Boat3D({ theme }) {
     sc.width = sc.height = 128;
     const sctx = sc.getContext("2d");
     const grad = sctx.createRadialGradient(64, 64, 4, 64, 64, 62);
-    grad.addColorStop(0, "rgba(3,14,22,0.55)");
+    grad.addColorStop(0, "rgba(3,14,22,0.62)");
+    grad.addColorStop(0.55, "rgba(3,14,22,0.28)");
     grad.addColorStop(1, "rgba(3,14,22,0)");
     sctx.fillStyle = grad;
     sctx.fillRect(0, 0, 128, 128);
     const shadow = new THREE.Mesh(
-      new THREE.PlaneGeometry(4.6, 2.0),
+      new THREE.PlaneGeometry(4.2, 1.8),
       new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(sc), transparent: true, depthWrite: false })
     );
     shadow.rotation.x = -Math.PI / 2;
