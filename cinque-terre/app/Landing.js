@@ -150,14 +150,8 @@ function BookingForm() {
       </p>
       <div className="row">
         <div className="field">
-          <span className="field-head">
-            Date
-            <Stepper
-              onDown={() => setDate((d) => clampToday(shiftISO(d || todayISO(), -1)))}
-              onUp={() => setDate((d) => shiftISO(d || todayISO(), 1))}
-            />
-          </span>
-          <DatePicker value={date} onChange={setDate} days={days} />
+          <span className="field-head">Date</span>
+          <DateQuick value={date} onChange={setDate} days={days} />
           <WheelPicker
             ariaLabel="Velg dag"
             value={date}
@@ -166,13 +160,7 @@ function BookingForm() {
           />
         </div>
         <div className="field">
-          <span className="field-head">
-            Guests
-            <Stepper
-              onDown={() => setGuests((g) => Math.max(1, g - 1))}
-              onUp={() => setGuests((g) => Math.min(tour.maxGuests, g + 1))}
-            />
-          </span>
+          <span className="field-head">Guests</span>
           <select
             value={guests}
             onChange={(e) => setGuests(Number(e.target.value))}
@@ -207,42 +195,8 @@ function BookingForm() {
   );
 }
 
-/* Matching up/down stepper that sits above each box. */
-function Stepper({ onDown, onUp }) {
-  return (
-    <span className="stepper">
-      <button
-        type="button"
-        className="stepper__btn"
-        onClick={onDown}
-        onMouseDown={(e) => e.preventDefault()}
-        aria-label="Ned"
-      >
-        ▾
-      </button>
-      <button
-        type="button"
-        className="stepper__btn"
-        onClick={onUp}
-        onMouseDown={(e) => e.preventDefault()}
-        aria-label="Opp"
-      >
-        ▴
-      </button>
-    </span>
-  );
-}
-
 function todayISO() {
   return new Date().toLocaleDateString("sv-SE");
-}
-function shiftISO(iso, n) {
-  const [y, m, d] = iso.split("-").map(Number);
-  return new Date(y, m - 1, d + n).toLocaleDateString("sv-SE");
-}
-function clampToday(iso) {
-  const t = todayISO();
-  return iso < t ? t : iso;
 }
 
 /* Friendly day picker: today / tomorrow / day-after-tomorrow, then weekdays,
@@ -265,54 +219,23 @@ function buildDays(n) {
   return out;
 }
 
-function DatePicker({ value, onChange, days }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener("pointerdown", onDown);
-    return () => document.removeEventListener("pointerdown", onDown);
-  }, [open]);
-
-  const sel = days.find((d) => d.iso === value);
-
+/* Desktop date: today (prominent) + tomorrow + day-after, the later ones
+   progressively hazier — a gentle nudge to book today. */
+function DateQuick({ value, onChange, days }) {
+  const tiers = ["today", "tmrw", "fog"];
   return (
-    <div className={"datepick" + (open ? " open" : "")} ref={ref}>
-      <button
-        type="button"
-        className="datepick__field"
-        onClick={() => setOpen((o) => !o)}
-      >
-        <span className="datepick__label">{sel ? sel.label : "Velg dag"}</span>
-        {sel && <span className="datepick__date">{sel.small}</span>}
-        <span className="datepick__chev" aria-hidden="true">
-          ▾
-        </span>
-      </button>
-      {open && (
-        <div className="datepick__menu" role="listbox">
-          {days.map((d) => (
-            <button
-              type="button"
-              key={d.iso}
-              role="option"
-              aria-selected={d.iso === value}
-              className={"datepick__opt" + (d.iso === value ? " is-sel" : "")}
-              onClick={() => {
-                onChange(d.iso);
-                setOpen(false);
-              }}
-            >
-              <span>{d.label}</span>
-              <span className="datepick__optdate">{d.small}</span>
-            </button>
-          ))}
-        </div>
-      )}
+    <div className="dq">
+      {days.slice(0, 3).map((o, i) => (
+        <button
+          type="button"
+          key={o.iso}
+          className={`dq__opt dq--${tiers[i]}${o.iso === value ? " is-sel" : ""}`}
+          onClick={() => onChange(o.iso)}
+        >
+          <span className="dq__label">{o.label}</span>
+          <span className="dq__date">{o.small}</span>
+        </button>
+      ))}
     </div>
   );
 }
