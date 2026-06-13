@@ -1091,6 +1091,81 @@ section {
   border-color: var(--mint);
   opacity: 1;
 }
+/* the default selection — a passive confirmation, not a button. A faint
+   starry sheen drifts dreamily across it; two desynced loops make it hard
+   to tell it ever repeats. */
+.dq--default {
+  position: relative;
+  overflow: hidden;
+}
+.dq--default:hover {
+  transform: none;
+}
+.dq--default > * {
+  position: relative;
+  z-index: 1;
+}
+.dq--default::before {
+  content: "";
+  position: absolute;
+  inset: -45%;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+      38% 58% at 30% 32%,
+      rgba(255, 250, 230, 0.4),
+      transparent 62%
+    ),
+    radial-gradient(
+      34% 50% at 76% 66%,
+      rgba(255, 238, 198, 0.3),
+      transparent 60%
+    );
+  filter: blur(6px);
+  animation: dreamGlow 11s ease-in-out infinite alternate;
+}
+.dq--default::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+      1.2px 1.2px at 18% 34%,
+      rgba(255, 255, 255, 0.9),
+      transparent
+    ),
+    radial-gradient(1px 1px at 64% 56%, rgba(255, 250, 235, 0.8), transparent),
+    radial-gradient(1.3px 1.3px at 82% 28%, rgba(255, 255, 255, 0.85), transparent),
+    radial-gradient(1px 1px at 42% 72%, rgba(255, 248, 230, 0.75), transparent),
+    radial-gradient(1px 1px at 88% 64%, rgba(255, 255, 255, 0.8), transparent);
+  opacity: 0.4;
+  animation: dreamTwinkle 7s ease-in-out infinite alternate;
+}
+@keyframes dreamGlow {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(6%, -8%) scale(1.12);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(-5%, 6%) scale(1.05);
+    opacity: 0.55;
+  }
+}
+@keyframes dreamTwinkle {
+  0%,
+  100% {
+    opacity: 0.22;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
 /* 4th tile — the "choose…" action: the haziest of the four */
 .dq--more {
   background: rgba(255, 255, 255, 0.04);

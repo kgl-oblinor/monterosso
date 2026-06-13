@@ -304,14 +304,10 @@ function DateQuick({ value, onChange, days }) {
 
   return (
     <div className="dq">
-      <button
-        type="button"
-        className="dq__opt dq--t1 is-sel"
-        onClick={() => setOpen(true)}
-      >
+      <div className="dq__opt dq--t1 is-sel dq--default">
         <span className="dq__label">{sel ? sel.label : "I dag"}</span>
         {sel && <span className="dq__date">{sel.small}</span>}
-      </button>
+      </div>
       <button
         type="button"
         className="dq__opt dq--more"
@@ -363,13 +359,9 @@ function GuestQuick({ value, onChange, max }) {
 
   return (
     <div className="dq">
-      <button
-        type="button"
-        className="dq__opt dq--t1 is-sel"
-        onClick={() => setOpen(true)}
-      >
+      <div className="dq__opt dq--t1 is-sel dq--default">
         <span className="dq__label">{value} guests</span>
-      </button>
+      </div>
       <button
         type="button"
         className="dq__opt dq--more"
