@@ -108,8 +108,6 @@ function BookingForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const today = new Date().toLocaleDateString("sv-SE");
-
   async function handlePay() {
     setError("");
     if (!date) {
@@ -145,12 +143,7 @@ function BookingForm() {
       <div className="row">
         <label>
           Date
-          <input
-            type="date"
-            min={today}
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
+          <DatePicker value={date} onChange={setDate} />
         </label>
         <label>
           Guests
@@ -175,6 +168,80 @@ function BookingForm() {
       </button>
       <p className="err">{error}</p>
       <p className="reassure">Secure payment via Stripe · €{tour.priceEur} / head</p>
+    </div>
+  );
+}
+
+/* Friendly day picker: today / tomorrow / day-after-tomorrow, then weekdays,
+   with the actual date kept small and subtle in the poster's gold. */
+function buildDays(n) {
+  const rel = ["I dag", "I morgen", "Overimorgen"];
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  const base = new Date();
+  base.setHours(0, 0, 0, 0);
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const d = new Date(base);
+    d.setDate(base.getDate() + i);
+    out.push({
+      iso: d.toLocaleDateString("sv-SE"),
+      label: i < 3 ? rel[i] : cap(d.toLocaleDateString("nb-NO", { weekday: "long" })),
+      small: d.toLocaleDateString("nb-NO", { day: "numeric", month: "long" }),
+    });
+  }
+  return out;
+}
+
+function DatePicker({ value, onChange }) {
+  const [open, setOpen] = useState(false);
+  const [days, setDays] = useState([]); // built on the client to avoid hydration drift
+  const ref = useRef(null);
+
+  useEffect(() => setDays(buildDays(21)), []);
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", onDown);
+    return () => document.removeEventListener("pointerdown", onDown);
+  }, [open]);
+
+  const sel = days.find((d) => d.iso === value);
+
+  return (
+    <div className={"datepick" + (open ? " open" : "")} ref={ref}>
+      <button
+        type="button"
+        className="datepick__field"
+        onClick={() => setOpen((o) => !o)}
+      >
+        <span className="datepick__label">{sel ? sel.label : "Velg dag"}</span>
+        {sel && <span className="datepick__date">{sel.small}</span>}
+        <span className="datepick__chev" aria-hidden="true">
+          ▾
+        </span>
+      </button>
+      {open && (
+        <div className="datepick__menu" role="listbox">
+          {days.map((d) => (
+            <button
+              type="button"
+              key={d.iso}
+              role="option"
+              aria-selected={d.iso === value}
+              className={"datepick__opt" + (d.iso === value ? " is-sel" : "")}
+              onClick={() => {
+                onChange(d.iso);
+                setOpen(false);
+              }}
+            >
+              <span>{d.label}</span>
+              <span className="datepick__optdate">{d.small}</span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
