@@ -208,16 +208,24 @@ a {
   right: 0;
   height: 50%;
   z-index: 0;
-  /* cool teal sky cooling into a warm peach haze at the horizon —
-     the sun-faded glow that gives the vintage poster its soul. */
-  background: linear-gradient(
-    180deg,
-    #2a6694 0%,
-    #5891b8 32%,
-    #8fb4cb 56%,
-    #c4cdc2 76%,
-    #f0d2a6 100%
-  );
+  /* cool teal sky cooling into a warm peach haze at the horizon, with a
+     soft sun-glow sitting low behind the hills — the sun-faded glow that
+     gives the vintage poster its soul. */
+  background: radial-gradient(
+      72% 50% at 50% 102%,
+      rgba(255, 228, 172, 0.62) 0%,
+      rgba(255, 216, 150, 0.24) 44%,
+      transparent 72%
+    ),
+    linear-gradient(
+      180deg,
+      #2a6694 0%,
+      #5891b8 30%,
+      #8fb4cb 52%,
+      #d3cdba 70%,
+      #f3cf9c 88%,
+      #f7dcae 100%
+    );
 }
 
 /* ---------- 3D TOUR BOAT ---------- */
@@ -879,7 +887,8 @@ section {
   display: flex;
   gap: 18px;
 }
-.book-form label {
+.book-form label,
+.book-form .field {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -906,6 +915,45 @@ section {
 .book-form select:focus {
   outline: none;
   border-color: var(--mint);
+}
+
+/* ---------- FIELD HEAD + UP/DOWN STEPPER ---------- */
+.book-form .field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.stepper {
+  display: inline-flex;
+  gap: 5px;
+}
+.stepper__btn {
+  width: 28px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid rgba(246, 233, 194, 0.45);
+  background: linear-gradient(
+    180deg,
+    rgba(247, 236, 200, 0.5),
+    rgba(231, 205, 123, 0.32)
+  );
+  color: var(--plum);
+  font-size: 0.62rem;
+  line-height: 1;
+  cursor: none;
+  transition: filter 0.2s, transform 0.2s;
+}
+.stepper__btn:hover {
+  filter: brightness(1.07);
+  transform: translateY(-1px);
+}
+.stepper__btn:active {
+  transform: translateY(0);
 }
 
 /* ---------- FRIENDLY DAY PICKER ---------- */
@@ -1191,6 +1239,7 @@ footer .copy {
   .book-form select,
   .datepick__field,
   .datepick__opt,
+  .stepper__btn,
   .cta,
   .book-form .pay {
     cursor: auto;
