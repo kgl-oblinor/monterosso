@@ -226,6 +226,9 @@ export default function Skyline() {
             <rect x="107" y="246" width="5" height="14" fill="#3a2418" />
             <ellipse cx="120" cy="256" rx="11" ry="3" fill="#d8443a" />
             <ellipse cx="150" cy="258" rx="10" ry="3" fill="#e9e4d6" />
+            {/* rocky outcrop so the watchtower stands on the cliff,
+                not in mid-air — the cliff curves away under its left side */}
+            <path d="M216,260 L222,186 Q243,168 264,186 L270,260 Z" fill="url(#rockGrad)" />
             {/* castle watchtower */}
             <rect x="232" y="150" width="22" height="34" fill="#8a8478" />
             <rect x="230" y="144" width="26" height="7" fill="#76705f" />
