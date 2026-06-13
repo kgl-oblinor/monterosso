@@ -79,101 +79,18 @@ export default function Landing() {
         {/* HERO */}
         <header className="hero" id="top">
           <p className="eyebrow">Monterosso al Mare · Cinque Terre</p>
-          <div className="cta-wrap">
-            <a className="cta" href="#book">
-              Book — reserve your seat
-            </a>
-          </div>
           <div className="scroll-hint">
             <span>scroll</span>
             <span className="dot"></span>
           </div>
         </header>
 
-        {/* MARQUEE */}
-        <div className="marquee" aria-hidden="true">
-          <div className="marquee__track">
-            <span>
-              Hidden coves <i className="star">✦</i> Sunset aperitivo{" "}
-              <i className="star">✦</i> Crystal swim stops{" "}
-              <i className="star">✦</i> Sciacchetrà &amp; anchovies{" "}
-              <i className="star">✦</i> Your own skipper <i className="star">✦</i>{" "}
-              Past Il Gigante <i className="star">✦</i> Punta Mesco{" "}
-              <i className="star">✦</i>{" "}
-            </span>
-            <span>
-              Hidden coves <i className="star">✦</i> Sunset aperitivo{" "}
-              <i className="star">✦</i> Crystal swim stops{" "}
-              <i className="star">✦</i> Sciacchetrà &amp; anchovies{" "}
-              <i className="star">✦</i> Your own skipper <i className="star">✦</i>{" "}
-              Past Il Gigante <i className="star">✦</i> Punta Mesco{" "}
-              <i className="star">✦</i>{" "}
-            </span>
-          </div>
-        </div>
-
-        {/* MONTALE EPIGRAPH — Monterosso's Nobel poet, "I limoni" */}
-        <p className="epigraph reveal">
-          Where Montale's lemons ripen above the sea.
-        </p>
-
-        {/* ABOARD */}
-        <section className="aboard" id="aboard">
-          <p className="section-label reveal">What you'll live</p>
-          <h2 className="section-title reveal">A day on the blue</h2>
-          <div className="orb-grid">
-            <div className="orb-card reveal">
-              <svg viewBox="0 0 200 200">
-                <defs>
-                  <radialGradient id="g0" cx="40%" cy="35%">
-                    <stop offset="0%" stopColor="#cffaf6" />
-                    <stop offset="100%" stopColor="#4fe0d8" />
-                  </radialGradient>
-                </defs>
-                <path className="blob-path" fill="url(#g0)" />
-              </svg>
-              <h3>Secret coves</h3>
-              <p>where the crowds can't reach</p>
-            </div>
-            <div className="orb-card reveal">
-              <svg viewBox="0 0 200 200">
-                <defs>
-                  <radialGradient id="g1" cx="40%" cy="35%">
-                    <stop offset="0%" stopColor="#d6ecff" />
-                    <stop offset="100%" stopColor="#5aa8ff" />
-                  </radialGradient>
-                </defs>
-                <path className="blob-path" fill="url(#g1)" />
-              </svg>
-              <h3>Crystal swim stops</h3>
-              <p>dive into the Ligurian sea</p>
-            </div>
-            <div className="orb-card reveal">
-              <svg viewBox="0 0 200 200">
-                <defs>
-                  <radialGradient id="g2" cx="40%" cy="35%">
-                    <stop offset="0%" stopColor="#fff1c9" />
-                    <stop offset="100%" stopColor="#ffd874" />
-                  </radialGradient>
-                </defs>
-                <path className="blob-path" fill="url(#g2)" />
-              </svg>
-              <h3>Sunset aperitivo</h3>
-              <p>prosecco as the sky turns gold</p>
-            </div>
-            <div className="orb-card reveal">
-              <svg viewBox="0 0 200 200">
-                <defs>
-                  <radialGradient id="g3" cx="40%" cy="35%">
-                    <stop offset="0%" stopColor="#ffd9c9" />
-                    <stop offset="100%" stopColor="#ff7a5e" />
-                  </radialGradient>
-                </defs>
-                <path className="blob-path" fill="url(#g3)" />
-              </svg>
-              <h3>Your own skipper</h3>
-              <p>born on this coast</p>
-            </div>
+        {/* RESERVE CTA */}
+        <section className="reserve-section">
+          <div className="cta-wrap">
+            <a className="cta" href="#book">
+              Book — reserve your seat
+            </a>
           </div>
         </section>
 
@@ -183,24 +100,6 @@ export default function Landing() {
           <h2 className="section-title reveal">Book your day</h2>
           <BookingForm />
         </section>
-
-        {/* FOOTER */}
-        <footer id="footer">
-          <div className="fmark">Monterosso</div>
-          <div className="fmark-sub">Cinque Terre</div>
-          <div className="flinks">
-            <a href={`tel:${tour.phone.replace(/\s/g, "")}`}>Call</a>
-            <a href={`sms:${tour.phone.replace(/\s/g, "")}`}>Text</a>
-            <a href={`https://wa.me/${tour.phone.replace(/[\s+]/g, "")}`}>
-              WhatsApp
-            </a>
-          </div>
-          <p className="foot-price">
-            €<b>{tour.priceEur}</b> per head &nbsp;·&nbsp; {tour.durationHours}{" "}
-            hours on the Ligurian blue
-          </p>
-          <p className="copy">Monterosso al Mare · Cinque Terre · Liguria, Italy</p>
-        </footer>
       </div>
     </>
   );
@@ -356,70 +255,6 @@ function Effects() {
       );
       document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
     }
-
-    /* ---------- ORGANIC, SEAMLESSLY-LOOPING MORPHING ORB BLOBS ---------- */
-    (function () {
-      const TAU = Math.PI * 2;
-      function noise(seed) {
-        let s = seed || 1;
-        const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
-        const h = [1, 2, 3].map((k) => ({
-          k,
-          ph: r() * TAU,
-          amp: (r() * 0.6 + 0.4) / k,
-        }));
-        const n = h.reduce((a, c) => a + c.amp, 0) || 1;
-        return (th) => {
-          let v = 0;
-          for (const t of h) v += t.amp * Math.sin(th * t.k + t.ph);
-          return v / n;
-        };
-      }
-      function spline(p) {
-        let d = `M ${p[0][0].toFixed(2)},${p[0][1].toFixed(2)} `;
-        const n = p.length;
-        for (let i = 0; i < n; i++) {
-          const a = p[(i - 1 + n) % n],
-            b = p[i],
-            c = p[(i + 1) % n],
-            e = p[(i + 2) % n];
-          d += `C ${(b[0] + (c[0] - a[0]) / 6).toFixed(2)},${(
-            b[1] +
-            (c[1] - a[1]) / 6
-          ).toFixed(2)} ${(c[0] - (e[0] - b[0]) / 6).toFixed(2)},${(
-            c[1] -
-            (e[1] - b[1]) / 6
-          ).toFixed(2)} ${c[0].toFixed(2)},${c[1].toFixed(2)} `;
-        }
-        return d + "Z";
-      }
-      const blobs = [...document.querySelectorAll(".blob-path")].map((el, i) => ({
-        el,
-        N: 8,
-        R: 62,
-        cx: 100,
-        cy: 100,
-        A: noise((i + 1) * 97 + 13),
-        B: noise((i + 1) * 53 + 71),
-        phase: (i / 4) * TAU,
-      }));
-      const SPEED = TAU / 1400;
-      (function loop() {
-        for (const b of blobs) {
-          b.phase += SPEED;
-          if (b.phase >= TAU) b.phase -= TAU;
-          const pts = [];
-          for (let k = 0; k < b.N; k++) {
-            const ang = (k / b.N) * TAU;
-            const nz = 0.6 * b.A(ang + b.phase) + 0.4 * b.B(ang * 2 - b.phase);
-            const rad = b.R + nz * 22;
-            pts.push([b.cx + Math.cos(ang) * rad, b.cy + Math.sin(ang) * rad]);
-          }
-          b.el.setAttribute("d", spline(pts));
-        }
-        requestAnimationFrame(loop);
-      })();
-    })();
 
   }, []);
 

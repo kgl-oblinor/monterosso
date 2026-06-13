@@ -594,12 +594,10 @@ section {
   color: var(--vanilla);
   font-weight: 700;
 }
-.hero .cta-wrap {
-  position: absolute;
-  bottom: 13vh;
-  left: 0;
-  right: 0;
-  margin-top: 0;
+/* ---------- RESERVE CTA SECTION ---------- */
+.reserve-section {
+  padding: 100px 40px 60px;
+  text-align: center;
 }
 
 .cta {
