@@ -43,7 +43,8 @@ export default function Boat3D({ theme }) {
     scene.environment = envTex;
 
     // ---- lights ----
-    scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+    const ambient = new THREE.AmbientLight(0xffffff, 0.25);
+    scene.add(ambient);
     const sun = new THREE.DirectionalLight(0xfff1d8, 1.5);
     sun.position.set(-4, 6, 5);
     scene.add(sun);
@@ -244,10 +245,13 @@ export default function Boat3D({ theme }) {
     }
 
     function setNight(isNight) {
-      sun.intensity = isNight ? 0.3 : 1.5;
+      sun.intensity = isNight ? 0.28 : 1.5;
       sun.color.set(isNight ? 0xaec6ff : 0xfff1d8);
-      fill.intensity = isNight ? 0.2 : 0.5;
-      renderer.toneMappingExposure = isNight ? 0.76 : 1.05;
+      fill.intensity = isNight ? 0.16 : 0.5;
+      // dim the constant lighting too, or the boat never reads as night:
+      ambient.intensity = isNight ? 0.07 : 0.25;
+      scene.environmentIntensity = isNight ? 0.26 : 1.0; // IBL reflections
+      renderer.toneMappingExposure = isNight ? 0.58 : 1.05;
       lantern.material.emissiveIntensity = isNight ? 2.4 : 0;
       lanternLight.intensity = isNight ? 1.7 : 0;
     }
