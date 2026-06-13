@@ -214,10 +214,7 @@ function buildDays(n) {
    progressively hazier — a gentle nudge to book today. */
 function DateQuick({ value, onChange, days }) {
   const [open, setOpen] = useState(false);
-  const tiers = ["t1", "t2", "t3"];
-  const quick = days.slice(0, 3);
-  const isQuick = quick.some((d) => d.iso === value);
-  const picked = days.find((d) => d.iso === value);
+  const sel = days.find((d) => d.iso === value) || days[0];
 
   if (open) {
     return (
@@ -255,26 +252,20 @@ function DateQuick({ value, onChange, days }) {
 
   return (
     <div className="dq">
-      {quick.map((o, i) => (
-        <button
-          type="button"
-          key={o.iso}
-          className={`dq__opt dq--${tiers[i]}${o.iso === value ? " is-sel" : ""}`}
-          onClick={() => onChange(o.iso)}
-        >
-          <span className="dq__label">{o.label}</span>
-          <span className="dq__date">{o.small}</span>
-        </button>
-      ))}
       <button
         type="button"
-        className={`dq__opt dq--more${!isQuick ? " is-sel" : ""}`}
+        className="dq__opt dq--t1 is-sel"
         onClick={() => setOpen(true)}
       >
-        <span className="dq__label">
-          {!isQuick && picked ? picked.label : "Velg dato"}
-        </span>
-        {!isQuick && picked && <span className="dq__date">{picked.small}</span>}
+        <span className="dq__label">{sel ? sel.label : "I dag"}</span>
+        {sel && <span className="dq__date">{sel.small}</span>}
+      </button>
+      <button
+        type="button"
+        className="dq__opt dq--more"
+        onClick={() => setOpen(true)}
+      >
+        <span className="dq__label">Velg dato</span>
       </button>
     </div>
   );
@@ -284,9 +275,6 @@ function DateQuick({ value, onChange, days }) {
    "Velg antall" tile that opens a compact 1–8 grid in the same box. */
 function GuestQuick({ value, onChange, max }) {
   const [open, setOpen] = useState(false);
-  const tiers = ["t1", "t2", "t3"];
-  const quick = [2, 4, 6];
-  const isQuick = quick.includes(value);
 
   if (open) {
     return (
@@ -323,24 +311,19 @@ function GuestQuick({ value, onChange, max }) {
 
   return (
     <div className="dq">
-      {quick.map((n, i) => (
-        <button
-          type="button"
-          key={n}
-          className={`dq__opt dq--${tiers[i]}${value === n ? " is-sel" : ""}`}
-          onClick={() => onChange(n)}
-        >
-          <span className="dq__label">{n} guests</span>
-        </button>
-      ))}
       <button
         type="button"
-        className={`dq__opt dq--more${!isQuick ? " is-sel" : ""}`}
+        className="dq__opt dq--t1 is-sel"
         onClick={() => setOpen(true)}
       >
-        <span className="dq__label">
-          {!isQuick ? `${value} guests` : "Velg antall"}
-        </span>
+        <span className="dq__label">{value} guests</span>
+      </button>
+      <button
+        type="button"
+        className="dq__opt dq--more"
+        onClick={() => setOpen(true)}
+      >
+        <span className="dq__label">Velg antall</span>
       </button>
     </div>
   );
