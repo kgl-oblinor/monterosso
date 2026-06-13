@@ -633,18 +633,14 @@ section {
   font-size: 0.9rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--plum);
-  background: linear-gradient(
-    180deg,
-    rgba(247, 236, 200, 0.66) 0%,
-    rgba(231, 205, 123, 0.5) 100%
-  );
-  backdrop-filter: blur(14px) saturate(125%);
-  -webkit-backdrop-filter: blur(14px) saturate(125%);
-  border: 1px solid rgba(248, 238, 205, 0.7);
-  box-shadow: 0 14px 34px rgba(8, 24, 36, 0.34),
-    0 1px 0 rgba(255, 253, 244, 0.6) inset,
-    0 -10px 22px rgba(120, 84, 28, 0.12) inset;
+  color: #3c2414; /* warm espresso, not cold plum */
+  /* solid sun-faded gold with an embossed relief — rustic, like the
+     poster's lettering. No glass, so it stays gold over any background. */
+  background: linear-gradient(180deg, #f4e4ad 0%, #e7c976 52%, #d7b65d 100%);
+  border: 1px solid rgba(122, 80, 40, 0.45);
+  box-shadow: 0 12px 26px rgba(38, 22, 10, 0.3),
+    0 1px 0 rgba(255, 250, 228, 0.75) inset,
+    0 -9px 18px rgba(150, 100, 42, 0.18) inset;
   cursor: none;
   transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s,
     filter 0.25s, background 0.25s;
@@ -657,15 +653,11 @@ section {
 .cta:hover,
 .book-form .pay:hover {
   transform: translateY(-2px);
-  filter: brightness(1.05);
-  background: linear-gradient(
-    180deg,
-    rgba(249, 240, 210, 0.76) 0%,
-    rgba(235, 210, 132, 0.6) 100%
-  );
-  box-shadow: 0 18px 40px rgba(8, 24, 36, 0.42),
-    0 1px 0 rgba(255, 253, 244, 0.65) inset,
-    0 -10px 22px rgba(120, 84, 28, 0.14) inset;
+  filter: brightness(1.04);
+  background: linear-gradient(180deg, #f7e9b8 0%, #ecd082 52%, #ddbd66 100%);
+  box-shadow: 0 16px 32px rgba(38, 22, 10, 0.38),
+    0 1px 0 rgba(255, 250, 228, 0.8) inset,
+    0 -9px 18px rgba(150, 100, 42, 0.2) inset;
 }
 @keyframes ctaShimmer {
   0%,
@@ -936,13 +928,9 @@ section {
   justify-content: center;
   padding: 0;
   border-radius: 8px;
-  border: 1px solid rgba(246, 233, 194, 0.45);
-  background: linear-gradient(
-    180deg,
-    rgba(247, 236, 200, 0.5),
-    rgba(231, 205, 123, 0.32)
-  );
-  color: var(--plum);
+  border: 1px solid rgba(122, 80, 40, 0.4);
+  background: linear-gradient(180deg, #f4e4ad, #e1bf6e);
+  color: #3c2414;
   font-size: 0.62rem;
   line-height: 1;
   cursor: none;
