@@ -1335,6 +1335,181 @@ section {
   opacity: 1;
 }
 
+/* contact channels on the code screen */
+.chanrow {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+.chanbtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--cream);
+  background: rgba(3, 16, 29, 0.45);
+  border: 1px solid rgba(255, 246, 236, 0.2);
+  cursor: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.chanbtn:hover {
+  border-color: var(--mint);
+  background: rgba(3, 16, 29, 0.62);
+}
+
+/* ---------- ADMIN DASHBOARD ---------- */
+.admin {
+  position: relative;
+  z-index: 10;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 64px 28px 100px;
+  cursor: auto;
+}
+.admin a,
+.admin button {
+  cursor: pointer;
+}
+.admin input {
+  cursor: text;
+}
+.admin h1 {
+  font-family: "Fraunces", serif;
+  font-weight: 600;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  margin-bottom: 28px;
+}
+.admin h2 {
+  font-size: 0.8rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin: 38px 0 14px;
+}
+.admin-cards {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.admin-card {
+  flex: 1;
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 22px 24px;
+  border-radius: 18px;
+  background: linear-gradient(
+    160deg,
+    rgba(79, 224, 216, 0.1),
+    rgba(90, 168, 255, 0.05)
+  );
+  border: 1px solid rgba(255, 246, 236, 0.12);
+}
+.admin-card__n {
+  font-family: "Fraunces", serif;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: var(--gold);
+}
+.admin-card__l {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.admin-table th {
+  text-align: left;
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.5;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 246, 236, 0.14);
+}
+.admin-table td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255, 246, 236, 0.07);
+}
+.admin-table .mono {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: var(--gold);
+}
+.chan {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.chan--whatsapp {
+  background: rgba(37, 211, 102, 0.18);
+  color: #8ef0b0;
+}
+.chan--sms {
+  background: rgba(90, 168, 255, 0.18);
+  color: #aad0ff;
+}
+.chan--call {
+  background: rgba(234, 210, 126, 0.18);
+  color: var(--gold);
+}
+.admin-empty {
+  opacity: 0.6;
+}
+.admin--login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.admin-login {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 280px;
+}
+.admin-login h1 {
+  margin: 0 0 6px;
+}
+.admin-login input {
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--cream);
+  background: rgba(3, 16, 29, 0.55);
+  border: 1px solid rgba(255, 246, 236, 0.22);
+  border-radius: 12px;
+  padding: 13px 15px;
+  color-scheme: dark;
+}
+.admin-login button {
+  padding: 13px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #3c2414;
+  background: linear-gradient(180deg, #f4e4ad, #e7c976);
+}
+.admin-err {
+  color: var(--strawberry);
+  font-size: 0.84rem;
+}
+
 .book-form .total-row {
   display: flex;
   justify-content: space-between;

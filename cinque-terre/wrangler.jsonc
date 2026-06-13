@@ -7,6 +7,13 @@
   "vars": {
     "NEXT_PUBLIC_BASE_URL": "https://monterosso-cinque-terre.kgl-56a.workers.dev"
   },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "monterosso-events",
+      "database_id": "f1aa73ed-ab1d-437f-9241-23e02c7a4130"
+    }
+  ],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"

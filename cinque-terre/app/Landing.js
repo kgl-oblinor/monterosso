@@ -12,6 +12,17 @@ export default function Landing() {
     const saved = localStorage.getItem("theme");
     if (saved === "dark" || saved === "light") setTheme(saved);
   }, []);
+  const logged = useRef(false);
+  useEffect(() => {
+    if (logged.current) return; // guard React strict-mode double-invoke
+    logged.current = true;
+    fetch("/api/track", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ type: "visit" }),
+      keepalive: true,
+    }).catch(() => {});
+  }, []);
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     try {
@@ -136,19 +147,50 @@ function BookingForm() {
   if (done) {
     const code = makeCode(date, guests);
     const tel = tour.phone.replace(/\s/g, "");
+    const digits = tour.phone.replace(/[^\d]/g, "");
+    const when = sel ? `${sel.label} · ${sel.small}` : date;
+    const msg = `Hei! Jeg vil reservere Monterosso sea tour. Kode: ${code} (${when}, ${guests} ${guests === 1 ? "gjest" : "gjester"}).`;
+    const enc = encodeURIComponent(msg);
+    const log = (type) => {
+      try {
+        navigator.sendBeacon?.(
+          "/api/track",
+          new Blob([JSON.stringify({ type, code, dato: date, guests })], {
+            type: "application/json",
+          })
+        );
+      } catch {}
+    };
     return (
       <div className="book-form reveal">
         <p className="meta">Reservasjonskode</p>
         <div className="rescode">{code}</div>
         <p className="rescode__sub">
-          {sel ? `${sel.label} · ${sel.small}` : date} ·{" "}
-          {guests} {guests === 1 ? "gjest" : "gjester"}
+          {when} · {guests} {guests === 1 ? "gjest" : "gjester"}
         </p>
-        <a className="pay" href={`tel:${tel}`}>
-          Ring {tour.phone}
+        <a
+          className="pay"
+          href={`https://wa.me/${digits}?text=${enc}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => log("whatsapp")}
+        >
+          WhatsApp
         </a>
+        <div className="chanrow">
+          <a
+            className="chanbtn"
+            href={`sms:${tel}?&body=${enc}`}
+            onClick={() => log("sms")}
+          >
+            SMS
+          </a>
+          <a className="chanbtn" href={`tel:${tel}`} onClick={() => log("call")}>
+            Ring
+          </a>
+        </div>
         <p className="reassure">
-          Oppgi koden når du ringer — så er plassen din.
+          Send koden, så er plassen din · {tour.phone}
         </p>
         <button
           type="button"
