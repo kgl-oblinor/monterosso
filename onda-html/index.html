@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ONDA · Monterosso sea tour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,400&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   ONDA — Monterosso sea-tour booking page
+   Built on the OOZE design system, re-paletted to the Mediterranean.
+   Booking endpoint = a phone number (tap to call / text).
+   👉 Replace the phone number everywhere it says +39 351 234 5678
+   ============================================================ */
+:root{
+  /* deep sea base (lets the aqua + sunset glow) */
+  --plum:#07182a;       /* deep sea navy */
+  --plum-2:#03101d;     /* midnight */
+  --cream:#fdf6ea;      /* warm ivory */
+  --ink:#0a1a26;
+  /* sea & sunset accents */
+  --pink:#ff8e6e;       /* coral */
+  --magenta:#ff7a5e;    /* warm sunset coral (hot accent) */
+  --lav:#5aa8ff;        /* azure */
+  --mint:#4fe0d8;       /* turquoise */
+  --vanilla:#ffd874;    /* sun gold */
+  --pist:#9ff0d8;       /* sea foam */
+  --strawberry:#ff8f8f;
+  --mango:#ffc23c;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--plum);color:var(--cream);font-family:"Hanken Grotesk",system-ui,sans-serif;
+  overflow-x:hidden;cursor:none;}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;}
+a{color:inherit;}
+
+/* scroll progress */
+.progress{position:fixed;top:0;left:0;height:3px;width:100%;transform-origin:left;transform:scaleX(0);z-index:300;
+  background:linear-gradient(90deg,var(--mint),var(--lav),var(--vanilla));box-shadow:0 0 12px rgba(79,224,216,.6);}
+@supports (animation-timeline: scroll()){
+  .progress{animation:progressGrow linear both;animation-timeline:scroll(root);}
+}
+@keyframes progressGrow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+
+/* ---------- LIVING AURORA BACKGROUND ---------- */
+.aurora{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--plum-2);}
+.aurora__layer{position:absolute;inset:-20%;filter:blur(42px) saturate(150%);}
+.aurora__layer--a{background:
+    radial-gradient(40% 50% at 20% 30%, var(--lav) 0%, transparent 60%),
+    radial-gradient(45% 55% at 80% 20%, var(--mint) 0%, transparent 60%),
+    radial-gradient(50% 60% at 65% 80%, var(--azure, var(--lav)) 0%, transparent 62%),
+    radial-gradient(35% 45% at 30% 75%, var(--vanilla) 0%, transparent 60%);
+  animation:driftA 42s ease-in-out infinite;opacity:.9;}
+.aurora__layer--b{mix-blend-mode:screen;opacity:.8;background:
+    radial-gradient(45% 50% at 70% 35%, var(--mint) 0%, transparent 60%),
+    radial-gradient(40% 55% at 25% 60%, var(--pist) 0%, transparent 62%),
+    radial-gradient(55% 60% at 50% 15%, var(--lav) 0%, transparent 60%),
+    radial-gradient(35% 45% at 85% 85%, var(--magenta) 0%, transparent 60%);
+  animation:driftB 54s ease-in-out infinite;}
+@keyframes driftA{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(4%,-3%) scale(1.08);}}
+@keyframes driftB{0%,100%{transform:translate(0,0) scale(1.05);}50%{transform:translate(-5%,4%) scale(1);}}
+
+.goo-stage{position:absolute;inset:0;filter:url(#goo);pointer-events:none;mix-blend-mode:screen;opacity:.9;}
+.metaball{position:absolute;border-radius:50%;mix-blend-mode:screen;}
+.b1{width:280px;height:280px;left:12%;top:46%;background:var(--mint);animation:float1 19s ease-in-out infinite;}
+.b2{width:200px;height:200px;left:60%;top:18%;background:var(--lav);animation:float2 23s ease-in-out infinite;}
+.b3{width:240px;height:240px;left:42%;top:64%;background:var(--vanilla);animation:float3 29s ease-in-out infinite;}
+.b4{width:170px;height:170px;left:78%;top:60%;background:var(--magenta);animation:float1 26s ease-in-out infinite reverse;}
+@keyframes float1{0%,100%{transform:translate(0,0);}50%{transform:translate(140px,-90px);}}
+@keyframes float2{0%,100%{transform:translate(0,0);}50%{transform:translate(-120px,110px);}}
+@keyframes float3{0%,100%{transform:translate(0,0);}50%{transform:translate(90px,-130px);}}
+
+.aurora__gloss{position:absolute;inset:0;background:radial-gradient(80% 50% at 50% 0%, rgba(255,255,255,.10), transparent 60%);}
+.aurora__vignette{position:absolute;inset:0;background:radial-gradient(120% 120% at 50% 45%, transparent 52%, rgba(3,16,29,.45) 86%, rgba(3,16,29,.72) 100%);}
+
+.grain{position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.09;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px 200px;animation:grainShift 6s steps(6) infinite;}
+@keyframes grainShift{0%{background-position:0 0;}50%{background-position:-20px -25px;}100%{background-position:0 0;}}
+
+#drips{position:fixed;inset:0;z-index:1;pointer-events:none;mix-blend-mode:screen;}
+
+/* ---------- CUSTOM CURSOR ---------- */
+.cursor{position:fixed;top:0;left:0;width:13px;height:13px;border-radius:50%;background:var(--cream);
+  z-index:9999;pointer-events:none;box-shadow:0 0 0 1.5px rgba(3,16,29,.55),0 0 10px rgba(3,16,29,.45);
+  transform:translate(-50%,-50%);will-change:transform;}
+.cursor-ring{position:fixed;top:0;left:0;width:46px;height:46px;border-radius:50%;
+  border:1.5px solid rgba(255,246,236,.6);z-index:9998;pointer-events:none;
+  transform:translate(-50%,-50%);will-change:transform;transition:width .25s,height .25s,border-color .25s;}
+.cursor-ring.grow{width:74px;height:74px;border-color:var(--mint);}
+
+/* ---------- LOADER ---------- */
+#loader{position:fixed;inset:0;z-index:9500;background:var(--plum-2);display:flex;align-items:center;justify-content:center;
+  transition:opacity .9s ease,visibility .9s ease;}
+#loader.done{opacity:0;visibility:hidden;}
+.loader-word{font-family:"Fraunces",serif;font-weight:900;letter-spacing:.04em;
+  font-size:clamp(3rem,11vw,9rem);color:var(--cream);display:flex;gap:.02em;}
+.loader-word span{display:inline-block;opacity:0;transform:translateY(60%) scale(.8);filter:blur(8px);
+  animation:loaderIn .7s cubic-bezier(.2,.9,.2,1) forwards;text-shadow:0 0 30px var(--mint);}
+.loader-word span:nth-child(1){animation-delay:.05s;}
+.loader-word span:nth-child(2){animation-delay:.18s;}
+.loader-word span:nth-child(3){animation-delay:.31s;}
+.loader-word span:nth-child(4){animation-delay:.44s;}
+@keyframes loaderIn{to{opacity:1;transform:translateY(0) scale(1);filter:blur(0);}}
+
+/* ---------- LAYOUT ---------- */
+.shell{position:relative;z-index:10;}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;
+  padding:22px 56px;background:linear-gradient(180deg,rgba(3,16,29,.6),rgba(3,16,29,.2) 70%,transparent);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+nav .mark{font-family:"Fraunces",serif;font-weight:900;font-size:1.5rem;letter-spacing:.16em;color:#fff;text-shadow:0 1px 14px rgba(2,10,20,.65);}
+nav .links{display:flex;gap:34px;align-items:center;font-size:.82rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;}
+nav .links a{color:#fff;text-decoration:none;opacity:.92;transition:opacity .3s;text-shadow:0 1px 12px rgba(2,10,20,.7);}
+nav .links a:hover{opacity:1;}
+nav .links a.call{padding:10px 20px;border:1px solid rgba(255,246,236,.45);border-radius:40px;}
+nav .links a.call:hover{background:var(--cream);color:var(--plum);}
+
+section{position:relative;}
+
+/* ---------- HERO ---------- */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 40px;}
+.hero .eyebrow{font-size:.8rem;letter-spacing:.42em;text-transform:uppercase;color:var(--cream);opacity:.72;margin-bottom:26px;font-weight:500;}
+.hero h1{font-family:"Fraunces",serif;font-weight:900;line-height:.86;font-size:clamp(3.6rem,15vw,12rem);
+  letter-spacing:-.01em;color:var(--cream);text-shadow:0 0 60px rgba(79,224,216,.4);animation:heroWonk 9s ease-in-out infinite;}
+@keyframes heroWonk{0%,100%{font-variation-settings:"opsz" 144,"wght" 900;letter-spacing:-.01em;}50%{font-variation-settings:"opsz" 144,"wght" 760;letter-spacing:.02em;}}
+.hero .tagline{margin-top:24px;font-family:"Fraunces",serif;font-style:italic;font-weight:400;
+  font-size:clamp(1.1rem,2.6vw,2rem);color:var(--cream);opacity:.92;}
+.hero .price{margin-top:18px;font-size:.92rem;letter-spacing:.16em;text-transform:uppercase;opacity:.72;}
+.hero .price b{color:var(--vanilla);font-weight:700;}
+.hero .cta-wrap{margin-top:46px;}
+
+.cta{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.6em;
+  padding:22px 50px;border-radius:60px;font-weight:600;font-size:.95rem;letter-spacing:.2em;text-transform:uppercase;
+  text-decoration:none;color:var(--plum);background:linear-gradient(120deg,var(--vanilla),var(--mint),var(--lav));
+  background-size:200% 200%;border:none;box-shadow:0 10px 40px rgba(79,224,216,.4),0 0 0 1px rgba(255,255,255,.2) inset;
+  animation:ctaShimmer 6s ease infinite;}
+@keyframes ctaShimmer{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
+.cta small{display:block;font-size:.62rem;letter-spacing:.14em;opacity:.7;margin-top:3px;}
+
+.scroll-hint{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);font-size:.7rem;letter-spacing:.3em;
+  text-transform:uppercase;opacity:.55;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.scroll-hint .dot{width:5px;height:5px;border-radius:50%;background:var(--cream);animation:scrollDot 1.8s ease-in-out infinite;}
+@keyframes scrollDot{0%{transform:translateY(0);opacity:1;}70%{transform:translateY(16px);opacity:0;}100%{opacity:0;}}
+
+/* ---------- MARQUEE ---------- */
+.marquee{overflow:hidden;padding:28px 0;border-top:1px solid rgba(255,246,236,.12);border-bottom:1px solid rgba(255,246,236,.12);
+  background:rgba(3,16,29,.35);backdrop-filter:blur(6px);}
+.marquee__track{display:flex;width:max-content;animation:marquee 34s linear infinite;}
+.marquee__track span{font-family:"Fraunces",serif;font-weight:600;font-style:italic;font-size:clamp(1.6rem,4.4vw,3.4rem);
+  padding:0 36px;white-space:nowrap;color:var(--cream);opacity:.9;}
+.marquee__track .star{color:var(--mint);font-style:normal;text-shadow:0 0 20px var(--mint);}
+@keyframes marquee{to{transform:translateX(-50%);}}
+
+/* ---------- ABOARD (orb grid) ---------- */
+.aboard{padding:150px 56px 170px;text-align:center;}
+.section-label{font-size:.78rem;letter-spacing:.4em;text-transform:uppercase;opacity:.6;margin-bottom:18px;}
+.section-title{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(2.2rem,6vw,4.6rem);line-height:1;margin-bottom:84px;}
+.orb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:48px;max-width:1380px;margin:0 auto;}
+.orb-card{display:flex;flex-direction:column;align-items:center;gap:24px;}
+.orb-card svg{width:200px;height:200px;display:block;}
+.blob-path{filter:drop-shadow(0 16px 50px rgba(0,0,0,.4));}
+.orb-card h3{font-family:"Fraunces",serif;font-weight:600;font-size:1.6rem;}
+.orb-card p{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;opacity:.62;max-width:18ch;}
+
+/* scroll reveal */
+.reveal{opacity:0;transform:translateY(50px);transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1);}
+.reveal.in{opacity:1;transform:translateY(0);}
+@supports (animation-timeline: view()){
+  .reveal{opacity:1;transform:none;transition:none;animation:revealUp linear both;animation-timeline:view();animation-range:entry 0% cover 38%;}
+  @keyframes revealUp{from{opacity:0;transform:translateY(50px);}to{opacity:1;transform:translateY(0);}}
+}
+
+/* ---------- PLANS ---------- */
+.plans{padding:110px 56px 190px;text-align:center;}
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:34px;max-width:1240px;margin:0 auto;}
+.plan{position:relative;padding:54px 40px 46px;border-radius:34px;text-align:left;
+  background:linear-gradient(160deg,rgba(255,246,236,.10),rgba(255,246,236,.03));backdrop-filter:blur(14px);
+  border:1px solid rgba(255,246,236,.16);overflow:hidden;
+  transition:transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .5s,border-color .5s;}
+.plan::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .5s;
+  background:radial-gradient(120% 80% at 50% 0%,rgba(79,224,216,.22),transparent 60%);}
+.plan:hover{transform:translateY(-14px);border-color:rgba(79,224,216,.5);box-shadow:0 30px 70px rgba(2,10,20,.55),0 0 40px rgba(79,224,216,.25);}
+.plan:hover::before{opacity:1;}
+.plan .pdot{width:46px;height:46px;border-radius:50%;margin-bottom:28px;filter:blur(.4px) saturate(150%);box-shadow:0 0 30px currentColor;}
+.plan h4{font-family:"Fraunces",serif;font-weight:600;font-size:2rem;margin-bottom:6px;}
+.plan .freq{font-size:.74rem;letter-spacing:.26em;text-transform:uppercase;opacity:.55;margin-bottom:30px;}
+.plan .price-big{font-family:"Fraunces",serif;font-size:3.2rem;font-weight:500;line-height:1;}
+.plan .price-big small{font-size:1rem;font-weight:400;opacity:.6;font-family:"Hanken Grotesk",sans-serif;letter-spacing:.04em;}
+.plan .incl{margin:32px 0 38px;display:flex;flex-direction:column;gap:14px;}
+.plan .incl div{font-size:.92rem;opacity:.82;display:flex;align-items:center;gap:12px;}
+.plan .incl div::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--mint);flex:none;box-shadow:0 0 8px var(--mint);}
+.plan .pick{display:block;text-align:center;padding:16px;border-radius:40px;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;font-size:.8rem;text-decoration:none;color:var(--cream);border:1px solid rgba(255,246,236,.3);
+  transition:background .35s,color .35s;}
+.plan .pick:hover{background:var(--cream);color:var(--plum);}
+.plan.featured{border-color:rgba(79,224,216,.5);background:linear-gradient(160deg,rgba(79,224,216,.16),rgba(90,168,255,.06));}
+.plan.featured .tag{position:absolute;top:24px;right:24px;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;
+  padding:6px 12px;border-radius:30px;background:var(--mint);color:var(--plum);font-weight:700;}
+
+/* ---------- BOOK STRIP ---------- */
+.book{padding:60px 40px 30px;text-align:center;}
+.book .lead{font-family:"Fraunces",serif;font-style:italic;font-size:clamp(1.2rem,2.6vw,1.9rem);opacity:.9;margin-bottom:14px;}
+.book .num{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(2.2rem,6vw,4.4rem);text-decoration:none;
+  background:linear-gradient(120deg,var(--vanilla),var(--mint),var(--lav));-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;}
+.book .sub{margin-top:14px;font-size:.78rem;letter-spacing:.24em;text-transform:uppercase;opacity:.55;}
+
+/* ---------- FOOTER ---------- */
+footer{padding:120px 56px 70px;text-align:center;border-top:1px solid rgba(255,246,236,.1);}
+footer .fmark{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(4rem,16vw,13rem);line-height:.85;letter-spacing:.06em;
+  background:linear-gradient(120deg,var(--vanilla),var(--mint),var(--lav),var(--pist));background-size:200% 200%;
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:ctaShimmer 8s ease infinite;}
+footer .flinks{margin-top:36px;display:flex;gap:34px;justify-content:center;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;}
+footer .flinks a{color:var(--cream);opacity:.6;text-decoration:none;transition:opacity .3s;}
+footer .flinks a:hover{opacity:1;}
+footer .copy{margin-top:44px;font-size:.72rem;opacity:.4;letter-spacing:.1em;}
+
+@media (max-width:1080px){ .orb-grid{grid-template-columns:repeat(2,1fr);} .plan-grid{grid-template-columns:1fr;max-width:460px;} }
+@media (max-width:640px){ nav{padding:18px 22px;} nav .links a:not(.call){display:none;} .aboard,.plans{padding-left:22px;padding-right:22px;} }
+
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important;}
+  body{cursor:auto;} .cursor,.cursor-ring,#drips{display:none;}
+  .reveal{opacity:1;transform:none;} #loader{display:none;} .progress{display:none;}
+  .marquee__track{transform:none !important;}
+}
+</style>
+</head>
+<body>
+
+<!-- SVG goo filters -->
+<svg style="position:absolute;width:0;height:0" aria-hidden="true"><defs>
+  <filter id="goo">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="16" result="blur"/>
+    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9" result="goo"/>
+    <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+  </filter>
+</defs></svg>
+
+<div class="progress" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor" aria-hidden="true"></div>
+<div class="cursor-ring" aria-hidden="true"></div>
+
+<div id="loader" aria-hidden="true">
+  <div class="loader-word"><span>O</span><span>N</span><span>D</span><span>A</span></div>
+</div>
+
+<!-- living background -->
+<div class="aurora" aria-hidden="true">
+  <div class="aurora__layer aurora__layer--a"></div>
+  <div class="aurora__layer aurora__layer--b"></div>
+  <div class="goo-stage">
+    <span class="metaball b1"></span><span class="metaball b2"></span>
+    <span class="metaball b3"></span><span class="metaball b4"></span>
+  </div>
+  <div class="aurora__gloss"></div>
+  <div class="aurora__vignette"></div>
+</div>
+<canvas id="drips" aria-hidden="true"></canvas>
+
+<div class="shell">
+  <p class="sr-only">ONDA runs the world's most beautiful sea tour from Monterosso al Mare in Cinque Terre, Italy.
+  $250 per head. To book, call or text +39 351 234 5678.</p>
+
+  <nav aria-label="Primary">
+    <div class="mark">ONDA</div>
+    <div class="links">
+      <a href="#aboard">Aboard</a>
+      <a href="#plans">The day</a>
+      <a class="call" href="tel:+393512345678">Call to book</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero" id="top">
+    <p class="eyebrow">Monterosso al Mare · Cinque Terre</p>
+    <h1>Azzurro.</h1>
+    <p class="tagline">The world's most beautiful sea tour.</p>
+    <p class="price">$<b>250</b> per head &nbsp;·&nbsp; 3 hours on the Ligurian blue</p>
+    <div class="cta-wrap">
+      <a class="cta" href="tel:+393512345678">Book — call us<small>+39 351 234 5678</small></a>
+    </div>
+    <div class="scroll-hint"><span>scroll</span><span class="dot"></span></div>
+  </header>
+
+  <!-- MARQUEE -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span>Hidden coves <i class="star">✦</i> Sunset aperitivo <i class="star">✦</i> Crystal swim stops <i class="star">✦</i> Your own skipper <i class="star">✦</i> Cinque Terre <i class="star">✦</i> </span>
+      <span>Hidden coves <i class="star">✦</i> Sunset aperitivo <i class="star">✦</i> Crystal swim stops <i class="star">✦</i> Your own skipper <i class="star">✦</i> Cinque Terre <i class="star">✦</i> </span>
+    </div>
+  </div>
+
+  <!-- ABOARD -->
+  <section class="aboard" id="aboard">
+    <p class="section-label reveal">What you'll live</p>
+    <h2 class="section-title reveal">A day on the blue</h2>
+    <div class="orb-grid">
+      <div class="orb-card reveal">
+        <svg viewBox="0 0 200 200"><defs><radialGradient id="g0" cx="40%" cy="35%"><stop offset="0%" stop-color="#cffaf6"/><stop offset="100%" stop-color="#4fe0d8"/></radialGradient></defs><path class="blob-path" fill="url(#g0)"/></svg>
+        <h3>Secret coves</h3><p>where the crowds can't reach</p>
+      </div>
+      <div class="orb-card reveal">
+        <svg viewBox="0 0 200 200"><defs><radialGradient id="g1" cx="40%" cy="35%"><stop offset="0%" stop-color="#d6ecff"/><stop offset="100%" stop-color="#5aa8ff"/></radialGradient></defs><path class="blob-path" fill="url(#g1)"/></svg>
+        <h3>Crystal swim stops</h3><p>dive into the Ligurian sea</p>
+      </div>
+      <div class="orb-card reveal">
+        <svg viewBox="0 0 200 200"><defs><radialGradient id="g2" cx="40%" cy="35%"><stop offset="0%" stop-color="#fff1c9"/><stop offset="100%" stop-color="#ffd874"/></radialGradient></defs><path class="blob-path" fill="url(#g2)"/></svg>
+        <h3>Sunset aperitivo</h3><p>prosecco as the sky turns gold</p>
+      </div>
+      <div class="orb-card reveal">
+        <svg viewBox="0 0 200 200"><defs><radialGradient id="g3" cx="40%" cy="35%"><stop offset="0%" stop-color="#ffd9c9"/><stop offset="100%" stop-color="#ff7a5e"/></radialGradient></defs><path class="blob-path" fill="url(#g3)"/></svg>
+        <h3>Your own skipper</h3><p>born on this coast</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANS -->
+  <section class="plans" id="plans">
+    <p class="section-label reveal">Choose your sea</p>
+    <h2 class="section-title reveal">Pick your day</h2>
+    <div class="plan-grid">
+      <div class="plan featured reveal">
+        <span class="tag">Most loved</span>
+        <div class="pdot" style="background:var(--mint);color:var(--mint)"></div>
+        <h4>Shared deck</h4>
+        <div class="freq">Daily · 3 hours</div>
+        <div class="price-big">$250 <small>/ per head</small></div>
+        <div class="incl"><div>Max 8 guests</div><div>Swim & snorkel gear</div><div>Local wine & focaccia</div><div>Hidden-cove route</div></div>
+        <a class="pick" href="tel:+393512345678">Book — call</a>
+      </div>
+      <div class="plan reveal">
+        <div class="pdot" style="background:var(--vanilla);color:var(--vanilla)"></div>
+        <h4>Sunset cruise</h4>
+        <div class="freq">Golden hour · 2.5 hours</div>
+        <div class="price-big">$290 <small>/ per head</small></div>
+        <div class="incl"><div>Aperitivo aboard</div><div>Prosecco & cicchetti</div><div>The best light of the day</div><div>Max 8 guests</div></div>
+        <a class="pick" href="tel:+393512345678">Book — call</a>
+      </div>
+      <div class="plan reveal">
+        <div class="pdot" style="background:var(--lav);color:var(--lav)"></div>
+        <h4>Private charter</h4>
+        <div class="freq">Your boat · your day</div>
+        <div class="price-big">$1,800 <small>/ per boat</small></div>
+        <div class="incl"><div>Up to 10 guests</div><div>Fully bespoke route</div><div>Captain & host</div><div>Anywhere on the coast</div></div>
+        <a class="pick" href="tel:+393512345678">Book — call</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOK BY PHONE -->
+  <section class="book reveal">
+    <p class="lead">Booking is a phone call. That's it.</p>
+    <a class="num" href="tel:+393512345678">+39 351 234 5678</a>
+    <p class="sub">call or text · english &amp; italiano</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="footer">
+    <div class="fmark">ONDA</div>
+    <div class="flinks">
+      <a href="tel:+393512345678">Call</a>
+      <a href="sms:+393512345678">Text</a>
+      <a href="https://wa.me/393512345678">WhatsApp</a>
+    </div>
+    <p class="copy">ONDA · Monterosso al Mare · Liguria, Italy</p>
+  </footer>
+</div>
+
+<script>
+"use strict";
+/* ---------- LOADER (fail-safe: never traps the page) ---------- */
+(function(){
+  const l=document.getElementById('loader'); if(!l) return;
+  const hide=()=>l.classList.add('done');
+  addEventListener('load',()=>setTimeout(hide,900));
+  setTimeout(hide,2600);
+})();
+
+/* ---------- CUSTOM CURSOR ---------- */
+(function(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const dot=document.querySelector('.cursor'), ring=document.querySelector('.cursor-ring');
+  let rx=0,ry=0,mx=0,my=0;
+  addEventListener('mousemove',e=>{ mx=e.clientX;my=e.clientY; dot.style.transform=`translate(${mx}px,${my}px) translate(-50%,-50%)`; });
+  document.querySelectorAll('a,button').forEach(el=>{
+    el.addEventListener('mouseenter',()=>ring.classList.add('grow'));
+    el.addEventListener('mouseleave',()=>ring.classList.remove('grow'));
+  });
+  (function loop(){ rx+=(mx-rx)*0.18; ry+=(my-ry)*0.18; ring.style.transform=`translate(${rx}px,${ry}px) translate(-50%,-50%)`; requestAnimationFrame(loop); })();
+})();
+
+/* ---------- SCROLL PROGRESS (fallback if no scroll-timeline) ---------- */
+if(!CSS.supports('animation-timeline','scroll()')){
+  const bar=document.querySelector('.progress');
+  const upd=()=>{ const h=document.documentElement; const p=h.scrollTop/((h.scrollHeight-h.clientHeight)||1); bar.style.transform='scaleX('+p+')'; };
+  addEventListener('scroll',upd,{passive:true}); addEventListener('resize',upd); upd();
+}
+
+/* ---------- SCROLL REVEAL (fallback) ---------- */
+if(!CSS.supports('animation-timeline','view()')){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }),{threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+}
+
+/* ---------- ORGANIC, SEAMLESSLY-LOOPING MORPHING ORB BLOBS ---------- */
+(function(){
+  const TAU=Math.PI*2;
+  function noise(seed){ let s=seed||1; const r=()=>(s=(s*16807)%2147483647)/2147483647;
+    const h=[1,2,3].map(k=>({k,ph:r()*TAU,amp:(r()*0.6+0.4)/k})); const n=h.reduce((a,c)=>a+c.amp,0)||1;
+    return th=>{ let v=0; for(const t of h) v+=t.amp*Math.sin(th*t.k+t.ph); return v/n; }; }
+  function spline(p){ let d=`M ${p[0][0].toFixed(2)},${p[0][1].toFixed(2)} `; const n=p.length;
+    for(let i=0;i<n;i++){ const a=p[(i-1+n)%n],b=p[i],c=p[(i+1)%n],e=p[(i+2)%n];
+      d+=`C ${(b[0]+(c[0]-a[0])/6).toFixed(2)},${(b[1]+(c[1]-a[1])/6).toFixed(2)} ${(c[0]-(e[0]-b[0])/6).toFixed(2)},${(c[1]-(e[1]-b[1])/6).toFixed(2)} ${c[0].toFixed(2)},${c[1].toFixed(2)} `; }
+    return d+'Z'; }
+  const blobs=[...document.querySelectorAll('.blob-path')].map((el,i)=>({el,N:8,R:62,cx:100,cy:100,
+    A:noise((i+1)*97+13), B:noise((i+1)*53+71), phase:(i/4)*TAU }));
+  const SPEED=TAU/1400;
+  (function loop(){ for(const b of blobs){ b.phase+=SPEED; if(b.phase>=TAU)b.phase-=TAU;
+    const pts=[]; for(let k=0;k<b.N;k++){ const ang=(k/b.N)*TAU; const nz=0.6*b.A(ang+b.phase)+0.4*b.B(ang*2-b.phase);
+      const rad=b.R+nz*22; pts.push([b.cx+Math.cos(ang)*rad, b.cy+Math.sin(ang)*rad]); } b.el.setAttribute('d',spline(pts)); }
+    requestAnimationFrame(loop); })();
+})();
+
+/* ---------- SEA SPARKLE PARTICLES (gentle rising light on the water) ---------- */
+(function(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const c=document.getElementById('drips'), x=c.getContext('2d'); let W,H,DPR;
+  const COLORS=['#4fe0d8','#9ff0d8','#aef0ff','#ffd874','#5aa8ff'];
+  let parts=[];
+  function size(){ DPR=Math.min(devicePixelRatio,2); W=innerWidth;H=innerHeight; c.width=W*DPR;c.height=H*DPR; x.setTransform(DPR,0,0,DPR,0,0);
+    const n=Math.round(W*H/26000); parts=Array.from({length:n},mk); }
+  function mk(){ return {x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+0.4,vy:-(Math.random()*0.5+0.15),
+    ph:Math.random()*6.28,tw:Math.random()*1.2+0.4,col:COLORS[(Math.random()*COLORS.length)|0]}; }
+  let last=0;
+  function frame(t){ requestAnimationFrame(frame); x.clearRect(0,0,W,H); x.globalCompositeOperation='lighter';
+    for(const p of parts){ p.y+=p.vy; p.x+=Math.sin(t*0.0004+p.ph)*0.2; if(p.y<-4){p.y=H+4;p.x=Math.random()*W;}
+      const a=0.3+0.7*(0.5+0.5*Math.sin(t*0.001*p.tw+p.ph));
+      x.beginPath(); x.fillStyle=p.col; x.globalAlpha=a*0.8; x.arc(p.x,p.y,p.r,0,6.283); x.fill();
+    } x.globalAlpha=1; }
+  size(); addEventListener('resize',size); requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
