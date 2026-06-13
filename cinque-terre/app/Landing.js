@@ -263,9 +263,9 @@ function SunIcon() {
     <svg viewBox="0 0 100 100" className="celestial">
       <defs>
         <radialGradient id="sunGrad" cx="0.42" cy="0.4" r="0.7">
-          <stop offset="0" stopColor="#fff6cf" />
-          <stop offset="0.6" stopColor="#ffce4d" />
-          <stop offset="1" stopColor="#ff9e2c" />
+          <stop offset="0" stopColor="#f6eccf" />
+          <stop offset="0.58" stopColor="#ead27e" />
+          <stop offset="1" stopColor="#d4b257" />
         </radialGradient>
       </defs>
       {Array.from({ length: 12 }).map((_, i) => (
@@ -276,7 +276,7 @@ function SunIcon() {
           width="3.2"
           height="12"
           rx="1.6"
-          fill="#ffc23c"
+          fill="#e0c06a"
           transform={`rotate(${i * 30} 50 50)`}
         />
       ))}

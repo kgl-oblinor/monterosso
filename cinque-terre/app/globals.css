@@ -12,6 +12,7 @@
   --lav: #5aa8ff; /* azure */
   --mint: #4fe0d8; /* turquoise */
   --vanilla: #ffd874; /* sun gold */
+  --gold: #ead27e; /* vintage poster gold — muted, sun-faded */
   --pist: #9ff0d8; /* sea foam */
   --strawberry: #ff8f8f;
   --mango: #ffc23c;
@@ -101,7 +102,7 @@
   border: none;
   background: transparent;
   pointer-events: auto;
-  filter: drop-shadow(0 0 16px rgba(255, 198, 80, 0.6));
+  filter: drop-shadow(0 0 15px rgba(224, 192, 106, 0.55));
   transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.5s ease;
 }
 .theme-toggle:hover {
@@ -207,13 +208,15 @@ a {
   right: 0;
   height: 50%;
   z-index: 0;
+  /* cool teal sky cooling into a warm peach haze at the horizon —
+     the sun-faded glow that gives the vintage poster its soul. */
   background: linear-gradient(
     180deg,
     #2a6694 0%,
     #5891b8 32%,
-    #93bdd6 58%,
-    #cae3ee 82%,
-    #e6f3f4 100%
+    #8fb4cb 56%,
+    #c4cdc2 76%,
+    #f0d2a6 100%
   );
 }
 
@@ -310,15 +313,16 @@ a {
 }
 
 
-/* Light catching the surface at the horizon — a soft band, not a glow blob. */
+/* Warm light catching the surface at the horizon — echoes the peach
+   sky above, like the sun on the water. A soft band, not a glow blob. */
 .aurora__gloss {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(198, 244, 240, 0.32) 0%,
-    rgba(150, 224, 220, 0.1) 8%,
-    transparent 22%
+    rgba(245, 223, 187, 0.34) 0%,
+    rgba(214, 206, 188, 0.12) 9%,
+    transparent 24%
   );
 }
 /* Depth: darken the near foreground and the corners so the eye reads
@@ -568,25 +572,17 @@ section {
   font-weight: 500;
 }
 .hero h1 {
-  font-family: "Fraunces", serif;
-  font-weight: 900;
-  line-height: 0.86;
-  font-size: clamp(3.6rem, 15vw, 12rem);
-  letter-spacing: -0.01em;
-  color: var(--cream);
-  text-shadow: 0 0 60px rgba(79, 224, 216, 0.4);
-  animation: heroWonk 9s ease-in-out infinite;
-}
-@keyframes heroWonk {
-  0%,
-  100% {
-    font-variation-settings: "opsz" 144, "wght" 900;
-    letter-spacing: -0.01em;
-  }
-  50% {
-    font-variation-settings: "opsz" 144, "wght" 760;
-    letter-spacing: 0.02em;
-  }
+  font-family: "Limelight", "Fraunces", serif;
+  font-weight: 400; /* Limelight is a single-weight titling face */
+  line-height: 0.94;
+  font-size: clamp(2.6rem, 10.5vw, 8.8rem);
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: var(--gold);
+  /* deco relief, like the poster: a thin warm edge, a soft cast for
+     dimension, and a faint gold halo — no cool glow. */
+  text-shadow: 0 1px 0 rgba(120, 84, 28, 0.5),
+    0 4px 16px rgba(8, 24, 36, 0.42), 0 0 46px rgba(234, 210, 126, 0.22);
 }
 .hero .tagline {
   margin-top: 24px;
@@ -615,27 +611,53 @@ section {
   right: 0;
 }
 
-.cta {
-  position: relative;
-  display: inline-flex;
+/* The two actions share one frosted gold-glass pill — same form, size
+   and colour in both modes. An elegant combo: the glass language of the
+   booking card meets the vintage gold of the deco title. */
+.cta,
+.book-form .pay {
   align-items: center;
   justify-content: center;
   gap: 0.6em;
-  padding: 22px 50px;
+  padding: 19px 46px;
   border-radius: 60px;
-  font-weight: 600;
-  font-size: 0.95rem;
+  font-weight: 700;
+  font-size: 0.9rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  text-decoration: none;
   color: var(--plum);
-  background: linear-gradient(120deg, var(--vanilla), var(--mint), var(--lav));
-  background-size: 200% 200%;
-  border: none;
-  box-shadow: 0 10px 40px rgba(79, 224, 216, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-  animation: ctaShimmer 6s ease infinite;
+  background: linear-gradient(
+    180deg,
+    rgba(247, 236, 200, 0.66) 0%,
+    rgba(231, 205, 123, 0.5) 100%
+  );
+  backdrop-filter: blur(14px) saturate(125%);
+  -webkit-backdrop-filter: blur(14px) saturate(125%);
+  border: 1px solid rgba(248, 238, 205, 0.7);
+  box-shadow: 0 14px 34px rgba(8, 24, 36, 0.34),
+    0 1px 0 rgba(255, 253, 244, 0.6) inset,
+    0 -10px 22px rgba(120, 84, 28, 0.12) inset;
   cursor: none;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s,
+    filter 0.25s, background 0.25s;
+}
+.cta {
+  position: relative;
+  display: inline-flex;
+  text-decoration: none;
+}
+.cta:hover,
+.book-form .pay:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  background: linear-gradient(
+    180deg,
+    rgba(249, 240, 210, 0.76) 0%,
+    rgba(235, 210, 132, 0.6) 100%
+  );
+  box-shadow: 0 18px 40px rgba(8, 24, 36, 0.42),
+    0 1px 0 rgba(255, 253, 244, 0.65) inset,
+    0 -10px 22px rgba(120, 84, 28, 0.14) inset;
 }
 @keyframes ctaShimmer {
   0%,
@@ -903,21 +925,9 @@ section {
   line-height: 1;
 }
 .book-form .pay {
-  width: 100%;
-  padding: 20px;
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 0.92rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--plum);
-  background: linear-gradient(120deg, var(--vanilla), var(--mint), var(--lav));
-  background-size: 200% 200%;
-  border: none;
-  box-shadow: 0 10px 40px rgba(79, 224, 216, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-  animation: ctaShimmer 6s ease infinite;
-  cursor: none;
+  display: flex;
+  width: fit-content;
+  margin: 4px auto 0;
 }
 .book-form .pay:disabled {
   opacity: 0.6;
