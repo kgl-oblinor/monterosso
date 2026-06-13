@@ -1272,6 +1272,26 @@ section {
   color: #3c2414;
   font-weight: 700;
 }
+/* ---------- RESERVATION CODE ---------- */
+.rescode {
+  font-family: "Fraunces", serif;
+  font-weight: 600;
+  font-size: clamp(2rem, 7vw, 3.1rem);
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: var(--gold);
+  text-shadow: 0 0 30px rgba(234, 210, 126, 0.3);
+  margin: 14px 0 6px;
+}
+.rescode__sub {
+  text-align: center;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 26px;
+}
+
 /* ---------- CONFIRM STEP (same glass card) ---------- */
 .confirm {
   display: flex;

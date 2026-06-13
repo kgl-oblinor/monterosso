@@ -107,10 +107,10 @@ export default function Landing() {
 function BookingForm() {
   const [date, setDate] = useState("");
   const [guests, setGuests] = useState(2);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [days, setDays] = useState([]);
   const [confirming, setConfirming] = useState(false);
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
     setDays(buildDays(21));
@@ -126,33 +126,43 @@ function BookingForm() {
     setConfirming(true);
   }
 
-  async function handlePay() {
-    setError("");
-    if (!date) {
-      setError("Please pick a date for your tour.");
-      return;
-    }
-    setLoading(true);
-    try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ date, guests }),
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        setError(data.error || "Something went wrong. Please try again.");
-        setLoading(false);
-      }
-    } catch (err) {
-      setError("Could not start payment. Please try again.");
-      setLoading(false);
-    }
+  function handleConfirm() {
+    setConfirming(false);
+    setDone(true);
   }
 
   const sel = days.find((d) => d.iso === date);
+
+  if (done) {
+    const code = makeCode(date, guests);
+    const tel = tour.phone.replace(/\s/g, "");
+    return (
+      <div className="book-form reveal">
+        <p className="meta">Reservasjonskode</p>
+        <div className="rescode">{code}</div>
+        <p className="rescode__sub">
+          {sel ? `${sel.label} · ${sel.small}` : date} ·{" "}
+          {guests} {guests === 1 ? "gjest" : "gjester"}
+        </p>
+        <a className="pay" href={`tel:${tel}`}>
+          Ring {tour.phone}
+        </a>
+        <p className="reassure">
+          Oppgi koden når du ringer — så er plassen din.
+        </p>
+        <button
+          type="button"
+          className="confirm__back"
+          onClick={() => {
+            setDone(false);
+            setConfirming(false);
+          }}
+        >
+          Ny reservasjon
+        </button>
+      </div>
+    );
+  }
 
   if (confirming) {
     return (
@@ -176,8 +186,8 @@ function BookingForm() {
           <span className="t-label">Total</span>
           <span className="t-val">€{tour.priceEur * guests}</span>
         </div>
-        <button className="pay" onClick={handlePay} disabled={loading}>
-          {loading ? "Tar deg til betaling…" : "Verifiser & betal"}
+        <button className="pay" onClick={handleConfirm}>
+          Verifiser
         </button>
         <button
           type="button"
@@ -188,7 +198,7 @@ function BookingForm() {
         </button>
         <p className="err">{error}</p>
         <p className="reassure">
-          Secure payment via Stripe · €{tour.priceEur} / head
+          Ingen forhåndsbetaling — du får en kode å oppgi på telefon.
         </p>
       </div>
     );
@@ -229,17 +239,24 @@ function BookingForm() {
         <span className="t-label">Total</span>
         <span className="t-val">€{tour.priceEur * guests}</span>
       </div>
-      <button className="pay" onClick={startConfirm} disabled={loading}>
-        Pay &amp; reserve
+      <button className="pay" onClick={startConfirm}>
+        Reserver
       </button>
       <p className="err">{error}</p>
-      <p className="reassure">Secure payment via Stripe · €{tour.priceEur} / head</p>
+      <p className="reassure">
+        Ingen forhåndsbetaling · €{tour.priceEur} / head
+      </p>
     </div>
   );
 }
 
 function todayISO() {
   return new Date().toLocaleDateString("sv-SE");
+}
+/* Reservation code the owner can read back: MT-DDMMYY-<guests>. */
+function makeCode(iso, guests) {
+  const [y, m, d] = iso.split("-");
+  return `MT-${d}${m}${y.slice(2)}-${guests}`;
 }
 
 /* Friendly day picker: today / tomorrow / day-after-tomorrow, then weekdays,
