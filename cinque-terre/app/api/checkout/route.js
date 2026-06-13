@@ -35,7 +35,10 @@ export async function POST(request) {
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const stripe = new Stripe(secretKey);
+  // Fetch-based HTTP client so it runs on Cloudflare Workers as well as Node.
+  const stripe = new Stripe(secretKey, {
+    httpClient: Stripe.createFetchHttpClient(),
+  });
 
   try {
     const session = await stripe.checkout.sessions.create({
