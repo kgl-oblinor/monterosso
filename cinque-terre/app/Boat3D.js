@@ -53,7 +53,7 @@ export default function Boat3D({ theme }) {
 
     // ---- materials ----
     const hullMat = new THREE.MeshPhysicalMaterial({
-      color: 0x1c2c4a,
+      color: 0x22407a, // painted Ligurian blue — stays clearly blue under warm light
       roughness: 0.32,
       metalness: 0.0,
       clearcoat: 0.9,
