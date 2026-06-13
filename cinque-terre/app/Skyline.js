@@ -72,6 +72,16 @@ export default function Skyline() {
             <rect x="126" y="226" width="18" height="7" fill="#27483c" />
             <rect x="131" y="156" width="8" height="9" fill="#2b3a40" />
             <path d="M124,152 L135,134 L146,152 Z" fill="#9c4128" />
+            {/* a few more houses */}
+            <rect x="-14" y="238" width="15" height="22" fill="#e0a060" />
+            <rect x="-14" y="235" width="15" height="3.4" fill="#a9482f" />
+            <rect x="-8" y="244" width="3" height="4" fill="var(--win)" />
+            <rect x="68" y="232" width="17" height="28" fill="#d98a6e" />
+            <rect x="68" y="229" width="17" height="3.4" fill="#8c3b2a" />
+            <rect x="74" y="240" width="3" height="4" fill="var(--win)" />
+            <rect x="196" y="242" width="16" height="18" fill="#ecc97a" />
+            <rect x="196" y="239" width="16" height="3.2" fill="#a9482f" />
+            <rect x="201" y="247" width="3" height="4" fill="var(--win)" />
             <rect x="-25" y="222" width="315" height="38" fill="url(#mtnGreen)" />
             <path d="M-20,259 L150,259 Q60,252 -20,256 Z" fill="#ead9b0" />
           </g>
@@ -112,6 +122,16 @@ export default function Skyline() {
             <rect x="191" y="109" width="5" height="6" fill="#76705f" />
             <rect x="200" y="109" width="5" height="6" fill="#76705f" />
             <rect x="191" y="132" width="5" height="7" fill="var(--win)" />
+            {/* a few more houses */}
+            <rect x="12" y="240" width="15" height="20" fill="#e0907e" />
+            <rect x="12" y="237" width="15" height="3.2" fill="#8c3b2a" />
+            <rect x="17" y="245" width="3" height="4" fill="var(--win)" />
+            <rect x="96" y="236" width="16" height="24" fill="#e8b06a" />
+            <rect x="96" y="233" width="16" height="3.2" fill="#a9482f" />
+            <rect x="102" y="243" width="3" height="4" fill="var(--win)" />
+            <rect x="154" y="240" width="15" height="20" fill="#cf7a52" />
+            <rect x="154" y="237" width="15" height="3.2" fill="#8c3b2a" />
+            <rect x="159" y="245" width="3" height="4" fill="var(--win)" />
             <rect x="-35" y="222" width="300" height="38" fill="url(#mtnGreen)" />
             <path d="M94,260 L135,260 Q116,254 98,257 Z" fill="#ead9b0" />
           </g>
@@ -145,6 +165,13 @@ export default function Skyline() {
             <rect x="150" y="86" width="11" height="20" fill="#ded0ad" />
             <rect x="150" y="92" width="11" height="3" fill="#9c8f6b" />
             <path d="M149,86 L155.5,76 L162,86 Z" fill="#9c4128" />
+            {/* a few more houses cascading the hilltop */}
+            <rect x="86" y="124" width="14" height="22" fill="#e8b06a" />
+            <rect x="86" y="121" width="14" height="3.2" fill="#a9482f" />
+            <rect x="91" y="130" width="3" height="4" fill="var(--win)" />
+            <rect x="180" y="120" width="14" height="26" fill="#d98a6e" />
+            <rect x="180" y="117" width="14" height="3.2" fill="#8c3b2a" />
+            <rect x="185" y="127" width="3" height="4" fill="var(--win)" />
             <rect x="-45" y="222" width="355" height="38" fill="url(#mtnGreen)" />
           </g>
 
@@ -183,6 +210,16 @@ export default function Skyline() {
             <rect x="44" y="166" width="12" height="40" fill="#cfc3a0" />
             <rect x="44" y="174" width="12" height="3" fill="#4f5a55" />
             <rect x="44" y="184" width="12" height="3" fill="#4f5a55" />
+            {/* a few more houses */}
+            <rect x="28" y="226" width="15" height="34" fill="#e0907e" />
+            <rect x="28" y="223" width="15" height="3.4" fill="#8c3b2a" />
+            <rect x="34" y="234" width="3" height="4" fill="var(--win)" />
+            <rect x="174" y="206" width="16" height="30" fill="#e8b06a" />
+            <rect x="174" y="203" width="16" height="3.4" fill="#a9482f" />
+            <rect x="180" y="214" width="3" height="4" fill="var(--win)" />
+            <rect x="190" y="220" width="14" height="22" fill="#cf7a52" />
+            <rect x="190" y="217" width="14" height="3.2" fill="#8c3b2a" />
+            <rect x="195" y="227" width="3" height="4" fill="var(--win)" />
             <rect x="30" y="222" width="230" height="38" fill="url(#mtnGreen)" />
             <path d="M48,260 L96,260 Q74,255 52,257 Z" fill="#e6d4a4" />
           </g>
@@ -236,6 +273,16 @@ export default function Skyline() {
             <rect x="240" y="139" width="5" height="6" fill="#76705f" />
             <rect x="249" y="139" width="5" height="6" fill="#76705f" />
             <rect x="239" y="160" width="6" height="8" fill="var(--win)" />
+            {/* a few more houses */}
+            <rect x="66" y="224" width="15" height="36" fill="#e8b06a" />
+            <rect x="66" y="221" width="15" height="3.6" fill="#a9482f" />
+            <rect x="72" y="232" width="3" height="4" fill="var(--win)" />
+            <rect x="150" y="244" width="14" height="16" fill="#d98a6e" />
+            <rect x="150" y="241" width="14" height="3.2" fill="#8c3b2a" />
+            <rect x="155" y="249" width="3" height="4" fill="var(--win)" />
+            <rect x="210" y="232" width="14" height="28" fill="#ecc97a" />
+            <rect x="210" y="229" width="14" height="3.4" fill="#a9482f" />
+            <rect x="215" y="239" width="3" height="4" fill="var(--win)" />
             <rect x="-15" y="222" width="315" height="38" fill="url(#mtnGreen)" />
             <path d="M92,260 L178,260 Q138,254 100,257 Z" fill="#ead9b0" />
           </g>
