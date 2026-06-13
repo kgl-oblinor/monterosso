@@ -29,6 +29,16 @@
   --cypress-hi: #3d5c34;
   --bush: #506b3b;
   --bush-hi: #5f7d46;
+
+  /* sea — day. One hue, four depths (horizon → foreground) plus
+     a same-hue highlight and shadow so light reads as depth, not colour. */
+  --sea-1: #2f9fae; /* horizon: hazy, light-struck */
+  --sea-2: #1d8395;
+  --sea-3: #115f79;
+  --sea-4: #06304a; /* foreground: deep water */
+  --sea-glow: #79d4d0; /* surface light, same teal family */
+  --sea-deep: #0a4257; /* swell shadow */
+  --sea-shadow: rgba(3, 26, 38, 0.45); /* depth vignette */
 }
 
 /* ---------- DARK / NIGHT MODE ---------- */
@@ -45,6 +55,15 @@
   --cypress-hi: #22321e;
   --bush: #222e17;
   --bush-hi: #2a381e;
+
+  /* sea — night. Same hue family, pulled deep; moonlight stays cool. */
+  --sea-1: #123c4a;
+  --sea-2: #0c2c3c;
+  --sea-3: #071e2c;
+  --sea-4: #03101c;
+  --sea-glow: #3f8fa0;
+  --sea-deep: #04141f;
+  --sea-shadow: rgba(0, 6, 12, 0.6);
 }
 [data-theme="dark"] .sky {
   background: linear-gradient(
@@ -55,23 +74,15 @@
     #1d2f4d 100%
   );
 }
-[data-theme="dark"] .aurora {
-  background: linear-gradient(
-    180deg,
-    #0c3344 0%,
-    #082234 42%,
-    #03101c 100%
-  );
-}
 [data-theme="dark"] .aurora__layer {
-  opacity: 0.35;
+  opacity: 0.32;
 }
 [data-theme="dark"] .aurora__gloss {
-  background: radial-gradient(
-    80% 55% at 72% 0%,
-    rgba(190, 220, 255, 0.32),
-    rgba(150, 190, 240, 0.12) 40%,
-    transparent 70%
+  background: linear-gradient(
+    180deg,
+    rgba(150, 195, 235, 0.22) 0%,
+    rgba(110, 160, 210, 0.08) 9%,
+    transparent 24%
   );
 }
 [data-theme="dark"] .stars {
@@ -202,7 +213,7 @@ a {
     #5891b8 32%,
     #93bdd6 58%,
     #cae3ee 82%,
-    #ffffff 100%
+    #e6f3f4 100%
   );
 }
 
@@ -229,7 +240,10 @@ a {
   z-index: 2;
   pointer-events: none;
   line-height: 0;
-  filter: drop-shadow(0 6px 14px rgba(3, 16, 29, 0.4));
+  /* Crisp silhouette against the sky (almost no upward bleed), with the
+     weight thrown downward so the villages cast a soft shadow onto the
+     water and read as standing on the shore. */
+  filter: drop-shadow(0 5px 7px rgba(3, 16, 29, 0.32));
 }
 .skyline svg {
   display: block;
@@ -248,37 +262,33 @@ a {
   overflow: hidden;
   background: linear-gradient(
     180deg,
-    #29b0bd 0%,
-    #1c8aa0 30%,
-    #136884 62%,
-    #0a3550 100%
+    var(--sea-1) 0%,
+    var(--sea-2) 30%,
+    var(--sea-3) 62%,
+    var(--sea-4) 100%
   );
 }
+/* Slow swells of light and shadow — all the same teal as the sea,
+   so the surface moves without ever changing colour. */
 .aurora__layer {
   position: absolute;
   inset: -20%;
-  filter: blur(40px) saturate(195%);
+  filter: blur(48px) saturate(112%);
 }
 .aurora__layer--a {
-  background: radial-gradient(42% 52% at 18% 28%, var(--lav) 0%, transparent 60%),
-    radial-gradient(48% 58% at 80% 18%, var(--mint) 0%, transparent 60%),
-    radial-gradient(52% 62% at 62% 78%, var(--mint) 0%, transparent 62%),
-    radial-gradient(44% 54% at 38% 72%, var(--lav) 0%, transparent 60%),
-    radial-gradient(40% 50% at 8% 60%, var(--mint) 0%, transparent 58%),
-    radial-gradient(34% 44% at 92% 50%, var(--vanilla) 0%, transparent 58%);
-  animation: driftA 42s ease-in-out infinite;
-  opacity: 1;
+  background: radial-gradient(58% 48% at 26% 16%, var(--sea-glow) 0%, transparent 62%),
+    radial-gradient(64% 52% at 80% 10%, var(--sea-glow) 0%, transparent 64%),
+    radial-gradient(60% 58% at 60% 82%, var(--sea-deep) 0%, transparent 66%);
+  animation: driftA 46s ease-in-out infinite;
+  opacity: 0.55;
 }
 .aurora__layer--b {
-  mix-blend-mode: screen;
-  opacity: 0.95;
-  background: radial-gradient(48% 52% at 70% 35%, var(--mint) 0%, transparent 60%),
-    radial-gradient(44% 58% at 22% 58%, var(--lav) 0%, transparent 62%),
-    radial-gradient(58% 62% at 50% 12%, var(--lav) 0%, transparent 60%),
-    radial-gradient(40% 50% at 88% 78%, var(--mint) 0%, transparent 60%),
-    radial-gradient(38% 48% at 15% 90%, var(--mint) 0%, transparent 60%),
-    radial-gradient(30% 40% at 82% 88%, var(--magenta) 0%, transparent 58%);
-  animation: driftB 54s ease-in-out infinite;
+  mix-blend-mode: soft-light;
+  opacity: 0.7;
+  background: radial-gradient(60% 50% at 70% 24%, var(--sea-glow) 0%, transparent 64%),
+    radial-gradient(54% 56% at 20% 64%, var(--sea-deep) 0%, transparent 66%),
+    radial-gradient(50% 52% at 46% 92%, var(--sea-deep) 0%, transparent 64%);
+  animation: driftB 58s ease-in-out infinite;
 }
 @keyframes driftA {
   0%,
@@ -300,25 +310,28 @@ a {
 }
 
 
+/* Light catching the surface at the horizon — a soft band, not a glow blob. */
 .aurora__gloss {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    90% 55% at 50% 0%,
-    rgba(110, 225, 215, 0.26),
-    rgba(79, 224, 216, 0.12) 38%,
-    transparent 68%
+  background: linear-gradient(
+    180deg,
+    rgba(198, 244, 240, 0.32) 0%,
+    rgba(150, 224, 220, 0.1) 8%,
+    transparent 22%
   );
 }
+/* Depth: darken the near foreground and the corners so the eye reads
+   distance toward the horizon. */
 .aurora__vignette {
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    130% 130% at 50% 40%,
-    transparent 68%,
-    rgba(4, 32, 43, 0.18) 90%,
-    rgba(4, 32, 43, 0.34) 100%
-  );
+      120% 95% at 50% 0%,
+      transparent 52%,
+      var(--sea-shadow) 100%
+    ),
+    linear-gradient(180deg, transparent 58%, var(--sea-shadow) 100%);
 }
 
 .grain {
