@@ -108,6 +108,10 @@ function BookingForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    setDate((d) => d || todayISO()); // default to today, set on the client
+  }, []);
+
   async function handlePay() {
     setError("");
     if (!date) {
@@ -141,12 +145,24 @@ function BookingForm() {
         guests
       </p>
       <div className="row">
-        <label>
-          Date
+        <div className="field">
+          <span className="field-head">
+            Date
+            <Stepper
+              onDown={() => setDate((d) => clampToday(shiftISO(d || todayISO(), -1)))}
+              onUp={() => setDate((d) => shiftISO(d || todayISO(), 1))}
+            />
+          </span>
           <DatePicker value={date} onChange={setDate} />
-        </label>
-        <label>
-          Guests
+        </div>
+        <div className="field">
+          <span className="field-head">
+            Guests
+            <Stepper
+              onDown={() => setGuests((g) => Math.max(1, g - 1))}
+              onUp={() => setGuests((g) => Math.min(tour.maxGuests, g + 1))}
+            />
+          </span>
           <select
             value={guests}
             onChange={(e) => setGuests(Number(e.target.value))}
@@ -157,7 +173,7 @@ function BookingForm() {
               </option>
             ))}
           </select>
-        </label>
+        </div>
       </div>
       <div className="total-row">
         <span className="t-label">Total</span>
@@ -170,6 +186,44 @@ function BookingForm() {
       <p className="reassure">Secure payment via Stripe · €{tour.priceEur} / head</p>
     </div>
   );
+}
+
+/* Matching up/down stepper that sits above each box. */
+function Stepper({ onDown, onUp }) {
+  return (
+    <span className="stepper">
+      <button
+        type="button"
+        className="stepper__btn"
+        onClick={onDown}
+        onMouseDown={(e) => e.preventDefault()}
+        aria-label="Ned"
+      >
+        ▾
+      </button>
+      <button
+        type="button"
+        className="stepper__btn"
+        onClick={onUp}
+        onMouseDown={(e) => e.preventDefault()}
+        aria-label="Opp"
+      >
+        ▴
+      </button>
+    </span>
+  );
+}
+
+function todayISO() {
+  return new Date().toLocaleDateString("sv-SE");
+}
+function shiftISO(iso, n) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d + n).toLocaleDateString("sv-SE");
+}
+function clampToday(iso) {
+  const t = todayISO();
+  return iso < t ? t : iso;
 }
 
 /* Friendly day picker: today / tomorrow / day-after-tomorrow, then weekdays,
