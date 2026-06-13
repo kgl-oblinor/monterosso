@@ -213,10 +213,49 @@ function buildDays(n) {
 /* Desktop date: today (prominent) + tomorrow + day-after, the later ones
    progressively hazier — a gentle nudge to book today. */
 function DateQuick({ value, onChange, days }) {
+  const [open, setOpen] = useState(false);
   const tiers = ["t1", "t2", "t3"];
+  const quick = days.slice(0, 3);
+  const isQuick = quick.some((d) => d.iso === value);
+  const picked = days.find((d) => d.iso === value);
+
+  if (open) {
+    return (
+      <div className="dq dq--picker">
+        <div className="dq-pick__head">
+          <span>Velg dato</span>
+          <button
+            type="button"
+            className="dq-pick__close"
+            onClick={() => setOpen(false)}
+            aria-label="Lukk"
+          >
+            ✕
+          </button>
+        </div>
+        <div className="dq-pick__list">
+          {days.map((d) => (
+            <button
+              type="button"
+              key={d.iso}
+              className={`dq-pick__opt${d.iso === value ? " is-sel" : ""}`}
+              onClick={() => {
+                onChange(d.iso);
+                setOpen(false);
+              }}
+            >
+              <span>{d.label}</span>
+              <span className="dq__date">{d.small}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="dq">
-      {days.slice(0, 3).map((o, i) => (
+      {quick.map((o, i) => (
         <button
           type="button"
           key={o.iso}
@@ -227,40 +266,82 @@ function DateQuick({ value, onChange, days }) {
           <span className="dq__date">{o.small}</span>
         </button>
       ))}
+      <button
+        type="button"
+        className={`dq__opt dq--more${!isQuick ? " is-sel" : ""}`}
+        onClick={() => setOpen(true)}
+      >
+        <span className="dq__label">
+          {!isQuick && picked ? picked.label : "Velg dato"}
+        </span>
+        {!isQuick && picked && <span className="dq__date">{picked.small}</span>}
+      </button>
     </div>
   );
 }
 
-/* Desktop guests: the same tiered tiles (2 / 4 / 6, max-6 to start), plus a
-   smooth 1–8 strip beneath so any size — including 8 — is one click away. */
+/* Desktop guests: same tiered tiles (2 / 4 / 6, max-6 to start) plus a fourth
+   "Velg antall" tile that opens a compact 1–8 grid in the same box. */
 function GuestQuick({ value, onChange, max }) {
+  const [open, setOpen] = useState(false);
   const tiers = ["t1", "t2", "t3"];
+  const quick = [2, 4, 6];
+  const isQuick = quick.includes(value);
+
+  if (open) {
+    return (
+      <div className="dq dq--picker">
+        <div className="dq-pick__head">
+          <span>Velg antall</span>
+          <button
+            type="button"
+            className="dq-pick__close"
+            onClick={() => setOpen(false)}
+            aria-label="Lukk"
+          >
+            ✕
+          </button>
+        </div>
+        <div className="gq-grid">
+          {Array.from({ length: max }, (_, i) => i + 1).map((n) => (
+            <button
+              type="button"
+              key={n}
+              className={`gq-chip${value === n ? " is-sel" : ""}`}
+              onClick={() => {
+                onChange(n);
+                setOpen(false);
+              }}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="gq">
-      <div className="dq">
-        {[2, 4, 6].map((n, i) => (
-          <button
-            type="button"
-            key={n}
-            className={`dq__opt dq--${tiers[i]}${value === n ? " is-sel" : ""}`}
-            onClick={() => onChange(n)}
-          >
-            <span className="dq__label">{n} guests</span>
-          </button>
-        ))}
-      </div>
-      <div className="gq-strip">
-        {Array.from({ length: max }, (_, i) => i + 1).map((n) => (
-          <button
-            type="button"
-            key={n}
-            className={`gq-chip${value === n ? " is-sel" : ""}`}
-            onClick={() => onChange(n)}
-          >
-            {n}
-          </button>
-        ))}
-      </div>
+    <div className="dq">
+      {quick.map((n, i) => (
+        <button
+          type="button"
+          key={n}
+          className={`dq__opt dq--${tiers[i]}${value === n ? " is-sel" : ""}`}
+          onClick={() => onChange(n)}
+        >
+          <span className="dq__label">{n} guests</span>
+        </button>
+      ))}
+      <button
+        type="button"
+        className={`dq__opt dq--more${!isQuick ? " is-sel" : ""}`}
+        onClick={() => setOpen(true)}
+      >
+        <span className="dq__label">
+          {!isQuick ? `${value} guests` : "Velg antall"}
+        </span>
+      </button>
     </div>
   );
 }
