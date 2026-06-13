@@ -76,25 +76,22 @@ export default function Landing() {
           Cinque Terre, Italy. €{tour.priceEur} per head. Book and pay online.
         </p>
 
-        {/* HERO */}
+        {/* SCREEN 1 — HERO + RESERVE CTA */}
         <header className="hero" id="top">
-          <p className="eyebrow">Monterosso al Mare · Cinque Terre</p>
+          <p className="eyebrow">Monterosso al Mare</p>
+          <h1>Cinque Terre</h1>
+          <div className="cta-wrap">
+            <a className="cta" href="#book">
+              Book — reserve your seat
+            </a>
+          </div>
           <div className="scroll-hint">
             <span>scroll</span>
             <span className="dot"></span>
           </div>
         </header>
 
-        {/* RESERVE CTA */}
-        <section className="reserve-section">
-          <div className="cta-wrap">
-            <a className="cta" href="#book">
-              Book — reserve your seat
-            </a>
-          </div>
-        </section>
-
-        {/* BOOK */}
+        {/* SCREEN 2 — BOOK */}
         <section className="book-section" id="book">
           <p className="section-label reveal">Reserve</p>
           <h2 className="section-title reveal">Book your day</h2>
