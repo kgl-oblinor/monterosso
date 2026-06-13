@@ -974,6 +974,82 @@ section {
   transform: translateY(0);
 }
 
+/* ---------- iOS-STYLE DRUM WHEEL (mobile) ---------- */
+.wheel {
+  position: relative;
+  width: 100%;
+  height: 250px; /* definite height so the scroller can clip + snap */
+  display: none; /* desktop uses the dropdown / select instead */
+}
+.wheel__scroll {
+  height: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding-block: 100px; /* centre the first/last row: (250 - 50) / 2 */
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    #000 28%,
+    #000 72%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    #000 28%,
+    #000 72%,
+    transparent 100%
+  );
+}
+.wheel__scroll::-webkit-scrollbar {
+  display: none;
+}
+.wheel__item {
+  height: 50px;
+  scroll-snap-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--cream);
+  white-space: nowrap;
+  text-transform: none;
+  letter-spacing: normal;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+.wheel__label {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.15;
+}
+.wheel__sub {
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-size: 0.72rem;
+  color: var(--gold);
+}
+.wheel__band {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 50px;
+  transform: translateY(-50%);
+  border-radius: 12px;
+  background: linear-gradient(
+    180deg,
+    rgba(247, 236, 200, 0.16),
+    rgba(231, 205, 123, 0.1)
+  );
+  border-top: 1px solid rgba(246, 233, 194, 0.45);
+  border-bottom: 1px solid rgba(246, 233, 194, 0.45);
+  pointer-events: none;
+}
+
 /* ---------- FRIENDLY DAY PICKER ---------- */
 .datepick {
   position: relative;
@@ -1222,9 +1298,18 @@ footer .copy {
     padding-left: 22px;
     padding-right: 22px;
   }
+  /* booking: swap to the iOS drum wheels, kept side by side */
   .book-form .row {
-    flex-direction: column;
-    gap: 0;
+    flex-direction: row;
+    gap: 12px;
+  }
+  .book-form .field .stepper,
+  .book-form .field .datepick,
+  .book-form .field > select {
+    display: none;
+  }
+  .book-form .field .wheel {
+    display: block;
   }
 }
 

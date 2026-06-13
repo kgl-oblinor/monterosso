@@ -109,8 +109,10 @@ function BookingForm() {
   const [guests, setGuests] = useState(2);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [days, setDays] = useState([]);
 
   useEffect(() => {
+    setDays(buildDays(21));
     setDate((d) => d || todayISO()); // default to today, set on the client
   }, []);
 
@@ -155,7 +157,13 @@ function BookingForm() {
               onUp={() => setDate((d) => shiftISO(d || todayISO(), 1))}
             />
           </span>
-          <DatePicker value={date} onChange={setDate} />
+          <DatePicker value={date} onChange={setDate} days={days} />
+          <WheelPicker
+            ariaLabel="Velg dag"
+            value={date}
+            onChange={setDate}
+            items={days.map((d) => ({ value: d.iso, label: d.label, sub: d.small }))}
+          />
         </div>
         <div className="field">
           <span className="field-head">
@@ -175,6 +183,15 @@ function BookingForm() {
               </option>
             ))}
           </select>
+          <WheelPicker
+            ariaLabel="Antall gjester"
+            value={guests}
+            onChange={setGuests}
+            items={Array.from({ length: tour.maxGuests }, (_, i) => ({
+              value: i + 1,
+              label: String(i + 1),
+            }))}
+          />
         </div>
       </div>
       <div className="total-row">
@@ -248,12 +265,10 @@ function buildDays(n) {
   return out;
 }
 
-function DatePicker({ value, onChange }) {
+function DatePicker({ value, onChange, days }) {
   const [open, setOpen] = useState(false);
-  const [days, setDays] = useState([]); // built on the client to avoid hydration drift
   const ref = useRef(null);
 
-  useEffect(() => setDays(buildDays(21)), []);
   useEffect(() => {
     if (!open) return;
     const onDown = (e) => {
@@ -298,6 +313,80 @@ function DatePicker({ value, onChange }) {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+/* iOS-style drum picker for touch: scroll with momentum, snap to centre,
+   the centred row sits in a gold band and rows fade with distance. Used on
+   mobile; desktop keeps the dropdown / select. */
+const WHEEL_ITEM_H = 50;
+
+function applyWheelDepth(el) {
+  const sel = el.scrollTop / WHEEL_ITEM_H;
+  el.querySelectorAll("[data-wi]").forEach((it, i) => {
+    const dist = Math.min(Math.abs(i - sel), 3);
+    it.style.opacity = String(Math.max(0.22, 1 - dist * 0.3));
+    it.style.transform = `scale(${Math.max(0.78, 1 - dist * 0.11)})`;
+  });
+}
+
+function WheelPicker({ items, value, onChange, ariaLabel }) {
+  const ref = useRef(null);
+  const raf = useRef(0);
+  const idx = Math.max(
+    0,
+    items.findIndex((it) => it.value === value)
+  );
+
+  // position on the selected row once the items exist
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !items.length) return;
+    el.scrollTop = idx * WHEEL_ITEM_H;
+    applyWheelDepth(el);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items.length]);
+
+  // follow external changes (default today, the steppers, etc.)
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !items.length) return;
+    const target = idx * WHEEL_ITEM_H;
+    if (Math.abs(el.scrollTop - target) > 3)
+      el.scrollTo({ top: target, behavior: "smooth" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, items.length]);
+
+  function onScroll() {
+    const el = ref.current;
+    if (!el) return;
+    if (!raf.current)
+      raf.current = requestAnimationFrame(() => {
+        raf.current = 0;
+        applyWheelDepth(el);
+      });
+    clearTimeout(el._settle);
+    el._settle = setTimeout(() => {
+      const i = Math.max(
+        0,
+        Math.min(items.length - 1, Math.round(el.scrollTop / WHEEL_ITEM_H))
+      );
+      if (items[i] && items[i].value !== value) onChange(items[i].value);
+    }, 120);
+  }
+
+  return (
+    <div className="wheel" role="listbox" aria-label={ariaLabel}>
+      <div className="wheel__band" aria-hidden="true" />
+      <div className="wheel__scroll" ref={ref} onScroll={onScroll}>
+        {items.map((it) => (
+          <div className="wheel__item" data-wi key={String(it.value)}>
+            <span className="wheel__label">{it.label}</span>
+            {it.sub && <span className="wheel__sub">{it.sub}</span>}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
