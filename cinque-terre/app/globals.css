@@ -1053,8 +1053,8 @@ section {
   color: var(--gold);
   opacity: 0.9;
 }
-/* I dag — warm, prominent: the choice we want */
-.dq--today {
+/* tier 1 — warm, prominent: the choice we want */
+.dq--t1 {
   background: linear-gradient(
     180deg,
     rgba(247, 236, 200, 0.2),
@@ -1064,8 +1064,8 @@ section {
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
 }
-/* I morgen — a different, cooler glass; quieter */
-.dq--tmrw {
+/* tier 2 — a different, cooler glass; quieter */
+.dq--t2 {
   background: linear-gradient(
     180deg,
     rgba(79, 224, 216, 0.12),
@@ -1076,8 +1076,8 @@ section {
   backdrop-filter: blur(8px);
   opacity: 0.9;
 }
-/* +2 — foggy, receding */
-.dq--fog {
+/* tier 3 — foggy, receding */
+.dq--t3 {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 246, 236, 0.1);
   -webkit-backdrop-filter: blur(3px);
@@ -1090,6 +1090,44 @@ section {
 .dq__opt.is-sel {
   border-color: var(--mint);
   opacity: 1;
+}
+
+/* guests: tier tiles + a smooth 1–8 strip */
+.gq {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.gq-strip {
+  display: flex;
+  gap: 6px;
+}
+.gq-chip {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 246, 236, 0.14);
+  background: rgba(3, 16, 29, 0.4);
+  color: var(--cream);
+  font-family: inherit;
+  font-size: 0.88rem;
+  opacity: 0.6;
+  cursor: none;
+  transition: opacity 0.18s, border-color 0.18s, background 0.18s;
+}
+.gq-chip:hover {
+  opacity: 0.9;
+}
+.gq-chip.is-sel {
+  opacity: 1;
+  border-color: var(--mint);
+  background: linear-gradient(
+    180deg,
+    rgba(247, 236, 200, 0.18),
+    rgba(231, 205, 123, 0.1)
+  );
+  color: #3c2414;
+  font-weight: 700;
 }
 .book-form .total-row {
   display: flex;
@@ -1255,7 +1293,7 @@ footer .copy {
     gap: 12px;
   }
   .book-form .field .dq,
-  .book-form .field > select {
+  .book-form .field .gq {
     display: none;
   }
   .book-form .field .wheel {
@@ -1291,6 +1329,7 @@ footer .copy {
   .book-form input,
   .book-form select,
   .dq__opt,
+  .gq-chip,
   .cta,
   .book-form .pay {
     cursor: auto;

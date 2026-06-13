@@ -161,16 +161,7 @@ function BookingForm() {
         </div>
         <div className="field">
           <span className="field-head">Guests</span>
-          <select
-            value={guests}
-            onChange={(e) => setGuests(Number(e.target.value))}
-          >
-            {Array.from({ length: tour.maxGuests }, (_, i) => i + 1).map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-          </select>
+          <GuestQuick value={guests} onChange={setGuests} max={tour.maxGuests} />
           <WheelPicker
             ariaLabel="Antall gjester"
             value={guests}
@@ -222,7 +213,7 @@ function buildDays(n) {
 /* Desktop date: today (prominent) + tomorrow + day-after, the later ones
    progressively hazier — a gentle nudge to book today. */
 function DateQuick({ value, onChange, days }) {
-  const tiers = ["today", "tmrw", "fog"];
+  const tiers = ["t1", "t2", "t3"];
   return (
     <div className="dq">
       {days.slice(0, 3).map((o, i) => (
@@ -236,6 +227,40 @@ function DateQuick({ value, onChange, days }) {
           <span className="dq__date">{o.small}</span>
         </button>
       ))}
+    </div>
+  );
+}
+
+/* Desktop guests: the same tiered tiles (2 / 4 / 6, max-6 to start), plus a
+   smooth 1–8 strip beneath so any size — including 8 — is one click away. */
+function GuestQuick({ value, onChange, max }) {
+  const tiers = ["t1", "t2", "t3"];
+  return (
+    <div className="gq">
+      <div className="dq">
+        {[2, 4, 6].map((n, i) => (
+          <button
+            type="button"
+            key={n}
+            className={`dq__opt dq--${tiers[i]}${value === n ? " is-sel" : ""}`}
+            onClick={() => onChange(n)}
+          >
+            <span className="dq__label">{n} guests</span>
+          </button>
+        ))}
+      </div>
+      <div className="gq-strip">
+        {Array.from({ length: max }, (_, i) => i + 1).map((n) => (
+          <button
+            type="button"
+            key={n}
+            className={`gq-chip${value === n ? " is-sel" : ""}`}
+            onClick={() => onChange(n)}
+          >
+            {n}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
