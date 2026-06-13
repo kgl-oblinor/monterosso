@@ -228,6 +228,36 @@ a {
     );
 }
 
+/* ---------- STYLISED CLOUDS (nod to flat-vector posters) ---------- */
+.clouds {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 46%;
+  z-index: 1; /* above the sky, behind the villages */
+  pointer-events: none;
+  opacity: 0.9;
+  transition: opacity 1.2s ease;
+  animation: cloudDrift 120s ease-in-out infinite alternate;
+}
+.clouds svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+[data-theme="dark"] .clouds {
+  opacity: 0.14; /* night sky is for stars, not clouds */
+}
+@keyframes cloudDrift {
+  from {
+    transform: translateX(-1.6%);
+  }
+  to {
+    transform: translateX(1.6%);
+  }
+}
+
 /* ---------- 3D TOUR BOAT ---------- */
 .boat3d {
   position: fixed;

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { tour } from "../lib/tour";
 import Skyline from "./Skyline";
 import Boat3D from "./Boat3D";
+import Clouds from "./Clouds";
 
 export default function Landing() {
   const [theme, setTheme] = useState("light");
@@ -56,6 +57,7 @@ export default function Landing() {
       {/* sky — upper half */}
       <div className="sky" aria-hidden="true"></div>
       <div className="stars" aria-hidden="true"></div>
+      <Clouds />
 
       {/* living sea — lower half */}
       <div className="aurora" aria-hidden="true">
