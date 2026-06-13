@@ -220,10 +220,10 @@ export default function Boat3D({ theme }) {
 
     // ---------- animation ----------
     const clock = new THREE.Clock();
-    const P = 40; // daytime loop period
+    const P = 105; // daytime loop period — slower pace, longer voyage
     const Z_NEAR = -2.0;
-    const Z_FAR = -16.0;
-    const X_AMP = 7.0;
+    const Z_FAR = -22.0;
+    const X_AMP = 12.0;
     const TAU = Math.PI * 2;
     const HOME = { x: -6.6, z: -13.5 }; // moorings at the town on the left
     const MOOR_T = 18; // seconds to sail home and moor
