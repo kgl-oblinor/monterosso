@@ -20,7 +20,6 @@ export default function Clouds() {
         </defs>
         <g fill="#ffffff">
           <use href="#cloudBand" transform="translate(80,58) scale(1.05)" opacity="0.82" />
-          <use href="#cloudBand" transform="translate(560,30) scale(1.4)" opacity="0.66" />
           <use href="#cloudBand" transform="translate(1010,76) scale(0.85)" opacity="0.78" />
           <use href="#cloudBand" transform="translate(1240,44) scale(1.1)" opacity="0.6" />
         </g>
