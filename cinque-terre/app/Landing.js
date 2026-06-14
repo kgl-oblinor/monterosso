@@ -150,6 +150,8 @@ function BookingForm({ active }) {
   const [error, setError] = useState("");
   const [days, setDays] = useState([]);
   const [done, setDone] = useState(false);
+  const [channel, setChannel] = useState("whatsapp");
+  const [method, setMethod] = useState("text");
 
   useEffect(() => {
     setDays(buildDays(21));
@@ -192,16 +194,26 @@ function BookingForm({ active }) {
     const total = totalFor(guests);
     const msg = `Hi! I'd like to book the Monterosso sea tour. Code: ${code} — ${when}, ${guests} ${guests === 1 ? "guest" : "guests"}, $${total}.`;
     const enc = encodeURIComponent(msg);
-    const log = (type) => {
+    const href =
+      channel === "whatsapp"
+        ? `https://wa.me/${digits}?text=${enc}`
+        : method === "call"
+        ? `tel:${tel}`
+        : `sms:${tel}?&body=${enc}`;
+    const logType =
+      channel === "whatsapp" ? "whatsapp" : method === "call" ? "call" : "sms";
+    const log = () => {
       try {
         navigator.sendBeacon?.(
           "/api/track",
-          new Blob([JSON.stringify({ type, code, dato: date, guests })], {
+          new Blob([JSON.stringify({ type: logType, code, dato: date, guests })], {
             type: "application/json",
           })
         );
       } catch {}
     };
+    const tile = (val, label) =>
+      `dq__opt dq--t1${channel === val ? " is-sel dq--default" : ""}`;
     return (
       <div className="book-form">
         <p className="meta">Confirm &amp; send</p>
@@ -212,28 +224,50 @@ function BookingForm({ active }) {
             {when} · {guests} {guests === 1 ? "guest" : "guests"} · ${total}
           </p>
         </div>
-        <div className="sendrow">
-          <a
-            className="pay"
-            href={`https://wa.me/${digits}?text=${enc}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => log("whatsapp")}
+        <span className="field-head">Send via</span>
+        <div className="chan-tiles">
+          <button
+            type="button"
+            className={tile("whatsapp")}
+            onClick={() => setChannel("whatsapp")}
           >
-            WhatsApp
-          </a>
-          <a
-            className="chanbtn"
-            href={`sms:${tel}?&body=${enc}`}
-            onClick={() => log("sms")}
+            <span className="dq__label">WhatsApp</span>
+          </button>
+          <button
+            type="button"
+            className={tile("phone")}
+            onClick={() => setChannel("phone")}
           >
-            Phone
-          </a>
+            <span className="dq__label">Phone</span>
+          </button>
         </div>
-        <p className="reassure">
-          Sends your booking to the skipper — your seat is then yours ·{" "}
-          {tour.phone}
-        </p>
+        {channel === "phone" && (
+          <div className="chan-tiles chan-tiles--sub">
+            <button
+              type="button"
+              className={`dq__opt dq--more${method === "call" ? " is-sel" : ""}`}
+              onClick={() => setMethod("call")}
+            >
+              <span className="dq__label">Call</span>
+            </button>
+            <button
+              type="button"
+              className={`dq__opt dq--more${method === "text" ? " is-sel" : ""}`}
+              onClick={() => setMethod("text")}
+            >
+              <span className="dq__label">Text</span>
+            </button>
+          </div>
+        )}
+        <a
+          className="pay"
+          href={href}
+          target={channel === "whatsapp" ? "_blank" : undefined}
+          rel="noopener noreferrer"
+          onClick={log}
+        >
+          Submit request
+        </a>
         <button
           type="button"
           className="confirm__back"

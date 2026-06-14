@@ -1052,6 +1052,27 @@ section {
   display: flex;
   align-items: center;
   gap: 8px;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+/* standalone label (e.g. "Send via" on the send step) */
+.book-form > .field-head {
+  margin: 16px 0 9px;
+}
+/* WhatsApp / Phone (and Call / Text) as side-by-side tiles, matching the
+   date & guests boxes on the form */
+.chan-tiles {
+  display: flex;
+  gap: 12px;
+}
+.chan-tiles--sub {
+  margin-top: 10px;
+}
+.chan-tiles .dq__opt {
+  flex: 1;
+  justify-content: center;
 }
 
 /* ---------- iOS-STYLE DRUM WHEEL (mobile) ---------- */
