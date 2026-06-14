@@ -1065,10 +1065,10 @@ section {
    date & guests boxes on the form */
 .chan-tiles {
   display: flex;
-  gap: 12px;
+  gap: 18px;
 }
 .chan-tiles--sub {
-  margin-top: 10px;
+  margin-top: 8px;
 }
 .chan-tiles .dq__opt {
   flex: 1;
