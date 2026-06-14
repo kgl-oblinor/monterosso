@@ -112,7 +112,7 @@ export default function Landing() {
           </div>
           <div className="cta-wrap">
             <button className="cta" onClick={() => setShowBook(true)}>
-              Book — reserve your seat
+              Reserve your seat
             </button>
           </div>
           <div className="scroll-hint">

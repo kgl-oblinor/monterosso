@@ -745,6 +745,29 @@ section {
   display: inline-flex;
   text-decoration: none;
 }
+/* the hero CTA is a flowing retro-script logo, not a stamp */
+.cta {
+  font-family: "Yellowtail", cursive;
+  font-weight: 400;
+  font-size: clamp(2.1rem, 5.4vw, 3.4rem);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--cream);
+  -webkit-text-stroke: 1.2px rgba(40, 22, 10, 0.5);
+  paint-order: stroke fill;
+  text-shadow: 0 3px 16px rgba(2, 10, 20, 0.5);
+  background: transparent;
+  padding: 4px 24px;
+  border-radius: 0;
+}
+.cta::before,
+.cta::after {
+  display: none;
+}
+.cta:hover {
+  transform: translateY(-1px) rotate(-1.2deg) scale(1.03);
+  filter: none;
+}
 .cta:hover,
 .book-form .pay:hover {
   transform: translateY(-1px);
