@@ -276,16 +276,17 @@ function BookingForm({ active }) {
           />
         </div>
       </div>
-      <p className="price-note">
-        {discountFor(guests) > 0
-          ? `$${totalFor(guests)} total · ${Math.round(
-              discountFor(guests) * 100
-            )}% group discount`
-          : `$${totalFor(guests)} total · premium`}
-      </p>
       <div className="total-row">
-        <span className="t-label">Per person</span>
-        <span className="t-val">${perPersonFor(guests)}</span>
+        <span className="price-note">
+          {discountFor(guests) > 0
+            ? `$${totalFor(guests)} total · ${Math.round(
+                discountFor(guests) * 100
+              )}% off`
+            : `$${totalFor(guests)} total · premium`}
+        </span>
+        <span className="t-val">
+          ${perPersonFor(guests)} <span className="t-per">/ person</span>
+        </span>
       </div>
       <button className="pay" onClick={review}>
         Reserve
