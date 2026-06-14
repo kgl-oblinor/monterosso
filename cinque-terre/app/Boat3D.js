@@ -5,6 +5,52 @@ import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { DecalGeometry } from "three/examples/jsm/geometries/DecalGeometry.js";
 
+// Procedural varnished mahogany: warm grain running fore-aft with darker
+// plank seams stacked around the section.
+function makeMahoganyTexture() {
+  const c = document.createElement("canvas");
+  c.width = 1024;
+  c.height = 512;
+  const g = c.getContext("2d");
+  const grad = g.createLinearGradient(0, 0, 0, 512);
+  grad.addColorStop(0, "#3a1809");
+  grad.addColorStop(0.5, "#50220e");
+  grad.addColorStop(1, "#270f05");
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 1024, 512);
+  for (let k = 0; k < 240; k++) {
+    const y = Math.random() * 512;
+    g.strokeStyle =
+      Math.random() < 0.5 ? "rgba(36,14,6,0.36)" : "rgba(126,66,36,0.22)";
+    g.lineWidth = 0.5 + Math.random() * 1.5;
+    const amp = 1.5 + Math.random() * 4;
+    const ph = Math.random() * 6.28;
+    g.beginPath();
+    for (let x = 0; x <= 1024; x += 16) {
+      const yy = y + Math.sin(x / 110 + ph) * amp;
+      x === 0 ? g.moveTo(x, yy) : g.lineTo(x, yy);
+    }
+    g.stroke();
+  }
+  const planks = 10;
+  for (let p = 1; p < planks; p++) {
+    const y = (512 / planks) * p;
+    g.strokeStyle = "rgba(34,16,7,0.55)";
+    g.lineWidth = 2;
+    g.beginPath();
+    g.moveTo(0, y);
+    g.lineTo(1024, y);
+    g.stroke();
+    g.strokeStyle = "rgba(132,74,42,0.2)";
+    g.lineWidth = 1;
+    g.beginPath();
+    g.moveTo(0, y + 1.5);
+    g.lineTo(1024, y + 1.5);
+    g.stroke();
+  }
+  return new THREE.CanvasTexture(c);
+}
+
 // A realistic low-poly Ligurian gozzo: smooth parametric hull, glossy
 // clearcoat paint with environment reflections, white rubrail, cabin,
 // bimini canopy. It sails into the scene, turns around in 3D, sails back.
@@ -54,13 +100,16 @@ export default function Boat3D({ theme }) {
     scene.add(fill);
 
     // ---- materials ----
+    const woodTex = makeMahoganyTexture();
+    woodTex.anisotropy = 4;
     const hullMat = new THREE.MeshPhysicalMaterial({
-      color: 0x22407a, // painted Ligurian blue — stays clearly blue under warm light
-      roughness: 0.32,
+      color: 0xd07a44, // warm tint to pull the wood toward mahogany red
+      map: woodTex,
+      roughness: 0.42,
       metalness: 0.0,
-      clearcoat: 0.9,
-      clearcoatRoughness: 0.22,
-      envMapIntensity: 1.1,
+      clearcoat: 1.0, // glossy varnish
+      clearcoatRoughness: 0.18,
+      envMapIntensity: 0.5,
       side: THREE.DoubleSide,
     });
     const railMat = new THREE.MeshPhysicalMaterial({
@@ -86,6 +135,7 @@ export default function Boat3D({ theme }) {
     const xStern = -1.95;
     const xBow = 2.05;
     const pos = [];
+    const uv = [];
     const idx = [];
     const portPts = [];
     const starPts = [];
@@ -113,6 +163,7 @@ export default function Boat3D({ theme }) {
         const z = b * Math.sin(phi);
         const y = ys + (yk - ys) * Math.pow(Math.cos(phi), 1.3);
         pos.push(x, y, z);
+        uv.push(u, f);
         if (j === 0) portPts.push(new THREE.Vector3(x, ys, b * Math.sin(-Math.PI / 2)));
         if (j === SEC) starPts.push(new THREE.Vector3(x, ys, b * Math.sin(Math.PI / 2)));
       }
@@ -126,6 +177,7 @@ export default function Boat3D({ theme }) {
     }
     const hullGeo = new THREE.BufferGeometry();
     hullGeo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+    hullGeo.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
     hullGeo.setIndex(idx);
     hullGeo.computeVertexNormals();
     const hullMesh = new THREE.Mesh(hullGeo, hullMat);
