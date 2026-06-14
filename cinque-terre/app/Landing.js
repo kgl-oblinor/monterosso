@@ -276,17 +276,17 @@ function BookingForm({ active }) {
           />
         </div>
       </div>
-      <div className="total-row">
-        <span className="t-label">Total</span>
-        <span className="t-val">${totalFor(guests)}</span>
-      </div>
       <p className="price-note">
         {discountFor(guests) > 0
-          ? `${guests} × $${tour.priceUsd} · ${Math.round(
+          ? `$${totalFor(guests)} total · ${Math.round(
               discountFor(guests) * 100
             )}% group discount`
-          : `$${tour.priceUsd} per head · premium`}
+          : `$${totalFor(guests)} total · premium`}
       </p>
+      <div className="total-row">
+        <span className="t-label">Per person</span>
+        <span className="t-val">${perPersonFor(guests)}</span>
+      </div>
       <button className="pay" onClick={review}>
         Reserve
       </button>
@@ -314,6 +314,9 @@ function discountFor(g) {
 }
 function totalFor(g) {
   return Math.round(g * tour.priceUsd * (1 - discountFor(g)));
+}
+function perPersonFor(g) {
+  return Math.round(tour.priceUsd * (1 - discountFor(g)));
 }
 
 /* Friendly day picker: today / tomorrow / day-after-tomorrow, then weekdays,
