@@ -635,15 +635,15 @@ section {
     0 4px 16px rgba(8, 24, 36, 0.42), 0 0 46px rgba(234, 210, 126, 0.22);
 }
 .hero .tagline {
-  margin-top: 24px;
-  font-family: "Jost", system-ui, sans-serif;
-  font-weight: 300;
+  margin-top: 22px;
+  font-family: "Limelight", "Fraunces", serif;
+  font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: clamp(1.1rem, 2.6vw, 1.95rem);
-  line-height: 1.4;
+  letter-spacing: 0.04em;
+  font-size: clamp(1.5rem, 3.7vw, 2.9rem);
+  line-height: 1.24;
   color: var(--gold);
-  opacity: 0.95;
+  opacity: 0.96;
 }
 /* descriptive copy sits down in the open sea, not crowding the title */
 .hero .sea-copy {
