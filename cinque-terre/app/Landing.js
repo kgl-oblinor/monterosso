@@ -149,7 +149,6 @@ function BookingForm({ active }) {
   const [guests, setGuests] = useState(2);
   const [error, setError] = useState("");
   const [days, setDays] = useState([]);
-  const [confirming, setConfirming] = useState(false);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
@@ -157,43 +156,31 @@ function BookingForm({ active }) {
     setDate((d) => d || todayISO()); // default to today, set on the client
   }, []);
 
-  function startConfirm() {
+  function review() {
     setError("");
     if (!date) {
       setError("Please pick a date for your tour.");
       return;
     }
-    setConfirming(true);
-  }
-
-  function handleConfirm() {
-    setConfirming(false);
     setDone(true);
   }
 
-  // ← / → step through the three stages while the popup is open
+  // ← / → step between the two stages while the popup is open
   useEffect(() => {
     if (!active) return;
     const onKey = (e) => {
       if (e.key === "ArrowRight") {
         e.preventDefault();
-        if (done) return;
-        if (confirming) handleConfirm();
-        else startConfirm();
+        if (!done) review();
       } else if (e.key === "ArrowLeft") {
         e.preventDefault();
-        if (done) {
-          setDone(false);
-          setConfirming(true);
-        } else if (confirming) {
-          setConfirming(false);
-        }
+        if (done) setDone(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, confirming, done, date]);
+  }, [active, done, date]);
 
   const sel = days.find((d) => d.iso === date);
 
@@ -202,7 +189,8 @@ function BookingForm({ active }) {
     const tel = tour.phone.replace(/\s/g, "");
     const digits = tour.phone.replace(/[^\d]/g, "");
     const when = sel ? `${sel.label} · ${sel.small}` : date;
-    const msg = `Hi! I'd like to book the Monterosso sea tour. Code: ${code} (${when}, ${guests} ${guests === 1 ? "guest" : "guests"}).`;
+    const total = totalFor(guests);
+    const msg = `Hi! I'd like to book the Monterosso sea tour. Code: ${code} — ${when}, ${guests} ${guests === 1 ? "guest" : "guests"}, $${total}.`;
     const enc = encodeURIComponent(msg);
     const log = (type) => {
       try {
@@ -216,10 +204,10 @@ function BookingForm({ active }) {
     };
     return (
       <div className="book-form">
-        <p className="meta">Your booking code</p>
+        <p className="meta">Confirm &amp; send</p>
         <div className="rescode">{code}</div>
         <p className="rescode__sub">
-          {when} · {guests} {guests === 1 ? "guest" : "guests"}
+          {when} · {guests} {guests === 1 ? "guest" : "guests"} · ${total}
         </p>
         <a
           className="pay"
@@ -240,58 +228,16 @@ function BookingForm({ active }) {
           </a>
         </div>
         <p className="reassure">
-          Send the message and your seat is yours · {tour.phone}
+          Sends your booking to the skipper — your seat is then yours ·{" "}
+          {tour.phone}
         </p>
         <button
           type="button"
           className="confirm__back"
-          onClick={() => {
-            setDone(false);
-            setConfirming(false);
-          }}
-        >
-          New booking
-        </button>
-      </div>
-    );
-  }
-
-  if (confirming) {
-    return (
-      <div className="book-form">
-        <p className="meta">Confirm your booking</p>
-        <div className="confirm">
-          <div className="confirm__row">
-            <span>Date</span>
-            <b>{sel ? `${sel.label} · ${sel.small}` : date}</b>
-          </div>
-          <div className="confirm__row">
-            <span>Guests</span>
-            <b>{guests}</b>
-          </div>
-          <div className="confirm__row">
-            <span>Tour</span>
-            <b>Monterosso sea tour</b>
-          </div>
-        </div>
-        <div className="total-row">
-          <span className="t-label">Total</span>
-          <span className="t-val">${totalFor(guests)}</span>
-        </div>
-        <button className="pay" onClick={handleConfirm}>
-          Confirm
-        </button>
-        <button
-          type="button"
-          className="confirm__back"
-          onClick={() => setConfirming(false)}
+          onClick={() => setDone(false)}
         >
           Change
         </button>
-        <p className="err">{error}</p>
-        <p className="reassure">
-          No prepayment — you&apos;ll get a code to give over the phone.
-        </p>
       </div>
     );
   }
@@ -338,7 +284,7 @@ function BookingForm({ active }) {
             )}% group discount`
           : `$${tour.priceUsd} per head · premium`}
       </p>
-      <button className="pay" onClick={startConfirm}>
+      <button className="pay" onClick={review}>
         Reserve
       </button>
       <p className="err">{error}</p>
