@@ -102,15 +102,25 @@ export default function Boat3D({ theme }) {
     // ---- materials ----
     const woodTex = makeMahoganyTexture();
     woodTex.anisotropy = 4;
-    const hullMat = new THREE.MeshPhysicalMaterial({
-      color: 0xd07a44, // warm tint to pull the wood toward mahogany red
+    // painted dark-blue topsides on the outside, varnished mahogany inside
+    const hullMatOuter = new THREE.MeshPhysicalMaterial({
+      color: 0x1e3760, // painted dark Ligurian blue
+      roughness: 0.3,
+      metalness: 0.0,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.14,
+      envMapIntensity: 0.95,
+      side: THREE.FrontSide,
+    });
+    const hullMatInner = new THREE.MeshPhysicalMaterial({
+      color: 0xd07a44,
       map: woodTex,
       roughness: 0.42,
       metalness: 0.0,
-      clearcoat: 1.0, // glossy varnish
+      clearcoat: 1.0,
       clearcoatRoughness: 0.18,
       envMapIntensity: 0.5,
-      side: THREE.DoubleSide,
+      side: THREE.BackSide,
     });
     const railMat = new THREE.MeshPhysicalMaterial({
       color: 0xeceadf, roughness: 0.4, clearcoat: 0.5, envMapIntensity: 1.0,
@@ -180,8 +190,10 @@ export default function Boat3D({ theme }) {
     hullGeo.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
     hullGeo.setIndex(idx);
     hullGeo.computeVertexNormals();
-    const hullMesh = new THREE.Mesh(hullGeo, hullMat);
+    const hullMesh = new THREE.Mesh(hullGeo, hullMatOuter);
     boat.add(hullMesh);
+    const hullInner = new THREE.Mesh(hullGeo, hullMatInner);
+    boat.add(hullInner);
     hullMesh.updateMatrixWorld(true);
 
     // ---------- white rubrail along the whole gunwale ----------
