@@ -159,11 +159,15 @@
 html {
   scroll-behavior: smooth;
 }
+html,
+body {
+  height: 100%;
+}
 body {
   background: var(--plum);
   color: var(--cream);
   font-family: "Hanken Grotesk", system-ui, sans-serif;
-  overflow-x: hidden;
+  overflow: hidden; /* single screen — booking comes in as an overlay */
   cursor: none;
 }
 .sr-only {
@@ -1280,6 +1284,65 @@ section {
   color: #3c2414;
   font-weight: 700;
 }
+/* ---------- BOOKING OVERLAY (scroll / tap brings it in) ---------- */
+.book-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 44px 20px;
+  overflow-y: auto;
+  background: rgba(3, 12, 22, 0.5);
+  -webkit-backdrop-filter: blur(9px);
+  backdrop-filter: blur(9px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.book-overlay.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.book-overlay__inner {
+  width: 100%;
+  max-width: 520px;
+  text-align: center;
+  transform: translateY(26px) scale(0.985);
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.book-overlay.open .book-overlay__inner {
+  transform: translateY(0) scale(1);
+}
+.book-overlay .section-label {
+  margin-bottom: 12px;
+}
+.book-overlay .section-title {
+  margin-bottom: 34px;
+}
+.book-close {
+  position: fixed;
+  top: 22px;
+  right: 28px;
+  z-index: 260;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 246, 236, 0.25);
+  background: rgba(3, 16, 29, 0.5);
+  color: var(--cream);
+  font-size: 1rem;
+  cursor: none;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+.book-close:hover {
+  border-color: var(--mint);
+  transform: rotate(90deg);
+}
+
 /* ---------- RESERVATION CODE ---------- */
 .rescode {
   font-family: "Fraunces", serif;
@@ -1719,6 +1782,8 @@ footer .copy {
   .dq__opt,
   .gq-chip,
   .confirm__back,
+  .book-close,
+  .chanbtn,
   .cta,
   .book-form .pay {
     cursor: auto;

@@ -30,6 +30,35 @@ export default function Landing() {
     } catch {}
   }, [theme]);
 
+  // Scroll / swipe / button all bring the booking card in as an overlay —
+  // same screen, no navigation.
+  const [showBook, setShowBook] = useState(false);
+  useEffect(() => {
+    const onWheel = (e) => {
+      if (e.deltaY > 12) setShowBook(true);
+    };
+    let ty = 0;
+    const onTouchStart = (e) => {
+      ty = e.touches[0]?.clientY ?? 0;
+    };
+    const onTouchEnd = (e) => {
+      if (ty - (e.changedTouches[0]?.clientY ?? ty) > 44) setShowBook(true);
+    };
+    const onKey = (e) => {
+      if (e.key === "Escape") setShowBook(false);
+    };
+    window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, []);
+
   return (
     <>
       <Effects />
@@ -42,7 +71,6 @@ export default function Landing() {
         {theme === "light" ? <SunIcon /> : <MoonIcon />}
       </button>
 
-      <div className="progress" aria-hidden="true"></div>
       <div className="grain" aria-hidden="true"></div>
       <div className="cursor" aria-hidden="true"></div>
       <div className="cursor-ring" aria-hidden="true"></div>
@@ -94,22 +122,35 @@ export default function Landing() {
           <p className="eyebrow">Monterosso al Mare</p>
           <h1>Cinque Terre</h1>
           <div className="cta-wrap">
-            <a className="cta" href="#book">
+            <button className="cta" onClick={() => setShowBook(true)}>
               Book — reserve your seat
-            </a>
+            </button>
           </div>
           <div className="scroll-hint">
             <span>scroll</span>
             <span className="dot"></span>
           </div>
         </header>
+      </div>
 
-        {/* SCREEN 2 — BOOK */}
-        <section className="book-section" id="book">
-          <p className="section-label reveal">Reserve</p>
-          <h2 className="section-title reveal">Book your day</h2>
+      <div
+        className={"book-overlay" + (showBook ? " open" : "")}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setShowBook(false);
+        }}
+      >
+        <button
+          className="book-close"
+          onClick={() => setShowBook(false)}
+          aria-label="Lukk"
+        >
+          ✕
+        </button>
+        <div className="book-overlay__inner">
+          <p className="section-label">Reserve</p>
+          <h2 className="section-title">Book your day</h2>
           <BookingForm />
-        </section>
+        </div>
       </div>
     </>
   );
@@ -162,7 +203,7 @@ function BookingForm() {
       } catch {}
     };
     return (
-      <div className="book-form reveal">
+      <div className="book-form">
         <p className="meta">Reservasjonskode</p>
         <div className="rescode">{code}</div>
         <p className="rescode__sub">
@@ -208,7 +249,7 @@ function BookingForm() {
 
   if (confirming) {
     return (
-      <div className="book-form reveal">
+      <div className="book-form">
         <p className="meta">Bekreft reservasjonen</p>
         <div className="confirm">
           <div className="confirm__row">
@@ -247,7 +288,7 @@ function BookingForm() {
   }
 
   return (
-    <div className="book-form reveal">
+    <div className="book-form">
       <p className="meta">
         Monterosso sea tour · {tour.durationHours} hours · max {tour.maxGuests}{" "}
         guests
