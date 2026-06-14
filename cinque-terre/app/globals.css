@@ -636,12 +636,14 @@ section {
 }
 .hero .tagline {
   margin-top: 24px;
-  font-family: "Fraunces", serif;
-  font-style: italic;
-  font-weight: 400;
-  font-size: clamp(1.1rem, 2.6vw, 2rem);
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  font-size: clamp(1.2rem, 2.9vw, 2.15rem);
+  line-height: 1.08;
   color: var(--cream);
-  opacity: 0.92;
+  opacity: 0.96;
 }
 /* descriptive copy sits down in the open sea, not crowding the title */
 .hero .sea-copy {
@@ -659,19 +661,24 @@ section {
   margin-top: 0;
 }
 .hero .lede {
-  margin-top: 16px;
-  max-width: 46ch;
-  font-size: clamp(0.95rem, 1.9vw, 1.15rem);
-  line-height: 1.6;
+  margin-top: 18px;
+  max-width: 48ch;
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 400;
+  font-size: clamp(0.98rem, 1.9vw, 1.18rem);
+  line-height: 1.55;
+  letter-spacing: 0.005em;
   color: var(--cream);
-  opacity: 0.82;
+  opacity: 0.85;
 }
 .hero .price {
-  margin-top: 20px;
-  font-size: 0.92rem;
-  letter-spacing: 0.16em;
+  margin-top: 22px;
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  opacity: 0.72;
+  opacity: 0.78;
 }
 .hero .price b {
   color: var(--vanilla);
@@ -698,14 +705,14 @@ section {
   font-size: 0.9rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
+  font-family: "Jost", system-ui, sans-serif;
   color: #3c2414; /* warm espresso, not cold plum */
-  /* solid sun-faded gold with an embossed relief — rustic, like the
-     poster's lettering. No glass, so it stays gold over any background. */
-  background: linear-gradient(180deg, #f4e4ad 0%, #e7c976 52%, #d7b65d 100%);
-  border: 1px solid rgba(122, 80, 40, 0.45);
-  box-shadow: 0 12px 26px rgba(38, 22, 10, 0.3),
-    0 1px 0 rgba(255, 250, 228, 0.75) inset,
-    0 -9px 18px rgba(150, 100, 42, 0.18) inset;
+  /* flat, graphic gold with a crisp double keyline — a printed poster
+     badge, not a glossy modern button. */
+  background: linear-gradient(180deg, #f1dfa2, #e0bd66);
+  border: 2px solid rgba(120, 78, 40, 0.5);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 250, 228, 0.45),
+    0 8px 20px rgba(38, 22, 10, 0.28);
   cursor: none;
   transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s,
     filter 0.25s, background 0.25s;
@@ -719,10 +726,9 @@ section {
 .book-form .pay:hover {
   transform: translateY(-2px);
   filter: brightness(1.04);
-  background: linear-gradient(180deg, #f7e9b8 0%, #ecd082 52%, #ddbd66 100%);
-  box-shadow: 0 16px 32px rgba(38, 22, 10, 0.38),
-    0 1px 0 rgba(255, 250, 228, 0.8) inset,
-    0 -9px 18px rgba(150, 100, 42, 0.2) inset;
+  background: linear-gradient(180deg, #f6e7b2, #e7c876);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 250, 228, 0.55),
+    0 12px 26px rgba(38, 22, 10, 0.34);
 }
 @keyframes ctaShimmer {
   0%,
