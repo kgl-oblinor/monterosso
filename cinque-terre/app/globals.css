@@ -1057,9 +1057,10 @@ section {
   text-transform: uppercase;
   opacity: 0.8;
 }
-/* standalone label (e.g. "Send via" on the send step) */
+/* standalone label (e.g. "Send via" on the send step) — aligns with the
+   form's DATE/GUESTS labels (no extra top margin) */
 .book-form > .field-head {
-  margin: 16px 0 9px;
+  margin: 0 0 9px;
 }
 /* WhatsApp / Phone (and Call / Text) as side-by-side tiles, matching the
    date & guests boxes on the form */
@@ -1462,7 +1463,7 @@ section {
 
 .book-form .send-summary {
   text-align: center;
-  margin: 6px 0 26px;
+  margin: 24px 0 46px; /* aligns with the form's price line + button */
   font-family: "Great Vibes", cursive;
   font-size: 1.5rem;
   color: var(--gold);
@@ -1586,7 +1587,7 @@ section {
 .confirm__back {
   display: block;
   width: fit-content;
-  margin: 16px auto 0;
+  margin: 50px auto 0;
   padding: 6px 10px;
   border: none;
   background: none;
