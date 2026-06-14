@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+import { DecalGeometry } from "three/examples/jsm/geometries/DecalGeometry.js";
 
 // A realistic low-poly Ligurian gozzo: smooth parametric hull, glossy
 // clearcoat paint with environment reflections, white rubrail, cabin,
@@ -127,7 +128,9 @@ export default function Boat3D({ theme }) {
     hullGeo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
     hullGeo.setIndex(idx);
     hullGeo.computeVertexNormals();
-    boat.add(new THREE.Mesh(hullGeo, hullMat));
+    const hullMesh = new THREE.Mesh(hullGeo, hullMat);
+    boat.add(hullMesh);
+    hullMesh.updateMatrixWorld(true);
 
     // ---------- white rubrail along the whole gunwale ----------
     const railPts = portPts.concat(starPts.slice().reverse());
@@ -198,34 +201,51 @@ export default function Boat3D({ theme }) {
     fender.position.set(-1.2, 0.05, 0.66);
     boat.add(fender);
 
-    // ---------- boat name on the bow ----------
+    // ---------- boat name, projected onto the hull as a decal so it
+    //            follows the curve and reads in full on both sides ----------
     const nc = document.createElement("canvas");
-    nc.width = 512;
-    nc.height = 128;
+    nc.width = 1024;
+    nc.height = 256;
     const nctx = nc.getContext("2d");
     nctx.fillStyle = "#f3ecdc"; // cream
-    nctx.font = "italic 700 78px Georgia, 'Times New Roman', serif";
+    nctx.font = "italic 700 150px Georgia, 'Times New Roman', serif";
     nctx.textAlign = "center";
     nctx.textBaseline = "middle";
     nctx.shadowColor = "rgba(0,0,0,0.4)";
-    nctx.shadowBlur = 5;
-    nctx.shadowOffsetY = 2;
-    nctx.fillText("Paolona", 256, 68);
+    nctx.shadowBlur = 8;
+    nctx.shadowOffsetY = 3;
+    nctx.fillText("Paolona", 512, 132);
     const nameTex = new THREE.CanvasTexture(nc);
     nameTex.anisotropy = 4;
     const nameMat = new THREE.MeshBasicMaterial({
       map: nameTex,
       transparent: true,
+      depthTest: true,
       depthWrite: false,
+      polygonOffset: true,
+      polygonOffsetFactor: -6,
     });
-    const nameGeo = new THREE.PlaneGeometry(0.82, 0.205);
-    const namePort = new THREE.Mesh(nameGeo, nameMat);
-    namePort.position.set(1.0, 0.06, 0.56);
-    boat.add(namePort);
-    const nameStar = new THREE.Mesh(nameGeo, nameMat);
-    nameStar.position.set(1.0, 0.06, -0.56);
-    nameStar.rotation.y = Math.PI;
-    boat.add(nameStar);
+    const nameSize = new THREE.Vector3(1.9, 0.48, 1.0);
+    const decalPort = new THREE.Mesh(
+      new DecalGeometry(
+        hullMesh,
+        new THREE.Vector3(0.42, 0.03, 0.5),
+        new THREE.Euler(0, 0, 0),
+        nameSize
+      ),
+      nameMat
+    );
+    boat.add(decalPort);
+    const decalStar = new THREE.Mesh(
+      new DecalGeometry(
+        hullMesh,
+        new THREE.Vector3(0.42, 0.03, -0.5),
+        new THREE.Euler(0, Math.PI, 0),
+        nameSize
+      ),
+      nameMat
+    );
+    boat.add(decalStar);
 
     // ---------- soft contact shadow ----------
     const sc = document.createElement("canvas");
