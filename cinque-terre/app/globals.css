@@ -745,19 +745,20 @@ section {
   display: inline-flex;
   text-decoration: none;
 }
-/* the hero CTA is a flowing retro-script logo, not a stamp */
+/* the hero CTA is an elegant retro-script logo, not a stamp */
 .cta {
-  font-family: "Yellowtail", cursive;
+  font-family: "Great Vibes", cursive;
   font-weight: 400;
-  font-size: clamp(2.1rem, 5.4vw, 3.4rem);
+  font-size: clamp(2.6rem, 6.4vw, 4.2rem);
+  line-height: 1.05;
   letter-spacing: 0;
   text-transform: none;
   color: var(--cream);
-  -webkit-text-stroke: 1.2px rgba(40, 22, 10, 0.5);
+  -webkit-text-stroke: 0.7px rgba(40, 22, 10, 0.45);
   paint-order: stroke fill;
   text-shadow: 0 3px 16px rgba(2, 10, 20, 0.5);
   background: transparent;
-  padding: 4px 24px;
+  padding: 4px 30px 12px;
   border-radius: 0;
 }
 .cta::before,
