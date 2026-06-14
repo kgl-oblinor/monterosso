@@ -104,10 +104,8 @@ export default function Landing() {
           <p className="eyebrow">Monterosso al Mare</p>
           <h1>Cinque Terre</h1>
           <div className="sea-copy">
-            <p className="tagline">The world&apos;s most beautiful sea tour.</p>
-            <p className="lede">
-              Three slow hours on the Ligurian blue — hidden coves, swim stops,
-              a sunset aperitivo, and your own skipper aboard the Paolona.
+            <p className="tagline">
+              Le Cinque Terre dal mare, a bordo della Paolona.
             </p>
           </div>
           <div className="cta-wrap">
