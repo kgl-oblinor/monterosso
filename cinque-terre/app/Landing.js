@@ -217,13 +217,9 @@ function BookingForm({ active }) {
     return (
       <div className="book-form">
         <p className="meta">Confirm &amp; send</p>
-        <div className="rescode-box">
-          <span className="rescode-box__label">Your code</span>
-          <div className="rescode">{code}</div>
-          <p className="rescode__sub">
-            {when} · {guests} {guests === 1 ? "guest" : "guests"} · ${total}
-          </p>
-        </div>
+        <p className="send-summary">
+          {when} · {guests} {guests === 1 ? "guest" : "guests"} · ${total}
+        </p>
         <span className="field-head">Send via</span>
         <div className="chan-tiles">
           <button

@@ -1460,6 +1460,15 @@ section {
   transform: rotate(90deg);
 }
 
+.book-form .send-summary {
+  text-align: center;
+  margin: 6px 0 26px;
+  font-family: "Great Vibes", cursive;
+  font-size: 1.5rem;
+  color: var(--gold);
+  opacity: 0.92;
+}
+
 /* ---------- RESERVATION CODE ---------- */
 /* the code sits in a glowing gold-glass ticket, borrowing the form's
    selected-tile look (gold glass + dreamy starry sheen) */
