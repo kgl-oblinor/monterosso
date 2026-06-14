@@ -990,10 +990,13 @@ section {
 }
 .book-form {
   max-width: 520px;
+  min-height: 548px; /* all three steps share one height — no jumping */
   margin: 0 auto;
   padding: 52px 44px 46px;
   border-radius: 34px;
   text-align: left;
+  display: flex;
+  flex-direction: column;
   background: linear-gradient(
     160deg,
     rgba(234, 210, 126, 0.18),
