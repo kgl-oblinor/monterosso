@@ -137,14 +137,14 @@ export default function Landing() {
         <div className="book-overlay__inner">
           <p className="section-label">Reserve</p>
           <h2 className="section-title">Book your day</h2>
-          <BookingForm />
+          <BookingForm active={showBook} />
         </div>
       </div>
     </>
   );
 }
 
-function BookingForm() {
+function BookingForm({ active }) {
   const [date, setDate] = useState("");
   const [guests, setGuests] = useState(2);
   const [error, setError] = useState("");
@@ -170,6 +170,30 @@ function BookingForm() {
     setConfirming(false);
     setDone(true);
   }
+
+  // ← / → step through the three stages while the popup is open
+  useEffect(() => {
+    if (!active) return;
+    const onKey = (e) => {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        if (done) return;
+        if (confirming) handleConfirm();
+        else startConfirm();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        if (done) {
+          setDone(false);
+          setConfirming(true);
+        } else if (confirming) {
+          setConfirming(false);
+        }
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, confirming, done, date]);
 
   const sel = days.find((d) => d.iso === date);
 
