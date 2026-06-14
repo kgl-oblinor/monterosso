@@ -212,14 +212,11 @@ function BookingForm() {
             href={`sms:${tel}?&body=${enc}`}
             onClick={() => log("sms")}
           >
-            SMS
-          </a>
-          <a className="chanbtn" href={`tel:${tel}`} onClick={() => log("call")}>
-            Call
+            Phone
           </a>
         </div>
         <p className="reassure">
-          Send the code and your seat is yours · {tour.phone}
+          Send the message and your seat is yours · {tour.phone}
         </p>
         <button
           type="button"
