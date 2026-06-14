@@ -198,6 +198,35 @@ export default function Boat3D({ theme }) {
     fender.position.set(-1.2, 0.05, 0.66);
     boat.add(fender);
 
+    // ---------- boat name on the bow ----------
+    const nc = document.createElement("canvas");
+    nc.width = 512;
+    nc.height = 128;
+    const nctx = nc.getContext("2d");
+    nctx.fillStyle = "#f3ecdc"; // cream
+    nctx.font = "italic 700 78px Georgia, 'Times New Roman', serif";
+    nctx.textAlign = "center";
+    nctx.textBaseline = "middle";
+    nctx.shadowColor = "rgba(0,0,0,0.4)";
+    nctx.shadowBlur = 5;
+    nctx.shadowOffsetY = 2;
+    nctx.fillText("Paolona", 256, 68);
+    const nameTex = new THREE.CanvasTexture(nc);
+    nameTex.anisotropy = 4;
+    const nameMat = new THREE.MeshBasicMaterial({
+      map: nameTex,
+      transparent: true,
+      depthWrite: false,
+    });
+    const nameGeo = new THREE.PlaneGeometry(0.82, 0.205);
+    const namePort = new THREE.Mesh(nameGeo, nameMat);
+    namePort.position.set(1.0, 0.06, 0.56);
+    boat.add(namePort);
+    const nameStar = new THREE.Mesh(nameGeo, nameMat);
+    nameStar.position.set(1.0, 0.06, -0.56);
+    nameStar.rotation.y = Math.PI;
+    boat.add(nameStar);
+
     // ---------- soft contact shadow ----------
     const sc = document.createElement("canvas");
     sc.width = sc.height = 128;
