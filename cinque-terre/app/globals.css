@@ -980,7 +980,7 @@ section {
     rgba(90, 168, 255, 0.06)
   );
   backdrop-filter: blur(14px);
-  border: 1px solid rgba(79, 224, 216, 0.5);
+  border: 1px solid rgba(234, 210, 126, 0.5);
   box-shadow: 0 30px 70px rgba(2, 10, 20, 0.55);
 }
 .book-form .meta {
@@ -1173,7 +1173,7 @@ section {
   transform: translateY(-1px);
 }
 .dq__opt.is-sel {
-  border-color: var(--mint);
+  border-color: var(--gold);
   opacity: 1;
 }
 /* the default selection — a passive confirmation, not a button. A faint
@@ -1262,7 +1262,7 @@ section {
 }
 .dq--more.is-sel {
   border-style: solid;
-  border-color: var(--mint);
+  border-color: var(--gold);
   background: linear-gradient(
     180deg,
     rgba(247, 236, 200, 0.2),
@@ -1322,7 +1322,7 @@ section {
   background: rgba(246, 233, 194, 0.1);
 }
 .dq-pick__opt.is-sel {
-  border-color: var(--mint);
+  border-color: var(--gold);
   background: rgba(246, 233, 194, 0.14);
 }
 .gq-grid {
@@ -1348,7 +1348,7 @@ section {
 }
 .gq-chip.is-sel {
   opacity: 1;
-  border-color: var(--mint);
+  border-color: var(--gold);
   background: linear-gradient(
     180deg,
     rgba(247, 236, 200, 0.18),
@@ -1412,7 +1412,7 @@ section {
   transition: border-color 0.2s, background 0.2s, transform 0.2s;
 }
 .book-close:hover {
-  border-color: var(--mint);
+  border-color: var(--gold);
   transform: rotate(90deg);
 }
 
@@ -1504,7 +1504,7 @@ section {
   transition: border-color 0.2s, background 0.2s;
 }
 .chanbtn:hover {
-  border-color: var(--mint);
+  border-color: var(--gold);
   background: rgba(3, 16, 29, 0.62);
 }
 

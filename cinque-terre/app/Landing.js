@@ -178,7 +178,7 @@ function BookingForm() {
     const tel = tour.phone.replace(/\s/g, "");
     const digits = tour.phone.replace(/[^\d]/g, "");
     const when = sel ? `${sel.label} · ${sel.small}` : date;
-    const msg = `Hei! Jeg vil reservere Monterosso sea tour. Kode: ${code} (${when}, ${guests} ${guests === 1 ? "gjest" : "gjester"}).`;
+    const msg = `Hi! I'd like to book the Monterosso sea tour. Code: ${code} (${when}, ${guests} ${guests === 1 ? "guest" : "guests"}).`;
     const enc = encodeURIComponent(msg);
     const log = (type) => {
       try {
@@ -192,10 +192,10 @@ function BookingForm() {
     };
     return (
       <div className="book-form">
-        <p className="meta">Reservasjonskode</p>
+        <p className="meta">Your booking code</p>
         <div className="rescode">{code}</div>
         <p className="rescode__sub">
-          {when} · {guests} {guests === 1 ? "gjest" : "gjester"}
+          {when} · {guests} {guests === 1 ? "guest" : "guests"}
         </p>
         <a
           className="pay"
@@ -215,11 +215,11 @@ function BookingForm() {
             SMS
           </a>
           <a className="chanbtn" href={`tel:${tel}`} onClick={() => log("call")}>
-            Ring
+            Call
           </a>
         </div>
         <p className="reassure">
-          Send koden, så er plassen din · {tour.phone}
+          Send the code and your seat is yours · {tour.phone}
         </p>
         <button
           type="button"
@@ -229,7 +229,7 @@ function BookingForm() {
             setConfirming(false);
           }}
         >
-          Ny reservasjon
+          New booking
         </button>
       </div>
     );
@@ -238,18 +238,18 @@ function BookingForm() {
   if (confirming) {
     return (
       <div className="book-form">
-        <p className="meta">Bekreft reservasjonen</p>
+        <p className="meta">Confirm your booking</p>
         <div className="confirm">
           <div className="confirm__row">
-            <span>Dato</span>
+            <span>Date</span>
             <b>{sel ? `${sel.label} · ${sel.small}` : date}</b>
           </div>
           <div className="confirm__row">
-            <span>Gjester</span>
+            <span>Guests</span>
             <b>{guests}</b>
           </div>
           <div className="confirm__row">
-            <span>Tur</span>
+            <span>Tour</span>
             <b>Monterosso sea tour</b>
           </div>
         </div>
@@ -258,18 +258,18 @@ function BookingForm() {
           <span className="t-val">€{tour.priceEur * guests}</span>
         </div>
         <button className="pay" onClick={handleConfirm}>
-          Verifiser
+          Confirm
         </button>
         <button
           type="button"
           className="confirm__back"
           onClick={() => setConfirming(false)}
         >
-          Endre
+          Change
         </button>
         <p className="err">{error}</p>
         <p className="reassure">
-          Ingen forhåndsbetaling — du får en kode å oppgi på telefon.
+          No prepayment — you&apos;ll get a code to give over the phone.
         </p>
       </div>
     );
@@ -286,7 +286,7 @@ function BookingForm() {
           <span className="field-head">Date</span>
           <DateQuick value={date} onChange={setDate} days={days} />
           <WheelPicker
-            ariaLabel="Velg dag"
+            ariaLabel="Pick a day"
             value={date}
             onChange={setDate}
             items={days.map((d) => ({ value: d.iso, label: d.label, sub: d.small }))}
@@ -296,7 +296,7 @@ function BookingForm() {
           <span className="field-head">Guests</span>
           <GuestQuick value={guests} onChange={setGuests} max={tour.maxGuests} />
           <WheelPicker
-            ariaLabel="Antall gjester"
+            ariaLabel="Number of guests"
             value={guests}
             onChange={setGuests}
             items={Array.from({ length: tour.maxGuests }, (_, i) => ({
@@ -311,11 +311,11 @@ function BookingForm() {
         <span className="t-val">€{tour.priceEur * guests}</span>
       </div>
       <button className="pay" onClick={startConfirm}>
-        Reserver
+        Reserve
       </button>
       <p className="err">{error}</p>
       <p className="reassure">
-        Ingen forhåndsbetaling · €{tour.priceEur} / head
+        No prepayment · €{tour.priceEur} / head
       </p>
     </div>
   );
@@ -333,7 +333,7 @@ function makeCode(iso, guests) {
 /* Friendly day picker: today / tomorrow / day-after-tomorrow, then weekdays,
    with the actual date kept small and subtle in the poster's gold. */
 function buildDays(n) {
-  const rel = ["I dag", "I morgen", "Overimorgen"];
+  const rel = ["Today", "Tomorrow", "Day after"];
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
   const base = new Date();
   base.setHours(0, 0, 0, 0);
@@ -343,8 +343,8 @@ function buildDays(n) {
     d.setDate(base.getDate() + i);
     out.push({
       iso: d.toLocaleDateString("sv-SE"),
-      label: i < 3 ? rel[i] : cap(d.toLocaleDateString("nb-NO", { weekday: "long" })),
-      small: d.toLocaleDateString("nb-NO", { day: "numeric", month: "long" }),
+      label: i < 3 ? rel[i] : cap(d.toLocaleDateString("en-GB", { weekday: "long" })),
+      small: d.toLocaleDateString("en-GB", { day: "numeric", month: "long" }),
     });
   }
   return out;
@@ -360,7 +360,7 @@ function DateQuick({ value, onChange, days }) {
     return (
       <div className="dq dq--picker">
         <div className="dq-pick__head">
-          <span>Velg dato</span>
+          <span>Pick a date</span>
           <button
             type="button"
             className="dq-pick__close"
@@ -393,7 +393,7 @@ function DateQuick({ value, onChange, days }) {
   return (
     <div className="dq">
       <div className="dq__opt dq--t1 is-sel dq--default">
-        <span className="dq__label">{sel ? sel.label : "I dag"}</span>
+        <span className="dq__label">{sel ? sel.label : "Today"}</span>
         {sel && <span className="dq__date">{sel.small}</span>}
       </div>
       <button
@@ -401,14 +401,14 @@ function DateQuick({ value, onChange, days }) {
         className="dq__opt dq--more"
         onClick={() => setOpen(true)}
       >
-        <span className="dq__label">Velg dato</span>
+        <span className="dq__label">Pick a date</span>
       </button>
     </div>
   );
 }
 
 /* Desktop guests: same tiered tiles (2 / 4 / 6, max-6 to start) plus a fourth
-   "Velg antall" tile that opens a compact 1–8 grid in the same box. */
+   "Pick a number" tile that opens a compact 1–8 grid in the same box. */
 function GuestQuick({ value, onChange, max }) {
   const [open, setOpen] = useState(false);
 
@@ -416,7 +416,7 @@ function GuestQuick({ value, onChange, max }) {
     return (
       <div className="dq dq--picker">
         <div className="dq-pick__head">
-          <span>Velg antall</span>
+          <span>Pick a number</span>
           <button
             type="button"
             className="dq-pick__close"
@@ -455,7 +455,7 @@ function GuestQuick({ value, onChange, max }) {
         className="dq__opt dq--more"
         onClick={() => setOpen(true)}
       >
-        <span className="dq__label">Velg antall</span>
+        <span className="dq__label">Pick a number</span>
       </button>
     </div>
   );
