@@ -89,6 +89,14 @@
 [data-theme="dark"] .stars {
   opacity: 1;
 }
+/* warm dusk light on the villages: richer colour + a soft amber bloom so
+   the lit houses glow into the night, plus a grounding shadow */
+[data-theme="dark"] .skyline {
+  filter: saturate(1.2) brightness(1.09)
+    drop-shadow(0 0 6px rgba(255, 192, 112, 0.38))
+    drop-shadow(0 0 17px rgba(255, 150, 60, 0.2))
+    drop-shadow(0 5px 9px rgba(0, 0, 0, 0.5));
+}
 
 /* ---------- SUN / MOON TOGGLE ---------- */
 .theme-toggle {
