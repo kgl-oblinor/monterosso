@@ -217,9 +217,6 @@ function BookingForm({ active }) {
     return (
       <div className="book-form">
         <p className="meta">Confirm &amp; send</p>
-        <p className="send-summary">
-          {when} · {guests} {guests === 1 ? "guest" : "guests"} · ${total}
-        </p>
         <span className="field-head">Send via</span>
         <div className="chan-tiles">
           <button
@@ -255,6 +252,9 @@ function BookingForm({ active }) {
             </button>
           </div>
         )}
+        <p className="send-summary">
+          {when} · {guests} {guests === 1 ? "guest" : "guests"} · ${total}
+        </p>
         <a
           className="pay"
           href={href}
