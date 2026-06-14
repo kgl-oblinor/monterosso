@@ -1508,6 +1508,25 @@ section {
   gap: 12px;
   margin-top: 12px;
 }
+/* WhatsApp + Phone side by side (desktop), stacked on mobile */
+.book-form .sendrow {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+.book-form .sendrow .pay {
+  flex: 1;
+  width: auto;
+  margin: 0;
+}
+.book-form .sendrow .chanbtn {
+  flex: 1;
+}
+@media (max-width: 640px) {
+  .book-form .sendrow {
+    flex-direction: column;
+  }
+}
 .chanbtn {
   flex: 1;
   display: flex;

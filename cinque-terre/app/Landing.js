@@ -209,16 +209,16 @@ function BookingForm({ active }) {
         <p className="rescode__sub">
           {when} · {guests} {guests === 1 ? "guest" : "guests"} · ${total}
         </p>
-        <a
-          className="pay"
-          href={`https://wa.me/${digits}?text=${enc}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => log("whatsapp")}
-        >
-          WhatsApp
-        </a>
-        <div className="chanrow">
+        <div className="sendrow">
+          <a
+            className="pay"
+            href={`https://wa.me/${digits}?text=${enc}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => log("whatsapp")}
+          >
+            WhatsApp
+          </a>
           <a
             className="chanbtn"
             href={`sms:${tel}?&body=${enc}`}
