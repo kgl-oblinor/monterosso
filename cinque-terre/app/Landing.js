@@ -151,7 +151,6 @@ function BookingForm({ active }) {
   const [days, setDays] = useState([]);
   const [done, setDone] = useState(false);
   const [channel, setChannel] = useState("whatsapp");
-  const [method, setMethod] = useState("message");
 
   useEffect(() => {
     setDays(buildDays(21));
@@ -195,13 +194,10 @@ function BookingForm({ active }) {
     const msg = `Hi! I'd like to book the Monterosso sea tour. Code: ${code} — ${when}, ${guests} ${guests === 1 ? "guest" : "guests"}, $${total}.`;
     const enc = encodeURIComponent(msg);
     const href =
-      method === "call"
+      channel === "call"
         ? `tel:${tel}`
-        : channel === "whatsapp"
-        ? `https://wa.me/${digits}?text=${enc}`
-        : `sms:${tel}?&body=${enc}`;
-    const logType =
-      method === "call" ? "call" : channel === "whatsapp" ? "whatsapp" : "sms";
+        : `https://wa.me/${digits}?text=${enc}`;
+    const logType = channel === "call" ? "call" : "whatsapp";
     const log = () => {
       try {
         navigator.sendBeacon?.(
@@ -221,35 +217,17 @@ function BookingForm({ active }) {
         <div className="chan-tiles">
           <button
             type="button"
+            className={tile("call")}
+            onClick={() => setChannel("call")}
+          >
+            <span className="dq__label">Call</span>
+          </button>
+          <button
+            type="button"
             className={tile("whatsapp")}
             onClick={() => setChannel("whatsapp")}
           >
             <span className="dq__label">WhatsApp</span>
-          </button>
-          <button
-            type="button"
-            className={tile("phone")}
-            onClick={() => setChannel("phone")}
-          >
-            <span className="dq__label">Phone</span>
-          </button>
-        </div>
-        <div className="chan-tiles chan-tiles--sub">
-          <button
-            type="button"
-            className={`dq__opt dq--more${
-              method === "message" ? " is-sel" : ""
-            }`}
-            onClick={() => setMethod("message")}
-          >
-            <span className="dq__label">Message</span>
-          </button>
-          <button
-            type="button"
-            className={`dq__opt dq--more${method === "call" ? " is-sel" : ""}`}
-            onClick={() => setMethod("call")}
-          >
-            <span className="dq__label">Call</span>
           </button>
         </div>
         <p className="send-summary">

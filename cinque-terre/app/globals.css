@@ -1074,6 +1074,8 @@ section {
 .chan-tiles .dq__opt {
   flex: 1;
   justify-content: center;
+  align-items: center;
+  min-height: 106px; /* fills the same area as the form's two tile rows */
 }
 
 /* ---------- iOS-STYLE DRUM WHEEL (mobile) ---------- */
