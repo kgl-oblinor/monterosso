@@ -642,8 +642,8 @@ section {
   letter-spacing: 0.06em;
   font-size: clamp(1.1rem, 2.6vw, 1.95rem);
   line-height: 1.4;
-  color: var(--cream);
-  opacity: 0.94;
+  color: var(--gold);
+  opacity: 0.95;
 }
 /* descriptive copy sits down in the open sea, not crowding the title */
 .hero .sea-copy {
@@ -768,6 +768,26 @@ section {
 .cta:hover {
   transform: translateY(-1px) rotate(-1.2deg) scale(1.03);
   filter: none;
+  /* a subtle ribbon of sunlight glints across the letters */
+  background: linear-gradient(
+    105deg,
+    var(--cream) 38%,
+    #fffef8 48%,
+    var(--cream) 58%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ctaSheen 1.6s ease-in-out infinite;
+}
+@keyframes ctaSheen {
+  from {
+    background-position: 135% 0;
+  }
+  to {
+    background-position: -35% 0;
+  }
 }
 .cta:hover,
 .book-form .pay:hover {
