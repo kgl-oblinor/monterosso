@@ -340,7 +340,7 @@ export default function Boat3D({ theme }) {
     const Z_FAR = -22.0;
     const X_AMP = 12.0;
     const TAU = Math.PI * 2;
-    const HOME = { x: -6.6, z: -13.5 }; // moorings at the town on the left
+    const HOME = { x: -14, z: -13.5 }; // moorings at the town on the left
     const MOOR_T = 18; // seconds to sail home and moor
     const LAUNCH = 13; // seconds to leave the dock into the loop (eased to match the slow cruise)
     const lerp = (a, b, k) => a + (b - a) * k;
