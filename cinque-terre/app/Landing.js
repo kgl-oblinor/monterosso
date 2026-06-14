@@ -150,6 +150,7 @@ function BookingForm({ active }) {
   const [error, setError] = useState("");
   const [days, setDays] = useState([]);
   const [done, setDone] = useState(false);
+  const [method, setMethod] = useState("text");
   const [channel, setChannel] = useState("whatsapp");
 
   useEffect(() => {
@@ -194,10 +195,13 @@ function BookingForm({ active }) {
     const msg = `Hi! I'd like to book the Monterosso sea tour. Code: ${code} — ${when}, ${guests} ${guests === 1 ? "guest" : "guests"}, $${total}.`;
     const enc = encodeURIComponent(msg);
     const href =
-      channel === "call"
+      method === "call"
         ? `tel:${tel}`
+        : channel === "imessage"
+        ? `sms:${tel}&body=${enc}`
         : `https://wa.me/${digits}?text=${enc}`;
-    const logType = channel === "call" ? "call" : "whatsapp";
+    const logType = method === "call" ? "call" : channel;
+    const newTab = method === "text" && channel === "whatsapp";
     const log = () => {
       try {
         navigator.sendBeacon?.(
@@ -208,26 +212,46 @@ function BookingForm({ active }) {
         );
       } catch {}
     };
-    const tile = (val, label) =>
-      `dq__opt dq--t1${channel === val ? " is-sel dq--default" : ""}`;
+    const mTile = (val) =>
+      `dq__opt dq--t1${method === val ? " is-sel dq--default" : ""}`;
+    const cTile = (val) =>
+      `dq__opt dq--t1${
+        method !== "text" ? " is-disabled" : channel === val ? " is-sel dq--default" : ""
+      }`;
     return (
       <div className="book-form">
         <p className="meta">Confirm &amp; send</p>
-        <span className="field-head">Send via</span>
+        <span className="field-head">How to send</span>
         <div className="chan-tiles">
           <button
             type="button"
-            className={tile("call")}
-            onClick={() => setChannel("call")}
+            className={mTile("call")}
+            onClick={() => setMethod("call")}
           >
             <span className="dq__label">Call</span>
           </button>
           <button
             type="button"
-            className={tile("whatsapp")}
-            onClick={() => setChannel("whatsapp")}
+            className={mTile("text")}
+            onClick={() => setMethod("text")}
+          >
+            <span className="dq__label">Text</span>
+          </button>
+        </div>
+        <div className="chan-tiles chan-tiles--sub">
+          <button
+            type="button"
+            className={cTile("whatsapp")}
+            onClick={() => method === "text" && setChannel("whatsapp")}
           >
             <span className="dq__label">WhatsApp</span>
+          </button>
+          <button
+            type="button"
+            className={cTile("imessage")}
+            onClick={() => method === "text" && setChannel("imessage")}
+          >
+            <span className="dq__label">iMessage</span>
           </button>
         </div>
         <p className="send-summary">
@@ -236,7 +260,7 @@ function BookingForm({ active }) {
         <a
           className="pay"
           href={href}
-          target={channel === "whatsapp" ? "_blank" : undefined}
+          target={newTab ? "_blank" : undefined}
           rel="noopener noreferrer"
           onClick={log}
         >
