@@ -1075,9 +1075,9 @@ section {
   flex: 1;
   justify-content: center;
 }
-.chan-tiles .dq__opt.is-disabled {
-  opacity: 0.35;
-  cursor: default;
+/* non-selected channels read quieter than the default-selected one */
+.chan-tiles .dq__opt:not(.is-sel) {
+  opacity: 0.42;
 }
 
 /* ---------- iOS-STYLE DRUM WHEEL (mobile) ---------- */

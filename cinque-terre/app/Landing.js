@@ -150,7 +150,7 @@ function BookingForm({ active }) {
   const [error, setError] = useState("");
   const [days, setDays] = useState([]);
   const [done, setDone] = useState(false);
-  const [method, setMethod] = useState("text");
+  const [method, setMethod] = useState("call");
   const [channel, setChannel] = useState("whatsapp");
 
   useEffect(() => {
@@ -215,9 +215,7 @@ function BookingForm({ active }) {
     const mTile = (val) =>
       `dq__opt dq--t1${method === val ? " is-sel dq--default" : ""}`;
     const cTile = (val) =>
-      `dq__opt dq--t1${
-        method !== "text" ? " is-disabled" : channel === val ? " is-sel dq--default" : ""
-      }`;
+      `dq__opt dq--t1${channel === val ? " is-sel dq--default" : ""}`;
     return (
       <div className="book-form">
         <p className="meta">Confirm &amp; send</p>
@@ -242,14 +240,14 @@ function BookingForm({ active }) {
           <button
             type="button"
             className={cTile("whatsapp")}
-            onClick={() => method === "text" && setChannel("whatsapp")}
+            onClick={() => setChannel("whatsapp")}
           >
             <span className="dq__label">WhatsApp</span>
           </button>
           <button
             type="button"
             className={cTile("imessage")}
-            onClick={() => method === "text" && setChannel("imessage")}
+            onClick={() => setChannel("imessage")}
           >
             <span className="dq__label">iMessage</span>
           </button>
