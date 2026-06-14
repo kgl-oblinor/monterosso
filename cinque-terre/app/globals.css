@@ -696,26 +696,49 @@ section {
    booking card meets the vintage gold of the deco title. */
 .cta,
 .book-form .pay {
+  position: relative;
+  isolation: isolate;
   align-items: center;
   justify-content: center;
   gap: 0.6em;
-  padding: 19px 46px;
-  border-radius: 60px;
+  padding: 19px 48px;
+  border-radius: 54px;
+  font-family: "Jost", system-ui, sans-serif;
   font-weight: 700;
   font-size: 0.9rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  font-family: "Jost", system-ui, sans-serif;
-  color: #3c2414; /* warm espresso, not cold plum */
-  /* flat, graphic gold with a crisp double keyline — a printed poster
-     badge, not a glossy modern button. */
-  background: linear-gradient(180deg, #f1dfa2, #e0bd66);
-  border: 2px solid rgba(120, 78, 40, 0.5);
-  box-shadow: inset 0 0 0 1.5px rgba(255, 250, 228, 0.45),
-    0 8px 20px rgba(38, 22, 10, 0.28);
+  color: #2c1c10; /* dark ink */
+  background: transparent;
+  border: none;
   cursor: none;
-  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s,
-    filter 0.25s, background 0.25s;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.25s;
+}
+/* flat matte gold "ink" with a double stamp frame */
+.cta::before,
+.book-form .pay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  border-radius: inherit;
+  background: #e3bd57;
+  box-shadow: inset 0 0 0 1.5px rgba(46, 28, 16, 0.55),
+    inset 0 0 0 3px #e3bd57, inset 0 0 0 4.5px rgba(46, 28, 16, 0.42);
+}
+/* pressed ink grain on the fill */
+.cta::after,
+.book-form .pay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.16;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)'/%3E%3C/svg%3E");
+  background-size: 130px 130px;
 }
 .cta {
   position: relative;
@@ -724,11 +747,8 @@ section {
 }
 .cta:hover,
 .book-form .pay:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.04);
-  background: linear-gradient(180deg, #f6e7b2, #e7c876);
-  box-shadow: inset 0 0 0 1.5px rgba(255, 250, 228, 0.55),
-    0 12px 26px rgba(38, 22, 10, 0.34);
+  transform: translateY(-1px);
+  filter: brightness(1.05);
 }
 @keyframes ctaShimmer {
   0%,
