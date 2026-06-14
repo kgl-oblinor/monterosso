@@ -1678,7 +1678,16 @@ section {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin: 4px 0 30px;
+  margin: 4px 0 6px;
+}
+.book-form .price-note {
+  text-align: right;
+  margin: 0 0 28px;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.82;
 }
 .book-form .total-row .t-label {
   font-size: 0.74rem;

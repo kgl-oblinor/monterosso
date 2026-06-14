@@ -47,8 +47,8 @@ export async function POST(request) {
         {
           quantity: guestCount,
           price_data: {
-            currency: "eur",
-            unit_amount: tour.priceEur * 100,
+            currency: "usd",
+            unit_amount: tour.priceUsd * 100,
             product_data: {
               name: tour.name,
               description: `${tour.description} — Date: ${date}`,

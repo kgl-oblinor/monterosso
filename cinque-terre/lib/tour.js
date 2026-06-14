@@ -1,9 +1,9 @@
-// Den ene turen som tilbys. Pris i hele euro (unit_amount = cent i Stripe).
+// Den ene turen som tilbys. Pris per billett i hele dollar.
 export const tour = {
   name: "Monterosso · Cinque Terre — sea tour",
   tagline: "The world's most beautiful sea tour.",
   description: "3 hours on the Ligurian blue — hidden coves, swim stops, sunset aperitivo, your own skipper.",
-  priceEur: 250,
+  priceUsd: 100,
   unit: "per head",
   durationHours: 3,
   maxGuests: 8,

@@ -96,7 +96,7 @@ export default function Landing() {
       <div className="shell">
         <p className="sr-only">
           We run the world's most beautiful sea tour from Monterosso al Mare in
-          Cinque Terre, Italy. €{tour.priceEur} per head. Book and pay online.
+          Cinque Terre, Italy. ${tour.priceUsd} per head. Book and pay online.
         </p>
 
         {/* SCREEN 1 — HERO + RESERVE CTA */}
@@ -276,7 +276,7 @@ function BookingForm({ active }) {
         </div>
         <div className="total-row">
           <span className="t-label">Total</span>
-          <span className="t-val">€{tour.priceEur * guests}</span>
+          <span className="t-val">${totalFor(guests)}</span>
         </div>
         <button className="pay" onClick={handleConfirm}>
           Confirm
@@ -329,14 +329,21 @@ function BookingForm({ active }) {
       </div>
       <div className="total-row">
         <span className="t-label">Total</span>
-        <span className="t-val">€{tour.priceEur * guests}</span>
+        <span className="t-val">${totalFor(guests)}</span>
       </div>
+      <p className="price-note">
+        {discountFor(guests) > 0
+          ? `${guests} × $${tour.priceUsd} · ${Math.round(
+              discountFor(guests) * 100
+            )}% group discount`
+          : `$${tour.priceUsd} per head · premium`}
+      </p>
       <button className="pay" onClick={startConfirm}>
         Reserve
       </button>
       <p className="err">{error}</p>
       <p className="reassure">
-        No prepayment · €{tour.priceEur} / head
+        No prepayment · ${tour.priceUsd} / head
       </p>
     </div>
   );
@@ -349,6 +356,15 @@ function todayISO() {
 function makeCode(iso, guests) {
   const [y, m, d] = iso.split("-");
   return `MT-${d}${m}${y.slice(2)}-${guests}`;
+}
+/* Group discount: 2+ guests 10% off, 4+ guests 12% off; 1 = full premium price. */
+function discountFor(g) {
+  if (g >= 4) return 0.12;
+  if (g >= 2) return 0.1;
+  return 0;
+}
+function totalFor(g) {
+  return Math.round(g * tour.priceUsd * (1 - discountFor(g)));
 }
 
 /* Friendly day picker: today / tomorrow / day-after-tomorrow, then weekdays,
