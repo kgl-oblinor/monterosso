@@ -1440,6 +1440,76 @@ section {
 }
 
 /* ---------- RESERVATION CODE ---------- */
+/* the code sits in a glowing gold-glass ticket, borrowing the form's
+   selected-tile look (gold glass + dreamy starry sheen) */
+.rescode-box {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  text-align: center;
+  padding: 16px 18px 14px;
+  border-radius: 16px;
+  background: linear-gradient(
+    180deg,
+    rgba(247, 236, 200, 0.34),
+    rgba(231, 205, 123, 0.2)
+  );
+  border: 1px solid rgba(246, 233, 194, 0.6);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  margin: 2px 0 20px;
+}
+.rescode-box > * {
+  position: relative;
+  z-index: 1;
+}
+.rescode-box::before {
+  content: "";
+  position: absolute;
+  inset: -45%;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+      38% 58% at 30% 32%,
+      rgba(255, 250, 230, 0.4),
+      transparent 62%
+    ),
+    radial-gradient(34% 50% at 76% 66%, rgba(255, 238, 198, 0.3), transparent 60%);
+  filter: blur(6px);
+  animation: dreamGlow 11s ease-in-out infinite alternate;
+}
+.rescode-box::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+      1.2px 1.2px at 18% 34%,
+      rgba(255, 255, 255, 0.9),
+      transparent
+    ),
+    radial-gradient(1px 1px at 64% 56%, rgba(255, 250, 235, 0.8), transparent),
+    radial-gradient(1.3px 1.3px at 82% 28%, rgba(255, 255, 255, 0.85), transparent),
+    radial-gradient(1px 1px at 42% 72%, rgba(255, 248, 230, 0.75), transparent),
+    radial-gradient(1px 1px at 88% 64%, rgba(255, 255, 255, 0.8), transparent);
+  opacity: 0.4;
+  animation: dreamTwinkle 7s ease-in-out infinite alternate;
+}
+.rescode-box__label {
+  display: block;
+  font-size: 0.64rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 2px;
+}
+.rescode-box .rescode {
+  margin: 2px 0 4px;
+}
+.rescode-box .rescode__sub {
+  margin-bottom: 0;
+}
 .rescode {
   font-family: "Fraunces", serif;
   font-weight: 600;
