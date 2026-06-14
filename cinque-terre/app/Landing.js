@@ -105,7 +105,8 @@ export default function Landing() {
           <h1>Cinque Terre</h1>
           <div className="sea-copy">
             <p className="tagline">
-              Le Cinque Terre dal mare, a bordo della Paolona.
+              Le Cinque Terre dal mare,
+              <br />a bordo della Paolona.
             </p>
           </div>
           <div className="cta-wrap">

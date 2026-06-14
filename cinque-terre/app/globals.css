@@ -637,13 +637,13 @@ section {
 .hero .tagline {
   margin-top: 24px;
   font-family: "Jost", system-ui, sans-serif;
-  font-weight: 700;
+  font-weight: 300;
   text-transform: uppercase;
-  letter-spacing: 0.015em;
-  font-size: clamp(1.2rem, 2.9vw, 2.15rem);
-  line-height: 1.08;
+  letter-spacing: 0.06em;
+  font-size: clamp(1.1rem, 2.6vw, 1.95rem);
+  line-height: 1.4;
   color: var(--cream);
-  opacity: 0.96;
+  opacity: 0.94;
 }
 /* descriptive copy sits down in the open sea, not crowding the title */
 .hero .sea-copy {
