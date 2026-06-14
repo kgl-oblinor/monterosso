@@ -75,24 +75,6 @@ export default function Landing() {
       <div className="cursor" aria-hidden="true"></div>
       <div className="cursor-ring" aria-hidden="true"></div>
 
-      <div id="loader" aria-hidden="true">
-        <div className="loader-lockup">
-          <div className="loader-word">
-            <span>M</span>
-            <span>O</span>
-            <span>N</span>
-            <span>T</span>
-            <span>E</span>
-            <span>R</span>
-            <span>O</span>
-            <span>S</span>
-            <span>S</span>
-            <span>O</span>
-          </div>
-          <div className="loader-sub">Cinque Terre</div>
-        </div>
-      </div>
-
       {/* sky — upper half */}
       <div className="sky" aria-hidden="true"></div>
       <div className="stars" aria-hidden="true"></div>
@@ -121,6 +103,17 @@ export default function Landing() {
         <header className="hero" id="top">
           <p className="eyebrow">Monterosso al Mare</p>
           <h1>Cinque Terre</h1>
+          <div className="sea-copy">
+            <p className="tagline">The world&apos;s most beautiful sea tour.</p>
+            <p className="lede">
+              Three slow hours on the Ligurian blue — hidden coves, swim stops,
+              a sunset aperitivo, and your own skipper aboard the Paolona.
+            </p>
+            <p className="price">
+              <b>€{tour.priceEur}</b> per head · {tour.durationHours} hours ·
+              departs Monterosso · max {tour.maxGuests} guests
+            </p>
+          </div>
           <div className="cta-wrap">
             <button className="cta" onClick={() => setShowBook(true)}>
               Book — reserve your seat
