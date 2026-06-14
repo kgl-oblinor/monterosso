@@ -109,10 +109,6 @@ export default function Landing() {
               Three slow hours on the Ligurian blue — hidden coves, swim stops,
               a sunset aperitivo, and your own skipper aboard the Paolona.
             </p>
-            <p className="price">
-              <b>€{tour.priceEur}</b> per head · {tour.durationHours} hours ·
-              departs Monterosso · max {tour.maxGuests} guests
-            </p>
           </div>
           <div className="cta-wrap">
             <button className="cta" onClick={() => setShowBook(true)}>
