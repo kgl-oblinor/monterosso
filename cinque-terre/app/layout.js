@@ -3,7 +3,7 @@ import "./globals.css";
 export const metadata = {
   title: "Monterosso · Cinque Terre — sea tour",
   description:
-    "The world's most beautiful sea tour from Monterosso al Mare, Cinque Terre. Book and pay online.",
+    "A private sea tour of the Cinque Terre from Monterosso al Mare, Liguria. Reserve in a moment — no prepayment.",
 };
 
 export default function RootLayout({ children }) {

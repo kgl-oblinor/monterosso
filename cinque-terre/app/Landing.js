@@ -95,8 +95,9 @@ export default function Landing() {
 
       <div className="shell">
         <p className="sr-only">
-          We run the world's most beautiful sea tour from Monterosso al Mare in
-          Cinque Terre, Italy. ${tour.priceUsd} per head. Book and pay online.
+          A private sea tour of the Cinque Terre from Monterosso al Mare,
+          Liguria — three unhurried hours along the coast, ${tour.priceUsd} per
+          guest. Reserve in a moment, no prepayment.
         </p>
 
         {/* SCREEN 1 — HERO + RESERVE CTA */}
@@ -111,7 +112,7 @@ export default function Landing() {
           </div>
           <div className="cta-wrap">
             <button className="cta" onClick={() => setShowBook(true)}>
-              Reserve your seat
+              Reserve your place
             </button>
           </div>
           <div className="scroll-hint">
@@ -135,8 +136,8 @@ export default function Landing() {
           ✕
         </button>
         <div className="book-overlay__inner">
-          <p className="section-label">Reserve</p>
-          <h2 className="section-title">Book your day</h2>
+          <p className="section-label">Prenota</p>
+          <h2 className="section-title">Your day on the water</h2>
           <BookingForm active={showBook} />
         </div>
       </div>
@@ -262,7 +263,7 @@ function BookingForm({ active }) {
           rel="noopener noreferrer"
           onClick={log}
         >
-          Submit request
+          Send request
         </a>
         <button
           type="button"
@@ -278,8 +279,8 @@ function BookingForm({ active }) {
   return (
     <div className="book-form">
       <p className="meta">
-        Monterosso sea tour · {tour.durationHours} hours · max {tour.maxGuests}{" "}
-        guests
+        A private sea tour from Monterosso · {tour.durationHours} hours · up to{" "}
+        {tour.maxGuests} guests
       </p>
       <div className="row">
         <div className="field">
@@ -312,18 +313,18 @@ function BookingForm({ active }) {
             ? `$${totalFor(guests)} total · ${Math.round(
                 discountFor(guests) * 100
               )}% off`
-            : `$${totalFor(guests)} total · premium`}
+            : `$${totalFor(guests)} total`}
         </span>
         <span className="t-val">
           ${perPersonFor(guests)} <span className="t-per">/ person</span>
         </span>
       </div>
       <button className="pay" onClick={review}>
-        See availability
+        Check availability
       </button>
       <p className="err">{error}</p>
       <p className="reassure">
-        No prepayment · ${tour.priceUsd} / head
+        No prepayment · ${tour.priceUsd} per guest
       </p>
     </div>
   );
