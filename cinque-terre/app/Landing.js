@@ -137,7 +137,7 @@ export default function Landing() {
         </button>
         <div className="book-overlay__inner">
           <p className="section-label">Prenota</p>
-          <h2 className="section-title">Your day on the water</h2>
+          <h2 className="section-title">A private day on the Ligurian blue</h2>
           <BookingForm active={showBook} />
         </div>
       </div>
