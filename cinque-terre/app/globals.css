@@ -745,49 +745,46 @@ section {
   display: inline-flex;
   text-decoration: none;
 }
-/* the hero CTA is an elegant retro-script logo, not a stamp */
+/* the hero CTA is a deco ticket — pale champagne fill, a double stamp
+   frame and engraved serif caps, lifted straight from the poster palette */
 .cta {
-  font-family: "Great Vibes", cursive;
-  font-weight: 400;
-  font-size: clamp(2.6rem, 6.4vw, 4.2rem);
-  line-height: 1.05;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--cream);
-  -webkit-text-stroke: 0.7px rgba(40, 22, 10, 0.45);
-  paint-order: stroke fill;
-  text-shadow: 0 3px 16px rgba(2, 10, 20, 0.5);
-  background: transparent;
-  padding: 4px 30px 12px;
-  border-radius: 0;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(0.92rem, 1.7vw, 1.12rem);
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--plum);
+  background: linear-gradient(180deg, #efe3b3 0%, #e3d398 100%);
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  padding: 20px 46px;
+  border-radius: 14px;
+  border: 2px solid var(--plum);
+  box-shadow: 0 10px 26px -12px rgba(2, 10, 20, 0.6);
 }
-.cta::before,
+/* the inner ticket frame line */
+.cta::before {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 6px;
+  z-index: 0;
+  border: 1.4px solid rgba(7, 24, 42, 0.7);
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: none;
+  mix-blend-mode: normal;
+  opacity: 1;
+}
 .cta::after {
   display: none;
 }
 .cta:hover {
-  transform: translateY(-1px) rotate(-1.2deg) scale(1.03);
-  filter: none;
-  /* a subtle ribbon of sunlight glints across the letters */
-  background: linear-gradient(
-    105deg,
-    var(--cream) 38%,
-    #fffef8 48%,
-    var(--cream) 58%
-  );
-  background-size: 250% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: ctaSheen 1.6s ease-in-out infinite;
-}
-@keyframes ctaSheen {
-  from {
-    background-position: 135% 0;
-  }
-  to {
-    background-position: -35% 0;
-  }
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+  background: linear-gradient(180deg, #f3e8bd 0%, #e7d8a0 100%);
+  animation: none;
 }
 .cta:hover,
 .book-form .pay:hover {
