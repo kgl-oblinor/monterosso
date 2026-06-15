@@ -196,6 +196,64 @@
   }
 }
 
+/* calendar pair — two identical, equal-width buttons */
+.landing-v2 .cal-label {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(7, 24, 42, 0.5);
+  margin: 14px 0 10px;
+}
+.landing-v2 .cal-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.landing-v2 .cal-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--plum);
+  padding: 14px 8px;
+  border-radius: 13px;
+  border: 2px solid var(--plum);
+  background: linear-gradient(177deg, #f6ecc4 0%, #ecdaa0 52%, #e3cd8f 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 10px 24px -15px rgba(2, 10, 20, 0.6);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.2s ease;
+}
+.landing-v2 .cal-btn svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+@media (hover: hover) {
+  .landing-v2 .cal-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+  }
+}
+.landing-v2 .cal-btn:active {
+  transform: translateY(0) scale(0.97);
+}
+/* share sits a touch apart from the calendar pair */
+.landing-v2 .share-btn {
+  margin-top: 14px;
+}
+
 /* ---------- BOOKING FIELDS — the whole tile opens the picker ----------
    The value tile itself is now the trigger (no separate "Pick a date" /
    "Pick a number" tile). A small caret signals it's tappable. */

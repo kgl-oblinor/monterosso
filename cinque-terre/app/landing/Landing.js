@@ -227,24 +227,29 @@ function BookingForm({ active }) {
             <strong>{code}</strong>
           </div>
         </div>
-        <a
-          className="pay"
-          href={googleCalUrl({ iso: date, guests, total, code })}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Add to Google Calendar
-        </a>
+        <p className="cal-label">Add to calendar</p>
+        <div className="cal-row">
+          <a
+            className="cal-btn"
+            href={googleCalUrl({ iso: date, guests, total, code })}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <CalGlyph />
+            Google
+          </a>
+          <button
+            type="button"
+            className="cal-btn"
+            onClick={() => downloadIcs({ iso: date, guests, total, code })}
+          >
+            <CalGlyph />
+            Apple
+          </button>
+        </div>
         <button
           type="button"
-          className="pay pay--ghost"
-          onClick={() => downloadIcs({ iso: date, guests, total, code })}
-        >
-          Add to Apple Calendar
-        </button>
-        <button
-          type="button"
-          className="pay pay--ghost"
+          className="pay pay--ghost share-btn"
           onClick={() => shareTrip({ when, guests })}
         >
           Share with friends
@@ -521,6 +526,28 @@ async function shareTrip({ when, guests }) {
       "_blank"
     );
   }
+}
+
+function CalGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect
+        x="3"
+        y="4.5"
+        width="18"
+        height="16"
+        rx="2.5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M3 9h18M8 2.5v4M16 2.5v4"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
 }
 
 /* Friendly day picker: today / tomorrow / day-after-tomorrow, then weekdays,
