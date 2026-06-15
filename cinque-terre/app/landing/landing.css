@@ -20,20 +20,23 @@
 }
 
 .landing-v2 .cta {
+  position: relative;
+  display: inline-flex;
+  text-decoration: none;
   font-family: "Great Vibes", cursive;
   font-weight: 400;
-  font-size: clamp(1.7rem, 5.2vw, 2.4rem);
+  font-size: clamp(1.7rem, 3.4vw, 2.3rem);
   line-height: 1;
   letter-spacing: 0;
   text-transform: none;
   color: var(--plum);
-  padding: 14px clamp(40px, 10vw, 60px) 16px;
-  border-radius: 16px;
+  background: linear-gradient(180deg, #efe3b3 0%, #e3d398 100%);
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  padding: 16px 46px 16px;
+  border-radius: 14px;
   border: 2px solid var(--plum);
-  background: linear-gradient(177deg, #f6ecc4 0%, #ecdaa0 52%, #e3cd8f 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55),
-    0 14px 30px -14px rgba(2, 10, 20, 0.7),
-    0 3px 10px -6px rgba(2, 10, 20, 0.45);
+  box-shadow: 0 10px 26px -12px rgba(2, 10, 20, 0.6);
   max-width: 100%;
   /* mobile niceties: no blue flash, no double-tap zoom delay */
   -webkit-tap-highlight-color: transparent;
@@ -49,8 +52,8 @@
   position: absolute;
   inset: 6px;
   z-index: 0;
-  border: 1.4px solid rgba(7, 24, 42, 0.62);
-  border-radius: 9px;
+  border: 1.4px solid rgba(7, 24, 42, 0.7);
+  border-radius: 8px;
   background: transparent;
   box-shadow: none;
   mix-blend-mode: normal;
@@ -63,12 +66,9 @@
 /* hover only where a real pointer exists — never on touch */
 @media (hover: hover) {
   .landing-v2 .cta:hover {
-    transform: translateY(-3px);
-    filter: brightness(1.05);
-    background: linear-gradient(177deg, #f9f0cd 0%, #efdfa9 52%, #e7d496 100%);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6),
-      0 20px 38px -16px rgba(2, 10, 20, 0.72),
-      0 4px 12px -6px rgba(2, 10, 20, 0.5);
+    transform: translateY(-2px);
+    filter: brightness(1.04);
+    background: linear-gradient(180deg, #f3e8bd 0%, #e7d8a0 100%);
   }
 }
 
@@ -506,7 +506,7 @@
   .landing-v2 .cta {
     width: 100%;
     max-width: 360px;
-    padding: 14px 24px 18px;
+    padding: 16px 24px;
   }
   /* booking card + overlay fit small screens */
   .landing-v2 .book-overlay {
