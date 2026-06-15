@@ -153,6 +153,7 @@ function BookingForm({ active }) {
   const [error, setError] = useState("");
   const [days, setDays] = useState([]);
   const [done, setDone] = useState(false);
+  const [sent, setSent] = useState(false);
   const [method, setMethod] = useState("call");
   const [channel, setChannel] = useState("whatsapp");
 
@@ -188,13 +189,83 @@ function BookingForm({ active }) {
   }, [active, done, date]);
 
   const sel = days.find((d) => d.iso === date);
+  const code = makeCode(date, guests);
+  const when = sel ? `${sel.label} · ${sel.small}` : date;
+  const total = totalFor(guests);
+
+  // SCREEN 3 — confirmation: combined info + add-to-calendar + share
+  if (sent) {
+    return (
+      <div className="book-form confirm-sent">
+        <p className="meta">You&apos;re all set</p>
+        <p className="confirm-lead">
+          Request sent — we&apos;ll confirm your place by{" "}
+          {method === "call"
+            ? "phone"
+            : channel === "imessage"
+            ? "iMessage"
+            : "WhatsApp"}
+          .
+        </p>
+        <div className="conf-summary">
+          <div className="conf-row">
+            <span>When</span>
+            <strong>{when}</strong>
+          </div>
+          <div className="conf-row">
+            <span>Guests</span>
+            <strong>
+              {guests} {guests === 1 ? "guest" : "guests"}
+            </strong>
+          </div>
+          <div className="conf-row">
+            <span>Total</span>
+            <strong>${total}</strong>
+          </div>
+          <div className="conf-row">
+            <span>Code</span>
+            <strong>{code}</strong>
+          </div>
+        </div>
+        <a
+          className="pay"
+          href={googleCalUrl({ iso: date, guests, total, code })}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Add to Google Calendar
+        </a>
+        <button
+          type="button"
+          className="pay pay--ghost"
+          onClick={() => downloadIcs({ iso: date, guests, total, code })}
+        >
+          Add to Apple Calendar
+        </button>
+        <button
+          type="button"
+          className="pay pay--ghost"
+          onClick={() => shareTrip({ when, guests })}
+        >
+          Share with friends
+        </button>
+        <button
+          type="button"
+          className="confirm__back"
+          onClick={() => {
+            setSent(false);
+            setDone(false);
+          }}
+        >
+          Done
+        </button>
+      </div>
+    );
+  }
 
   if (done) {
-    const code = makeCode(date, guests);
     const tel = tour.phone.replace(/\s/g, "");
     const digits = tour.phone.replace(/[^\d]/g, "");
-    const when = sel ? `${sel.label} · ${sel.small}` : date;
-    const total = totalFor(guests);
     const msg = `Hi! I'd like to book the Monterosso sea tour. Code: ${code} — ${when}, ${guests} ${guests === 1 ? "guest" : "guests"}, $${total}.`;
     const enc = encodeURIComponent(msg);
     const href =
@@ -263,7 +334,10 @@ function BookingForm({ active }) {
           href={href}
           target={newTab ? "_blank" : undefined}
           rel="noopener noreferrer"
-          onClick={log}
+          onClick={() => {
+            log();
+            setSent(true);
+          }}
         >
           Send request
         </a>
@@ -356,6 +430,97 @@ function totalFor(g) {
 }
 function perPersonFor(g) {
   return Math.round(tour.priceUsd * (1 - discountFor(g)));
+}
+
+/* ---------- Add-to-calendar / share helpers ----------
+   The tour runs 3 hours; start time isn't fixed yet, so we use a provisional
+   10:00–13:00 in Monterosso's timezone (Europe/Rome) and say so. */
+const CAL_LOCATION = "Monterosso al Mare, Cinque Terre, Italy";
+const CAL_TZ = "Europe/Rome";
+
+function calRange(iso) {
+  const ymd = iso.replaceAll("-", "");
+  return { start: `${ymd}T100000`, end: `${ymd}T130000` };
+}
+function calDetails(code, guests, total) {
+  const g = `${guests} ${guests === 1 ? "guest" : "guests"}`;
+  return `Reservation ${code} · ${g} · $${total}. Pending confirmation — we'll be in touch. Start time is provisional (10:00, local) and will be confirmed.`;
+}
+
+function googleCalUrl({ iso, guests, total, code }) {
+  const { start, end } = calRange(iso);
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: tour.name,
+    dates: `${start}/${end}`,
+    ctz: CAL_TZ,
+    details: calDetails(code, guests, total),
+    location: CAL_LOCATION,
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+function buildIcs({ iso, guests, total, code }) {
+  const { start, end } = calRange(iso);
+  const stamp = new Date()
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d{3}Z$/, "Z");
+  const esc = (s) =>
+    String(s).replace(/([,;\\])/g, "\\$1").replace(/\n/g, "\\n");
+  return [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Monterosso//Cinque Terre//EN",
+    "CALSCALE:GREGORIAN",
+    "BEGIN:VEVENT",
+    `UID:${code}@monterosso-cinque-terre`,
+    `DTSTAMP:${stamp}`,
+    `DTSTART;TZID=${CAL_TZ}:${start}`,
+    `DTEND;TZID=${CAL_TZ}:${end}`,
+    `SUMMARY:${esc(tour.name)}`,
+    `DESCRIPTION:${esc(calDetails(code, guests, total))}`,
+    `LOCATION:${esc(CAL_LOCATION)}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n");
+}
+
+function downloadIcs(opts) {
+  const blob = new Blob([buildIcs(opts)], {
+    type: "text/calendar;charset=utf-8",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "monterosso-cinque-terre.ics";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+async function shareTrip({ when, guests }) {
+  const url = typeof window !== "undefined" ? window.location.origin : "";
+  const g = `${guests} ${guests === 1 ? "guest" : "guests"}`;
+  const text = `Join me on the Monterosso · Cinque Terre sea tour — ${when}, ${g}.`;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: "Cinque Terre sea tour", text, url });
+      return;
+    }
+  } catch {
+    return; // user dismissed the share sheet
+  }
+  try {
+    await navigator.clipboard.writeText(`${text} ${url}`);
+    alert("Link copied — share it with your friends!");
+  } catch {
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`,
+      "_blank"
+    );
+  }
 }
 
 /* Friendly day picker: today / tomorrow / day-after-tomorrow, then weekdays,

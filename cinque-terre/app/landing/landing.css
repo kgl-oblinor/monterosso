@@ -151,6 +151,51 @@
     0 14px 30px -14px rgba(2, 10, 20, 0.7);
 }
 
+/* ---------- CONFIRMATION STEP (after "Send request") ---------- */
+.landing-v2 .confirm-lead {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: rgba(7, 24, 42, 0.7);
+  margin: 2px 0 4px;
+}
+.landing-v2 .conf-summary {
+  display: grid;
+  gap: 8px;
+  margin: 4px 0 6px;
+  padding: 14px 2px;
+  border-top: 1px solid rgba(7, 24, 42, 0.14);
+  border-bottom: 1px solid rgba(7, 24, 42, 0.14);
+}
+.landing-v2 .conf-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+  font-size: 0.95rem;
+}
+.landing-v2 .conf-row span {
+  color: rgba(7, 24, 42, 0.55);
+  letter-spacing: 0.02em;
+}
+.landing-v2 .conf-row strong {
+  color: var(--plum);
+  font-weight: 600;
+}
+/* secondary buttons: same ticket frame, no champagne fill */
+.landing-v2 .book-form .pay.pay--ghost {
+  background: transparent;
+  box-shadow: none;
+}
+.landing-v2 .book-form .pay.pay--ghost::before {
+  border-color: rgba(7, 24, 42, 0.45);
+}
+@media (hover: hover) {
+  .landing-v2 .book-form .pay.pay--ghost:hover {
+    background: rgba(7, 24, 42, 0.06);
+    box-shadow: none;
+  }
+}
+
 /* ---------- BOOKING FIELDS — the whole tile opens the picker ----------
    The value tile itself is now the trigger (no separate "Pick a date" /
    "Pick a number" tile). A small caret signals it's tappable. */
