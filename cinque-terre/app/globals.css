@@ -758,7 +758,7 @@ section {
   background: linear-gradient(180deg, #efe3b3 0%, #e3d398 100%);
   -webkit-text-stroke: 0;
   text-shadow: none;
-  padding: 12px 46px 16px;
+  padding: 16px 46px 16px;
   border-radius: 14px;
   border: 2px solid var(--plum);
   box-shadow: 0 10px 26px -12px rgba(2, 10, 20, 0.6);
