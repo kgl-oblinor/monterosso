@@ -135,7 +135,6 @@ export default function Boat3D({ theme }) {
     });
     const metalMat = new THREE.MeshStandardMaterial({ color: 0x2b3a5a, roughness: 0.55, metalness: 0.3, envMapIntensity: 1.0 });
     const orangeMat = new THREE.MeshStandardMaterial({ color: 0xe8772f, roughness: 0.55, envMapIntensity: 0.8 });
-    const redMat = new THREE.MeshStandardMaterial({ color: 0xcf3b3b, roughness: 0.7, side: THREE.DoubleSide });
 
     const boat = new THREE.Group();
 
@@ -242,8 +241,61 @@ export default function Boat3D({ theme }) {
     const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.0, 10), metalMat);
     mast.position.set(-1.45, 0.7, 0);
     boat.add(mast);
-    const flag = new THREE.Mesh(new THREE.PlaneGeometry(0.32, 0.2), redMat);
-    flag.position.set(-1.29, 1.08, 0);
+    // white flag bearing a coral heart with a serif "M" (Monterosso)
+    const fc = document.createElement("canvas");
+    fc.width = 256;
+    fc.height = 168;
+    const fx = fc.getContext("2d");
+    fx.fillStyle = "#fbf7ef"; // off-white cloth
+    fx.fillRect(0, 0, 256, 168);
+    const hoist = fx.createLinearGradient(0, 0, 44, 0); // soft shading by the mast
+    hoist.addColorStop(0, "rgba(0,0,0,0.12)");
+    hoist.addColorStop(1, "rgba(0,0,0,0)");
+    fx.fillStyle = hoist;
+    fx.fillRect(0, 0, 44, 168);
+    const hcx = 152,
+      hcy = 86,
+      hw = 168,
+      hh = 152;
+    fx.beginPath();
+    fx.moveTo(hcx, hcy + hh * 0.36);
+    fx.bezierCurveTo(hcx - hw * 0.5, hcy - hh * 0.12, hcx - hw * 0.52, hcy - hh * 0.54, hcx, hcy - hh * 0.16);
+    fx.bezierCurveTo(hcx + hw * 0.52, hcy - hh * 0.54, hcx + hw * 0.5, hcy - hh * 0.12, hcx, hcy + hh * 0.36);
+    fx.closePath();
+    fx.shadowColor = "rgba(0,0,0,0.22)";
+    fx.shadowBlur = 7;
+    fx.shadowOffsetY = 2;
+    fx.fillStyle = "#dd4b43"; // poster coral-red
+    fx.fill();
+    fx.shadowColor = "transparent";
+    fx.fillStyle = "#fbf7ef";
+    fx.font = "italic 700 86px Georgia, 'Times New Roman', serif";
+    fx.textAlign = "center";
+    fx.textBaseline = "middle";
+    fx.fillText("M", hcx, hcy - hh * 0.02);
+    const flagTex = new THREE.CanvasTexture(fc);
+    flagTex.anisotropy = 8;
+    const flagMat = new THREE.MeshStandardMaterial({
+      map: flagTex,
+      side: THREE.DoubleSide,
+      roughness: 0.82,
+      metalness: 0,
+    });
+    // cloth: a plane that ripples more toward the free end (1.5× the old size)
+    const FW = 0.48,
+      FH = 0.3;
+    const flagGeo = new THREE.PlaneGeometry(FW, FH, 28, 2);
+    {
+      const fp = flagGeo.attributes.position;
+      for (let i = 0; i < fp.count; i++) {
+        const k = (fp.getX(i) + FW / 2) / FW; // 0 at the hoist, 1 at the fly
+        fp.setZ(i, Math.sin(k * Math.PI * 2.2) * 0.04 * k);
+      }
+      fp.needsUpdate = true;
+      flagGeo.computeVertexNormals();
+    }
+    const flag = new THREE.Mesh(flagGeo, flagMat);
+    flag.position.set(-1.21, 1.06, 0); // hoist edge sits on the mast
     boat.add(flag);
 
     // ---------- lantern (lit only at night) ----------
@@ -265,36 +317,82 @@ export default function Boat3D({ theme }) {
     fender.position.set(-1.2, 0.05, 0.66);
     boat.add(fender);
 
-    // ---------- boat name, projected onto the hull as a decal so it
-    //            follows the curve and reads in full on both sides ----------
+    // ---------- boat name "Paolona" — hand-painted on the hull, curved to
+    //            follow the sheer line, with subtly weathered paint ----------
     const nc = document.createElement("canvas");
     nc.width = 1024;
-    nc.height = 256;
+    nc.height = 384;
     const nctx = nc.getContext("2d");
-    nctx.fillStyle = "#f3ecdc"; // cream
-    nctx.font = "italic 700 150px Georgia, 'Times New Roman', serif";
+    const NAME = "Paolona";
+    nctx.font = "italic 700 158px Georgia, 'Times New Roman', serif";
     nctx.textAlign = "center";
     nctx.textBaseline = "middle";
-    nctx.shadowColor = "rgba(0,0,0,0.4)";
-    nctx.shadowBlur = 8;
+    // lay the glyphs along a gentle upward arc, so the name rises toward the
+    // ends the way a gozzo's sheer does instead of cutting straight across
+    const R = 1600; // large radius → subtle curve
+    const cx = nc.width / 2;
+    const cy = nc.height * 0.54 - R; // arc centre high above → text on the lower arc (a smile)
+    const chars = [...NAME];
+    const cw = chars.map((c) => nctx.measureText(c).width);
+    const span = cw.reduce((a, b) => a + b, 0) + (chars.length - 1) * 4;
+    nctx.fillStyle = "#ece2cd"; // sun-faded cream
+    nctx.shadowColor = "rgba(0,0,0,0.36)";
+    nctx.shadowBlur = 7;
     nctx.shadowOffsetY = 3;
-    nctx.fillText("Paolona", 512, 132);
+    let along = -span / 2;
+    chars.forEach((ch, i) => {
+      const a = (along + cw[i] / 2) / R;
+      nctx.save();
+      nctx.translate(cx + Math.sin(a) * R, cy + Math.cos(a) * R);
+      nctx.rotate(a);
+      nctx.fillText(ch, 0, 0);
+      nctx.restore();
+      along += cw[i] + 4;
+    });
+    // weathering: chip out tiny flecks of paint and a few faint scuffs
+    nctx.shadowColor = "transparent";
+    nctx.globalCompositeOperation = "destination-out";
+    for (let i = 0; i < 260; i++) {
+      nctx.globalAlpha = 0.04 + Math.random() * 0.13;
+      nctx.beginPath();
+      nctx.arc(
+        Math.random() * nc.width,
+        Math.random() * nc.height,
+        Math.random() * 2.3,
+        0,
+        Math.PI * 2
+      );
+      nctx.fill();
+    }
+    for (let i = 0; i < 7; i++) {
+      nctx.globalAlpha = 0.05 + Math.random() * 0.09;
+      nctx.fillRect(
+        Math.random() * 320,
+        Math.random() * nc.height,
+        180 + Math.random() * 420,
+        1 + Math.random() * 1.4
+      );
+    }
+    nctx.globalCompositeOperation = "source-over";
+    nctx.globalAlpha = 1;
+
     const nameTex = new THREE.CanvasTexture(nc);
-    nameTex.anisotropy = 4;
+    nameTex.anisotropy = 8;
     const nameMat = new THREE.MeshBasicMaterial({
       map: nameTex,
       transparent: true,
+      opacity: 0.94,
       depthTest: true,
       depthWrite: false,
       polygonOffset: true,
       polygonOffsetFactor: -6,
     });
-    const nameSize = new THREE.Vector3(1.9, 0.48, 1.0);
+    const nameSize = new THREE.Vector3(2.0, 0.74, 1.0);
     const decalPort = new THREE.Mesh(
       new DecalGeometry(
         hullMesh,
-        new THREE.Vector3(0.42, 0.03, 0.5),
-        new THREE.Euler(0, 0, 0),
+        new THREE.Vector3(0.42, 0.06, 0.5),
+        new THREE.Euler(0, 0, 0.05),
         nameSize
       ),
       nameMat
@@ -303,8 +401,8 @@ export default function Boat3D({ theme }) {
     const decalStar = new THREE.Mesh(
       new DecalGeometry(
         hullMesh,
-        new THREE.Vector3(0.42, 0.03, -0.5),
-        new THREE.Euler(0, Math.PI, 0),
+        new THREE.Vector3(0.42, 0.06, -0.5),
+        new THREE.Euler(0, Math.PI, -0.05),
         nameSize
       ),
       nameMat
