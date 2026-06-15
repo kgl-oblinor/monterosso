@@ -128,14 +128,16 @@ export default function Landing() {
           if (e.target === e.currentTarget) setShowBook(false);
         }}
       >
-        <button
-          className="book-close"
-          onClick={() => setShowBook(false)}
-          aria-label="Lukk"
-        >
-          ✕
-        </button>
         <div className="book-overlay__inner">
+          {/* anchored to the card's top-right corner (absolute, not fixed)
+              so it sits just above the card and is identical across browsers */}
+          <button
+            className="book-close"
+            onClick={() => setShowBook(false)}
+            aria-label="Lukk"
+          >
+            ✕
+          </button>
           <p className="section-label">Prenota</p>
           <h2 className="section-title">A private day on the Ligurian blue</h2>
           <BookingForm active={showBook} />

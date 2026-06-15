@@ -202,6 +202,19 @@
    existing horizontal drift animation intact. */
 .landing-v2 .clouds {
   top: 15vh;
+  /* keep the existing slow horizontal drift (transform) and add a small,
+     smooth vertical float via the independent `translate` property so the
+     two compose instead of overriding each other */
+  animation: cloudDrift 120s ease-in-out infinite alternate,
+    cloudFloatV 8s ease-in-out infinite alternate;
+}
+@keyframes cloudFloatV {
+  from {
+    translate: 0 -5px;
+  }
+  to {
+    translate: 0 6px;
+  }
 }
 
 /* ---------- BOOKING META LINE — readable, bolder, lighter ---------- */
@@ -273,6 +286,29 @@
   line-height: 1;
 }
 
+/* ---------- CLOSE (✕) BUTTON — anchored to the card, visible everywhere ----------
+   Lives inside the dialog and is positioned `absolute` against the card
+   container (not `fixed`), so it sits just above the card's top-right and
+   renders identically in Chrome / Firefox / Safari (no filter/scrollbar
+   quirks). The flex fix below stops tall dialogs from clipping the top. */
+.landing-v2 .book-overlay__inner {
+  position: relative;
+}
+.landing-v2 .book-close {
+  position: absolute;
+  top: -8px;
+  right: -4px;
+}
+/* When the dialog is taller than the screen, `align-items: center` clips
+   the top (and the close button with it). Switch to top-aligned scrolling
+   with auto margins so it still centres when it fits but never clips. */
+.landing-v2 .book-overlay {
+  align-items: flex-start;
+}
+.landing-v2 .book-overlay__inner {
+  margin-block: auto;
+}
+
 /* ---------- CONFIRM STEP — readable summary line ----------
    "Day after · 17 June · 3 guests · $270" was set in cursive. */
 .landing-v2 .book-form .send-summary {
@@ -312,6 +348,15 @@
   .landing-v2 .book-overlay {
     cursor: auto !important;
   }
+
+  /* iOS/iPadOS Safari counts the address-bar area inside 100vh, pushing the
+     bottom CTA + "Andiamo" hint under the toolbar (hidden). `svh` is the
+     visible height, so they stay on-screen. Applies to touch devices only
+     (iPad + mobile); desktop keeps the global 100vh untouched. Falls back
+     to 100vh where svh is unsupported. */
+  .landing-v2 .hero {
+    min-height: 100svh;
+  }
 }
 
 /* ---------- MOBILE: 100% responsive ---------- */
@@ -343,9 +388,16 @@
   .landing-v2 .hero .sea-copy {
     padding: 0 18px;
   }
+  /* place the CTA directly under the tagline (which sits at top:58%),
+     not pinned to the bottom — keeps it clearly visible on phones too */
   .landing-v2 .cta-wrap {
-    bottom: max(10vh, calc(env(safe-area-inset-bottom, 0px) + 82px));
+    top: 68%;
+    bottom: auto;
     padding: 0 20px;
+  }
+  /* keep the scroll hint above the home indicator */
+  .landing-v2 .scroll-hint {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
   }
   /* full-width tap target, capped so it stays elegant on big phones */
   .landing-v2 .cta {
@@ -360,6 +412,15 @@
   .landing-v2 .book-form {
     padding: 34px 22px 30px;
     border-radius: 26px;
+  }
+  /* smaller dialog heading on phones (also clears the close button) */
+  .landing-v2 .book-overlay .section-title {
+    font-size: clamp(1.45rem, 6vw, 1.9rem);
+    margin-bottom: 26px;
+    padding: 0 24px;
+  }
+  .landing-v2 .book-overlay .section-label {
+    margin-bottom: 8px;
   }
   /* date & guests sit close together instead of spanning the full width */
   .landing-v2 .book-form .row {
