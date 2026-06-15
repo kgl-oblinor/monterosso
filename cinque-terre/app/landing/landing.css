@@ -1,0 +1,406 @@
+/* ============================================================
+   Landing v2 — scoped styles for the NEW landing page only.
+   Everything here is nested under `.landing-v2`, so it overrides
+   globals.css for /landing and never touches the original home page.
+   ============================================================ */
+
+/* ---------- HERO CTA — refined deco "ticket" ---------- */
+/* Warm champagne-gold fill, crisp double stamp frame, a soft lifted
+   shadow, and proper press feedback for touch. */
+.landing-v2 .cta-wrap {
+  position: absolute;
+  /* keep clear of the iPhone home indicator / browser chrome */
+  bottom: max(12vh, calc(env(safe-area-inset-bottom, 0px) + 92px));
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  /* never let the button kiss the screen edges on phones */
+  padding: 0 24px;
+}
+
+.landing-v2 .cta {
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 600;
+  font-size: clamp(0.9rem, 2.4vw, 1.05rem);
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--plum);
+  padding: 18px clamp(34px, 9vw, 56px);
+  border-radius: 16px;
+  border: 2px solid var(--plum);
+  background: linear-gradient(177deg, #f6ecc4 0%, #ecdaa0 52%, #e3cd8f 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    0 14px 30px -14px rgba(2, 10, 20, 0.7),
+    0 3px 10px -6px rgba(2, 10, 20, 0.45);
+  max-width: 100%;
+  /* mobile niceties: no blue flash, no double-tap zoom delay */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.22s ease, filter 0.22s ease, background 0.22s ease;
+}
+
+/* inner ticket frame line */
+.landing-v2 .cta::before {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 6px;
+  z-index: 0;
+  border: 1.4px solid rgba(7, 24, 42, 0.62);
+  border-radius: 9px;
+  background: transparent;
+  box-shadow: none;
+  mix-blend-mode: normal;
+  opacity: 1;
+}
+.landing-v2 .cta::after {
+  display: none;
+}
+
+/* hover only where a real pointer exists — never on touch */
+@media (hover: hover) {
+  .landing-v2 .cta:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.05);
+    background: linear-gradient(177deg, #f9f0cd 0%, #efdfa9 52%, #e7d496 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6),
+      0 20px 38px -16px rgba(2, 10, 20, 0.72),
+      0 4px 12px -6px rgba(2, 10, 20, 0.5);
+  }
+}
+
+/* springy press feedback — the key cue on a phone */
+.landing-v2 .cta:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 8px 18px -12px rgba(2, 10, 20, 0.7);
+}
+
+.landing-v2 .cta:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(234, 210, 126, 0.6),
+    0 14px 30px -14px rgba(2, 10, 20, 0.7);
+}
+
+/* ---------- DIALOG BUTTON — identical to the hero "Reserve your place" ----------
+   "Check availability" and "Send request" share class .pay; give them the
+   exact champagne-ticket look of the hero CTA. */
+.landing-v2 .book-form .pay {
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 600;
+  font-size: clamp(0.9rem, 2.4vw, 1.05rem);
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--plum);
+  padding: 18px clamp(34px, 9vw, 56px);
+  border-radius: 16px;
+  border: 2px solid var(--plum);
+  background: linear-gradient(177deg, #f6ecc4 0%, #ecdaa0 52%, #e3cd8f 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    0 14px 30px -14px rgba(2, 10, 20, 0.7),
+    0 3px 10px -6px rgba(2, 10, 20, 0.45);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.22s ease, filter 0.22s ease, background 0.22s ease;
+}
+/* inner ticket frame line (overrides the old matte-gold fill) */
+.landing-v2 .book-form .pay::before {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 6px;
+  z-index: 0;
+  border: 1.4px solid rgba(7, 24, 42, 0.62);
+  border-radius: 9px;
+  background: transparent;
+  box-shadow: none;
+  mix-blend-mode: normal;
+  opacity: 1;
+}
+.landing-v2 .book-form .pay::after {
+  display: none;
+}
+@media (hover: hover) {
+  .landing-v2 .book-form .pay:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.05);
+    background: linear-gradient(177deg, #f9f0cd 0%, #efdfa9 52%, #e7d496 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6),
+      0 20px 38px -16px rgba(2, 10, 20, 0.72),
+      0 4px 12px -6px rgba(2, 10, 20, 0.5);
+  }
+  /* keep the frame transparent on hover (old style turned it solid gold) */
+  .landing-v2 .book-form .pay:hover::before {
+    background: transparent;
+    box-shadow: none;
+  }
+}
+.landing-v2 .book-form .pay:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 8px 18px -12px rgba(2, 10, 20, 0.7);
+}
+.landing-v2 .book-form .pay:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(234, 210, 126, 0.6),
+    0 14px 30px -14px rgba(2, 10, 20, 0.7);
+}
+
+/* ---------- BOOKING FIELDS — the whole tile opens the picker ----------
+   The value tile itself is now the trigger (no separate "Pick a date" /
+   "Pick a number" tile). A small caret signals it's tappable. */
+.landing-v2 .dq--trigger {
+  position: relative;
+  padding-right: 42px;
+}
+/* re-enable a subtle lift so it reads as interactive */
+.landing-v2 .dq--trigger:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+}
+/* crisp CSS chevron — a rotated square with two borders, optically
+   centred to the label (the ⌄ glyph itself is hidden via font-size:0) */
+.landing-v2 .dq__caret {
+  position: absolute;
+  right: 17px;
+  top: 50%;
+  z-index: 1;
+  width: 8px;
+  height: 8px;
+  font-size: 0;
+  border-right: 2px solid var(--gold);
+  border-bottom: 2px solid var(--gold);
+  border-radius: 0 0 1px 0;
+  opacity: 0.75;
+  transform: translateY(-65%) rotate(45deg);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.landing-v2 .dq--trigger:hover .dq__caret {
+  opacity: 1;
+  transform: translateY(-45%) rotate(45deg);
+}
+
+/* ---------- THEME TOGGLE — smaller sun / moon icon ---------- */
+.landing-v2 .theme-toggle {
+  width: clamp(40px, 4.4vw, 58px);
+  height: clamp(40px, 4.4vw, 58px);
+}
+
+/* ---------- HERO TITLE — smaller "Cinque Terre" ---------- */
+.landing-v2 .hero h1 {
+  font-size: clamp(2.2rem, 8vw, 6.4rem);
+}
+
+/* ---------- CLOUDS — drift below the "Cinque Terre" title ----------
+   The cloud band is pinned to the very top by default; push it down so the
+   three clouds sit under the title. `top` (not transform) keeps the
+   existing horizontal drift animation intact. */
+.landing-v2 .clouds {
+  top: 15vh;
+}
+
+/* ---------- BOOKING META LINE — readable, bolder, lighter ---------- */
+.landing-v2 .book-form .meta {
+  font-family: "Jost", system-ui, sans-serif;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  line-height: 1.7;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--cream);
+  opacity: 0.92;
+}
+/* keep each "· fact" together so a separator never starts a new line */
+.landing-v2 .book-form .meta .meta-seg {
+  white-space: nowrap;
+}
+.landing-v2 .book-form .meta .meta-dot {
+  margin: 0 0.18em 0 0.04em;
+  color: var(--gold);
+  opacity: 0.9;
+}
+
+/* ---------- PRICE ROW — readable, not cursive + more top space ---------- */
+.landing-v2 .book-form .total-row {
+  margin-top: 26px;
+}
+.landing-v2 .book-form .price-note {
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  color: var(--gold);
+  opacity: 0.85;
+}
+.landing-v2 .book-form .total-row .t-label {
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+.landing-v2 .book-form .total-row .t-val {
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 2.3rem;
+  letter-spacing: 0.01em;
+}
+.landing-v2 .book-form .t-per {
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* ---------- WHEEL PICKER — align date & guest rows ----------
+   Date rows have two lines (e.g. "Friday" + "19 June") while guest rows
+   have one ("5"), so the main word sat higher than the matching number.
+   Keep the primary label centred in both columns by taking the date's
+   sub-line out of flow, so the labels line up across the two wheels. */
+.landing-v2 .wheel__item {
+  position: relative;
+}
+.landing-v2 .wheel__sub {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 5px;
+  text-align: center;
+  line-height: 1;
+}
+
+/* ---------- CONFIRM STEP — readable summary line ----------
+   "Day after · 17 June · 3 guests · $270" was set in cursive. */
+.landing-v2 .book-form .send-summary {
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+  color: var(--cream);
+  opacity: 0.95;
+}
+
+/* ---------- TOUCH DEVICES — drop the custom (laggy) cursor ----------
+   The site hides the native cursor and draws a custom ring that follows
+   with easing — which feels "slow" when a pointer is used on a phone /
+   tablet. On coarse pointers, hide the custom cursor and restore native. */
+@media (pointer: coarse) {
+  .landing-v2 .cursor,
+  .landing-v2 .cursor-ring {
+    display: none !important;
+  }
+  .landing-v2 {
+    cursor: auto;
+  }
+  .landing-v2 a,
+  .landing-v2 button,
+  .landing-v2 .cta,
+  .landing-v2 .dq__opt,
+  .landing-v2 .gq-chip,
+  .landing-v2 .dq-pick__opt,
+  .landing-v2 .book-form .pay,
+  .landing-v2 .book-close,
+  .landing-v2 .theme-toggle {
+    cursor: pointer !important;
+  }
+  .landing-v2 .wheel__scroll,
+  .landing-v2 .book-overlay {
+    cursor: auto !important;
+  }
+}
+
+/* ---------- MOBILE: 100% responsive ---------- */
+@media (max-width: 640px) {
+  /* safety net: never allow sideways scroll on phones */
+  .landing-v2 {
+    overflow-x: clip;
+  }
+  .landing-v2 .hero {
+    padding: 5vh 20px 0;
+  }
+  /* the wide 0.42em tracking overflows narrow screens — tighten it */
+  .landing-v2 .hero .eyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.24em;
+    margin-bottom: 16px;
+  }
+  /* title scales down and may wrap to two lines instead of clipping */
+  .landing-v2 .hero h1 {
+    font-size: clamp(2.3rem, 13vw, 3.8rem);
+    letter-spacing: 0.01em;
+    line-height: 0.98;
+  }
+  .landing-v2 .hero .tagline {
+    font-size: clamp(1.05rem, 5.2vw, 1.55rem);
+    letter-spacing: 0.03em;
+    line-height: 1.3;
+  }
+  .landing-v2 .hero .sea-copy {
+    padding: 0 18px;
+  }
+  .landing-v2 .cta-wrap {
+    bottom: max(10vh, calc(env(safe-area-inset-bottom, 0px) + 82px));
+    padding: 0 20px;
+  }
+  /* full-width tap target, capped so it stays elegant on big phones */
+  .landing-v2 .cta {
+    width: 100%;
+    max-width: 360px;
+    padding: 17px 24px;
+  }
+  /* booking card + overlay fit small screens */
+  .landing-v2 .book-overlay {
+    padding: 26px 14px;
+  }
+  .landing-v2 .book-form {
+    padding: 34px 22px 30px;
+    border-radius: 26px;
+  }
+  /* date & guests sit close together instead of spanning the full width */
+  .landing-v2 .book-form .row {
+    justify-content: center;
+    gap: 10px;
+  }
+  .landing-v2 .book-form .row .field {
+    flex: 0 1 132px;
+    min-width: 0;
+  }
+  /* centre the labels over their (now narrower) wheels */
+  .landing-v2 .book-form .row .field .field-head {
+    justify-content: center;
+  }
+  /* shorter wheel: options fade out right after the field edge, so there's
+     far less empty/faded space above & below the selected row.
+     padding-block must stay (height − 50)/2 to keep the row centred. */
+  .landing-v2 .book-form .wheel {
+    height: 170px;
+  }
+  .landing-v2 .book-form .wheel__scroll {
+    padding-block: 60px;
+  }
+  /* nudge the clouds a little further down on phones */
+  .landing-v2 .clouds {
+    top: 20vh;
+  }
+}
+
+/* very small screens — keep the CTA label on one line */
+@media (max-width: 380px) {
+  .landing-v2 .hero h1 {
+    font-size: clamp(2rem, 12vw, 2.7rem);
+  }
+  .landing-v2 .cta {
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+  }
+  /* keep the one-line meta inside the narrow card */
+  .landing-v2 .book-form .meta {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+  }
+}
