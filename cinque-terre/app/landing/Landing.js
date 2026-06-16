@@ -33,6 +33,8 @@ export default function Landing() {
   // Scroll / swipe / button all bring the booking card in as an overlay —
   // same screen, no navigation.
   const [showBook, setShowBook] = useState(false);
+  const [about, setAbout] = useState(false); // "about us" — the sixth window
+  const aboutSeen = useRef(false);
   useEffect(() => {
     const onWheel = (e) => {
       if (e.deltaY > 12) setShowBook(true);
@@ -45,7 +47,14 @@ export default function Landing() {
       if (ty - (e.changedTouches[0]?.clientY ?? ty) > 44) setShowBook(true);
     };
     const onKey = (e) => {
-      if (e.key === "Escape") setShowBook(false);
+      if (e.key !== "Escape") return;
+      if (!aboutSeen.current) {
+        aboutSeen.current = true;
+        setAbout(true);
+      } else {
+        setShowBook(false);
+        setAbout(false);
+      }
     };
     window.addEventListener("wheel", onWheel, { passive: true });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
@@ -58,6 +67,22 @@ export default function Landing() {
       window.removeEventListener("keydown", onKey);
     };
   }, []);
+
+  // Exit-intent: the first attempt to close the booking opens "about us"
+  // (the sixth window); a second attempt actually closes.
+  function tryClose() {
+    if (!aboutSeen.current) {
+      aboutSeen.current = true;
+      setAbout(true);
+      return;
+    }
+    setShowBook(false);
+    setAbout(false);
+  }
+  function closeAll() {
+    setShowBook(false);
+    setAbout(false);
+  }
 
   return (
     <div className="landing-v2">
@@ -125,22 +150,73 @@ export default function Landing() {
       <div
         className={"book-overlay" + (showBook ? " open" : "")}
         onClick={(e) => {
-          if (e.target === e.currentTarget) setShowBook(false);
+          if (e.target === e.currentTarget) tryClose();
         }}
       >
         <div className="book-overlay__inner">
-          {/* anchored to the card's top-right corner (absolute, not fixed)
-              so it sits just above the card and is identical across browsers */}
-          <button
-            className="book-close"
-            onClick={() => setShowBook(false)}
-            aria-label="Lukk"
-          >
-            ✕
-          </button>
-          <p className="section-label">Prenota</p>
-          <h2 className="section-title">A private day on the Ligurian blue</h2>
-          <BookingForm active={showBook} />
+          {about ? (
+            <>
+              <button
+                className="book-close"
+                onClick={closeAll}
+                aria-label="Lukk"
+              >
+                ✕
+              </button>
+              <p className="section-label">Chi siamo</p>
+              <h2 className="section-title">The crew of the Paolona</h2>
+              <div className="crew">
+                <div className="crew-card">
+                  <div className="crew-photo" aria-hidden="true">
+                    ♀
+                  </div>
+                  <p className="crew-name">Lei · 38</p>
+                  <p className="crew-seeks">
+                    Seeking a gentleman, 72+ — and generously rich.
+                  </p>
+                </div>
+                <div className="crew-card">
+                  <div className="crew-photo" aria-hidden="true">
+                    ♂
+                  </div>
+                  <p className="crew-name">Lui · 42</p>
+                  <p className="crew-seeks">
+                    Seeking ladies, 65+, for champagne at sunset.
+                  </p>
+                </div>
+              </div>
+              <p className="about-note">
+                Real names, photos (and fewer jokes) coming soon.
+              </p>
+              <button type="button" className="pay" onClick={closeAll}>
+                Close
+              </button>
+              <button
+                type="button"
+                className="confirm__back"
+                onClick={() => setAbout(false)}
+              >
+                ← Back to booking
+              </button>
+            </>
+          ) : (
+            <>
+              {/* anchored to the card's top-right corner (absolute, not fixed)
+                  so it sits just above the card, identical across browsers */}
+              <button
+                className="book-close"
+                onClick={tryClose}
+                aria-label="Lukk"
+              >
+                ✕
+              </button>
+              <p className="section-label">Prenota</p>
+              <h2 className="section-title">
+                A private day on the Ligurian blue
+              </h2>
+              <BookingForm active={showBook} />
+            </>
+          )}
         </div>
       </div>
     </div>

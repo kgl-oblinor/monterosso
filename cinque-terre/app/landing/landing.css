@@ -284,6 +284,52 @@
   box-shadow: 0 0 0 3px rgba(234, 210, 126, 0.5);
 }
 
+/* "Chi siamo" — the sixth window (exit-intent about-us) */
+.landing-v2 .crew {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 8px 0 6px;
+}
+.landing-v2 .crew-card {
+  text-align: center;
+}
+.landing-v2 .crew-photo {
+  width: 82px;
+  height: 82px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  border: 2px solid var(--plum);
+  background: radial-gradient(120% 120% at 35% 25%, #f4ead0 0%, #d9b86a 60%, #c39d4b 100%);
+  display: grid;
+  place-items: center;
+  font-size: 1.7rem;
+  color: rgba(7, 24, 42, 0.55);
+  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.5),
+    0 8px 18px -10px rgba(2, 10, 20, 0.5);
+}
+.landing-v2 .crew-name {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--plum);
+  margin: 0 0 5px;
+}
+.landing-v2 .crew-seeks {
+  font-size: 0.88rem;
+  line-height: 1.45;
+  font-style: italic;
+  color: rgba(7, 24, 42, 0.72);
+  margin: 0;
+}
+.landing-v2 .about-note {
+  text-align: center;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: rgba(7, 24, 42, 0.5);
+  margin: 12px 0 14px;
+}
+
 /* ---------- BOOKING FIELDS — the whole tile opens the picker ----------
    The value tile itself is now the trigger (no separate "Pick a date" /
    "Pick a number" tile). A small caret signals it's tappable. */
