@@ -527,7 +527,7 @@ function BookingForm({ active }) {
           <span className="meta-seg">{when}</span>
         </p>
         <div className="field">
-          <span className="field-head">How many in your party?</span>
+          <span className="field-head step-q">How many in your party?</span>
           <GuestQuick value={guests} onChange={setGuests} max={tour.maxGuests} />
           <WheelPicker
             ariaLabel="Number of guests"
@@ -655,7 +655,7 @@ function BookingForm({ active }) {
         </span>
       </p>
       <div className="field">
-        <span className="field-head">Which day?</span>
+        <span className="field-head step-q">Which day?</span>
         <DateQuick value={date} onChange={setDate} days={days} />
         <WheelPicker
           ariaLabel="Pick a day"
