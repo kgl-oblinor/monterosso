@@ -233,6 +233,8 @@ function BookingForm({ active }) {
   const [sent, setSent] = useState(false);
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [slot, setSlot] = useState("sunset");
+  const [boarding, setBoarding] = useState("no");
 
   useEffect(() => {
     setDays(buildDays(21));
@@ -264,10 +266,14 @@ function BookingForm({ active }) {
         e.preventDefault();
         if (done || sent) return;
         if (step === "date") nextFromDate();
+        else if (step === "guests") setStep("time");
+        else if (step === "time") setStep("aboard");
         else review();
       } else if (e.key === "ArrowLeft") {
         e.preventDefault();
         if (done) setDone(false);
+        else if (step === "aboard") setStep("time");
+        else if (step === "time") setStep("guests");
         else if (step === "guests") setStep("date");
       }
     };
@@ -280,6 +286,9 @@ function BookingForm({ active }) {
   const code = makeCode(date, guests);
   const when = sel ? `${sel.label} · ${sel.small}` : date;
   const total = totalFor(guests);
+  const slotLabel =
+    { morning: "Morning", afternoon: "Afternoon", sunset: "Sunset" }[slot] ||
+    "Sunset";
 
   // SCREEN 3 — confirmation: combined info + add-to-calendar + share
   if (sent) {
@@ -297,6 +306,10 @@ function BookingForm({ active }) {
             <strong>{when}</strong>
           </div>
           <div className="conf-row">
+            <span>Departure</span>
+            <strong>{slotLabel}</strong>
+          </div>
+          <div className="conf-row">
             <span>Guests</span>
             <strong>
               {guests} {guests === 1 ? "guest" : "guests"}
@@ -310,6 +323,12 @@ function BookingForm({ active }) {
             <span>Code</span>
             <strong>{code}</strong>
           </div>
+          {boarding === "yes" && (
+            <div className="conf-row">
+              <span>Aboard</span>
+              <strong>A hand, please</strong>
+            </div>
+          )}
         </div>
         <p className="cal-label">Add to calendar</p>
         <div className="cal-row">
@@ -375,6 +394,8 @@ function BookingForm({ active }) {
                 guests,
                 phone: ph,
                 email: em,
+                slot,
+                boarding,
               }),
             ],
             { type: "application/json" }
@@ -382,9 +403,11 @@ function BookingForm({ active }) {
         );
       } catch {}
       // 2) notify the business on WhatsApp with the guest's details
-      const msg = `New booking request — Monterosso sea tour\nCode: ${code}\n${when} · ${guests} ${
+      const msg = `New booking request — Monterosso sea tour\nCode: ${code}\n${when} · ${slotLabel} · ${guests} ${
         guests === 1 ? "guest" : "guests"
-      } · $${total}\nContact: ${ph || "—"}${em ? " · " + em : ""}`;
+      } · $${total}${
+        boarding === "yes" ? "\nNeeds a hand getting aboard" : ""
+      }\nContact: ${ph || "—"}${em ? " · " + em : ""}`;
       try {
         window.open(
           `https://wa.me/${bizDigits}?text=${encodeURIComponent(msg)}`,
@@ -432,7 +455,8 @@ function BookingForm({ active }) {
             />
           </label>
           <p className="send-summary">
-            {when} · {guests} {guests === 1 ? "guest" : "guests"} · ${total}
+            {when} · {slotLabel} · {guests}{" "}
+            {guests === 1 ? "guest" : "guests"} · ${total}
           </p>
           <button type="submit" className="pay">
             Send request
@@ -474,7 +498,7 @@ function BookingForm({ active }) {
             }))}
           />
         </div>
-        <button className="pay" onClick={review}>
+        <button className="pay" onClick={() => setStep("time")}>
           Next
         </button>
         <button
@@ -488,6 +512,91 @@ function BookingForm({ active }) {
           Back
         </button>
         <p className="reassure">No prepayment · ${tour.priceUsd} per guest</p>
+      </div>
+    );
+  }
+
+  // STEP 3 — departure time (single popup, big tap tiles)
+  if (step === "time") {
+    const opts = [
+      { v: "morning", label: "Morning", sub: "calm, cool water" },
+      { v: "afternoon", label: "Afternoon", sub: "sun on the coast" },
+      { v: "sunset", label: "Sunset", sub: "golden hour & aperitivo" },
+    ];
+    return (
+      <div className="book-form">
+        <p className="meta">
+          <span className="meta-seg">{when}</span>
+        </p>
+        <span className="field-head step-q">
+          When would you like to set off?
+        </span>
+        <div className="choice-grid">
+          {opts.map((o) => (
+            <button
+              type="button"
+              key={o.v}
+              className={"choice" + (slot === o.v ? " is-sel" : "")}
+              onClick={() => setSlot(o.v)}
+            >
+              <span className="choice-label">{o.label}</span>
+              <span className="choice-sub">{o.sub}</span>
+            </button>
+          ))}
+        </div>
+        <button className="pay" onClick={() => setStep("aboard")}>
+          Next
+        </button>
+        <button
+          type="button"
+          className="confirm__back"
+          onClick={() => setStep("guests")}
+        >
+          Back
+        </button>
+      </div>
+    );
+  }
+
+  // STEP 4 — a hand getting aboard? (single popup, big tap tiles)
+  if (step === "aboard") {
+    return (
+      <div className="book-form">
+        <p className="meta">
+          <span className="meta-seg">
+            {when} · {slotLabel}
+          </span>
+        </p>
+        <span className="field-head step-q">
+          Will anyone need a hand getting aboard?
+        </span>
+        <div className="choice-grid choice-grid--2">
+          <button
+            type="button"
+            className={"choice" + (boarding === "yes" ? " is-sel" : "")}
+            onClick={() => setBoarding("yes")}
+          >
+            <span className="choice-label">Yes, please</span>
+            <span className="choice-sub">we&apos;ll be ready to help</span>
+          </button>
+          <button
+            type="button"
+            className={"choice" + (boarding === "no" ? " is-sel" : "")}
+            onClick={() => setBoarding("no")}
+          >
+            <span className="choice-label">No, we&apos;re fine</span>
+          </button>
+        </div>
+        <button className="pay" onClick={review}>
+          Next
+        </button>
+        <button
+          type="button"
+          className="confirm__back"
+          onClick={() => setStep("time")}
+        >
+          Back
+        </button>
       </div>
     );
   }

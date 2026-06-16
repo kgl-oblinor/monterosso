@@ -21,12 +21,26 @@ export async function POST(request) {
     const country = (cf?.country || "").toString().slice(0, 8);
     const phone = body.phone ? String(body.phone).slice(0, 40) : null;
     const email = body.email ? String(body.email).slice(0, 120) : null;
+    const slot = body.slot ? String(body.slot).slice(0, 20) : null;
+    const boarding = body.boarding ? String(body.boarding).slice(0, 8) : null;
 
     await db
       .prepare(
-        "INSERT INTO events (type, code, dato, guests, city, country, ts, phone, email) VALUES (?,?,?,?,?,?,?,?,?)"
+        "INSERT INTO events (type, code, dato, guests, city, country, ts, phone, email, slot, boarding) VALUES (?,?,?,?,?,?,?,?,?,?,?)"
       )
-      .bind(type, code, dato, guests, city, country, new Date().toISOString(), phone, email)
+      .bind(
+        type,
+        code,
+        dato,
+        guests,
+        city,
+        country,
+        new Date().toISOString(),
+        phone,
+        email,
+        slot,
+        boarding
+      )
       .run();
 
     return Response.json({ ok: true });

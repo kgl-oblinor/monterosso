@@ -330,6 +330,62 @@
   margin: 12px 0 14px;
 }
 
+/* big, senior-friendly choice tiles for the intermediate steps */
+.landing-v2 .field-head.step-q {
+  display: block;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+  font-size: 1.1rem;
+  line-height: 1.35;
+  color: rgba(7, 24, 42, 0.75);
+  margin: 10px 0 16px;
+}
+.landing-v2 .choice-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+.landing-v2 .choice-grid--2 {
+  grid-template-columns: 1fr 1fr;
+}
+.landing-v2 .choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 66px;
+  padding: 16px 14px;
+  border-radius: 14px;
+  border: 2px solid rgba(7, 24, 42, 0.22);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--plum);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: border-color 0.15s ease, background 0.15s ease,
+    transform 0.12s ease, box-shadow 0.15s ease;
+}
+.landing-v2 .choice:active {
+  transform: scale(0.98);
+}
+.landing-v2 .choice.is-sel {
+  border-color: var(--plum);
+  background: linear-gradient(177deg, #f6ecc4 0%, #ecdaa0 100%);
+  box-shadow: 0 10px 24px -14px rgba(2, 10, 20, 0.55);
+}
+.landing-v2 .choice-label {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.landing-v2 .choice-sub {
+  font-size: 0.86rem;
+  color: rgba(7, 24, 42, 0.6);
+}
+
 /* ---------- BOOKING FIELDS — the whole tile opens the picker ----------
    The value tile itself is now the trigger (no separate "Pick a date" /
    "Pick a number" tile). A small caret signals it's tappable. */
