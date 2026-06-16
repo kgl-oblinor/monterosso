@@ -1,7 +1,9 @@
-import Landing from "./Landing";
+import Landing from "./landing/Landing";
+import "./landing/landing.css";
 
-// Render on each request so a deploy's content shows immediately, instead of
-// being served from the long-lived (1-year) full-route SSG cache.
+// The home page now serves the v2 landing experience (in app/landing/), which
+// has the full booking flow incl. the calendar/share step. Render on each
+// request so deploys show immediately.
 export const dynamic = "force-dynamic";
 
 export default function Home() {
