@@ -17,7 +17,7 @@ function fmt(ts) {
   }
 }
 
-const CHAN = { whatsapp: "WhatsApp", sms: "SMS", call: "Ring" };
+const CHAN = { whatsapp: "WhatsApp", sms: "SMS", call: "Ring", lead: "Lead" };
 
 export default async function Admin({ searchParams }) {
   const sp = (await searchParams) || {};
@@ -65,7 +65,7 @@ export default async function Admin({ searchParams }) {
     today = vt?.n || 0;
     const r = await db
       .prepare(
-        "SELECT type, code, dato, guests, city, country, ts FROM events WHERE type IN ('whatsapp','sms','call') ORDER BY id DESC LIMIT 200"
+        "SELECT type, code, dato, guests, city, country, ts, phone, email FROM events WHERE type IN ('whatsapp','sms','call','lead') ORDER BY id DESC LIMIT 200"
       )
       .all();
     msgs = r?.results || [];
@@ -101,6 +101,7 @@ export default async function Admin({ searchParams }) {
               <th>Kode</th>
               <th>Dato</th>
               <th>Gjester</th>
+              <th>Kontakt</th>
               <th>Sted</th>
             </tr>
           </thead>
@@ -116,6 +117,9 @@ export default async function Admin({ searchParams }) {
                 <td className="mono">{m.code || "—"}</td>
                 <td>{m.dato || "—"}</td>
                 <td>{m.guests ?? "—"}</td>
+                <td>
+                  {[m.phone, m.email].filter(Boolean).join(" · ") || "—"}
+                </td>
                 <td>
                   {[m.city, m.country].filter(Boolean).join(", ") || "—"}
                 </td>

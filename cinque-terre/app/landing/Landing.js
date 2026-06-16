@@ -155,8 +155,8 @@ function BookingForm({ active }) {
   const [step, setStep] = useState("date"); // "date" → "guests" → review
   const [done, setDone] = useState(false);
   const [sent, setSent] = useState(false);
-  const [method, setMethod] = useState("call");
-  const [channel, setChannel] = useState("whatsapp");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     setDays(buildDays(21));
@@ -211,13 +211,9 @@ function BookingForm({ active }) {
       <div className="book-form confirm-sent">
         <p className="meta">You&apos;re all set</p>
         <p className="confirm-lead">
-          Request sent — we&apos;ll confirm your place by{" "}
-          {method === "call"
-            ? "phone"
-            : channel === "imessage"
-            ? "iMessage"
-            : "WhatsApp"}
-          .
+          Request sent — we&apos;ll be in touch at{" "}
+          <strong>{phone || email || "your contact"}</strong> to confirm your
+          place.
         </p>
         <div className="conf-summary">
           <div className="conf-row">
@@ -281,83 +277,92 @@ function BookingForm({ active }) {
   }
 
   if (done) {
-    const tel = tour.phone.replace(/\s/g, "");
-    const digits = tour.phone.replace(/[^\d]/g, "");
-    const msg = `Hi! I'd like to book the Monterosso sea tour. Code: ${code} — ${when}, ${guests} ${guests === 1 ? "guest" : "guests"}, $${total}.`;
-    const enc = encodeURIComponent(msg);
-    const href =
-      method === "call"
-        ? `tel:${tel}`
-        : channel === "imessage"
-        ? `sms:${tel}&body=${enc}`
-        : `https://wa.me/${digits}?text=${enc}`;
-    const logType = method === "call" ? "call" : channel;
-    const newTab = method === "text" && channel === "whatsapp";
-    const log = () => {
+    const bizDigits = tour.phone.replace(/[^\d]/g, ""); // business WhatsApp
+    const submit = () => {
+      setError("");
+      const ph = phone.trim();
+      const em = email.trim();
+      if (!ph && !em) {
+        setError("Add a phone/WhatsApp number or email so we can reach you.");
+        return;
+      }
+      // 1) save the lead to our backend (D1)
       try {
         navigator.sendBeacon?.(
           "/api/track",
-          new Blob([JSON.stringify({ type: logType, code, dato: date, guests })], {
-            type: "application/json",
-          })
+          new Blob(
+            [
+              JSON.stringify({
+                type: "lead",
+                code,
+                dato: date,
+                guests,
+                phone: ph,
+                email: em,
+              }),
+            ],
+            { type: "application/json" }
+          )
         );
       } catch {}
+      // 2) notify the business on WhatsApp with the guest's details
+      const msg = `New booking request — Monterosso sea tour\nCode: ${code}\n${when} · ${guests} ${
+        guests === 1 ? "guest" : "guests"
+      } · $${total}\nContact: ${ph || "—"}${em ? " · " + em : ""}`;
+      try {
+        window.open(
+          `https://wa.me/${bizDigits}?text=${encodeURIComponent(msg)}`,
+          "_blank",
+          "noopener"
+        );
+      } catch {}
+      setSent(true);
     };
-    const mTile = (val) =>
-      `dq__opt dq--t1${method === val ? " is-sel dq--default" : ""}`;
-    const cTile = (val) =>
-      `dq__opt dq--t1${channel === val ? " is-sel dq--default" : ""}`;
     return (
       <div className="book-form">
         <p className="meta">Confirm &amp; send</p>
-        <span className="field-head">How to send</span>
-        <div className="chan-tiles">
-          <button
-            type="button"
-            className={mTile("call")}
-            onClick={() => setMethod("call")}
-          >
-            <span className="dq__label">Call</span>
-          </button>
-          <button
-            type="button"
-            className={mTile("text")}
-            onClick={() => setMethod("text")}
-          >
-            <span className="dq__label">Text</span>
-          </button>
-        </div>
-        <div className="chan-tiles chan-tiles--sub">
-          <button
-            type="button"
-            className={cTile("whatsapp")}
-            onClick={() => setChannel("whatsapp")}
-          >
-            <span className="dq__label">WhatsApp</span>
-          </button>
-          <button
-            type="button"
-            className={cTile("imessage")}
-            onClick={() => setChannel("imessage")}
-          >
-            <span className="dq__label">iMessage</span>
-          </button>
-        </div>
-        <p className="send-summary">
-          {when} · {guests} {guests === 1 ? "guest" : "guests"} · ${total}
+        <p className="confirm-lead">
+          Leave your details — we&apos;ll confirm your spot.
         </p>
-        <a
-          className="pay"
-          href={href}
-          target={newTab ? "_blank" : undefined}
-          rel="noopener noreferrer"
-          onClick={() => {
-            log();
-            setSent(true);
+        <form
+          className="contact-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            submit();
           }}
         >
-          Send request
-        </a>
+          <label className="field contact-field">
+            <span className="field-head">Phone / WhatsApp</span>
+            <input
+              type="tel"
+              name="tel"
+              autoComplete="tel"
+              inputMode="tel"
+              placeholder="+39 …"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </label>
+          <label className="field contact-field">
+            <span className="field-head">Email</span>
+            <input
+              type="email"
+              name="email"
+              autoComplete="email"
+              inputMode="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </label>
+          <p className="send-summary">
+            {when} · {guests} {guests === 1 ? "guest" : "guests"} · ${total}
+          </p>
+          <button type="submit" className="pay">
+            Send request
+          </button>
+        </form>
+        <p className="err">{error}</p>
         <button
           type="button"
           className="confirm__back"

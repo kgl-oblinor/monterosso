@@ -6,7 +6,7 @@ export async function POST(request) {
   try {
     const body = await request.json().catch(() => ({}));
     const type = String(body.type || "").slice(0, 20);
-    if (!["visit", "whatsapp", "sms", "call"].includes(type)) {
+    if (!["visit", "whatsapp", "sms", "call", "lead"].includes(type)) {
       return Response.json({ ok: false }, { status: 400 });
     }
 
@@ -19,12 +19,14 @@ export async function POST(request) {
     const guests = Number.isFinite(+body.guests) ? +body.guests : null;
     const city = (cf?.city || "").toString().slice(0, 80);
     const country = (cf?.country || "").toString().slice(0, 8);
+    const phone = body.phone ? String(body.phone).slice(0, 40) : null;
+    const email = body.email ? String(body.email).slice(0, 120) : null;
 
     await db
       .prepare(
-        "INSERT INTO events (type, code, dato, guests, city, country, ts) VALUES (?,?,?,?,?,?,?)"
+        "INSERT INTO events (type, code, dato, guests, city, country, ts, phone, email) VALUES (?,?,?,?,?,?,?,?,?)"
       )
-      .bind(type, code, dato, guests, city, country, new Date().toISOString())
+      .bind(type, code, dato, guests, city, country, new Date().toISOString(), phone, email)
       .run();
 
     return Response.json({ ok: true });

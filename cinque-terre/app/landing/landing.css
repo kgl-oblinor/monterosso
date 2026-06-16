@@ -254,6 +254,36 @@
   margin-top: 14px;
 }
 
+/* contact-capture form on the confirm step */
+.landing-v2 .contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.landing-v2 .contact-field {
+  gap: 6px;
+}
+.landing-v2 .contact-field input {
+  width: 100%;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--plum);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1.5px solid rgba(7, 24, 42, 0.25);
+  border-radius: 12px;
+  padding: 13px 14px;
+  outline: none;
+  -webkit-appearance: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.landing-v2 .contact-field input::placeholder {
+  color: rgba(7, 24, 42, 0.4);
+}
+.landing-v2 .contact-field input:focus {
+  border-color: var(--plum);
+  box-shadow: 0 0 0 3px rgba(234, 210, 126, 0.5);
+}
+
 /* ---------- BOOKING FIELDS — the whole tile opens the picker ----------
    The value tile itself is now the trigger (no separate "Pick a date" /
    "Pick a number" tile). A small caret signals it's tappable. */
