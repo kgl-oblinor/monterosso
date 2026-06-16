@@ -152,6 +152,7 @@ function BookingForm({ active }) {
   const [guests, setGuests] = useState(2);
   const [error, setError] = useState("");
   const [days, setDays] = useState([]);
+  const [step, setStep] = useState("date"); // "date" → "guests" → review
   const [done, setDone] = useState(false);
   const [sent, setSent] = useState(false);
   const [method, setMethod] = useState("call");
@@ -162,6 +163,14 @@ function BookingForm({ active }) {
     setDate((d) => d || todayISO()); // default to today, set on the client
   }, []);
 
+  function nextFromDate() {
+    setError("");
+    if (!date) {
+      setError("Please pick a date for your tour.");
+      return;
+    }
+    setStep("guests");
+  }
   function review() {
     setError("");
     if (!date) {
@@ -171,22 +180,25 @@ function BookingForm({ active }) {
     setDone(true);
   }
 
-  // ← / → step between the two stages while the popup is open
+  // ← / → step through date → guests → confirm while the popup is open
   useEffect(() => {
     if (!active) return;
     const onKey = (e) => {
       if (e.key === "ArrowRight") {
         e.preventDefault();
-        if (!done) review();
+        if (done || sent) return;
+        if (step === "date") nextFromDate();
+        else review();
       } else if (e.key === "ArrowLeft") {
         e.preventDefault();
         if (done) setDone(false);
+        else if (step === "guests") setStep("date");
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, done, date]);
+  }, [active, done, sent, step, date]);
 
   const sel = days.find((d) => d.iso === date);
   const code = makeCode(date, guests);
@@ -349,7 +361,11 @@ function BookingForm({ active }) {
         <button
           type="button"
           className="confirm__back"
-          onClick={() => setDone(false)}
+          onClick={() => {
+            setError("");
+            setDone(false);
+            setStep("date");
+          }}
         >
           Change
         </button>
@@ -357,30 +373,15 @@ function BookingForm({ active }) {
     );
   }
 
-  return (
-    <div className="book-form">
-      <p className="meta">
-        <span className="meta-seg">A private sea tour from Monterosso</span>{" "}
-        <span className="meta-seg">
-          <span className="meta-dot">·</span> {tour.durationHours} hours
-        </span>{" "}
-        <span className="meta-seg">
-          <span className="meta-dot">·</span> up to {tour.maxGuests} guests
-        </span>
-      </p>
-      <div className="row">
+  // STEP 2 — guests (single popup), after the date
+  if (step === "guests") {
+    return (
+      <div className="book-form">
+        <p className="meta">
+          <span className="meta-seg">{when}</span>
+        </p>
         <div className="field">
-          <span className="field-head">Date</span>
-          <DateQuick value={date} onChange={setDate} days={days} />
-          <WheelPicker
-            ariaLabel="Pick a day"
-            value={date}
-            onChange={setDate}
-            items={days.map((d) => ({ value: d.iso, label: d.label, sub: d.small }))}
-          />
-        </div>
-        <div className="field">
-          <span className="field-head">Guests</span>
+          <span className="field-head">How many guests?</span>
           <GuestQuick value={guests} onChange={setGuests} max={tour.maxGuests} />
           <WheelPicker
             ariaLabel="Number of guests"
@@ -392,26 +393,63 @@ function BookingForm({ active }) {
             }))}
           />
         </div>
+        <div className="total-row">
+          <span className="price-note">
+            {discountFor(guests) > 0
+              ? `$${totalFor(guests)} total · ${Math.round(
+                  discountFor(guests) * 100
+                )}% off`
+              : `$${totalFor(guests)} total`}
+          </span>
+          <span className="t-val">
+            ${perPersonFor(guests)} <span className="t-per">/ person</span>
+          </span>
+        </div>
+        <button className="pay" onClick={review}>
+          Next
+        </button>
+        <button
+          type="button"
+          className="confirm__back"
+          onClick={() => {
+            setError("");
+            setStep("date");
+          }}
+        >
+          Back
+        </button>
+        <p className="reassure">No prepayment · ${tour.priceUsd} per guest</p>
       </div>
-      <div className="total-row">
-        <span className="price-note">
-          {discountFor(guests) > 0
-            ? `$${totalFor(guests)} total · ${Math.round(
-                discountFor(guests) * 100
-              )}% off`
-            : `$${totalFor(guests)} total`}
+    );
+  }
+
+  // STEP 1 — date (single popup)
+  return (
+    <div className="book-form">
+      <p className="meta">
+        <span className="meta-seg">A private sea tour from Monterosso</span>{" "}
+        <span className="meta-seg">
+          <span className="meta-dot">·</span> {tour.durationHours} hours
+        </span>{" "}
+        <span className="meta-seg">
+          <span className="meta-dot">·</span> up to {tour.maxGuests} guests
         </span>
-        <span className="t-val">
-          ${perPersonFor(guests)} <span className="t-per">/ person</span>
-        </span>
+      </p>
+      <div className="field">
+        <span className="field-head">Which day?</span>
+        <DateQuick value={date} onChange={setDate} days={days} />
+        <WheelPicker
+          ariaLabel="Pick a day"
+          value={date}
+          onChange={setDate}
+          items={days.map((d) => ({ value: d.iso, label: d.label, sub: d.small }))}
+        />
       </div>
-      <button className="pay" onClick={review}>
-        Check availability
+      <button className="pay" onClick={nextFromDate}>
+        Next
       </button>
       <p className="err">{error}</p>
-      <p className="reassure">
-        No prepayment · ${tour.priceUsd} per guest
-      </p>
+      <p className="reassure">No prepayment · ${tour.priceUsd} per guest</p>
     </div>
   );
 }
