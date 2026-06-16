@@ -8,4 +8,6 @@ export const tour = {
   durationHours: 3,
   maxGuests: 8,
   phone: "+39 351 234 5678",
+  // TODO: replace with the real inbox — used by the "Email" send option
+  email: "hello@monterosso-cinque-terre.com",
 };

@@ -235,6 +235,8 @@ function BookingForm({ active }) {
   const [email, setEmail] = useState("");
   const [slot, setSlot] = useState("sunset");
   const [boarding, setBoarding] = useState("no");
+  const [wantWa, setWantWa] = useState(true);
+  const [wantMail, setWantMail] = useState(true);
 
   useEffect(() => {
     setDays(buildDays(21));
@@ -402,19 +404,35 @@ function BookingForm({ active }) {
           )
         );
       } catch {}
-      // 2) notify the business on WhatsApp with the guest's details
-      const msg = `New booking enquiry — Monterosso sea tour\nCode: ${code}\n${when} · ${slotLabel} · ${guests} ${
+      // 2) fire the enabled channels — WhatsApp first, then email
+      const details = `Monterosso sea tour\nCode: ${code}\n${when} · ${slotLabel} · ${guests} ${
         guests === 1 ? "guest" : "guests"
       } · $${total}${
-        boarding === "yes" ? "\nNeeds a hand getting aboard" : ""
+        boarding === "yes" ? "\nNeeds a hand coming aboard" : ""
       }\nContact: ${ph || "—"}${em ? " · " + em : ""}`;
-      try {
-        window.open(
-          `https://wa.me/${bizDigits}?text=${encodeURIComponent(msg)}`,
-          "_blank",
-          "noopener"
-        );
-      } catch {}
+      if (wantWa) {
+        try {
+          // wa.me is the universal link — opens the app on iOS/Android and
+          // WhatsApp Web on desktop, so it works on every device
+          window.open(
+            `https://wa.me/${bizDigits}?text=${encodeURIComponent(
+              "New booking enquiry — " + details
+            )}`,
+            "_blank",
+            "noopener"
+          );
+        } catch {}
+      }
+      if (wantMail) {
+        const mailto = `mailto:${tour.email}?subject=${encodeURIComponent(
+          `Booking enquiry — Monterosso sea tour (${code})`
+        )}&body=${encodeURIComponent(details)}`;
+        try {
+          // let WhatsApp open first, then hand off to the mail client
+          if (wantWa) setTimeout(() => (window.location.href = mailto), 600);
+          else window.location.href = mailto;
+        } catch {}
+      }
       setSent(true);
     };
     return (
@@ -454,6 +472,29 @@ function BookingForm({ active }) {
               onChange={(e) => setEmail(e.target.value)}
             />
           </label>
+          <span className="field-head send-via">Send via</span>
+          <div className="send-toggles">
+            <button
+              type="button"
+              role="switch"
+              aria-checked={wantWa}
+              className={"toggle-row" + (wantWa ? " is-on" : "")}
+              onClick={() => setWantWa((v) => !v)}
+            >
+              <span className="toggle-label">WhatsApp</span>
+              <span className="switch" aria-hidden="true"></span>
+            </button>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={wantMail}
+              className={"toggle-row" + (wantMail ? " is-on" : "")}
+              onClick={() => setWantMail((v) => !v)}
+            >
+              <span className="toggle-label">Email</span>
+              <span className="switch" aria-hidden="true"></span>
+            </button>
+          </div>
           <p className="send-summary">
             {when} · {slotLabel} · {guests}{" "}
             {guests === 1 ? "guest" : "guests"} · ${total}
