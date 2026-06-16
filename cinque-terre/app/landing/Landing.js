@@ -91,7 +91,7 @@ export default function Landing() {
       <button
         className="theme-toggle"
         onClick={() => setTheme((t) => (t === "light" ? "dark" : "light"))}
-        aria-label="Bytt lys/mørk modus"
+        aria-label="Toggle light or dark mode"
       >
         {theme === "light" ? <SunIcon /> : <MoonIcon />}
       </button>
@@ -131,8 +131,8 @@ export default function Landing() {
           <h1>Cinque Terre</h1>
           <div className="sea-copy">
             <p className="tagline">
-              Gita in barca sul Mar Ligure,
-              <br />a bordo della Paolona.
+              A private sail on the Mar Ligure,
+              <br />aboard the Paolona.
             </p>
           </div>
           <div className="cta-wrap">
@@ -141,7 +141,7 @@ export default function Landing() {
             </button>
           </div>
           <div className="scroll-hint">
-            <span>andiamo</span>
+            <span>this way</span>
             <span className="dot"></span>
           </div>
         </header>
@@ -159,18 +159,18 @@ export default function Landing() {
               <button
                 className="book-close"
                 onClick={closeAll}
-                aria-label="Lukk"
+                aria-label="Close"
               >
                 ✕
               </button>
-              <p className="section-label">Chi siamo</p>
+              <p className="section-label">About us</p>
               <h2 className="section-title">The crew of the Paolona</h2>
               <div className="crew">
                 <div className="crew-card">
                   <div className="crew-photo" aria-hidden="true">
                     ♀
                   </div>
-                  <p className="crew-name">Lei · 38</p>
+                  <p className="crew-name">She · 38</p>
                   <p className="crew-seeks">
                     Seeking a gentleman, 72+ — and generously rich.
                   </p>
@@ -179,14 +179,14 @@ export default function Landing() {
                   <div className="crew-photo" aria-hidden="true">
                     ♂
                   </div>
-                  <p className="crew-name">Lui · 42</p>
+                  <p className="crew-name">He · 42</p>
                   <p className="crew-seeks">
                     Seeking ladies, 65+, for champagne at sunset.
                   </p>
                 </div>
               </div>
               <p className="about-note">
-                Real names, photos (and fewer jokes) coming soon.
+                Names, portraits and proper introductions to follow.
               </p>
               <button type="button" className="pay" onClick={closeAll}>
                 Close
@@ -206,11 +206,11 @@ export default function Landing() {
               <button
                 className="book-close"
                 onClick={tryClose}
-                aria-label="Lukk"
+                aria-label="Close"
               >
                 ✕
               </button>
-              <p className="section-label">Prenota</p>
+              <p className="section-label">Reserve</p>
               <h2 className="section-title">
                 A private day on the Ligurian blue
               </h2>
@@ -294,9 +294,9 @@ function BookingForm({ active }) {
   if (sent) {
     return (
       <div className="book-form confirm-sent">
-        <p className="meta">You&apos;re all set</p>
+        <p className="meta">All arranged</p>
         <p className="confirm-lead">
-          Request sent — we&apos;ll be in touch at{" "}
+          Thank you — we shall be in touch at{" "}
           <strong>{phone || email || "your contact"}</strong> to confirm your
           place.
         </p>
@@ -403,7 +403,7 @@ function BookingForm({ active }) {
         );
       } catch {}
       // 2) notify the business on WhatsApp with the guest's details
-      const msg = `New booking request — Monterosso sea tour\nCode: ${code}\n${when} · ${slotLabel} · ${guests} ${
+      const msg = `New booking enquiry — Monterosso sea tour\nCode: ${code}\n${when} · ${slotLabel} · ${guests} ${
         guests === 1 ? "guest" : "guests"
       } · $${total}${
         boarding === "yes" ? "\nNeeds a hand getting aboard" : ""
@@ -421,7 +421,7 @@ function BookingForm({ active }) {
       <div className="book-form">
         <p className="meta">Confirm &amp; send</p>
         <p className="confirm-lead">
-          Leave your details — we&apos;ll confirm your spot.
+          Leave your details and we shall confirm your place.
         </p>
         <form
           className="contact-form"
@@ -459,7 +459,7 @@ function BookingForm({ active }) {
             {guests === 1 ? "guest" : "guests"} · ${total}
           </p>
           <button type="submit" className="pay">
-            Send request
+            Send enquiry
           </button>
         </form>
         <p className="err">{error}</p>
@@ -486,7 +486,7 @@ function BookingForm({ active }) {
           <span className="meta-seg">{when}</span>
         </p>
         <div className="field">
-          <span className="field-head">How many guests?</span>
+          <span className="field-head">How many in your party?</span>
           <GuestQuick value={guests} onChange={setGuests} max={tour.maxGuests} />
           <WheelPicker
             ariaLabel="Number of guests"
@@ -529,7 +529,7 @@ function BookingForm({ active }) {
           <span className="meta-seg">{when}</span>
         </p>
         <span className="field-head step-q">
-          When would you like to set off?
+          When would you care to set off?
         </span>
         <div className="choice-grid">
           {opts.map((o) => (
@@ -568,7 +568,7 @@ function BookingForm({ active }) {
           </span>
         </p>
         <span className="field-head step-q">
-          Will anyone need a hand getting aboard?
+          Will anyone require a hand coming aboard?
         </span>
         <div className="choice-grid choice-grid--2">
           <button
@@ -577,14 +577,14 @@ function BookingForm({ active }) {
             onClick={() => setBoarding("yes")}
           >
             <span className="choice-label">Yes, please</span>
-            <span className="choice-sub">we&apos;ll be ready to help</span>
+            <span className="choice-sub">we shall be ready to help</span>
           </button>
           <button
             type="button"
             className={"choice" + (boarding === "no" ? " is-sel" : "")}
             onClick={() => setBoarding("no")}
           >
-            <span className="choice-label">No, we&apos;re fine</span>
+            <span className="choice-label">No, thank you</span>
           </button>
         </div>
         <button className="pay" onClick={review}>
@@ -798,7 +798,7 @@ function DateQuick({ value, onChange, days }) {
             type="button"
             className="dq-pick__close"
             onClick={() => setOpen(false)}
-            aria-label="Lukk"
+            aria-label="Close"
           >
             ✕
           </button>
@@ -854,7 +854,7 @@ function GuestQuick({ value, onChange, max }) {
             type="button"
             className="dq-pick__close"
             onClick={() => setOpen(false)}
-            aria-label="Lukk"
+            aria-label="Close"
           >
             ✕
           </button>
