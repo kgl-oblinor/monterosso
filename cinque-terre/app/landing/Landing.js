@@ -393,18 +393,6 @@ function BookingForm({ active }) {
             }))}
           />
         </div>
-        <div className="total-row">
-          <span className="price-note">
-            {discountFor(guests) > 0
-              ? `$${totalFor(guests)} total · ${Math.round(
-                  discountFor(guests) * 100
-                )}% off`
-              : `$${totalFor(guests)} total`}
-          </span>
-          <span className="t-val">
-            ${perPersonFor(guests)} <span className="t-per">/ person</span>
-          </span>
-        </div>
         <button className="pay" onClick={review}>
           Next
         </button>
@@ -470,9 +458,6 @@ function discountFor(g) {
 }
 function totalFor(g) {
   return Math.round(g * tour.priceUsd * (1 - discountFor(g)));
-}
-function perPersonFor(g) {
-  return Math.round(tour.priceUsd * (1 - discountFor(g)));
 }
 
 /* ---------- Add-to-calendar / share helpers ----------
