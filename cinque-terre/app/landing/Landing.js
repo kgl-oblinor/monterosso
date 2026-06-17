@@ -558,7 +558,7 @@ function BookingForm({ active }) {
 
   // STEP 3 — departure time (single popup, big tap tiles)
   if (step === "time") {
-    const opts = ["sunset", "sunrise"].map((v) => ({
+    const opts = ["sunrise", "sunset"].map((v) => ({
       v,
       label: tour.slots[v].label,
       sub: `${tour.slots[v].window} · $${slotPriceUsd(v)}/guest`,
@@ -646,9 +646,6 @@ function BookingForm({ active }) {
     <div className="book-form">
       <p className="meta">
         <span className="meta-seg">A private sea tour from Monterosso</span>{" "}
-        <span className="meta-seg">
-          <span className="meta-dot">·</span> {tour.durationHours} hours
-        </span>{" "}
         <span className="meta-seg">
           <span className="meta-dot">·</span> up to {tour.maxGuests} guests
         </span>

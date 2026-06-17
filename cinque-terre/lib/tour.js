@@ -10,8 +10,8 @@ export const tour = {
   // The two daily departures. priceMultiplier scales priceUsd per guest;
   // start/end (HHMMSS) feed the add-to-calendar event for that slot.
   slots: {
-    sunset: { label: "Sunset", window: "07:00–09:00", start: "070000", end: "090000", priceMultiplier: 1.5 },
-    sunrise: { label: "Sunrise", window: "14:00–20:00", start: "140000", end: "200000", priceMultiplier: 1 },
+    sunrise: { label: "Sunrise", window: "07:00–09:00", start: "070000", end: "090000", priceMultiplier: 1.5 },
+    sunset: { label: "Sunset", window: "14:00–20:00", start: "140000", end: "200000", priceMultiplier: 1 },
   },
   phone: "+39 351 234 5678",
   // inbox used by the "Email" send option
