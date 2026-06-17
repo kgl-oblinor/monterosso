@@ -237,6 +237,7 @@ function BookingForm({ active }) {
   const [boarding, setBoarding] = useState("no");
   const [wantWa, setWantWa] = useState(true);
   const [wantMail, setWantMail] = useState(true);
+  const [dateMore, setDateMore] = useState(false);
 
   useEffect(() => {
     setDays(buildDays(21));
@@ -526,18 +527,18 @@ function BookingForm({ active }) {
         <p className="meta">
           <span className="meta-seg">{when}</span>
         </p>
-        <div className="field">
-          <span className="field-head step-q">How many in your party?</span>
-          <GuestQuick value={guests} onChange={setGuests} max={tour.maxGuests} />
-          <WheelPicker
-            ariaLabel="Number of guests"
-            value={guests}
-            onChange={setGuests}
-            items={Array.from({ length: tour.maxGuests }, (_, i) => ({
-              value: i + 1,
-              label: String(i + 1),
-            }))}
-          />
+        <span className="field-head step-q">How many in your party?</span>
+        <div className="choice-grid choice-grid--nums">
+          {Array.from({ length: tour.maxGuests }, (_, i) => i + 1).map((n) => (
+            <button
+              type="button"
+              key={n}
+              className={"choice choice--num" + (guests === n ? " is-sel" : "")}
+              onClick={() => setGuests(n)}
+            >
+              <span className="choice-label">{n}</span>
+            </button>
+          ))}
         </div>
         <button className="pay" onClick={() => setStep("time")}>
           Next
@@ -654,16 +655,43 @@ function BookingForm({ active }) {
           <span className="meta-dot">·</span> up to {tour.maxGuests} guests
         </span>
       </p>
-      <div className="field">
-        <span className="field-head step-q">Which day?</span>
-        <DateQuick value={date} onChange={setDate} days={days} />
-        <WheelPicker
-          ariaLabel="Pick a day"
-          value={date}
-          onChange={setDate}
-          items={days.map((d) => ({ value: d.iso, label: d.label, sub: d.small }))}
-        />
-      </div>
+      <span className="field-head step-q">Which day?</span>
+      {dateMore ? (
+        <div className="choice-grid choice-scroll">
+          {days.map((d) => (
+            <button
+              type="button"
+              key={d.iso}
+              className={"choice" + (date === d.iso ? " is-sel" : "")}
+              onClick={() => setDate(d.iso)}
+            >
+              <span className="choice-label">{d.label}</span>
+              <span className="choice-sub">{d.small}</span>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="choice-grid">
+          {days.slice(0, 3).map((d) => (
+            <button
+              type="button"
+              key={d.iso}
+              className={"choice" + (date === d.iso ? " is-sel" : "")}
+              onClick={() => setDate(d.iso)}
+            >
+              <span className="choice-label">{d.label}</span>
+              <span className="choice-sub">{d.small}</span>
+            </button>
+          ))}
+          <button
+            type="button"
+            className="choice choice--more"
+            onClick={() => setDateMore(true)}
+          >
+            <span className="choice-label">Another day…</span>
+          </button>
+        </div>
+      )}
       <button className="pay" onClick={nextFromDate}>
         Next
       </button>
@@ -822,191 +850,6 @@ function buildDays(n) {
     });
   }
   return out;
-}
-
-/* Desktop date: today (prominent) + tomorrow + day-after, the later ones
-   progressively hazier — a gentle nudge to book today. */
-function DateQuick({ value, onChange, days }) {
-  const [open, setOpen] = useState(false);
-  const sel = days.find((d) => d.iso === value) || days[0];
-
-  if (open) {
-    return (
-      <div className="dq dq--picker">
-        <div className="dq-pick__head">
-          <span>Pick a date</span>
-          <button
-            type="button"
-            className="dq-pick__close"
-            onClick={() => setOpen(false)}
-            aria-label="Close"
-          >
-            ✕
-          </button>
-        </div>
-        <div className="dq-pick__list">
-          {days.map((d) => (
-            <button
-              type="button"
-              key={d.iso}
-              className={`dq-pick__opt${d.iso === value ? " is-sel" : ""}`}
-              onClick={() => {
-                onChange(d.iso);
-                setOpen(false);
-              }}
-            >
-              <span>{d.label}</span>
-              <span className="dq__date">{d.small}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="dq">
-      <button
-        type="button"
-        className="dq__opt dq--t1 is-sel dq--default dq--trigger"
-        onClick={() => setOpen(true)}
-        aria-haspopup="dialog"
-        aria-label="Change date"
-      >
-        <span className="dq__label">{sel ? sel.label : "Today"}</span>
-        {sel && <span className="dq__date">{sel.small}</span>}
-        <span className="dq__caret" aria-hidden="true">⌄</span>
-      </button>
-    </div>
-  );
-}
-
-/* Desktop guests: same tiered tiles (2 / 4 / 6, max-6 to start) plus a fourth
-   "Pick a number" tile that opens a compact 1–8 grid in the same box. */
-function GuestQuick({ value, onChange, max }) {
-  const [open, setOpen] = useState(false);
-
-  if (open) {
-    return (
-      <div className="dq dq--picker">
-        <div className="dq-pick__head">
-          <span>Pick a number</span>
-          <button
-            type="button"
-            className="dq-pick__close"
-            onClick={() => setOpen(false)}
-            aria-label="Close"
-          >
-            ✕
-          </button>
-        </div>
-        <div className="gq-grid">
-          {Array.from({ length: max }, (_, i) => i + 1).map((n) => (
-            <button
-              type="button"
-              key={n}
-              className={`gq-chip${value === n ? " is-sel" : ""}`}
-              onClick={() => {
-                onChange(n);
-                setOpen(false);
-              }}
-            >
-              {n}
-            </button>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="dq">
-      <button
-        type="button"
-        className="dq__opt dq--t1 is-sel dq--default dq--trigger"
-        onClick={() => setOpen(true)}
-        aria-haspopup="dialog"
-        aria-label="Change number of guests"
-      >
-        <span className="dq__label">{value} guests</span>
-        <span className="dq__caret" aria-hidden="true">⌄</span>
-      </button>
-    </div>
-  );
-}
-
-/* iOS-style drum picker for touch: scroll with momentum, snap to centre,
-   the centred row sits in a gold band and rows fade with distance. Used on
-   mobile; desktop keeps the dropdown / select. */
-const WHEEL_ITEM_H = 50;
-
-function applyWheelDepth(el) {
-  const sel = el.scrollTop / WHEEL_ITEM_H;
-  el.querySelectorAll("[data-wi]").forEach((it, i) => {
-    const dist = Math.min(Math.abs(i - sel), 3);
-    it.style.opacity = String(Math.max(0.22, 1 - dist * 0.3));
-    it.style.transform = `scale(${Math.max(0.78, 1 - dist * 0.11)})`;
-  });
-}
-
-function WheelPicker({ items, value, onChange, ariaLabel }) {
-  const ref = useRef(null);
-  const raf = useRef(0);
-  const idx = Math.max(
-    0,
-    items.findIndex((it) => it.value === value)
-  );
-
-  // position on the selected row once the items exist
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || !items.length) return;
-    el.scrollTop = idx * WHEEL_ITEM_H;
-    applyWheelDepth(el);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items.length]);
-
-  // follow external changes (default today, the steppers, etc.)
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || !items.length) return;
-    const target = idx * WHEEL_ITEM_H;
-    if (Math.abs(el.scrollTop - target) > 3)
-      el.scrollTo({ top: target, behavior: "smooth" });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, items.length]);
-
-  function onScroll() {
-    const el = ref.current;
-    if (!el) return;
-    if (!raf.current)
-      raf.current = requestAnimationFrame(() => {
-        raf.current = 0;
-        applyWheelDepth(el);
-      });
-    clearTimeout(el._settle);
-    el._settle = setTimeout(() => {
-      const i = Math.max(
-        0,
-        Math.min(items.length - 1, Math.round(el.scrollTop / WHEEL_ITEM_H))
-      );
-      if (items[i] && items[i].value !== value) onChange(items[i].value);
-    }, 120);
-  }
-
-  return (
-    <div className="wheel" role="listbox" aria-label={ariaLabel}>
-      <div className="wheel__band" aria-hidden="true" />
-      <div className="wheel__scroll" ref={ref} onScroll={onScroll}>
-        {items.map((it) => (
-          <div className="wheel__item" data-wi key={String(it.value)}>
-            <span className="wheel__label">{it.label}</span>
-            {it.sub && <span className="wheel__sub">{it.sub}</span>}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
 }
 
 /* All the original vanilla-JS effects, ported into one mount effect. */

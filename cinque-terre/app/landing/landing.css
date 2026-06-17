@@ -446,6 +446,28 @@
   transform: translateX(22px);
 }
 
+/* date tiles (3 quick + "Another day…") and guests number tiles */
+.landing-v2 .choice--more {
+  border-style: dashed;
+  background: transparent;
+}
+.landing-v2 .choice-scroll {
+  max-height: 326px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.landing-v2 .choice-grid--nums {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.landing-v2 .choice--num {
+  min-height: 58px;
+  padding: 10px 6px;
+}
+.landing-v2 .choice--num .choice-label {
+  font-size: 1.4rem;
+}
+
 /* ---------- BOOKING FIELDS — the whole tile opens the picker ----------
    The value tile itself is now the trigger (no separate "Pick a date" /
    "Pick a number" tile). A small caret signals it's tappable. */
