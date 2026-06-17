@@ -288,10 +288,8 @@ function BookingForm({ active }) {
   const sel = days.find((d) => d.iso === date);
   const code = makeCode(date, guests);
   const when = sel ? `${sel.label} · ${sel.small}` : date;
-  const total = totalFor(guests);
-  const slotLabel =
-    { morning: "Morning", afternoon: "Afternoon", sunset: "Sunset" }[slot] ||
-    "Sunset";
+  const total = totalFor(guests, slot);
+  const slotLabel = tour.slots[slot]?.label || "Sunset";
 
   // SCREEN 3 — confirmation: combined info + add-to-calendar + share
   if (sent) {
@@ -337,7 +335,7 @@ function BookingForm({ active }) {
         <div className="cal-row">
           <a
             className="cal-btn"
-            href={googleCalUrl({ iso: date, guests, total, code })}
+            href={googleCalUrl({ iso: date, guests, total, code, slot })}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -347,7 +345,7 @@ function BookingForm({ active }) {
           <button
             type="button"
             className="cal-btn"
-            onClick={() => downloadIcs({ iso: date, guests, total, code })}
+            onClick={() => downloadIcs({ iso: date, guests, total, code, slot })}
           >
             <CalGlyph />
             Apple
@@ -553,18 +551,18 @@ function BookingForm({ active }) {
         >
           Back
         </button>
-        <p className="reassure">No prepayment · ${tour.priceUsd} per guest</p>
+        <p className="reassure">No prepayment · from ${tour.priceUsd} per guest</p>
       </div>
     );
   }
 
   // STEP 3 — departure time (single popup, big tap tiles)
   if (step === "time") {
-    const opts = [
-      { v: "morning", label: "Morning", sub: "calm, cool water" },
-      { v: "afternoon", label: "Afternoon", sub: "sun on the coast" },
-      { v: "sunset", label: "Sunset", sub: "golden hour & aperitivo" },
-    ];
+    const opts = ["sunset", "sunrise"].map((v) => ({
+      v,
+      label: tour.slots[v].label,
+      sub: `${tour.slots[v].window} · $${slotPriceUsd(v)}/guest`,
+    }));
     return (
       <div className="book-form">
         <p className="meta">
@@ -573,7 +571,7 @@ function BookingForm({ active }) {
         <span className="field-head step-q">
           When would you care to set off?
         </span>
-        <div className="choice-grid">
+        <div className="choice-grid choice-grid--2">
           {opts.map((o) => (
             <button
               type="button"
@@ -696,7 +694,7 @@ function BookingForm({ active }) {
         Next
       </button>
       <p className="err">{error}</p>
-      <p className="reassure">No prepayment · ${tour.priceUsd} per guest</p>
+      <p className="reassure">No prepayment · from ${tour.priceUsd} per guest</p>
     </div>
   );
 }
@@ -715,40 +713,45 @@ function discountFor(g) {
   if (g >= 2) return 0.1;
   return 0;
 }
-function totalFor(g) {
-  return Math.round(g * tour.priceUsd * (1 - discountFor(g)));
+function slotPriceUsd(slot) {
+  const m = tour.slots[slot]?.priceMultiplier ?? 1;
+  return Math.round(tour.priceUsd * m);
+}
+function totalFor(g, slot) {
+  return Math.round(g * slotPriceUsd(slot) * (1 - discountFor(g)));
 }
 
 /* ---------- Add-to-calendar / share helpers ----------
-   The tour runs 3 hours; start time isn't fixed yet, so we use a provisional
-   10:00–13:00 in Monterosso's timezone (Europe/Rome) and say so. */
+   Event uses the chosen slot's window in Monterosso's timezone (Europe/Rome). */
 const CAL_LOCATION = "Monterosso al Mare, Cinque Terre, Italy";
 const CAL_TZ = "Europe/Rome";
 
-function calRange(iso) {
+function calRange(iso, slot) {
   const ymd = iso.replaceAll("-", "");
-  return { start: `${ymd}T100000`, end: `${ymd}T130000` };
+  const s = tour.slots[slot] || tour.slots.sunset;
+  return { start: `${ymd}T${s.start}`, end: `${ymd}T${s.end}` };
 }
-function calDetails(code, guests, total) {
+function calDetails(code, guests, total, slot) {
   const g = `${guests} ${guests === 1 ? "guest" : "guests"}`;
-  return `Reservation ${code} · ${g} · $${total}. Pending confirmation — we'll be in touch. Start time is provisional (10:00, local) and will be confirmed.`;
+  const s = tour.slots[slot]?.label;
+  return `Reservation ${code}${s ? " · " + s : ""} · ${g} · $${total}. Pending confirmation — we'll be in touch.`;
 }
 
-function googleCalUrl({ iso, guests, total, code }) {
-  const { start, end } = calRange(iso);
+function googleCalUrl({ iso, guests, total, code, slot }) {
+  const { start, end } = calRange(iso, slot);
   const params = new URLSearchParams({
     action: "TEMPLATE",
     text: tour.name,
     dates: `${start}/${end}`,
     ctz: CAL_TZ,
-    details: calDetails(code, guests, total),
+    details: calDetails(code, guests, total, slot),
     location: CAL_LOCATION,
   });
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 
-function buildIcs({ iso, guests, total, code }) {
-  const { start, end } = calRange(iso);
+function buildIcs({ iso, guests, total, code, slot }) {
+  const { start, end } = calRange(iso, slot);
   const stamp = new Date()
     .toISOString()
     .replace(/[-:]/g, "")
@@ -766,7 +769,7 @@ function buildIcs({ iso, guests, total, code }) {
     `DTSTART;TZID=${CAL_TZ}:${start}`,
     `DTEND;TZID=${CAL_TZ}:${end}`,
     `SUMMARY:${esc(tour.name)}`,
-    `DESCRIPTION:${esc(calDetails(code, guests, total))}`,
+    `DESCRIPTION:${esc(calDetails(code, guests, total, slot))}`,
     `LOCATION:${esc(CAL_LOCATION)}`,
     "END:VEVENT",
     "END:VCALENDAR",
