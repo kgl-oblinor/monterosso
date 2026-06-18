@@ -2,6 +2,25 @@
 
 import { useEffect, useRef, useState } from "react";
 import { tour } from "../../lib/tour";
+
+// weddings entry — a soft, blurred rain of glyphs + the word "weddings".
+// Static config (no random) so SSR and client render the same.
+const WED_FALL = [
+  { c: "♥", s: 0.9, x: 6, d: 0, t: 4.6, b: 1.4 },
+  { c: "✦", s: 1.5, x: 16, d: 1.2, t: 5.4, b: 2.4, gold: true },
+  { c: "weddings", word: true, s: 0.72, x: 30, d: 0.5, t: 5.2, b: 1.2 },
+  { c: "♡", s: 0.7, x: 40, d: 2.6, t: 4.2, b: 1 },
+  { c: "★", s: 1.2, x: 52, d: 3.1, t: 4.8, b: 2, gold: true },
+  { c: "♥", s: 0.6, x: 60, d: 1.8, t: 3.9, b: 0.8 },
+  { c: "✧", s: 1.0, x: 70, d: 2.2, t: 5, b: 1.6 },
+  { c: "♡", s: 1.3, x: 86, d: 0.9, t: 4.4, b: 2.6 },
+  { c: "weddings", word: true, s: 0.66, x: 8, d: 3.6, t: 5.6, b: 1.6, gold: true },
+  { c: "♥", s: 0.8, x: 46, d: 4.0, t: 4.2, b: 1.2 },
+  { c: "✦", s: 0.7, x: 64, d: 4.6, t: 5, b: 1 },
+  { c: "★", s: 0.95, x: 90, d: 4.2, t: 4.6, b: 1.8 },
+  { c: "♥", s: 1.1, x: 12, d: 2.9, t: 5.2, b: 2.2 },
+  { c: "weddings", word: true, s: 0.7, x: 50, d: 5.2, t: 5.4, b: 1.4 },
+];
 import Skyline from "./Skyline";
 import Boat3D from "./Boat3D";
 import Clouds from "./Clouds";
@@ -33,6 +52,7 @@ export default function Landing() {
   // Scroll / swipe / button all bring the booking card in as an overlay —
   // same screen, no navigation.
   const [showBook, setShowBook] = useState(false);
+  const [showWed, setShowWed] = useState(false); // weddings glass layer
   const [about, setAbout] = useState(false); // "about us" — the sixth window
   const aboutSeen = useRef(false);
   useEffect(() => {
@@ -139,6 +159,29 @@ export default function Landing() {
             <button className="cta" onClick={() => setShowBook(true)}>
               Reserve your place
             </button>
+            <button
+              className="wed-fall"
+              onClick={() => setShowWed(true)}
+              aria-label="Weddings — all-inclusive, from $1,500"
+            >
+              {WED_FALL.map((g, i) => (
+                <span
+                  key={i}
+                  className={"wf" + (g.word ? " wf--word" : "")}
+                  aria-hidden={g.word ? undefined : true}
+                  style={{
+                    left: g.x + "%",
+                    fontSize: g.s + "rem",
+                    animationDelay: g.d + "s",
+                    animationDuration: g.t + "s",
+                    filter: `blur(${g.b}px)`,
+                    color: g.gold ? "var(--gold)" : undefined,
+                  }}
+                >
+                  {g.c}
+                </span>
+              ))}
+            </button>
           </div>
           <div className="scroll-hint">
             <span>Andiamo</span>
@@ -163,8 +206,7 @@ export default function Landing() {
               >
                 ✕
               </button>
-              <p className="section-label">About us</p>
-              <h2 className="section-title">The crew of the Paolona</h2>
+              <p className="box-count">8 / 8</p>
               <div className="crew">
                 <div className="crew-card">
                   <div className="crew-photo" aria-hidden="true">
@@ -211,12 +253,63 @@ export default function Landing() {
                 ✕
               </button>
               <p className="section-label">Reserve</p>
-              <h2 className="section-title">
-                A private day on the Ligurian blue
-              </h2>
               <BookingForm active={showBook} />
             </>
           )}
+        </div>
+      </div>
+
+      {/* WEDDINGS — secondary glass layer; focus stays on the booking form */}
+      <div
+        className={"book-overlay" + (showWed ? " open" : "")}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setShowWed(false);
+        }}
+      >
+        <div className="book-overlay__inner">
+          <button
+            className="book-close"
+            onClick={() => setShowWed(false)}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+          <p className="section-label">Weddings</p>
+          <div className="book-form wed-form">
+            <p className="wed-price">All-inclusive · from $1,500</p>
+            <p className="wed-blurb">
+              A private celebration on the Ligurian water — the boat, the coast
+              at golden hour, and the details arranged for you. Tell us your
+              date and we shall craft the day.
+            </p>
+            <a
+              className="pay"
+              href={`https://wa.me/${tour.phone.replace(
+                /[^\d]/g,
+                ""
+              )}?text=${encodeURIComponent(
+                "Wedding enquiry — Monterosso · Cinque Terre. We'd like the all-inclusive wedding tour."
+              )}`}
+              target="_blank"
+              rel="noopener"
+            >
+              Enquire on WhatsApp
+            </a>
+            <a
+              className="pay pay--ghost"
+              href={`mailto:${tour.email}?subject=${encodeURIComponent(
+                "Wedding enquiry — Monterosso · Cinque Terre"
+              )}`}
+            >
+              Enquire by email
+            </a>
+            <a
+              className="confirm__back"
+              href={`tel:${tour.phone.replace(/\s/g, "")}`}
+            >
+              or call {tour.phone}
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -238,6 +331,7 @@ function BookingForm({ active }) {
   const [wantWa, setWantWa] = useState(true);
   const [wantMail, setWantMail] = useState(true);
   const [dateMore, setDateMore] = useState(false);
+  const [pickup, setPickup] = useState("Monterosso");
 
   useEffect(() => {
     setDays(buildDays(21));
@@ -250,7 +344,13 @@ function BookingForm({ active }) {
       setError("Please pick a date for your tour.");
       return;
     }
-    setStep("guests");
+    setStep("pickup");
+  }
+  // pick a date tile → set it and jump straight to the next step
+  function pickDate(iso) {
+    setError("");
+    setDate(iso);
+    setStep("pickup");
   }
   function review() {
     setError("");
@@ -269,6 +369,7 @@ function BookingForm({ active }) {
         e.preventDefault();
         if (done || sent) return;
         if (step === "date") nextFromDate();
+        else if (step === "pickup") setStep("guests");
         else if (step === "guests") setStep("time");
         else if (step === "time") setStep("aboard");
         else review();
@@ -277,7 +378,8 @@ function BookingForm({ active }) {
         if (done) setDone(false);
         else if (step === "aboard") setStep("time");
         else if (step === "time") setStep("guests");
-        else if (step === "guests") setStep("date");
+        else if (step === "guests") setStep("pickup");
+        else if (step === "pickup") setStep("date");
       }
     };
     window.addEventListener("keydown", onKey);
@@ -290,12 +392,26 @@ function BookingForm({ active }) {
   const when = sel ? `${sel.label} · ${sel.small}` : date;
   const total = totalFor(guests, slot);
   const slotLabel = tour.slots[slot]?.label || "Sunset";
+  // working aid: which glass box are we on (of 8)
+  const boxNum = sent
+    ? 7
+    : done
+    ? 6
+    : step === "pickup"
+    ? 2
+    : step === "guests"
+    ? 3
+    : step === "time"
+    ? 4
+    : step === "aboard"
+    ? 5
+    : 1;
 
   // SCREEN 3 — confirmation: combined info + add-to-calendar + share
   if (sent) {
     return (
       <div className="book-form confirm-sent">
-        <p className="meta">All arranged</p>
+        <p className="box-count">{boxNum} / 8</p>
         <p className="confirm-lead">
           Thank you — we shall be in touch at{" "}
           <strong>{phone || email || "your contact"}</strong> to confirm your
@@ -309,6 +425,10 @@ function BookingForm({ active }) {
           <div className="conf-row">
             <span>Departure</span>
             <strong>{slotLabel}</strong>
+          </div>
+          <div className="conf-row">
+            <span>Meeting point</span>
+            <strong>{pickup}</strong>
           </div>
           <div className="conf-row">
             <span>Guests</span>
@@ -397,6 +517,7 @@ function BookingForm({ active }) {
                 email: em,
                 slot,
                 boarding,
+                pickup,
               }),
             ],
             { type: "application/json" }
@@ -408,7 +529,7 @@ function BookingForm({ active }) {
         guests === 1 ? "guest" : "guests"
       } · $${total}${
         boarding === "yes" ? "\nNeeds a hand coming aboard" : ""
-      }\nContact: ${ph || "—"}${em ? " · " + em : ""}`;
+      }\nMeeting point: ${pickup}\nContact: ${ph || "—"}${em ? " · " + em : ""}`;
       if (wantWa) {
         try {
           // wa.me is the universal link — opens the app on iOS/Android and
@@ -436,7 +557,7 @@ function BookingForm({ active }) {
     };
     return (
       <div className="book-form">
-        <p className="meta">Confirm &amp; send</p>
+        <p className="box-count">{boxNum} / 8</p>
         <p className="confirm-lead">
           Leave your details and we shall confirm your place.
         </p>
@@ -518,13 +639,56 @@ function BookingForm({ active }) {
     );
   }
 
+  // STEP — pickup point (default Monterosso; we collect from any village)
+  if (step === "pickup") {
+    const towns = [
+      "Monterosso",
+      "Vernazza",
+      "Corniglia",
+      "Manarola",
+      "Riomaggiore",
+    ];
+    return (
+      <div className="book-form">
+        <p className="box-count">{boxNum} / 8</p>
+        <span className="field-head step-q">Where shall we meet you?</span>
+        <div className="choice-grid">
+          {towns.map((tn) => (
+            <button
+              type="button"
+              key={tn}
+              className={"choice" + (pickup === tn ? " is-sel" : "")}
+              onClick={() => {
+                setPickup(tn);
+                setStep("guests");
+              }}
+            >
+              <span className="choice-label">{tn}</span>
+              <span className="choice-sub">
+                {tn === "Monterosso" ? "our home port" : "we'll come to you"}
+              </span>
+            </button>
+          ))}
+        </div>
+        <button className="pay" onClick={() => setStep("guests")}>
+          Next
+        </button>
+        <button
+          type="button"
+          className="confirm__back"
+          onClick={() => setStep("date")}
+        >
+          Back
+        </button>
+      </div>
+    );
+  }
+
   // STEP 2 — guests (single popup), after the date
   if (step === "guests") {
     return (
       <div className="book-form">
-        <p className="meta">
-          <span className="meta-seg">{when}</span>
-        </p>
+        <p className="box-count">{boxNum} / 8</p>
         <span className="field-head step-q">How many in your party?</span>
         <div className="choice-grid choice-grid--nums">
           {Array.from({ length: tour.maxGuests }, (_, i) => i + 1).map((n) => (
@@ -532,7 +696,10 @@ function BookingForm({ active }) {
               type="button"
               key={n}
               className={"choice choice--num" + (guests === n ? " is-sel" : "")}
-              onClick={() => setGuests(n)}
+              onClick={() => {
+                setGuests(n);
+                setStep("time");
+              }}
             >
               <span className="choice-label">{n}</span>
             </button>
@@ -546,7 +713,7 @@ function BookingForm({ active }) {
           className="confirm__back"
           onClick={() => {
             setError("");
-            setStep("date");
+            setStep("pickup");
           }}
         >
           Back
@@ -558,26 +725,27 @@ function BookingForm({ active }) {
 
   // STEP 3 — departure time (single popup, big tap tiles)
   if (step === "time") {
-    const opts = ["sunrise", "sunset"].map((v) => ({
+    const opts = ["sunrise", "sunshine", "sunset"].map((v) => ({
       v,
       label: tour.slots[v].label,
       sub: `${tour.slots[v].window} · $${slotPriceUsd(v)}/guest`,
     }));
     return (
       <div className="book-form">
-        <p className="meta">
-          <span className="meta-seg">{when}</span>
-        </p>
+        <p className="box-count">{boxNum} / 8</p>
         <span className="field-head step-q">
           When would you care to set off?
         </span>
-        <div className="choice-grid choice-grid--2">
+        <div className="choice-grid">
           {opts.map((o) => (
             <button
               type="button"
               key={o.v}
               className={"choice" + (slot === o.v ? " is-sel" : "")}
-              onClick={() => setSlot(o.v)}
+              onClick={() => {
+                setSlot(o.v);
+                setStep("aboard");
+              }}
             >
               <span className="choice-label">{o.label}</span>
               <span className="choice-sub">{o.sub}</span>
@@ -602,11 +770,7 @@ function BookingForm({ active }) {
   if (step === "aboard") {
     return (
       <div className="book-form">
-        <p className="meta">
-          <span className="meta-seg">
-            {when} · {slotLabel}
-          </span>
-        </p>
+        <p className="box-count">{boxNum} / 8</p>
         <span className="field-head step-q">
           Will anyone require a hand coming aboard?
         </span>
@@ -614,7 +778,10 @@ function BookingForm({ active }) {
           <button
             type="button"
             className={"choice" + (boarding === "yes" ? " is-sel" : "")}
-            onClick={() => setBoarding("yes")}
+            onClick={() => {
+              setBoarding("yes");
+              review();
+            }}
           >
             <span className="choice-label">Yes, please</span>
             <span className="choice-sub">we shall be ready to help</span>
@@ -622,7 +789,10 @@ function BookingForm({ active }) {
           <button
             type="button"
             className={"choice" + (boarding === "no" ? " is-sel" : "")}
-            onClick={() => setBoarding("no")}
+            onClick={() => {
+              setBoarding("no");
+              review();
+            }}
           >
             <span className="choice-label">No, thank you</span>
           </button>
@@ -644,12 +814,7 @@ function BookingForm({ active }) {
   // STEP 1 — date (single popup)
   return (
     <div className="book-form">
-      <p className="meta">
-        <span className="meta-seg">A private sea tour from Monterosso</span>{" "}
-        <span className="meta-seg">
-          <span className="meta-dot">·</span> up to {tour.maxGuests} guests
-        </span>
-      </p>
+      <p className="box-count">{boxNum} / 8</p>
       <span className="field-head step-q">Which day?</span>
       {dateMore ? (
         <div className="choice-grid choice-scroll">
@@ -658,7 +823,7 @@ function BookingForm({ active }) {
               type="button"
               key={d.iso}
               className={"choice" + (date === d.iso ? " is-sel" : "")}
-              onClick={() => setDate(d.iso)}
+              onClick={() => pickDate(d.iso)}
             >
               <span className="choice-label">{d.label}</span>
               <span className="choice-sub">{d.small}</span>
@@ -672,7 +837,7 @@ function BookingForm({ active }) {
               type="button"
               key={d.iso}
               className={"choice" + (date === d.iso ? " is-sel" : "")}
-              onClick={() => setDate(d.iso)}
+              onClick={() => pickDate(d.iso)}
             >
               <span className="choice-label">{d.label}</span>
               <span className="choice-sub">{d.small}</span>
@@ -933,7 +1098,7 @@ function Effects() {
 
 function SunIcon() {
   return (
-    <svg viewBox="0 0 100 100" className="celestial">
+    <svg viewBox="0 0 100 100" className="celestial celestial--sun">
       <defs>
         <radialGradient id="sunGrad" cx="0.42" cy="0.4" r="0.7">
           <stop offset="0" stopColor="#f6eccf" />

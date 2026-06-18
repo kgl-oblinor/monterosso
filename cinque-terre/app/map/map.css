@@ -1,0 +1,223 @@
+/* ============================================================
+   /map — internal flow & sitemap canvas (planning tool).
+   Scoped under .flowmap; overrides globals so the page scrolls
+   and uses the native cursor.
+   ============================================================ */
+body:has(.flowmap) {
+  overflow-y: auto;
+  overflow-x: clip;
+  height: auto;
+  background: #0a1422;
+  cursor: auto;
+}
+
+.flowmap {
+  position: relative;
+  z-index: 10;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 48px 22px 120px;
+  color: #fdf6ea;
+  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  cursor: auto;
+}
+.flowmap a,
+.flowmap button {
+  cursor: pointer;
+}
+
+.fm-head h1 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 900;
+  font-size: clamp(2rem, 6vw, 3rem);
+  letter-spacing: 0.01em;
+}
+.fm-head p {
+  opacity: 0.7;
+  margin-top: 8px;
+  max-width: 60ch;
+  line-height: 1.5;
+}
+
+/* legend */
+.fm-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 24px 0 12px;
+  font-size: 0.82rem;
+}
+.fm-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.85;
+}
+.fm-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+}
+.fm-dot--live {
+  background: #4fe0d8;
+}
+.fm-dot--plan {
+  background: transparent;
+  border: 2px dashed #ead27e;
+}
+
+/* phase headings */
+.fm-phase {
+  margin: 46px 0 18px;
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  border-top: 1px solid rgba(255, 246, 236, 0.12);
+  padding-top: 20px;
+}
+
+/* nodes */
+.fm-node {
+  border-radius: 16px;
+  padding: 18px 20px;
+  background: rgba(79, 224, 216, 0.07);
+  border: 1.5px solid rgba(79, 224, 216, 0.4);
+}
+.fm-node h3 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 6px;
+}
+.fm-node .fm-kind {
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+.fm-node ul {
+  margin: 10px 0 0 0;
+  padding-left: 18px;
+  line-height: 1.6;
+  font-size: 0.92rem;
+  opacity: 0.9;
+}
+.fm-cta-line {
+  margin-top: 12px;
+  font-weight: 700;
+  color: #ead27e;
+}
+
+/* planned nodes read as dashed gold */
+.fm-node--plan {
+  background: rgba(234, 210, 126, 0.08);
+  border: 1.5px dashed rgba(234, 210, 126, 0.6);
+}
+.fm-node--plan h3 {
+  color: #ead27e;
+}
+
+/* connector arrow between stacked nodes */
+.fm-arrow {
+  text-align: center;
+  font-size: 1.4rem;
+  color: #ead27e;
+  margin: 10px 0;
+  line-height: 1;
+}
+.fm-arrow small {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+  margin-top: 2px;
+  font-weight: 600;
+}
+
+/* booking steps strip */
+.fm-steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+.fm-step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(3, 16, 29, 0.5);
+  border: 1px solid rgba(255, 246, 236, 0.12);
+}
+.fm-step .fm-n {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  background: #ead27e;
+  color: #15233a;
+}
+.fm-step b {
+  font-size: 0.98rem;
+}
+.fm-step p {
+  font-size: 0.85rem;
+  opacity: 0.75;
+  margin-top: 2px;
+}
+
+/* cancel / exit callout */
+.fm-exit {
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(255, 122, 94, 0.12);
+  border: 1px solid rgba(255, 122, 94, 0.45);
+  font-size: 0.9rem;
+}
+.fm-exit b {
+  color: #ff9e7e;
+}
+
+/* SEO destination grid */
+.fm-seo-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+.fm-villages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.fm-chip {
+  font-size: 0.82rem;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(234, 210, 126, 0.15);
+  border: 1px solid rgba(234, 210, 126, 0.4);
+}
+
+.fm-note {
+  margin-top: 26px;
+  font-size: 0.85rem;
+  opacity: 0.6;
+  line-height: 1.6;
+}
+
+@media (min-width: 720px) {
+  .fm-steps {
+    grid-template-columns: 1fr 1fr;
+  }
+  .fm-seo-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

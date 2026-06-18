@@ -7,6 +7,138 @@
 /* ---------- HERO CTA — refined deco "ticket" ---------- */
 /* Warm champagne-gold fill, crisp double stamp frame, a soft lifted
    shadow, and proper press feedback for touch. */
+/* hero secondary CTA — weddings (focus stays on the booking form) */
+/* weddings entry — a soft, blurred rain of glyphs + the word "weddings",
+   rolling downward like the scroll-hint dot. Per-element size / position /
+   delay / duration / blur come from inline styles (see WED_FALL). */
+.landing-v2 .wed-fall {
+  position: relative;
+  display: block;
+  width: min(320px, 86vw);
+  height: 120px;
+  margin: 6px auto 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 20;
+  -webkit-tap-highlight-color: transparent;
+}
+.landing-v2 .wf {
+  position: absolute;
+  top: 0;
+  color: var(--cream);
+  opacity: 0;
+  text-shadow: 0 1px 10px rgba(2, 10, 20, 0.5);
+  pointer-events: none;
+  animation-name: wedFall;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+}
+.landing-v2 .wf--word {
+  font-family: "Jost", system-ui, sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  white-space: nowrap;
+}
+@keyframes wedFall {
+  0% {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+  16% {
+    opacity: 0.95;
+  }
+  70% {
+    opacity: 0.45;
+  }
+  100% {
+    transform: translateY(118px);
+    opacity: 0;
+  }
+}
+/* reduced motion: no rain — just a soft static label */
+@media (prefers-reduced-motion: reduce) {
+  .landing-v2 .wed-fall {
+    height: auto;
+  }
+  .landing-v2 .wf {
+    display: none;
+  }
+  .landing-v2 .wed-fall::after {
+    content: "weddings";
+    font-family: "Jost", system-ui, sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cream);
+    opacity: 0.6;
+  }
+}
+
+/* weddings glass panel */
+.landing-v2 .wed-form {
+  min-height: auto;
+  text-align: center;
+  align-items: center;
+}
+.landing-v2 .wed-price {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(1.6rem, 6vw, 2.2rem);
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+.landing-v2 .wed-blurb {
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: var(--cream);
+  opacity: 0.85;
+  margin-bottom: 8px;
+  max-width: 42ch;
+}
+.landing-v2 .wed-form .pay {
+  margin-top: 12px;
+}
+.landing-v2 .wed-form .confirm__back {
+  margin-top: 18px;
+}
+
+/* working aid: "N / 7" counter at the top of each glass box (temporary) */
+.landing-v2 .box-count {
+  text-align: center;
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 300;
+  font-size: 0.62rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: 0.4;
+  margin: 0 0 12px;
+}
+
+/* booking open: drop the custom cursor ring, restore native + pointers */
+.landing-v2:has(.book-overlay.open) .cursor,
+.landing-v2:has(.book-overlay.open) .cursor-ring {
+  display: none;
+}
+.landing-v2 .book-overlay,
+.landing-v2 .book-overlay * {
+  cursor: auto;
+}
+.landing-v2 .book-overlay button,
+.landing-v2 .book-overlay .choice,
+.landing-v2 .book-overlay .pay,
+.landing-v2 .book-overlay .toggle-row,
+.landing-v2 .book-overlay .book-close {
+  cursor: pointer;
+}
+.landing-v2 .book-overlay input,
+.landing-v2 .book-overlay select,
+.landing-v2 .book-overlay textarea {
+  cursor: text;
+}
+
 .landing-v2 .cta-wrap {
   position: absolute;
   /* keep clear of the iPhone home indicator / browser chrome */
@@ -336,10 +468,10 @@
   text-align: center;
   text-transform: none;
   letter-spacing: 0;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 1.1rem;
   line-height: 1.35;
-  color: rgba(7, 24, 42, 0.75);
+  color: rgba(7, 24, 42, 0.92);
   margin: 10px 0 16px;
 }
 .landing-v2 .choice-grid {
@@ -356,11 +488,11 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  min-height: 66px;
-  padding: 16px 14px;
+  min-height: 60px;
+  padding: 14px 14px;
   border-radius: 14px;
-  border: 2px solid rgba(7, 24, 42, 0.22);
-  background: rgba(255, 255, 255, 0.55);
+  border: 2px solid rgba(7, 24, 42, 0.3);
+  background: rgba(255, 252, 246, 0.82);
   color: var(--plum);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -383,7 +515,7 @@
 }
 .landing-v2 .choice-sub {
   font-size: 0.86rem;
-  color: rgba(7, 24, 42, 0.6);
+  color: rgba(7, 24, 42, 0.74);
 }
 
 /* send-channel on/off toggles */
@@ -502,10 +634,43 @@
   transform: translateY(-45%) rotate(45deg);
 }
 
-/* ---------- THEME TOGGLE — smaller sun / moon icon ---------- */
+/* ---------- THEME TOGGLE — sun / moon icon (1.5× the earlier size) ---------- */
 .landing-v2 .theme-toggle {
-  width: clamp(40px, 4.4vw, 58px);
-  height: clamp(40px, 4.4vw, 58px);
+  width: clamp(60px, 6.6vw, 87px);
+  height: clamp(60px, 6.6vw, 87px);
+}
+
+/* the sun has a slow heartbeat once every 10s, blooming warm
+   orange + purple at the beat */
+.landing-v2 .celestial--sun {
+  transform-origin: 50% 50%;
+  animation: sunHeartbeat 10s ease-in-out infinite;
+}
+@keyframes sunHeartbeat {
+  0%,
+  80% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 14px rgba(224, 192, 106, 0.5));
+  }
+  84% {
+    transform: scale(1.14);
+    filter: drop-shadow(0 0 26px rgba(255, 150, 60, 0.85))
+      drop-shadow(0 0 42px rgba(168, 90, 220, 0.5)) brightness(1.15);
+  }
+  88% {
+    transform: scale(1.04);
+    filter: drop-shadow(0 0 20px rgba(255, 170, 80, 0.7))
+      drop-shadow(0 0 34px rgba(168, 90, 220, 0.4)) brightness(1.08);
+  }
+  93% {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 34px rgba(255, 120, 40, 0.95))
+      drop-shadow(0 0 54px rgba(150, 70, 210, 0.6)) brightness(1.22);
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 14px rgba(224, 192, 106, 0.5));
+  }
 }
 
 /* ---------- HERO TITLE — smaller "Cinque Terre" ---------- */

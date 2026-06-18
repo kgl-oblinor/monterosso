@@ -18,7 +18,7 @@ function fmt(ts) {
 }
 
 const CHAN = { whatsapp: "WhatsApp", sms: "SMS", call: "Ring", lead: "Lead" };
-const SLOT = { sunrise: "Soloppgang", sunset: "Solnedgang", morning: "Morgen", afternoon: "Ettermiddag" };
+const SLOT = { sunrise: "Soloppgang", sunshine: "Dagtid", sunset: "Solnedgang", morning: "Morgen", afternoon: "Ettermiddag" };
 
 export default async function Admin({ searchParams }) {
   const sp = (await searchParams) || {};
