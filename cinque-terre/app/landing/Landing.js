@@ -141,7 +141,7 @@ export default function Landing() {
             </button>
           </div>
           <div className="scroll-hint">
-            <span>this way</span>
+            <span>Andiamo</span>
             <span className="dot"></span>
           </div>
         </header>
