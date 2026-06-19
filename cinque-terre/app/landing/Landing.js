@@ -7,6 +7,19 @@ import { tour } from "../../lib/tour";
 import Skyline from "./Skyline";
 import Boat3D from "./Boat3D";
 import Clouds from "./Clouds";
+import ClockTower from "./ClockTower";
+import WoodSign from "./WoodSign";
+import Signpost from "./Signpost";
+
+// the five villages — caption + Wikipedia slug (wiki link shown on
+// desktop/tablet only, hidden on mobile)
+const VILLAGE_INFO = [
+  { n: "Monterosso", c: "the sandy one · our home port", w: "Monterosso_al_Mare" },
+  { n: "Vernazza", c: "the natural harbour · the clock tower", w: "Vernazza" },
+  { n: "Corniglia", c: "high on the cliff · among the vineyards", w: "Corniglia" },
+  { n: "Manarola", c: "colours stacked down to the sea", w: "Manarola" },
+  { n: "Riomaggiore", c: "where the day ends · in gold", w: "Riomaggiore" },
+];
 
 export default function Landing() {
   const [theme, setTheme] = useState("light");
@@ -35,6 +48,8 @@ export default function Landing() {
   // Scroll / swipe / button all bring the booking card in as an overlay —
   // same screen, no navigation.
   const [showBook, setShowBook] = useState(false);
+  const [showClock, setShowClock] = useState(false); // Vernazza clock-tower story
+  const [clockView, setClockView] = useState("vernazza"); // "vernazza" | "villages"
   const [about, setAbout] = useState(false); // "about us" — the sixth window
   const aboutSeen = useRef(false);
   useEffect(() => {
@@ -118,6 +133,17 @@ export default function Landing() {
       {/* the five villages on the horizon */}
       <Skyline />
 
+      {/* Vernazza's clock tower — a live clock; click for the village story */}
+      <ClockTower onOpen={() => setShowClock(true)} />
+
+      {/* trail signpost — the five villages; each board opens its story */}
+      <Signpost
+        onSelect={(v) => {
+          setClockView(v === "Vernazza" ? "vernazza" : "villages");
+          setShowClock(true);
+        }}
+      />
+
       {/* a little 3D tour boat sailing on the sea */}
       <Boat3D theme={theme} />
 
@@ -147,12 +173,7 @@ export default function Landing() {
             <span>Andiamo</span>
             <span className="andiamo-fall" aria-hidden="true">
               <span className="af-bit af-bit--gold" style={{ animationDelay: "0s" }}>♥</span>
-              <span className="af-bit" style={{ animationDelay: "1.3s" }}>m</span>
-              <span className="af-bit" style={{ animationDelay: "2.6s" }}>a</span>
-              <span className="af-bit" style={{ animationDelay: "3.9s" }}>n</span>
-              <span className="af-bit" style={{ animationDelay: "5.2s" }}>d</span>
-              <span className="af-bit" style={{ animationDelay: "6.5s" }}>y</span>
-              <span className="af-bit af-bit--gold" style={{ animationDelay: "7.8s" }}>★</span>
+              <span className="af-bit af-bit--gold" style={{ animationDelay: "14.5s" }}>❥</span>
             </span>
           </div>
         </header>
@@ -236,6 +257,95 @@ export default function Landing() {
                 ✕
               </button>
                   <BookingForm active={showBook} />
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* CLOCK TOWER · VERNAZZA — our first SEO story popup */}
+      <div
+        className={"book-overlay" + (showClock ? " open" : "")}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setShowClock(false);
+        }}
+      >
+        <div className="book-overlay__inner">
+          <button
+            className="book-close"
+            onClick={() => setShowClock(false)}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+          {clockView === "villages" ? (
+            <>
+              <p className="section-label">Cinque Terre</p>
+              <h2 className="section-title">The five villages</h2>
+              <div className="book-form seo-form">
+                <div className="seo-signs">
+                  {VILLAGE_INFO.map((v) => (
+                    <div className="seo-sign" key={v.n}>
+                      <WoodSign name={v.n} />
+                      <span>{v.c}</span>
+                      <a
+                        className="wiki-link"
+                        href={`https://en.wikipedia.org/wiki/${v.w}`}
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        Wikipedia ↗
+                      </a>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className="pay pay--ghost"
+                  onClick={() => setClockView("vernazza")}
+                >
+                  ← Back to Vernazza
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="section-label">Vernazza · Cinque Terre</p>
+              <h2 className="section-title">The clock tower</h2>
+              <div className="book-form seo-form">
+                <p className="seo-p">
+                  High above the harbour, the campanile of Santa Margherita
+                  d&apos;Antiochia has told Vernazza&apos;s time since the 1300s
+                  — an octagonal tower, 40 metres tall, crowned by an ogival
+                  dome. Its bells still ring the hour.
+                </p>
+                <p className="seo-p">
+                  The village itself was founded around the year 1000 and has
+                  clung to these cliffs ever since. Barely 700 people call it
+                  home — a UNESCO-listed jewel of the Ligurian coast.
+                </p>
+                <div className="seo-facts">
+                  <span>~1,000 years old</span>
+                  <span>≈700 residents</span>
+                  <span>Church · 1318</span>
+                  <span>Tower · 40 m</span>
+                  <span>UNESCO</span>
+                </div>
+                <a
+                  className="wiki-link wiki-link--block"
+                  href="https://en.wikipedia.org/wiki/Vernazza"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Vernazza on Wikipedia ↗
+                </a>
+                <button
+                  type="button"
+                  className="pay"
+                  onClick={() => setClockView("villages")}
+                >
+                  Meet the five villages →
+                </button>
+              </div>
             </>
           )}
         </div>

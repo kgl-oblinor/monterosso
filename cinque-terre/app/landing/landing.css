@@ -53,7 +53,7 @@
 .landing-v2 .scroll-hint .andiamo-fall {
   position: relative;
   width: 100%;
-  height: 42px;
+  height: 62px;
   margin-top: 4px;
 }
 .landing-v2 .scroll-hint .af-bit {
@@ -62,11 +62,14 @@
   top: 0;
   transform: translateX(-50%);
   font-family: "Fraunces", Georgia, serif;
-  font-size: 0.8rem;
+  font-size: 1.05rem;
   letter-spacing: 0.08em;
-  color: var(--cream);
+  color: rgba(253, 246, 234, 0.6);
+  /* foggy, shadow-like, mysterious — soft solid hearts that drift */
+  filter: blur(1.8px);
+  text-shadow: 0 0 10px rgba(2, 10, 20, 0.5);
   opacity: 0;
-  animation: andiamoFall 9s ease-in-out infinite;
+  animation: andiamoFall 29s ease-in-out infinite;
 }
 .landing-v2 .scroll-hint .af-bit--gold {
   color: var(--gold);
@@ -83,7 +86,7 @@
     opacity: 0.5;
   }
   100% {
-    transform: translate(-50%, 38px);
+    transform: translate(-50%, 58px);
     opacity: 0;
   }
 }
@@ -125,6 +128,182 @@
     transparent 70%
   );
   opacity: 0.4;
+}
+
+/* trail signpost — the five village boards on a weathered post */
+.landing-v2 .signpost {
+  position: fixed;
+  left: clamp(6px, 2.5vw, 46px);
+  bottom: clamp(40px, 9vh, 120px);
+  z-index: 11;
+  pointer-events: none;
+}
+.landing-v2 .signpost__post {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  width: clamp(9px, 1.2vw, 15px);
+  height: clamp(150px, 26vh, 280px);
+  background: linear-gradient(90deg, #6e4c2e, #4a3018 55%, #3a2412);
+  border-radius: 3px;
+  box-shadow: 0 8px 14px rgba(2, 10, 20, 0.35);
+}
+.landing-v2 .signpost__boards {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-left: 4px;
+}
+.landing-v2 .signpost__board {
+  pointer-events: auto;
+  width: clamp(124px, 16vw, 184px);
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transform: rotate(calc(var(--i) * 0.5deg - 1deg));
+  transform-origin: left center;
+  filter: drop-shadow(0 4px 8px rgba(2, 10, 20, 0.4));
+  transition: transform 0.2s ease, filter 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.landing-v2 .signpost__board:hover {
+  transform: translateX(4px) scale(1.03);
+  filter: drop-shadow(0 8px 14px rgba(2, 10, 20, 0.5));
+}
+.landing-v2 .signpost__board .woodsign-svg {
+  width: 100%;
+  height: auto;
+}
+@media (max-width: 640px) {
+  .landing-v2 .signpost {
+    left: 4px;
+    bottom: clamp(64px, 15vh, 150px);
+  }
+  .landing-v2 .signpost__board {
+    width: clamp(104px, 33vw, 150px);
+  }
+  .landing-v2 .signpost__post {
+    height: clamp(118px, 22vh, 200px);
+  }
+}
+
+/* Vernazza clock tower — a live clock standing on the horizon */
+.landing-v2 .clocktower {
+  position: fixed;
+  bottom: 50%;
+  left: 24%;
+  width: clamp(56px, 7vw, 100px);
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  z-index: 12;
+  cursor: pointer;
+  transform-origin: bottom center;
+  filter: drop-shadow(0 6px 10px rgba(3, 16, 29, 0.3));
+  transition: transform 0.25s ease, filter 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.landing-v2 .clocktower:hover {
+  transform: translateY(-3px) scale(1.03);
+  filter: drop-shadow(0 10px 16px rgba(3, 16, 29, 0.4));
+}
+.landing-v2 .ct-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* SEO story popup (clock tower / the five villages) */
+.landing-v2 .seo-form {
+  min-height: auto;
+  text-align: left;
+  gap: 0;
+}
+.landing-v2 .seo-p {
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--cream);
+  opacity: 0.9;
+  margin-bottom: 12px;
+}
+.landing-v2 .seo-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 18px;
+}
+.landing-v2 .seo-facts span {
+  font-family: "Jost", system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--plum);
+  background: linear-gradient(177deg, #f6ecc4 0%, #ecdaa0 100%);
+  border-radius: 999px;
+  padding: 5px 12px;
+}
+.landing-v2 .seo-signs {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0 0 18px;
+}
+.landing-v2 .seo-sign {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.landing-v2 .woodsign-svg {
+  width: min(300px, 100%);
+  height: auto;
+  filter: drop-shadow(0 6px 10px rgba(2, 10, 20, 0.45));
+}
+.landing-v2 .woodsign-text {
+  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.landing-v2 .seo-sign span {
+  margin: 3px 0 0 8px;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--cream);
+  opacity: 0.7;
+}
+.landing-v2 .seo-form .pay {
+  margin-top: 8px;
+}
+
+/* Wikipedia links — shown on desktop/tablet, hidden on mobile */
+.landing-v2 .wiki-link {
+  display: inline-block;
+  margin-left: 8px;
+  font-family: "Jost", system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  text-decoration: none;
+  opacity: 0.85;
+}
+.landing-v2 .wiki-link:hover {
+  text-decoration: underline;
+  opacity: 1;
+}
+.landing-v2 .wiki-link--block {
+  display: block;
+  margin: 0 0 14px 0;
+}
+@media (max-width: 640px) {
+  .landing-v2 .wiki-link {
+    display: none;
+  }
 }
 
 .landing-v2 .box-count {
@@ -729,18 +908,35 @@ body {
    existing horizontal drift animation intact. */
 .landing-v2 .clouds {
   top: 15vh;
-  /* keep the existing slow horizontal drift (transform) and add a small,
-     smooth vertical float via the independent `translate` property so the
-     two compose instead of overriding each other */
-  animation: cloudDrift 120s ease-in-out infinite alternate,
-    cloudFloatV 8s ease-in-out infinite alternate;
+  /* a one-time story on load: drift sloooowly, shrink into smaller clouds,
+     wait, drift again, then dissolve completely → clear sky (no loop) */
+  transform-origin: 50% 40%;
+  animation: cloudStory 78s ease-in-out forwards;
 }
-@keyframes cloudFloatV {
-  from {
-    translate: 0 -5px;
+@keyframes cloudStory {
+  0% {
+    opacity: 0.9;
+    transform: translateX(0) scale(1);
   }
-  to {
-    translate: 0 6px;
+  16% {
+    opacity: 0.9;
+    transform: translateX(-1.2%) scale(0.97);
+  }
+  33% {
+    opacity: 0.72;
+    transform: translateX(-2%) scale(0.8);
+  }
+  56% {
+    opacity: 0.72;
+    transform: translateX(-2.3%) scale(0.8);
+  }
+  82% {
+    opacity: 0.32;
+    transform: translateX(-4.2%) scale(0.62);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-6%) scale(0.5);
   }
 }
 

@@ -410,14 +410,14 @@ export default function Boat3D({ theme }) {
 
     // ---------- animation ----------
     const clock = new THREE.Clock();
-    const P = 105; // daytime loop period — slower pace, longer voyage
+    const P = 180; // daytime loop period — about half the old speed
     const Z_NEAR = -2.0;
     const Z_FAR = -22.0;
     const X_AMP = 12.0;
     const TAU = Math.PI * 2;
     const HOME = { x: -14, z: -13.5 }; // moorings at the town on the left
     const MOOR_T = 18; // seconds to sail home and moor
-    const LAUNCH = 13; // seconds to leave the dock into the loop (eased to match the slow cruise)
+    const LAUNCH = 28; // slow launch — gentle, decelerating as it nears centre
     const lerp = (a, b, k) => a + (b - a) * k;
     const ss = (e) => {
       const c = Math.max(0, Math.min(1, e));
