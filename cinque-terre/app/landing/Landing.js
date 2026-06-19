@@ -218,25 +218,25 @@ export default function Landing() {
             <p className="vp-eyebrow">The boat · Cinque Terre</p>
             <h2 className="vp-title">Aboard the Paolona</h2>
             <p className="vp-lede">
-              A family boat, and a captain who is the real Italy.
+              A family boat — and a captain who is the real Italy.
             </p>
             <p className="vp-body">
-              The Paolona is a Ligurian gozzo — varnished wood, blue topsides,
-              an awning for the sun. She has carried this family along the
-              Cinque Terre for years; there is no finer way to see the five
+              The Paolona is a Ligurian gozzo: varnished wood, blue topsides,
+              an awning against the sun. She has carried this family along the
+              coast for years, and there is no finer way to see the five
               villages than from her deck.
             </p>
             <p className="vp-body">
-              Her captain was born and raised on this coast: a sea-worthy local
-              gentleman, unhurried and elegant, who knows every cove and every
-              hour worth sailing. He is also — for the record — seeking rich
-              ladies over seventy. Until one finds him, he is yours alone for
-              the day.
+              Her captain was born and raised on this shore — an unhurried,
+              elegant gentleman of the sea who knows every cove and every hour
+              worth sailing. He is, by his own admission, still seeking a rich
+              lady over seventy; until she finds him, he is yours alone for the
+              day.
             </p>
             <p className="vp-body">
-              When he is not on the water, the captain keeps a few simple rooms
-              along this coast — ask aboard, and he&apos;ll tell you which one
-              looks out at the sea you sailed.
+              Ashore, he keeps a few simple rooms along this coast. Ask aboard,
+              and he will gladly tell you which one looks out on the sea you
+              sailed.
             </p>
             <dl className="vp-facts">
               <div className="vp-fact">

@@ -7,8 +7,8 @@ export const VILLAGES = [
     eyebrow: "Cinque Terre · Liguria",
     lede: "The largest of the five — and the only one with a true beach.",
     body: [
-      "Monterosso is the oldest village on record, first noted in 1056, though people sheltered on this shore as far back as the 7th century. It is really two villages in one: the old medieval centre and the newer quarter of Fegina, threaded together by a tunnel beneath the San Cristoforo headland.",
-      "Its long pebble beach, lemon groves and pale local white wine give Monterosso an easy, sun-warmed calm. Look for Il Gigante — a fourteen-metre Neptune carved into the cliff in 1910 — still holding up what remains of a seaside terrace.",
+      "The oldest village on record — first noted in 1056, though people sheltered here as far back as the 7th century. It is really two in one: the medieval old town and the newer quarter of Fegina, joined by a tunnel beneath the San Cristoforo headland.",
+      "Its long pebble beach, lemon groves and pale white wine give it an easy, sun-warmed calm. Look for Il Gigante — a fourteen-metre Neptune carved into the cliff in 1910 — still bearing the weight of an old seaside terrace.",
     ],
     facts: [
       { k: "First recorded", v: "1056" },
@@ -23,7 +23,7 @@ export const VILLAGES = [
     eyebrow: "Cinque Terre · Liguria",
     lede: "The natural harbour — many call it the most beautiful of the five.",
     body: [
-      "Founded around the year 1000 and shaped by Genoa from 1276, Vernazza grew around the only safe harbour on this coast. Its pastel houses gather tight around the water, watched over by the Doria castle and the Belforte tower.",
+      "Founded around the year 1000 and shaped by Genoa from 1276, Vernazza grew around the only safe harbour on this coast. Its pastel houses press close around the water, watched over by the Doria castle and the Belforte tower.",
       "High above the harbour stands Santa Margherita d'Antiochia, a Ligurian-Gothic church from 1318. Its octagonal bell tower rises forty metres — and the clock you see on our shore still keeps Vernazza's time, its bells marking every hour.",
     ],
     facts: [
