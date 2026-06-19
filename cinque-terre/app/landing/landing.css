@@ -125,45 +125,30 @@
 }
 .landing-v2 .village-sign {
   position: fixed;
-  bottom: 50%; /* sits on the shore in front of Monterosso */
+  bottom: 55%; /* perched up on the village, clear of the hero CTA below */
   transform: translateX(-50%);
-  width: clamp(150px, 18vw, 240px); /* Monterosso sign — the front marker */
+  width: clamp(72px, 8vw, 118px); /* small — and the same for every village */
   margin: 0;
   padding: 0;
   border: none;
   background: none;
   cursor: pointer;
   pointer-events: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--s2);
-  filter: drop-shadow(0 6px 12px rgba(2, 10, 20, 0.5));
+  filter: drop-shadow(0 4px 8px rgba(2, 10, 20, 0.45));
   transition: transform 0.2s ease, filter 0.2s ease;
   -webkit-tap-highlight-color: transparent;
 }
 .landing-v2 .village-sign:hover {
-  transform: translateX(-50%) scale(1.04);
-  filter: drop-shadow(0 10px 16px rgba(2, 10, 20, 0.6));
+  transform: translateX(-50%) scale(1.05);
+  filter: drop-shadow(0 8px 14px rgba(2, 10, 20, 0.55));
 }
 .landing-v2 .village-sign .woodsign-svg {
   width: 100%;
   height: auto;
 }
-/* the meeting point, stated plainly up front */
-.landing-v2 .village-sign__where {
-  font-family: "Fraunces", Georgia, serif;
-  font-style: italic;
-  font-size: var(--t-sm);
-  letter-spacing: var(--ls-1);
-  color: var(--cream);
-  text-shadow: 0 1px 8px rgba(2, 10, 20, 0.7);
-  white-space: nowrap;
-}
 @media (max-width: 640px) {
   .landing-v2 .village-sign {
-    width: clamp(120px, 40vw, 180px);
-    left: 50% !important; /* centre the single marker on small screens */
+    width: clamp(46px, 12vw, 74px);
   }
 }
 
