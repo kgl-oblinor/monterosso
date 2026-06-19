@@ -1,38 +1,43 @@
 "use client";
 
-// A rustic, weathered wooden trail sign (CAI style): a dark arrow board with
-// the village name in white "carved" letters and the red-white-red blaze.
-// Inspired by the Cinque Terre footpath signposts.
-export default function WoodSign({ name }) {
+// A rustic, weathered wooden trail sign: an arrow board with the village name
+// in white "carved" letters. The wood tone is passed in so each of the five
+// signs reads a little differently — hand-cut, not stamped.
+export default function WoodSign({
+  name,
+  board = "#6e4a2a",
+  hi = "#8a5e34",
+  lo = "#43291b",
+}) {
   const id = name.toLowerCase();
   return (
     <svg viewBox="0 0 340 72" className="woodsign-svg" role="img" aria-label={name}>
       <defs>
         <linearGradient id={`wood-${id}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#5a3a22" />
-          <stop offset="0.5" stopColor="#42271480" stopOpacity="0" />
-          <stop offset="0.52" stopColor="#3f2613" />
-          <stop offset="1" stopColor="#2c1a0b" />
+          <stop offset="0" stopColor={hi} />
+          <stop offset="0.5" stopColor={board} stopOpacity="0" />
+          <stop offset="0.52" stopColor={board} />
+          <stop offset="1" stopColor={lo} />
         </linearGradient>
       </defs>
 
       {/* arrow board */}
       <path
         d="M3 7 L300 7 L337 36 L300 65 L3 65 Z"
-        fill="#3f2613"
-        stroke="#23140a"
+        fill={board}
+        stroke="#3a2412"
         strokeWidth="1.5"
       />
       <path d="M3 7 L300 7 L337 36 L300 65 L3 65 Z" fill={`url(#wood-${id})`} opacity="0.6" />
 
       {/* a few weathered grain lines */}
-      <path d="M10 20 Q150 16 320 22" fill="none" stroke="#23140a" strokeWidth="0.8" opacity="0.4" />
-      <path d="M10 36 Q150 33 318 37" fill="none" stroke="#6b4326" strokeWidth="0.8" opacity="0.3" />
-      <path d="M10 52 Q150 49 316 53" fill="none" stroke="#23140a" strokeWidth="0.8" opacity="0.4" />
+      <path d="M10 20 Q150 16 320 22" fill="none" stroke="#2c1a0b" strokeWidth="0.8" opacity="0.35" />
+      <path d="M10 36 Q150 33 318 37" fill="none" stroke={hi} strokeWidth="0.8" opacity="0.35" />
+      <path d="M10 52 Q150 49 316 53" fill="none" stroke="#2c1a0b" strokeWidth="0.8" opacity="0.35" />
 
       {/* a couple of bolt heads */}
-      <circle cx="300" cy="16" r="2" fill="#23140a" opacity="0.55" />
-      <circle cx="300" cy="56" r="2" fill="#23140a" opacity="0.55" />
+      <circle cx="300" cy="16" r="2" fill="#2c1a0b" opacity="0.5" />
+      <circle cx="300" cy="56" r="2" fill="#2c1a0b" opacity="0.5" />
 
       {/* carved white name — dark engrave shadow behind, white on top */}
       <text

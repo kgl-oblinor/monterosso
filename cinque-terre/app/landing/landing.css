@@ -127,7 +127,7 @@
   position: fixed;
   bottom: 55%; /* perched up on the village, clear of the hero CTA below */
   transform: translateX(-50%);
-  width: clamp(72px, 8vw, 118px); /* small — and the same for every village */
+  width: clamp(92px, 9.5vw, 142px); /* a touch larger; each village its own wood tone */
   margin: 0;
   padding: 0;
   border: none;
@@ -148,7 +148,7 @@
 }
 @media (max-width: 640px) {
   .landing-v2 .village-sign {
-    width: clamp(46px, 12vw, 74px);
+    width: clamp(58px, 14vw, 96px);
   }
 }
 
