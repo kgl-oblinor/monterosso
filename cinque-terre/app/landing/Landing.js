@@ -8,18 +8,11 @@ import Skyline from "./Skyline";
 import Boat3D from "./Boat3D";
 import Clouds from "./Clouds";
 import ClockTower from "./ClockTower";
-import WoodSign from "./WoodSign";
 import Signpost from "./Signpost";
+import VillagePage from "./VillagePage";
+import { VILLAGES } from "./villageData";
 
-// the five villages — caption + Wikipedia slug (wiki link shown on
-// desktop/tablet only, hidden on mobile)
-const VILLAGE_INFO = [
-  { n: "Monterosso", c: "the sandy one · our home port", w: "Monterosso_al_Mare" },
-  { n: "Vernazza", c: "the natural harbour · the clock tower", w: "Vernazza" },
-  { n: "Corniglia", c: "high on the cliff · among the vineyards", w: "Corniglia" },
-  { n: "Manarola", c: "colours stacked down to the sea", w: "Manarola" },
-  { n: "Riomaggiore", c: "where the day ends · in gold", w: "Riomaggiore" },
-];
+const firstName = (n) => n.split(" ")[0]; // "Monterosso al Mare" → "Monterosso"
 
 export default function Landing() {
   const [theme, setTheme] = useState("light");
@@ -48,8 +41,9 @@ export default function Landing() {
   // Scroll / swipe / button all bring the booking card in as an overlay —
   // same screen, no navigation.
   const [showBook, setShowBook] = useState(false);
-  const [showClock, setShowClock] = useState(false); // Vernazza clock-tower story
-  const [clockView, setClockView] = useState("vernazza"); // "vernazza" | "villages"
+  const [villageIdx, setVillageIdx] = useState(null); // open village page (0–4) or null
+  const [showBoat, setShowBoat] = useState(false); // "the boat & her captain" page
+  const [showRental, setShowRental] = useState(false); // stays / rental page
   const [about, setAbout] = useState(false); // "about us" — the sixth window
   const aboutSeen = useRef(false);
   useEffect(() => {
@@ -133,16 +127,11 @@ export default function Landing() {
       {/* the five villages on the horizon */}
       <Skyline />
 
-      {/* Vernazza's clock tower — a live clock; click for the village story */}
-      <ClockTower onOpen={() => setShowClock(true)} />
+      {/* Vernazza's clock tower — a live clock; click opens Vernazza's page */}
+      <ClockTower onOpen={() => setVillageIdx(1)} />
 
-      {/* trail signpost — the five villages; each board opens its story */}
-      <Signpost
-        onSelect={(v) => {
-          setClockView(v === "Vernazza" ? "vernazza" : "villages");
-          setShowClock(true);
-        }}
-      />
+      {/* trail signpost — the five villages; each board opens its page */}
+      <Signpost onSelect={(i) => setVillageIdx(i)} />
 
       {/* a little 3D tour boat sailing on the sea */}
       <Boat3D theme={theme} />
@@ -262,92 +251,196 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* CLOCK TOWER · VERNAZZA — our first SEO story popup */}
+      {/* VILLAGE PAGES — layer 1, the clean reading template */}
       <div
-        className={"book-overlay" + (showClock ? " open" : "")}
+        className={"book-overlay" + (villageIdx !== null ? " open" : "")}
         onClick={(e) => {
-          if (e.target === e.currentTarget) setShowClock(false);
+          if (e.target === e.currentTarget) setVillageIdx(null);
         }}
       >
         <div className="book-overlay__inner">
           <button
             className="book-close"
-            onClick={() => setShowClock(false)}
+            onClick={() => setVillageIdx(null)}
             aria-label="Close"
           >
             ✕
           </button>
-          {clockView === "villages" ? (
-            <>
-              <p className="section-label">Cinque Terre</p>
-              <h2 className="section-title">The five villages</h2>
-              <div className="book-form seo-form">
-                <div className="seo-signs">
-                  {VILLAGE_INFO.map((v) => (
-                    <div className="seo-sign" key={v.n}>
-                      <WoodSign name={v.n} />
-                      <span>{v.c}</span>
-                      <a
-                        className="wiki-link"
-                        href={`https://en.wikipedia.org/wiki/${v.w}`}
-                        target="_blank"
-                        rel="noopener"
-                      >
-                        Wikipedia ↗
-                      </a>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  className="pay pay--ghost"
-                  onClick={() => setClockView("vernazza")}
-                >
-                  ← Back to Vernazza
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <p className="section-label">Vernazza · Cinque Terre</p>
-              <h2 className="section-title">The clock tower</h2>
-              <div className="book-form seo-form">
-                <p className="seo-p">
-                  High above the harbour, the campanile of Santa Margherita
-                  d&apos;Antiochia has told Vernazza&apos;s time since the 1300s
-                  — an octagonal tower, 40 metres tall, crowned by an ogival
-                  dome. Its bells still ring the hour.
-                </p>
-                <p className="seo-p">
-                  The village itself was founded around the year 1000 and has
-                  clung to these cliffs ever since. Barely 700 people call it
-                  home — a UNESCO-listed jewel of the Ligurian coast.
-                </p>
-                <div className="seo-facts">
-                  <span>~1,000 years old</span>
-                  <span>≈700 residents</span>
-                  <span>Church · 1318</span>
-                  <span>Tower · 40 m</span>
-                  <span>UNESCO</span>
-                </div>
-                <a
-                  className="wiki-link wiki-link--block"
-                  href="https://en.wikipedia.org/wiki/Vernazza"
-                  target="_blank"
-                  rel="noopener"
-                >
-                  Vernazza on Wikipedia ↗
-                </a>
-                <button
-                  type="button"
-                  className="pay"
-                  onClick={() => setClockView("villages")}
-                >
-                  Meet the five villages →
-                </button>
-              </div>
-            </>
+          {villageIdx !== null && (
+            <VillagePage
+              village={VILLAGES[villageIdx]}
+              prevName={firstName(
+                VILLAGES[(villageIdx + VILLAGES.length - 1) % VILLAGES.length].name
+              )}
+              nextName={firstName(
+                VILLAGES[(villageIdx + 1) % VILLAGES.length].name
+              )}
+              onPrev={() =>
+                setVillageIdx(
+                  (i) => (i + VILLAGES.length - 1) % VILLAGES.length
+                )
+              }
+              onNext={() => setVillageIdx((i) => (i + 1) % VILLAGES.length)}
+              onBoat={() => {
+                setVillageIdx(null);
+                setShowBoat(true);
+              }}
+            />
           )}
+        </div>
+      </div>
+
+      {/* THE BOAT & HER CAPTAIN — first boat page (funnel → booking) */}
+      <div
+        className={"book-overlay" + (showBoat ? " open" : "")}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setShowBoat(false);
+        }}
+      >
+        <div className="book-overlay__inner">
+          <button
+            className="book-close"
+            onClick={() => setShowBoat(false)}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+          <article className="village-page">
+            <p className="vp-eyebrow">The boat · Cinque Terre</p>
+            <h2 className="vp-title">Aboard the Paolona</h2>
+            <p className="vp-lede">
+              A family boat, and a captain who is the real Italy.
+            </p>
+            <p className="vp-body">
+              The Paolona is a Ligurian gozzo — varnished wood, blue topsides,
+              an awning for the sun. She has carried this family along the
+              Cinque Terre for years; there is no finer way to see the five
+              villages than from her deck.
+            </p>
+            <p className="vp-body">
+              Her captain was born and raised on this coast: a sea-worthy local
+              gentleman, unhurried and elegant, who knows every cove and every
+              hour worth sailing. He is also — for the record — seeking rich
+              ladies over seventy. Until one finds him, he is yours alone for
+              the day.
+            </p>
+            <dl className="vp-facts">
+              <div className="vp-fact">
+                <dt>Boat</dt>
+                <dd>Ligurian gozzo</dd>
+              </div>
+              <div className="vp-fact">
+                <dt>Guests</dt>
+                <dd>up to {tour.maxGuests}</dd>
+              </div>
+              <div className="vp-fact">
+                <dt>Departures</dt>
+                <dd>sunrise · sunshine · sunset</dd>
+              </div>
+              <div className="vp-fact">
+                <dt>From</dt>
+                <dd>${tour.priceUsd} / guest</dd>
+              </div>
+            </dl>
+            <div className="vp-foot">
+              <button
+                type="button"
+                className="vp-cta"
+                onClick={() => {
+                  setShowBoat(false);
+                  setShowBook(true);
+                }}
+              >
+                Come aboard →
+              </button>
+              <button
+                type="button"
+                className="vp-link"
+                onClick={() => {
+                  setShowBoat(false);
+                  setShowRental(true);
+                }}
+              >
+                Places to stay →
+              </button>
+            </div>
+            <nav className="vp-nav">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowBoat(false);
+                  setVillageIdx(0);
+                }}
+              >
+                ← The five villages
+              </button>
+            </nav>
+          </article>
+        </div>
+      </div>
+
+      {/* STAYS — light rental page (funnel → boat) */}
+      <div
+        className={"book-overlay" + (showRental ? " open" : "")}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setShowRental(false);
+        }}
+      >
+        <div className="book-overlay__inner">
+          <button
+            className="book-close"
+            onClick={() => setShowRental(false)}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+          <article className="village-page">
+            <p className="vp-eyebrow">Stay · Cinque Terre</p>
+            <h2 className="vp-title">Five places to stay</h2>
+            <p className="vp-lede">
+              A handful of rooms along this coast — simple, and close to the
+              sea.
+            </p>
+            <p className="vp-body">
+              Tell us your dates and how many you are, and we&apos;ll send you
+              the places that fit. No browsing, no fuss — just the right rooms,
+              by message.
+            </p>
+            <div className="vp-foot">
+              <a
+                className="vp-cta"
+                href={`https://wa.me/${tour.phone.replace(
+                  /[^\d]/g,
+                  ""
+                )}?text=${encodeURIComponent(
+                  "Stay enquiry — Monterosso · Cinque Terre. Dates: … · Guests: …"
+                )}`}
+                target="_blank"
+                rel="noopener"
+              >
+                Enquire on WhatsApp
+              </a>
+              <a
+                className="vp-link"
+                href={`mailto:${tour.email}?subject=${encodeURIComponent(
+                  "Stay enquiry — Cinque Terre"
+                )}`}
+              >
+                Enquire by email
+              </a>
+            </div>
+            <nav className="vp-nav">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowRental(false);
+                  setShowBoat(true);
+                }}
+              >
+                ← The boat
+              </button>
+            </nav>
+          </article>
         </div>
       </div>
 
@@ -490,7 +583,7 @@ function BookingForm({ active }) {
             </div>
           )}
         </div>
-        <p className="cal-label">Add to calendar</p>
+        <p className="cal-label">Add me to your calendar</p>
         <div className="cal-row">
           <a
             className="cal-btn"
@@ -509,6 +602,15 @@ function BookingForm({ active }) {
             <CalGlyph />
             Apple
           </button>
+          <a
+            className="cal-btn"
+            href={outlookCalUrl({ iso: date, guests, total, code, slot })}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <CalGlyph />
+            Outlook
+          </a>
         </div>
         <button
           type="button"
@@ -949,6 +1051,22 @@ function googleCalUrl({ iso, guests, total, code, slot }) {
     location: CAL_LOCATION,
   });
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+function outlookCalUrl({ iso, guests, total, code, slot }) {
+  const s = tour.slots[slot] || tour.slots.sunset;
+  const fmt = (hms) =>
+    `${iso}T${hms.slice(0, 2)}:${hms.slice(2, 4)}:${hms.slice(4, 6)}`;
+  const params = new URLSearchParams({
+    path: "/calendar/action/compose",
+    rru: "addevent",
+    subject: tour.name,
+    startdt: fmt(s.start),
+    enddt: fmt(s.end),
+    body: calDetails(code, guests, total, slot),
+    location: CAL_LOCATION,
+  });
+  return `https://outlook.live.com/calendar/0/deeplink/compose?${params.toString()}`;
 }
 
 function buildIcs({ iso, guests, total, code, slot }) {

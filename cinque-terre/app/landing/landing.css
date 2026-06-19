@@ -306,6 +306,160 @@
   }
 }
 
+/* village page — the clean reading template (layer 1) */
+.landing-v2 .village-page {
+  max-width: 600px;
+  text-align: left;
+  background: linear-gradient(180deg, rgba(7, 24, 42, 0.92), rgba(3, 16, 29, 0.95));
+  border: 1px solid rgba(234, 210, 126, 0.32);
+  border-radius: 26px;
+  padding: clamp(28px, 5vw, 48px);
+  box-shadow: 0 30px 70px rgba(2, 10, 20, 0.55);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+.landing-v2 .vp-eyebrow {
+  font-family: "Jost", system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.85;
+  margin-bottom: 12px;
+}
+.landing-v2 .vp-title {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(2rem, 6vw, 3rem);
+  line-height: 1.05;
+  color: var(--cream);
+  margin-bottom: 14px;
+}
+.landing-v2 .vp-lede {
+  font-family: "Fraunces", Georgia, serif;
+  font-style: italic;
+  font-size: clamp(1.1rem, 3vw, 1.35rem);
+  line-height: 1.45;
+  color: var(--cream);
+  opacity: 0.9;
+  margin-bottom: 22px;
+}
+.landing-v2 .vp-body {
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: rgba(253, 246, 234, 0.86);
+  margin-bottom: 16px;
+  max-width: 58ch;
+}
+.landing-v2 .vp-facts {
+  margin: 24px 0 4px;
+  padding: 18px 0;
+  border-top: 1px solid rgba(255, 246, 236, 0.14);
+  border-bottom: 1px solid rgba(255, 246, 236, 0.14);
+  display: grid;
+  gap: 10px;
+}
+.landing-v2 .vp-fact {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 0.95rem;
+}
+.landing-v2 .vp-fact dt {
+  color: rgba(253, 246, 234, 0.55);
+}
+.landing-v2 .vp-fact dd {
+  color: var(--cream);
+  font-weight: 500;
+  text-align: right;
+}
+/* one shared footer on every clean page: divider + primary + secondary */
+.landing-v2 .vp-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 246, 236, 0.14);
+}
+.landing-v2 .vp-foot .vp-cta,
+.landing-v2 .vp-foot .vp-link {
+  margin: 0;
+}
+.landing-v2 .vp-cta {
+  display: inline-block;
+  margin: 24px 0 0;
+  padding: 13px 28px;
+  border: 1.5px solid var(--gold);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--gold);
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.landing-v2 .vp-cta:hover {
+  background: var(--gold);
+  color: var(--plum);
+}
+.landing-v2 .vp-link {
+  display: inline-block;
+  margin: 18px 0 0 18px;
+  background: none;
+  border: none;
+  color: var(--cream);
+  opacity: 0.7;
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 0.84rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+.landing-v2 .vp-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+.landing-v2 .vp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+.landing-v2 .vp-actions .vp-link {
+  margin: 0;
+}
+.landing-v2 .vp-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 24px;
+}
+.landing-v2 .vp-nav button {
+  background: none;
+  border: none;
+  color: var(--gold);
+  font-family: "Jost", system-ui, sans-serif;
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  opacity: 0.85;
+  padding: 6px 2px;
+  transition: opacity 0.2s ease;
+}
+.landing-v2 .vp-nav button:hover {
+  opacity: 1;
+}
+
 .landing-v2 .box-count {
   text-align: center;
   font-family: "Jost", system-ui, sans-serif;
@@ -564,23 +718,23 @@ body {
 }
 .landing-v2 .cal-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
 }
 .landing-v2 .cal-btn {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   font-family: "Jost", system-ui, sans-serif;
   font-weight: 600;
-  font-size: 0.92rem;
-  letter-spacing: 0.14em;
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   text-decoration: none;
   color: var(--plum);
-  padding: 14px 8px;
+  padding: 13px 6px;
   border-radius: 13px;
   border: 2px solid var(--plum);
   background: linear-gradient(177deg, #f6ecc4 0%, #ecdaa0 52%, #e3cd8f 100%);
@@ -1187,4 +1341,124 @@ body {
     font-size: 0.62rem;
     letter-spacing: 0.08em;
   }
+}
+
+/* =========================================================================
+   UNIFIED LIGHT-GLASS POPUPS
+   Every popup (booking, village, boat, rental, weddings) shares one light
+   frosted-glass card and one large desktop size — regardless of content.
+   Text is recoloured to dark/ink so it reads on the light glass.
+   ========================================================================= */
+
+/* one width for every popup */
+.landing-v2 .book-overlay__inner {
+  max-width: 720px;
+}
+
+/* the shared light-glass card */
+.landing-v2 .book-form,
+.landing-v2 .village-page {
+  max-width: 100%;
+  width: 100%;
+  color: var(--plum);
+  background: linear-gradient(180deg, rgba(255, 251, 243, 0.92), rgba(247, 240, 227, 0.94));
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 30px 80px rgba(2, 10, 20, 0.5);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+/* big, equal size on desktop */
+@media (min-width: 760px) {
+  .landing-v2 .book-form,
+  .landing-v2 .village-page {
+    min-height: 620px;
+    padding: 48px 56px;
+  }
+}
+
+/* headings + body → ink on light */
+.landing-v2 .section-title,
+.landing-v2 .vp-title {
+  color: var(--plum);
+}
+.landing-v2 .vp-lede,
+.landing-v2 .vp-body,
+.landing-v2 .seo-p,
+.landing-v2 .confirm-lead,
+.landing-v2 .wed-story,
+.landing-v2 .wed-blurb {
+  color: rgba(7, 24, 42, 0.82);
+}
+.landing-v2 .section-label,
+.landing-v2 .vp-eyebrow,
+.landing-v2 .wed-price {
+  color: #a8743f; /* warm terracotta — reads on cream */
+}
+
+/* quiet labels that used cream → dark muted */
+.landing-v2 .reassure,
+.landing-v2 .box-count,
+.landing-v2 .send-summary,
+.landing-v2 .send-via,
+.landing-v2 .cal-label,
+.landing-v2 .confirm__back,
+.landing-v2 .vp-link {
+  color: rgba(7, 24, 42, 0.55) !important;
+}
+.landing-v2 .field-head.step-q {
+  color: rgba(7, 24, 42, 0.9);
+}
+.landing-v2 .field-head {
+  color: rgba(7, 24, 42, 0.7);
+}
+
+/* facts + dividers + nav on light */
+.landing-v2 .vp-fact dt {
+  color: rgba(7, 24, 42, 0.5);
+}
+.landing-v2 .vp-fact dd {
+  color: var(--plum);
+}
+.landing-v2 .vp-facts,
+.landing-v2 .vp-foot,
+.landing-v2 .conf-summary {
+  border-color: rgba(7, 24, 42, 0.14);
+}
+.landing-v2 .conf-row span {
+  color: rgba(7, 24, 42, 0.55);
+}
+.landing-v2 .conf-row strong {
+  color: var(--plum);
+}
+.landing-v2 .vp-nav button {
+  color: #a8743f;
+}
+
+/* primary outline CTA → ink on light */
+.landing-v2 .vp-cta {
+  border-color: var(--plum);
+  color: var(--plum);
+}
+.landing-v2 .vp-cta:hover {
+  background: var(--plum);
+  color: var(--cream);
+}
+
+/* inputs → light fields */
+.landing-v2 .book-form input,
+.landing-v2 .contact-field input,
+.landing-v2 .book-form select,
+.landing-v2 .book-form textarea {
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--plum);
+  border-color: rgba(7, 24, 42, 0.25);
+  color-scheme: light;
+}
+
+/* close button → light */
+.landing-v2 .book-close {
+  background: rgba(255, 251, 243, 0.92);
+  color: var(--plum);
+  border-color: rgba(7, 24, 42, 0.2);
 }

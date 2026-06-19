@@ -29,7 +29,9 @@ export default function ClockTower({ onOpen }) {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  // 12 minimalist hour ticks around the dial
+  // 12 minimalist hour ticks around the dial.
+  // Round coordinates so SSR and client render identical strings (no hydration mismatch).
+  const rnd = (n) => Math.round(n * 100) / 100;
   const ticks = [];
   for (let i = 0; i < 12; i++) {
     const a = (i * 30 * Math.PI) / 180;
@@ -38,10 +40,10 @@ export default function ClockTower({ onOpen }) {
     ticks.push(
       <line
         key={i}
-        x1={50 + Math.sin(a) * r1}
-        y1={138 - Math.cos(a) * r1}
-        x2={50 + Math.sin(a) * r2}
-        y2={138 - Math.cos(a) * r2}
+        x1={rnd(50 + Math.sin(a) * r1)}
+        y1={rnd(138 - Math.cos(a) * r1)}
+        x2={rnd(50 + Math.sin(a) * r2)}
+        y2={rnd(138 - Math.cos(a) * r2)}
         stroke="#2b2b2b"
         strokeWidth={i % 3 === 0 ? 1.4 : 0.8}
         strokeLinecap="round"

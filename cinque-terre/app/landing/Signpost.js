@@ -22,7 +22,7 @@ export default function Signpost({ onSelect }) {
             key={v}
             className="signpost__board"
             style={{ "--i": i }}
-            onClick={() => onSelect(v)}
+            onClick={() => onSelect(i)}
             aria-label={`${v} — read about the village`}
           >
             <WoodSign name={v} />
