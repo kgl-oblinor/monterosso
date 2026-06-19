@@ -1528,3 +1528,13 @@ body {
   margin-top: var(--s5);
   font-style: italic;
 }
+
+/* RULE: action buttons hold a FIXED footprint — every booking step's button
+   is the same width and sits in the same place, never resizing per label. */
+.landing-v2 .book-form .pay {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding-left: var(--s4);
+  padding-right: var(--s4);
+}
