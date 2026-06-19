@@ -43,9 +43,6 @@ export default function Landing() {
   const [showBook, setShowBook] = useState(false);
   const [villageIdx, setVillageIdx] = useState(null); // open village page (0–4) or null
   const [showBoat, setShowBoat] = useState(false); // "the boat & her captain" page
-  const [showRental, setShowRental] = useState(false); // stays / rental page
-  const [about, setAbout] = useState(false); // "about us" — the sixth window
-  const aboutSeen = useRef(false);
   useEffect(() => {
     const onWheel = (e) => {
       if (e.deltaY > 12) setShowBook(true);
@@ -58,14 +55,7 @@ export default function Landing() {
       if (ty - (e.changedTouches[0]?.clientY ?? ty) > 44) setShowBook(true);
     };
     const onKey = (e) => {
-      if (e.key !== "Escape") return;
-      if (!aboutSeen.current) {
-        aboutSeen.current = true;
-        setAbout(true);
-      } else {
-        setShowBook(false);
-        setAbout(false);
-      }
+      if (e.key === "Escape") setShowBook(false);
     };
     window.addEventListener("wheel", onWheel, { passive: true });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
@@ -78,22 +68,6 @@ export default function Landing() {
       window.removeEventListener("keydown", onKey);
     };
   }, []);
-
-  // Exit-intent: the first attempt to close the booking opens "about us"
-  // (the sixth window); a second attempt actually closes.
-  function tryClose() {
-    if (!aboutSeen.current) {
-      aboutSeen.current = true;
-      setAbout(true);
-      return;
-    }
-    setShowBook(false);
-    setAbout(false);
-  }
-  function closeAll() {
-    setShowBook(false);
-    setAbout(false);
-  }
 
   return (
     <div className="landing-v2">
@@ -171,83 +145,18 @@ export default function Landing() {
       <div
         className={"book-overlay" + (showBook ? " open" : "")}
         onClick={(e) => {
-          if (e.target === e.currentTarget) tryClose();
+          if (e.target === e.currentTarget) setShowBook(false);
         }}
       >
         <div className="book-overlay__inner">
-          {about ? (
-            <>
-              <button
-                className="book-close"
-                onClick={closeAll}
-                aria-label="Close"
-              >
-                ✕
-              </button>
-              <p className="box-count">8 / 8</p>
-              <p className="section-label">Before you go</p>
-              <div className="book-form wed-form">
-                <p className="wed-story">
-                  A family business — and a skipper who is the real Italy. Born
-                  and raised on this coast: unhurried, elegant, at home on the
-                  water.
-                </p>
-                <p className="wed-price">Weddings aboard · from $1,500</p>
-                <p className="wed-blurb">
-                  All-inclusive. A private celebration on the Ligurian water —
-                  the boat, the coast at golden hour, every detail arranged for
-                  you.
-                </p>
-                <a
-                  className="pay"
-                  href={`https://wa.me/${tour.phone.replace(
-                    /[^\d]/g,
-                    ""
-                  )}?text=${encodeURIComponent(
-                    "Wedding enquiry — Monterosso · Cinque Terre. We'd like the all-inclusive wedding tour."
-                  )}`}
-                  target="_blank"
-                  rel="noopener"
-                >
-                  Enquire on WhatsApp
-                </a>
-                <a
-                  className="pay pay--ghost"
-                  href={`mailto:${tour.email}?subject=${encodeURIComponent(
-                    "Wedding enquiry — Monterosso · Cinque Terre"
-                  )}`}
-                >
-                  Enquire by email
-                </a>
-                <a
-                  className="confirm__back"
-                  href={`tel:${tour.phone.replace(/\s/g, "")}`}
-                >
-                  or call {tour.phone}
-                </a>
-              </div>
-              <button
-                type="button"
-                className="confirm__back"
-                onClick={() => setAbout(false)}
-              >
-                ← Back to booking
-              </button>
-            </>
-          ) : (
-            <>
-              {/* anchored to the card's top-right corner (absolute, not fixed)
-                  so it sits just above the card, identical across browsers */}
-              <button
-                className="book-close"
-                onClick={tryClose}
-                aria-label="Close"
-              >
-                ✕
-              </button>
-                  <BookingForm active={showBook} />
-            </>
-          )}
+          <button
+            className="book-close"
+            onClick={() => setShowBook(false)}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+          <BookingForm active={showBook} />
         </div>
       </div>
 
@@ -324,6 +233,11 @@ export default function Landing() {
               ladies over seventy. Until one finds him, he is yours alone for
               the day.
             </p>
+            <p className="vp-body">
+              When he is not on the water, the captain keeps a few simple rooms
+              along this coast — ask aboard, and he&apos;ll tell you which one
+              looks out at the sea you sailed.
+            </p>
             <dl className="vp-facts">
               <div className="vp-fact">
                 <dt>Boat</dt>
@@ -353,16 +267,6 @@ export default function Landing() {
               >
                 Come aboard →
               </button>
-              <button
-                type="button"
-                className="vp-link"
-                onClick={() => {
-                  setShowBoat(false);
-                  setShowRental(true);
-                }}
-              >
-                Places to stay →
-              </button>
             </div>
             <nav className="vp-nav">
               <button
@@ -373,71 +277,6 @@ export default function Landing() {
                 }}
               >
                 ← The five villages
-              </button>
-            </nav>
-          </article>
-        </div>
-      </div>
-
-      {/* STAYS — light rental page (funnel → boat) */}
-      <div
-        className={"book-overlay" + (showRental ? " open" : "")}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) setShowRental(false);
-        }}
-      >
-        <div className="book-overlay__inner">
-          <button
-            className="book-close"
-            onClick={() => setShowRental(false)}
-            aria-label="Close"
-          >
-            ✕
-          </button>
-          <article className="village-page">
-            <p className="vp-eyebrow">Stay · Cinque Terre</p>
-            <h2 className="vp-title">Five places to stay</h2>
-            <p className="vp-lede">
-              A handful of rooms along this coast — simple, and close to the
-              sea.
-            </p>
-            <p className="vp-body">
-              Tell us your dates and how many you are, and we&apos;ll send you
-              the places that fit. No browsing, no fuss — just the right rooms,
-              by message.
-            </p>
-            <div className="vp-foot">
-              <a
-                className="vp-cta"
-                href={`https://wa.me/${tour.phone.replace(
-                  /[^\d]/g,
-                  ""
-                )}?text=${encodeURIComponent(
-                  "Stay enquiry — Monterosso · Cinque Terre. Dates: … · Guests: …"
-                )}`}
-                target="_blank"
-                rel="noopener"
-              >
-                Enquire on WhatsApp
-              </a>
-              <a
-                className="vp-link"
-                href={`mailto:${tour.email}?subject=${encodeURIComponent(
-                  "Stay enquiry — Cinque Terre"
-                )}`}
-              >
-                Enquire by email
-              </a>
-            </div>
-            <nav className="vp-nav">
-              <button
-                type="button"
-                onClick={() => {
-                  setShowRental(false);
-                  setShowBoat(true);
-                }}
-              >
-                ← The boat
               </button>
             </nav>
           </article>

@@ -388,26 +388,6 @@
 .landing-v2 .vp-foot .vp-link {
   margin: 0;
 }
-.landing-v2 .vp-cta {
-  display: inline-block;
-  margin: 24px 0 0;
-  padding: 13px 28px;
-  border: 1.5px solid var(--gold);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--gold);
-  font-family: "Jost", system-ui, sans-serif;
-  font-weight: 600;
-  font-size: 0.9rem;
-  letter-spacing: 0.06em;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-.landing-v2 .vp-cta:hover {
-  background: var(--gold);
-  color: var(--plum);
-}
 .landing-v2 .vp-link {
   display: inline-block;
   margin: 18px 0 0 18px;
@@ -598,7 +578,9 @@ body {
 /* ---------- DIALOG BUTTON — identical to the hero "Reserve your place" ----------
    "Check availability" and "Send request" share class .pay; give them the
    exact champagne-ticket look of the hero CTA. */
-.landing-v2 .book-form .pay {
+.landing-v2 .book-form .pay,
+.landing-v2 .vp-cta {
+  position: relative;
   font-family: "Jost", system-ui, sans-serif;
   font-weight: 600;
   font-size: 0.92rem;
@@ -619,7 +601,8 @@ body {
     box-shadow 0.22s ease, filter 0.22s ease, background 0.22s ease;
 }
 /* inner ticket frame line (overrides the old matte-gold fill) */
-.landing-v2 .book-form .pay::before {
+.landing-v2 .book-form .pay::before,
+.landing-v2 .vp-cta::before {
   content: "";
   display: block;
   position: absolute;
@@ -632,11 +615,13 @@ body {
   mix-blend-mode: normal;
   opacity: 1;
 }
-.landing-v2 .book-form .pay::after {
+.landing-v2 .book-form .pay::after,
+.landing-v2 .vp-cta::after {
   display: none;
 }
 @media (hover: hover) {
-  .landing-v2 .book-form .pay:hover {
+  .landing-v2 .book-form .pay:hover,
+  .landing-v2 .vp-cta:hover {
     transform: translateY(-3px);
     filter: brightness(1.05);
     background: linear-gradient(177deg, #f9f0cd 0%, #efdfa9 52%, #e7d496 100%);
@@ -645,17 +630,20 @@ body {
       0 4px 12px -6px rgba(2, 10, 20, 0.5);
   }
   /* keep the frame transparent on hover (old style turned it solid gold) */
-  .landing-v2 .book-form .pay:hover::before {
+  .landing-v2 .book-form .pay:hover::before,
+  .landing-v2 .vp-cta:hover::before {
     background: transparent;
     box-shadow: none;
   }
 }
-.landing-v2 .book-form .pay:active {
+.landing-v2 .book-form .pay:active,
+.landing-v2 .vp-cta:active {
   transform: translateY(0) scale(0.97);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4),
     0 8px 18px -12px rgba(2, 10, 20, 0.7);
 }
-.landing-v2 .book-form .pay:focus-visible {
+.landing-v2 .book-form .pay:focus-visible,
+.landing-v2 .vp-cta:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px rgba(234, 210, 126, 0.6),
     0 14px 30px -14px rgba(2, 10, 20, 0.7);
@@ -1433,16 +1421,6 @@ body {
 }
 .landing-v2 .vp-nav button {
   color: #a8743f;
-}
-
-/* primary outline CTA → ink on light */
-.landing-v2 .vp-cta {
-  border-color: var(--plum);
-  color: var(--plum);
-}
-.landing-v2 .vp-cta:hover {
-  background: var(--plum);
-  color: var(--cream);
 }
 
 /* inputs → light fields */
