@@ -1538,3 +1538,27 @@ body {
   padding-left: var(--s4);
   padding-right: var(--s4);
 }
+
+/* departure time — three squares side by side */
+.landing-v2 .choice-grid--time {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s3);
+}
+.landing-v2 .choice--sq {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  text-align: center;
+  padding: var(--s2);
+}
+.landing-v2 .choice--sq .choice-label {
+  font-size: var(--t-md);
+}
+.landing-v2 .choice--sq .choice-sub {
+  font-size: var(--t-xs);
+  line-height: 1.25;
+}

@@ -1105,7 +1105,8 @@ function BookingForm({ active }) {
     const opts = ["sunrise", "sunshine", "sunset"].map((v) => ({
       v,
       label: tour.slots[v].label,
-      sub: `${tour.slots[v].window} · $${slotPriceUsd(v)}/guest`,
+      window: tour.slots[v].window,
+      price: slotPriceUsd(v),
     }));
     return (
       <div className="book-form">
@@ -1113,19 +1114,20 @@ function BookingForm({ active }) {
         <span className="field-head step-q">
           When would you care to set off?
         </span>
-        <div className="choice-grid">
+        <div className="choice-grid choice-grid--time">
           {opts.map((o) => (
             <button
               type="button"
               key={o.v}
-              className={"choice" + (slot === o.v ? " is-sel" : "")}
+              className={"choice choice--sq" + (slot === o.v ? " is-sel" : "")}
               onClick={() => {
                 setSlot(o.v);
                 setStep("aboard");
               }}
             >
               <span className="choice-label">{o.label}</span>
-              <span className="choice-sub">{o.sub}</span>
+              <span className="choice-sub">{o.window}</span>
+              <span className="choice-sub">${o.price}/guest</span>
             </button>
           ))}
         </div>
