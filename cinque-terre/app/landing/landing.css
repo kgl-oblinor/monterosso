@@ -236,8 +236,8 @@
 .landing-v2 .vp-title {
   font-family: "Fraunces", Georgia, serif;
   font-weight: 600;
-  font-size: clamp(var(--t-xl), 6vw, var(--t-2xl));
-  line-height: 1.08;
+  font-size: clamp(var(--t-lg), 5vw, var(--t-xl));
+  line-height: 1.1;
   letter-spacing: var(--ls-1);
   color: var(--cream);
   margin-bottom: var(--s4);
@@ -487,9 +487,9 @@ body {
   position: relative;
   font-family: "Limelight", "Fraunces", serif;
   font-weight: 400;
-  font-size: 1.12rem;
+  font-size: 0.98rem;
   line-height: 1.1;
-  letter-spacing: 0.10em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--plum);
   padding: 18px clamp(28px, 9vw, 48px);

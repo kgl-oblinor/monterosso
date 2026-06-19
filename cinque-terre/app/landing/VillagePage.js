@@ -67,7 +67,7 @@ export default function VillagePage({
       <div className="vp-foot">
         <div className="vp-foot-row">
           <button type="button" className="vp-cta" onClick={onBoat}>
-            Sail the Cinque Terre →
+            The boat →
           </button>
           <button type="button" className="vp-read" onClick={onReadMore}>
             Read more <Arrow />
