@@ -196,7 +196,7 @@
 .landing-v2 .wiki-link {
   display: inline-block;
   margin-left: 8px;
-  font-family: "Jost", system-ui, sans-serif;
+  font-family: "Fraunces", Georgia, serif;
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -624,7 +624,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-family: "Jost", system-ui, sans-serif;
+  font-family: "Fraunces", Georgia, serif;
   font-weight: 600;
   font-size: 0.76rem;
   letter-spacing: 0.06em;
@@ -816,7 +816,7 @@ body {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  font-family: "Jost", system-ui, sans-serif;
+  font-family: "Fraunces", Georgia, serif;
   font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -993,7 +993,7 @@ body {
 
 /* ---------- BOOKING META LINE — readable, bolder, lighter ---------- */
 .landing-v2 .book-form .meta {
-  font-family: "Jost", system-ui, sans-serif;
+  font-family: "Fraunces", Georgia, serif;
   font-size: 0.74rem;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -1018,7 +1018,7 @@ body {
   margin-top: 26px;
 }
 .landing-v2 .book-form .price-note {
-  font-family: "Jost", system-ui, sans-serif;
+  font-family: "Fraunces", Georgia, serif;
   font-weight: 500;
   font-size: 0.9rem;
   letter-spacing: 0.02em;
@@ -1026,19 +1026,19 @@ body {
   opacity: 0.85;
 }
 .landing-v2 .book-form .total-row .t-label {
-  font-family: "Jost", system-ui, sans-serif;
+  font-family: "Fraunces", Georgia, serif;
   font-weight: 500;
   font-size: 1rem;
   letter-spacing: 0.02em;
 }
 .landing-v2 .book-form .total-row .t-val {
-  font-family: "Jost", system-ui, sans-serif;
+  font-family: "Fraunces", Georgia, serif;
   font-weight: 700;
   font-size: 2.3rem;
   letter-spacing: 0.01em;
 }
 .landing-v2 .book-form .t-per {
-  font-family: "Jost", system-ui, sans-serif;
+  font-family: "Fraunces", Georgia, serif;
   font-weight: 500;
   font-size: 0.95rem;
 }
@@ -1086,7 +1086,7 @@ body {
 /* ---------- CONFIRM STEP — readable summary line ----------
    "Day after · 17 June · 3 guests · $270" was set in cursive. */
 .landing-v2 .book-form .send-summary {
-  font-family: "Jost", system-ui, sans-serif;
+  font-family: "Fraunces", Georgia, serif;
   font-weight: 600;
   font-size: 0.95rem;
   letter-spacing: 0.03em;
