@@ -689,7 +689,7 @@ function BookingForm({ active }) {
   const [guests, setGuests] = useState(2);
   const [error, setError] = useState("");
   const [days, setDays] = useState([]);
-  const [step, setStep] = useState("date"); // "date" → "guests" → review
+  const [step, setStep] = useState("receipt"); // receipt-first; "Another time" → time → guests → date → receipt
   const [done, setDone] = useState(false);
   const [sent, setSent] = useState(false);
   const [phone, setPhone] = useState("");
@@ -703,7 +703,23 @@ function BookingForm({ active }) {
 
   useEffect(() => {
     setDays(buildDays(21));
-    setDate((d) => d || todayISO()); // default to today, set on the client
+    // smart guess: two places on the next departure, ~4 hours from now
+    const now = new Date();
+    const t = now.getHours() + 4;
+    let guessSlot = "sunset";
+    let guessIso = todayISO();
+    if (t < 9) guessSlot = "sunrise";
+    else if (t < 14) guessSlot = "sunshine";
+    else if (t <= 20) guessSlot = "sunset";
+    else {
+      // too late today → tomorrow's sunrise
+      guessSlot = "sunrise";
+      const d = new Date(now);
+      d.setDate(d.getDate() + 1);
+      guessIso = d.toISOString().slice(0, 10);
+    }
+    setSlot(guessSlot);
+    setDate((d) => d || guessIso);
   }, []);
 
   function nextFromDate() {
@@ -712,13 +728,13 @@ function BookingForm({ active }) {
       setError("Please pick a date for your tour.");
       return;
     }
-    setStep("pickup");
+    setStep("receipt");
   }
-  // pick a date tile → set it and jump straight to the next step
+  // pick a date tile → set it and return to the receipt
   function pickDate(iso) {
     setError("");
     setDate(iso);
-    setStep("pickup");
+    setStep("receipt");
   }
   function review() {
     setError("");
@@ -736,18 +752,18 @@ function BookingForm({ active }) {
       if (e.key === "ArrowRight") {
         e.preventDefault();
         if (done || sent) return;
-        if (step === "date") nextFromDate();
-        else if (step === "pickup") setStep("guests");
-        else if (step === "guests") setStep("time");
-        else if (step === "time") setStep("aboard");
-        else review();
+        if (step === "receipt") setStep("time");
+        else if (step === "time") setStep("guests");
+        else if (step === "guests") setStep("date");
+        else if (step === "date") nextFromDate();
       } else if (e.key === "ArrowLeft") {
         e.preventDefault();
-        if (done) setDone(false);
-        else if (step === "aboard") setStep("time");
-        else if (step === "time") setStep("guests");
-        else if (step === "guests") setStep("pickup");
-        else if (step === "pickup") setStep("date");
+        if (done) {
+          setDone(false);
+          setStep("receipt");
+        } else if (step === "time") setStep("receipt");
+        else if (step === "guests") setStep("time");
+        else if (step === "date") setStep("guests");
       }
     };
     window.addEventListener("keydown", onKey);
@@ -1007,10 +1023,61 @@ function BookingForm({ active }) {
           onClick={() => {
             setError("");
             setDone(false);
-            setStep("date");
+            setStep("receipt");
           }}
         >
           Change
+        </button>
+      </div>
+    );
+  }
+
+  // SCREEN — RECEIPT: a guessed booking (two places, the next departure),
+  // shown first. Send it, or tap "Another time" to adjust.
+  if (step === "receipt") {
+    return (
+      <div className="book-form">
+        <p className="box-count">Your place</p>
+        <p className="confirm-lead">
+          We have held <strong>two places</strong> on the next departure —
+          change anything you like, then send.
+        </p>
+        <div className="conf-summary">
+          <div className="conf-row">
+            <span>When</span>
+            <strong>{when}</strong>
+          </div>
+          <div className="conf-row">
+            <span>Departure</span>
+            <strong>{slotLabel}</strong>
+          </div>
+          <div className="conf-row">
+            <span>Guests</span>
+            <strong>
+              {guests} {guests === 1 ? "guest" : "guests"}
+            </strong>
+          </div>
+          <div className="conf-row">
+            <span>Meeting point</span>
+            <strong>Molo dei Pescatori</strong>
+          </div>
+          <div className="conf-row">
+            <span>Total</span>
+            <strong>${total}</strong>
+          </div>
+        </div>
+        <button className="pay" onClick={() => setDone(true)}>
+          Send →
+        </button>
+        <button
+          type="button"
+          className="confirm__back"
+          onClick={() => {
+            setError("");
+            setStep("time");
+          }}
+        >
+          Another time
         </button>
       </div>
     );
@@ -1075,14 +1142,14 @@ function BookingForm({ active }) {
               className={"choice choice--num" + (guests === n ? " is-sel" : "")}
               onClick={() => {
                 setGuests(n);
-                setStep("time");
+                setStep("date");
               }}
             >
               <span className="choice-label">{n}</span>
             </button>
           ))}
         </div>
-        <button className="pay" onClick={() => setStep("time")}>
+        <button className="pay" onClick={() => setStep("date")}>
           Next
         </button>
         <button
@@ -1090,7 +1157,7 @@ function BookingForm({ active }) {
           className="confirm__back"
           onClick={() => {
             setError("");
-            setStep("pickup");
+            setStep("time");
           }}
         >
           Back
@@ -1122,7 +1189,7 @@ function BookingForm({ active }) {
               className={"choice choice--sq" + (slot === o.v ? " is-sel" : "")}
               onClick={() => {
                 setSlot(o.v);
-                setStep("aboard");
+                setStep("guests");
               }}
             >
               <span className="choice-label">{o.label}</span>
@@ -1131,13 +1198,13 @@ function BookingForm({ active }) {
             </button>
           ))}
         </div>
-        <button className="pay" onClick={() => setStep("aboard")}>
+        <button className="pay" onClick={() => setStep("guests")}>
           Next
         </button>
         <button
           type="button"
           className="confirm__back"
-          onClick={() => setStep("guests")}
+          onClick={() => setStep("receipt")}
         >
           Back
         </button>
@@ -1233,6 +1300,16 @@ function BookingForm({ active }) {
       )}
       <button className="pay" onClick={nextFromDate}>
         Next
+      </button>
+      <button
+        type="button"
+        className="confirm__back"
+        onClick={() => {
+          setError("");
+          setStep("guests");
+        }}
+      >
+        Back
       </button>
       <p className="err">{error}</p>
       <p className="reassure">No prepayment · from ${tour.priceUsd} per guest</p>
