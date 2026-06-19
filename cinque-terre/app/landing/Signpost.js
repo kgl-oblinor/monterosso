@@ -2,33 +2,24 @@
 
 import WoodSign from "./WoodSign";
 
-const VILLAGES = [
-  "Monterosso",
-  "Vernazza",
-  "Corniglia",
-  "Manarola",
-  "Riomaggiore",
-];
-
-// A caricature Cinque Terre trail signpost: a weathered post with the five
-// village arrow-boards stacked on it. Each board opens that village's story.
+// On the landing only Monterosso's sign is shown — that is where the boat
+// sails from and where guests meet us. Clicking it opens Monterosso's page;
+// the other four villages are reached from there. The line beneath names the
+// meeting point: the Fishermen's Pier in the old harbour.
 export default function Signpost({ onSelect }) {
   return (
-    <div className="signpost">
-      <div className="signpost__post" aria-hidden="true" />
-      <div className="signpost__boards">
-        {VILLAGES.map((v, i) => (
-          <button
-            key={v}
-            className="signpost__board"
-            style={{ "--i": i }}
-            onClick={() => onSelect(i)}
-            aria-label={`${v} — read about the village`}
-          >
-            <WoodSign name={v} />
-          </button>
-        ))}
-      </div>
+    <div className="village-signs">
+      <button
+        className="village-sign"
+        style={{ left: "13%" }}
+        onClick={() => onSelect(0)}
+        aria-label="Monterosso al Mare — find us at the main pier"
+      >
+        <WoodSign name="Monterosso" />
+        <span className="village-sign__where">
+          Find us · Molo dei Pescatori
+        </span>
+      </button>
     </div>
   );
 }

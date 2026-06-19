@@ -30,17 +30,13 @@ export default function WoodSign({ name }) {
       <path d="M10 36 Q150 33 318 37" fill="none" stroke="#6b4326" strokeWidth="0.8" opacity="0.3" />
       <path d="M10 52 Q150 49 316 53" fill="none" stroke="#23140a" strokeWidth="0.8" opacity="0.4" />
 
-      {/* red-white-red CAI blaze */}
-      <rect x="20" y="26" width="30" height="20" rx="1" fill="#c0392b" />
-      <rect x="20" y="33" width="30" height="6" fill="#f1ece0" />
-
       {/* a couple of bolt heads */}
-      <circle cx="280" cy="16" r="2" fill="#23140a" opacity="0.55" />
-      <circle cx="280" cy="56" r="2" fill="#23140a" opacity="0.55" />
+      <circle cx="300" cy="16" r="2" fill="#23140a" opacity="0.55" />
+      <circle cx="300" cy="56" r="2" fill="#23140a" opacity="0.55" />
 
       {/* carved white name — dark engrave shadow behind, white on top */}
       <text
-        x="186"
+        x="166"
         y="45"
         textAnchor="middle"
         className="woodsign-text"
@@ -50,7 +46,7 @@ export default function WoodSign({ name }) {
         {name}
       </text>
       <text
-        x="185"
+        x="165"
         y="43.5"
         textAnchor="middle"
         className="woodsign-text"
