@@ -36,6 +36,14 @@ export default function VillagePage({
 }) {
   return (
     <article className="village-page">
+      <nav className="vp-nav vp-nav--top">
+        <button type="button" onClick={onPrev}>
+          ← {prevName}
+        </button>
+        <button type="button" onClick={onNext}>
+          {nextName} →
+        </button>
+      </nav>
       <p className="vp-eyebrow">{village.eyebrow}</p>
       <h2 className="vp-title">{village.name}</h2>
       <p className="vp-lede">{village.lede}</p>
@@ -79,15 +87,6 @@ export default function VillagePage({
           </button>
         </div>
       </div>
-
-      <nav className="vp-nav">
-        <button type="button" onClick={onPrev}>
-          ← {prevName}
-        </button>
-        <button type="button" onClick={onNext}>
-          {nextName} →
-        </button>
-      </nav>
     </article>
   );
 }

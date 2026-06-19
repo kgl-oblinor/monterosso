@@ -1270,11 +1270,17 @@ body {
 
 /* big, equal size on desktop */
 @media (min-width: 760px) {
+  .landing-v2 .book-form {
+    min-height: 620px;
+  }
   .landing-v2 .book-form,
   .landing-v2 .village-page {
-    min-height: 620px;
     padding: var(--s7) var(--s7);
   }
+}
+/* prev/next as a clean header at the top of a village page */
+.landing-v2 .vp-nav--top {
+  margin: 0 0 var(--s5);
 }
 
 /* headings + body → ink on light */
