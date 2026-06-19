@@ -7,73 +7,16 @@
 /* ---------- HERO CTA — refined deco "ticket" ---------- */
 /* Warm champagne-gold fill, crisp double stamp frame, a soft lifted
    shadow, and proper press feedback for touch. */
-/* hero secondary CTA — weddings (focus stays on the booking form) */
-/* weddings entry — a soft, blurred rain of glyphs + the word "weddings",
-   rolling downward like the scroll-hint dot. Per-element size / position /
-   delay / duration / blur come from inline styles (see WED_FALL). */
-.landing-v2 .wed-fall {
-  position: relative;
-  display: block;
-  width: min(320px, 86vw);
-  height: 120px;
-  margin: 6px auto 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  z-index: 20;
-  -webkit-tap-highlight-color: transparent;
-}
-.landing-v2 .wf {
-  position: absolute;
-  top: 0;
+/* weddings reveal — family story line in the "before you go" exit window */
+.landing-v2 .wed-story {
+  font-family: "Fraunces", Georgia, serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.5;
   color: var(--cream);
-  opacity: 0;
-  text-shadow: 0 1px 10px rgba(2, 10, 20, 0.5);
-  pointer-events: none;
-  animation-name: wedFall;
-  animation-timing-function: ease-in;
-  animation-iteration-count: infinite;
-}
-.landing-v2 .wf--word {
-  font-family: "Jost", system-ui, sans-serif;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-weight: 500;
-  white-space: nowrap;
-}
-@keyframes wedFall {
-  0% {
-    transform: translateY(-8px);
-    opacity: 0;
-  }
-  16% {
-    opacity: 0.95;
-  }
-  70% {
-    opacity: 0.45;
-  }
-  100% {
-    transform: translateY(118px);
-    opacity: 0;
-  }
-}
-/* reduced motion: no rain — just a soft static label */
-@media (prefers-reduced-motion: reduce) {
-  .landing-v2 .wed-fall {
-    height: auto;
-  }
-  .landing-v2 .wf {
-    display: none;
-  }
-  .landing-v2 .wed-fall::after {
-    content: "weddings";
-    font-family: "Jost", system-ui, sans-serif;
-    font-size: 0.72rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--cream);
-    opacity: 0.6;
-  }
+  opacity: 0.9;
+  margin-bottom: 18px;
+  max-width: 40ch;
 }
 
 /* weddings glass panel */
@@ -105,6 +48,85 @@
 }
 
 /* working aid: "N / 7" counter at the top of each glass box (temporary) */
+
+/* Andiamo — a slow stream: ♥ m a n d y ★, in order (spells Mandy) 🤍 */
+.landing-v2 .scroll-hint .andiamo-fall {
+  position: relative;
+  width: 100%;
+  height: 42px;
+  margin-top: 4px;
+}
+.landing-v2 .scroll-hint .af-bit {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: var(--cream);
+  opacity: 0;
+  animation: andiamoFall 9s ease-in-out infinite;
+}
+.landing-v2 .scroll-hint .af-bit--gold {
+  color: var(--gold);
+}
+@keyframes andiamoFall {
+  0% {
+    transform: translate(-50%, -2px);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.85;
+  }
+  60% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-50%, 38px);
+    opacity: 0;
+  }
+}
+
+/* a very subtle sun-shimmer on the water, under the sun (top-right) */
+.landing-v2 .aurora .sun-glint {
+  position: absolute;
+  top: 0;
+  right: 9%;
+  width: clamp(140px, 24vw, 340px);
+  height: 78%;
+  pointer-events: none;
+  background: radial-gradient(
+    50% 60% at 50% 0%,
+    rgba(255, 241, 204, 0.14) 0%,
+    rgba(255, 236, 194, 0.05) 36%,
+    transparent 72%
+  );
+  filter: blur(12px);
+  mix-blend-mode: screen;
+  opacity: 0.7;
+  animation: sunGlint 11s ease-in-out infinite;
+}
+@keyframes sunGlint {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translateX(0) scaleY(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: translateX(-2%) scaleY(1.05);
+  }
+}
+[data-theme="dark"] .landing-v2 .aurora .sun-glint {
+  background: radial-gradient(
+    50% 60% at 50% 0%,
+    rgba(190, 214, 255, 0.1) 0%,
+    transparent 70%
+  );
+  opacity: 0.4;
+}
+
 .landing-v2 .box-count {
   text-align: center;
   font-family: "Jost", system-ui, sans-serif;
@@ -117,37 +139,46 @@
   margin: 0 0 12px;
 }
 
-/* booking open: drop the custom cursor ring, restore native + pointers */
-.landing-v2:has(.book-overlay.open) .cursor,
-.landing-v2:has(.book-overlay.open) .cursor-ring {
-  display: none;
-}
-.landing-v2 .book-overlay,
-.landing-v2 .book-overlay * {
+/* normal native mouse cursor everywhere — no custom cursor ring/dot */
+body {
   cursor: auto;
 }
-.landing-v2 .book-overlay button,
-.landing-v2 .book-overlay .choice,
-.landing-v2 .book-overlay .pay,
-.landing-v2 .book-overlay .toggle-row,
-.landing-v2 .book-overlay .book-close {
+.landing-v2,
+.landing-v2 * {
+  cursor: auto;
+}
+.landing-v2 .cursor,
+.landing-v2 .cursor-ring {
+  display: none !important;
+}
+.landing-v2 a,
+.landing-v2 button,
+.landing-v2 .cta,
+.landing-v2 .choice,
+.landing-v2 .toggle-row,
+.landing-v2 .book-close,
+.landing-v2 .pay,
+.landing-v2 .theme-toggle,
+.landing-v2 .dq__opt,
+.landing-v2 .gq-chip,
+.landing-v2 .dq-pick__opt {
   cursor: pointer;
 }
-.landing-v2 .book-overlay input,
-.landing-v2 .book-overlay select,
-.landing-v2 .book-overlay textarea {
+.landing-v2 input,
+.landing-v2 select,
+.landing-v2 textarea {
   cursor: text;
 }
 
+/* in normal flow, right under the tagline — they can never overlap now */
 .landing-v2 .cta-wrap {
-  position: absolute;
-  /* keep clear of the iPhone home indicator / browser chrome */
-  bottom: max(12vh, calc(env(safe-area-inset-bottom, 0px) + 92px));
-  left: 0;
-  right: 0;
+  position: static;
+  margin-top: clamp(18px, 3.5vh, 38px);
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  /* never let the button kiss the screen edges on phones */
+  width: 100%;
   padding: 0 24px;
 }
 
@@ -165,7 +196,8 @@
   background: linear-gradient(180deg, #efe3b3 0%, #e3d398 100%);
   -webkit-text-stroke: 0;
   text-shadow: none;
-  padding: 16px 46px 16px;
+  /* nudge the text down so the space above/below reads even */
+  padding: 22px 46px 15px;
   border-radius: 14px;
   border: 2px solid var(--plum);
   box-shadow: 0 10px 26px -12px rgba(2, 10, 20, 0.6);
@@ -175,6 +207,19 @@
   touch-action: manipulation;
   transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
     box-shadow 0.22s ease, filter 0.22s ease, background 0.22s ease;
+}
+
+/* bigger CTA on desktop (mobile keeps its own size) */
+@media (min-width: 760px) {
+  .landing-v2 .cta {
+    font-size: clamp(2.4rem, 3.8vw, 3.2rem);
+    padding: 30px 72px 22px;
+    border-radius: 18px;
+  }
+  /* tagline sits just below where the sea starts (≈10px under the 50% line) */
+  .landing-v2 .hero .sea-copy {
+    top: calc(50% + 10px);
+  }
 }
 
 /* inner ticket frame line */

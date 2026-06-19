@@ -3,24 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { tour } from "../../lib/tour";
 
-// weddings entry — a soft, blurred rain of glyphs + the word "weddings".
-// Static config (no random) so SSR and client render the same.
-const WED_FALL = [
-  { c: "♥", s: 0.9, x: 6, d: 0, t: 4.6, b: 1.4 },
-  { c: "✦", s: 1.5, x: 16, d: 1.2, t: 5.4, b: 2.4, gold: true },
-  { c: "weddings", word: true, s: 0.72, x: 30, d: 0.5, t: 5.2, b: 1.2 },
-  { c: "♡", s: 0.7, x: 40, d: 2.6, t: 4.2, b: 1 },
-  { c: "★", s: 1.2, x: 52, d: 3.1, t: 4.8, b: 2, gold: true },
-  { c: "♥", s: 0.6, x: 60, d: 1.8, t: 3.9, b: 0.8 },
-  { c: "✧", s: 1.0, x: 70, d: 2.2, t: 5, b: 1.6 },
-  { c: "♡", s: 1.3, x: 86, d: 0.9, t: 4.4, b: 2.6 },
-  { c: "weddings", word: true, s: 0.66, x: 8, d: 3.6, t: 5.6, b: 1.6, gold: true },
-  { c: "♥", s: 0.8, x: 46, d: 4.0, t: 4.2, b: 1.2 },
-  { c: "✦", s: 0.7, x: 64, d: 4.6, t: 5, b: 1 },
-  { c: "★", s: 0.95, x: 90, d: 4.2, t: 4.6, b: 1.8 },
-  { c: "♥", s: 1.1, x: 12, d: 2.9, t: 5.2, b: 2.2 },
-  { c: "weddings", word: true, s: 0.7, x: 50, d: 5.2, t: 5.4, b: 1.4 },
-];
+// 🤍 Built with love on this coast — for vakreste Mandy, always remembered here.
 import Skyline from "./Skyline";
 import Boat3D from "./Boat3D";
 import Clouds from "./Clouds";
@@ -52,7 +35,6 @@ export default function Landing() {
   // Scroll / swipe / button all bring the booking card in as an overlay —
   // same screen, no navigation.
   const [showBook, setShowBook] = useState(false);
-  const [showWed, setShowWed] = useState(false); // weddings glass layer
   const [about, setAbout] = useState(false); // "about us" — the sixth window
   const aboutSeen = useRef(false);
   useEffect(() => {
@@ -131,6 +113,7 @@ export default function Landing() {
         <div className="aurora__layer aurora__layer--b"></div>
         <div className="aurora__gloss"></div>
         <div className="aurora__vignette"></div>
+        <div className="sun-glint"></div>
       </div>
       {/* the five villages on the horizon */}
       <Skyline />
@@ -142,7 +125,7 @@ export default function Landing() {
         <p className="sr-only">
           A private sea tour of the Cinque Terre from Monterosso al Mare,
           Liguria — three unhurried hours along the coast, ${tour.priceUsd} per
-          guest. Reserve in a moment, no prepayment.
+          guest. Book in a moment, no prepayment.
         </p>
 
         {/* SCREEN 1 — HERO + RESERVE CTA */}
@@ -154,38 +137,23 @@ export default function Landing() {
               A private sail on the Mar Ligure,
               <br />aboard the Paolona.
             </p>
-          </div>
-          <div className="cta-wrap">
+            <div className="cta-wrap">
             <button className="cta" onClick={() => setShowBook(true)}>
-              Reserve your place
+              Come aboard
             </button>
-            <button
-              className="wed-fall"
-              onClick={() => setShowWed(true)}
-              aria-label="Weddings — all-inclusive, from $1,500"
-            >
-              {WED_FALL.map((g, i) => (
-                <span
-                  key={i}
-                  className={"wf" + (g.word ? " wf--word" : "")}
-                  aria-hidden={g.word ? undefined : true}
-                  style={{
-                    left: g.x + "%",
-                    fontSize: g.s + "rem",
-                    animationDelay: g.d + "s",
-                    animationDuration: g.t + "s",
-                    filter: `blur(${g.b}px)`,
-                    color: g.gold ? "var(--gold)" : undefined,
-                  }}
-                >
-                  {g.c}
-                </span>
-              ))}
-            </button>
+            </div>
           </div>
           <div className="scroll-hint">
             <span>Andiamo</span>
-            <span className="dot"></span>
+            <span className="andiamo-fall" aria-hidden="true">
+              <span className="af-bit af-bit--gold" style={{ animationDelay: "0s" }}>♥</span>
+              <span className="af-bit" style={{ animationDelay: "1.3s" }}>m</span>
+              <span className="af-bit" style={{ animationDelay: "2.6s" }}>a</span>
+              <span className="af-bit" style={{ animationDelay: "3.9s" }}>n</span>
+              <span className="af-bit" style={{ animationDelay: "5.2s" }}>d</span>
+              <span className="af-bit" style={{ animationDelay: "6.5s" }}>y</span>
+              <span className="af-bit af-bit--gold" style={{ animationDelay: "7.8s" }}>★</span>
+            </span>
           </div>
         </header>
       </div>
@@ -207,32 +175,47 @@ export default function Landing() {
                 ✕
               </button>
               <p className="box-count">8 / 8</p>
-              <div className="crew">
-                <div className="crew-card">
-                  <div className="crew-photo" aria-hidden="true">
-                    ♀
-                  </div>
-                  <p className="crew-name">She · 38</p>
-                  <p className="crew-seeks">
-                    Seeking a gentleman, 72+ — and generously rich.
-                  </p>
-                </div>
-                <div className="crew-card">
-                  <div className="crew-photo" aria-hidden="true">
-                    ♂
-                  </div>
-                  <p className="crew-name">He · 42</p>
-                  <p className="crew-seeks">
-                    Seeking ladies, 65+, for champagne at sunset.
-                  </p>
-                </div>
+              <p className="section-label">Before you go</p>
+              <div className="book-form wed-form">
+                <p className="wed-story">
+                  A family business — and a skipper who is the real Italy. Born
+                  and raised on this coast: unhurried, elegant, at home on the
+                  water.
+                </p>
+                <p className="wed-price">Weddings aboard · from $1,500</p>
+                <p className="wed-blurb">
+                  All-inclusive. A private celebration on the Ligurian water —
+                  the boat, the coast at golden hour, every detail arranged for
+                  you.
+                </p>
+                <a
+                  className="pay"
+                  href={`https://wa.me/${tour.phone.replace(
+                    /[^\d]/g,
+                    ""
+                  )}?text=${encodeURIComponent(
+                    "Wedding enquiry — Monterosso · Cinque Terre. We'd like the all-inclusive wedding tour."
+                  )}`}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Enquire on WhatsApp
+                </a>
+                <a
+                  className="pay pay--ghost"
+                  href={`mailto:${tour.email}?subject=${encodeURIComponent(
+                    "Wedding enquiry — Monterosso · Cinque Terre"
+                  )}`}
+                >
+                  Enquire by email
+                </a>
+                <a
+                  className="confirm__back"
+                  href={`tel:${tour.phone.replace(/\s/g, "")}`}
+                >
+                  or call {tour.phone}
+                </a>
               </div>
-              <p className="about-note">
-                Names, portraits and proper introductions to follow.
-              </p>
-              <button type="button" className="pay" onClick={closeAll}>
-                Close
-              </button>
               <button
                 type="button"
                 className="confirm__back"
@@ -252,66 +235,12 @@ export default function Landing() {
               >
                 ✕
               </button>
-              <p className="section-label">Reserve</p>
-              <BookingForm active={showBook} />
+                  <BookingForm active={showBook} />
             </>
           )}
         </div>
       </div>
 
-      {/* WEDDINGS — secondary glass layer; focus stays on the booking form */}
-      <div
-        className={"book-overlay" + (showWed ? " open" : "")}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) setShowWed(false);
-        }}
-      >
-        <div className="book-overlay__inner">
-          <button
-            className="book-close"
-            onClick={() => setShowWed(false)}
-            aria-label="Close"
-          >
-            ✕
-          </button>
-          <p className="section-label">Weddings</p>
-          <div className="book-form wed-form">
-            <p className="wed-price">All-inclusive · from $1,500</p>
-            <p className="wed-blurb">
-              A private celebration on the Ligurian water — the boat, the coast
-              at golden hour, and the details arranged for you. Tell us your
-              date and we shall craft the day.
-            </p>
-            <a
-              className="pay"
-              href={`https://wa.me/${tour.phone.replace(
-                /[^\d]/g,
-                ""
-              )}?text=${encodeURIComponent(
-                "Wedding enquiry — Monterosso · Cinque Terre. We'd like the all-inclusive wedding tour."
-              )}`}
-              target="_blank"
-              rel="noopener"
-            >
-              Enquire on WhatsApp
-            </a>
-            <a
-              className="pay pay--ghost"
-              href={`mailto:${tour.email}?subject=${encodeURIComponent(
-                "Wedding enquiry — Monterosso · Cinque Terre"
-              )}`}
-            >
-              Enquire by email
-            </a>
-            <a
-              className="confirm__back"
-              href={`tel:${tour.phone.replace(/\s/g, "")}`}
-            >
-              or call {tour.phone}
-            </a>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

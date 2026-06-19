@@ -3,7 +3,7 @@ import "./globals.css";
 export const metadata = {
   title: "Monterosso · Cinque Terre — sea tour",
   description:
-    "A private sea tour of the Cinque Terre from Monterosso al Mare, Liguria. Reserve in a moment — no prepayment.",
+    "A private sea tour of the Cinque Terre from Monterosso al Mare, Liguria. Book in a moment — no prepayment.",
 };
 
 export default function RootLayout({ children }) {

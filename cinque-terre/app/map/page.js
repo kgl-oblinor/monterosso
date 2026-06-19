@@ -53,7 +53,7 @@ export default function FlowMap() {
           <li>Tagline: “A private sail on the Mar Ligure, aboard the Paolona.”</li>
           <li>Scroll hint: “Andiamo” (bottom)</li>
         </ul>
-        <p className="fm-cta-line">▸ CTA “Reserve your place” →</p>
+        <p className="fm-cta-line">▸ CTA “Come aboard” →</p>
       </div>
 
       <div className="fm-arrow">
@@ -75,8 +75,10 @@ export default function FlowMap() {
           ))}
         </div>
         <div className="fm-exit">
-          <b>✕ Cancel / close (any step)</b> — today: just closes back to the
-          hero. <i>This is the branch we’re re-routing →</i>
+          <b>✕ Cancel / close (any step)</b> → opens the “Before you go”
+          window: the family story + <b>Weddings aboard · all-inclusive, from
+          $1,500</b> + enquire (WhatsApp / email / call). The luxurious reveal —
+          not linked from the front page.
         </div>
       </div>
 
@@ -93,7 +95,7 @@ export default function FlowMap() {
         <ul>
           <li>Catches guests who back out — keeps them on the page.</li>
           <li>Indexable content → better search ranking for this service.</li>
-          <li>Each card can lead back to booking (“Reserve your place”).</li>
+          <li>Each card can lead back to booking (“Come aboard”).</li>
         </ul>
       </div>
 

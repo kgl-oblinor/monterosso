@@ -329,7 +329,7 @@ export default function Boat3D({ theme }) {
     nctx.textBaseline = "middle";
     // lay the glyphs along a gentle upward arc, so the name rises toward the
     // ends the way a gozzo's sheer does instead of cutting straight across
-    const R = 1600; // large radius → subtle curve
+    const R = 2600; // gentle radius → a clean, even line with just a hint of curve
     const cx = nc.width / 2;
     const cy = nc.height * 0.54 - R; // arc centre high above → text on the lower arc (a smile)
     const chars = [...NAME];
@@ -349,31 +349,8 @@ export default function Boat3D({ theme }) {
       nctx.restore();
       along += cw[i] + 4;
     });
-    // weathering: chip out tiny flecks of paint and a few faint scuffs
+    // clean, crisp lettering — no weathering (a perfect painted line)
     nctx.shadowColor = "transparent";
-    nctx.globalCompositeOperation = "destination-out";
-    for (let i = 0; i < 260; i++) {
-      nctx.globalAlpha = 0.04 + Math.random() * 0.13;
-      nctx.beginPath();
-      nctx.arc(
-        Math.random() * nc.width,
-        Math.random() * nc.height,
-        Math.random() * 2.3,
-        0,
-        Math.PI * 2
-      );
-      nctx.fill();
-    }
-    for (let i = 0; i < 7; i++) {
-      nctx.globalAlpha = 0.05 + Math.random() * 0.09;
-      nctx.fillRect(
-        Math.random() * 320,
-        Math.random() * nc.height,
-        180 + Math.random() * 420,
-        1 + Math.random() * 1.4
-      );
-    }
-    nctx.globalCompositeOperation = "source-over";
     nctx.globalAlpha = 1;
 
     const nameTex = new THREE.CanvasTexture(nc);
@@ -391,7 +368,7 @@ export default function Boat3D({ theme }) {
     const decalPort = new THREE.Mesh(
       new DecalGeometry(
         hullMesh,
-        new THREE.Vector3(0.42, 0.06, 0.5),
+        new THREE.Vector3(0.6, 0.0, 0.5),
         new THREE.Euler(0, 0, 0.05),
         nameSize
       ),
@@ -401,7 +378,7 @@ export default function Boat3D({ theme }) {
     const decalStar = new THREE.Mesh(
       new DecalGeometry(
         hullMesh,
-        new THREE.Vector3(0.42, 0.06, -0.5),
+        new THREE.Vector3(0.6, 0.0, -0.5),
         new THREE.Euler(0, Math.PI, -0.05),
         nameSize
       ),
@@ -467,14 +444,17 @@ export default function Boat3D({ theme }) {
       lanternLight.intensity = isNight ? 1.7 : 0;
     }
 
-    let mode = "moored"; // 'moored' | 'sailing' | 'mooring'
+    // the boat sails on its own from the start; a click pauses / resumes it
+    let mode = "sailing"; // 'moored' | 'sailing' | 'mooring'
     let sailStart = 0;
     let moorStart = 0;
     let sailFrom = { x: HOME.x, z: HOME.z };
     let moorFrom = { x: HOME.x, z: HOME.z };
     let lastHeading = 0;
-    let requestSail = false;
     let prevTheme = themeRef.current;
+    let paused = false;
+    let pauseStart = 0;
+    let pausedAccum = 0;
 
     fleet.position.set(HOME.x, 0, HOME.z);
     setNight(prevTheme === "dark");
@@ -504,7 +484,7 @@ export default function Boat3D({ theme }) {
       return [HOME.x, HOME.z]; // moored, at rest
     }
 
-    // a click anywhere on the scene sends the boat off on its long route
+    // a click anywhere (except on UI controls) pauses or resumes the boat
     const onClick = (e) => {
       if (
         e.target &&
@@ -512,25 +492,27 @@ export default function Boat3D({ theme }) {
         e.target.closest("button, a, input, select, label, .book-form")
       )
         return;
-      requestSail = true;
+      const now = clock.getElapsedTime();
+      if (!paused) {
+        paused = true;
+        pauseStart = now;
+      } else {
+        paused = false;
+        pausedAccum += now - pauseStart;
+      }
     };
     addEventListener("click", onClick);
 
     let raf;
     function frame() {
       raf = requestAnimationFrame(frame);
-      const t = clock.getElapsedTime();
+      if (paused) return; // frozen on the last frame until clicked again
+      const t = clock.getElapsedTime() - pausedAccum;
       const th = themeRef.current;
 
       if (th !== prevTheme) {
         prevTheme = th;
-        setNight(th === "dark");
-        if (th === "dark") startMooring(t); // moon → head home and moor
-        else startSailing(t); // sun → off on the route again
-      }
-      if (requestSail) {
-        requestSail = false;
-        if (mode !== "sailing") startSailing(t);
+        setNight(th === "dark"); // lighting only — the boat keeps sailing
       }
       if (mode === "mooring" && (t - moorStart) / MOOR_T >= 1) mode = "moored";
 
