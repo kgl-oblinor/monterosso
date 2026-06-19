@@ -14,6 +14,69 @@ import { VILLAGES } from "./villageData";
 
 const firstName = (n) => n.split(" ")[0]; // "Monterosso al Mare" → "Monterosso"
 
+// slim arrow that breathes with the loop script (stroke = currentColor)
+function Arrow() {
+  return (
+    <svg
+      className="arr"
+      viewBox="0 0 44 12"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.1"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <line x1="1" y1="6" x2="37" y2="6" />
+      <path d="M30 1.8 41 6 30 10.2" />
+    </svg>
+  );
+}
+
+// hub icons — drawn as strokes; colour/size come from CSS (.hub-tile__ic svg)
+const ICON = {
+  news: (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 5h12v14H6a2 2 0 0 1-2-2V5z" />
+      <path d="M16 8h4v9a2 2 0 0 1-2 2" />
+      <line x1="7" y1="9" x2="13" y2="9" />
+      <line x1="7" y1="12.5" x2="13" y2="12.5" />
+      <line x1="7" y1="16" x2="11" y2="16" />
+    </svg>
+  ),
+  boat: (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 2v12" />
+      <path d="M12 3C8 5 6 9.5 6 14h6z" />
+      <path d="M4.5 16h15l-2.2 3.6a2 2 0 0 1-1.7 1H8.4a2 2 0 0 1-1.7-1L4.5 16z" />
+    </svg>
+  ),
+  booking: (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="4" y="5.5" width="16" height="14.5" />
+      <line x1="4" y1="9.5" x2="20" y2="9.5" />
+      <line x1="8.5" y1="3" x2="8.5" y2="6.5" />
+      <line x1="15.5" y1="3" x2="15.5" y2="6.5" />
+    </svg>
+  ),
+  captain: (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="8" r="3.4" />
+      <path d="M5.5 20.5a6.5 6.5 0 0 1 13 0" />
+    </svg>
+  ),
+  help: (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" />
+      <circle cx="12" cy="12" r="3.4" />
+      <line x1="12" y1="3.5" x2="12" y2="8.6" />
+      <line x1="12" y1="15.4" x2="12" y2="20.5" />
+      <line x1="3.5" y1="12" x2="8.6" y2="12" />
+      <line x1="15.4" y1="12" x2="20.5" y2="12" />
+    </svg>
+  ),
+};
+
 export default function Landing() {
   const [theme, setTheme] = useState("light");
   useEffect(() => {
@@ -43,6 +106,29 @@ export default function Landing() {
   const [showBook, setShowBook] = useState(false);
   const [villageIdx, setVillageIdx] = useState(null); // open village page (0–4) or null
   const [showBoat, setShowBoat] = useState(false); // "the boat & her captain" page
+  const [showHub, setShowHub] = useState(false); // "Explore" — the hub of everything
+  const [showCaptain, setShowCaptain] = useState(false); // the captain's own page
+  const [showNews, setShowNews] = useState(false); // news / from the coast
+  const [showService, setShowService] = useState(false); // customer service / help
+  // open the hub from any card's "Read more"
+  const openHub = () => {
+    setShowBook(false);
+    setShowBoat(false);
+    setVillageIdx(null);
+    setShowCaptain(false);
+    setShowNews(false);
+    setShowService(false);
+    setShowHub(true);
+  };
+  const openService = () => {
+    setShowBook(false);
+    setShowBoat(false);
+    setVillageIdx(null);
+    setShowCaptain(false);
+    setShowNews(false);
+    setShowHub(false);
+    setShowService(true);
+  };
   useEffect(() => {
     const onWheel = (e) => {
       if (e.deltaY > 12) setShowBook(true);
@@ -55,7 +141,15 @@ export default function Landing() {
       if (ty - (e.changedTouches[0]?.clientY ?? ty) > 44) setShowBook(true);
     };
     const onKey = (e) => {
-      if (e.key === "Escape") setShowBook(false);
+      if (e.key === "Escape") {
+        setShowBook(false);
+        setShowBoat(false);
+        setVillageIdx(null);
+        setShowHub(false);
+        setShowCaptain(false);
+        setShowNews(false);
+        setShowService(false);
+      }
     };
     window.addEventListener("wheel", onWheel, { passive: true });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
@@ -194,6 +288,8 @@ export default function Landing() {
                 setVillageIdx(null);
                 setShowBoat(true);
               }}
+              onReadMore={openHub}
+              onService={openService}
             />
           )}
         </div>
@@ -257,16 +353,26 @@ export default function Landing() {
               </div>
             </dl>
             <div className="vp-foot">
-              <button
-                type="button"
-                className="vp-cta"
-                onClick={() => {
-                  setShowBoat(false);
-                  setShowBook(true);
-                }}
-              >
-                Come aboard →
-              </button>
+              <div className="vp-foot-row">
+                <button
+                  type="button"
+                  className="vp-cta"
+                  onClick={() => {
+                    setShowBoat(false);
+                    setShowBook(true);
+                  }}
+                >
+                  Come aboard →
+                </button>
+                <button type="button" className="vp-read" onClick={openHub}>
+                  Read more <Arrow />
+                </button>
+              </div>
+              <div className="vp-foot-cs">
+                <button type="button" className="cs-link" onClick={openService}>
+                  Customer service ›
+                </button>
+              </div>
             </div>
             <nav className="vp-nav">
               <button
@@ -277,6 +383,297 @@ export default function Landing() {
                 }}
               >
                 ← The five villages
+              </button>
+            </nav>
+          </article>
+        </div>
+      </div>
+
+      {/* HUB — "Explore": the icon map to everything (Leveranse 2) */}
+      <div
+        className={"book-overlay" + (showHub ? " open" : "")}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setShowHub(false);
+        }}
+      >
+        <div className="book-overlay__inner">
+          <button
+            className="book-close"
+            onClick={() => setShowHub(false)}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+          <article className="village-page">
+            <p className="vp-eyebrow">Monterosso · Cinque Terre</p>
+            <h2 className="vp-title">Explore</h2>
+            <p className="vp-lede">
+              Everything in one place — tap to go, tap to come back.
+            </p>
+            <div className="hub-grid">
+              <button
+                type="button"
+                className="hub-tile"
+                onClick={() => {
+                  setShowHub(false);
+                  setShowNews(true);
+                }}
+              >
+                <span className="hub-tile__ic">{ICON.news}</span>
+                <span className="hub-tile__lbl">News</span>
+              </button>
+              <button
+                type="button"
+                className="hub-tile"
+                onClick={() => {
+                  setShowHub(false);
+                  setShowBoat(true);
+                }}
+              >
+                <span className="hub-tile__ic">{ICON.boat}</span>
+                <span className="hub-tile__lbl">Boat tours</span>
+              </button>
+              <button
+                type="button"
+                className="hub-tile"
+                onClick={() => {
+                  setShowHub(false);
+                  setShowBook(true);
+                }}
+              >
+                <span className="hub-tile__ic">{ICON.booking}</span>
+                <span className="hub-tile__lbl">Booking</span>
+              </button>
+              <button
+                type="button"
+                className="hub-tile"
+                onClick={() => {
+                  setShowHub(false);
+                  setShowCaptain(true);
+                }}
+              >
+                <span className="hub-tile__ic">{ICON.captain}</span>
+                <span className="hub-tile__lbl">The captain</span>
+              </button>
+              <button
+                type="button"
+                className="hub-tile"
+                onClick={openService}
+              >
+                <span className="hub-tile__ic">{ICON.help}</span>
+                <span className="hub-tile__lbl">Customer service</span>
+              </button>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      {/* THE CAPTAIN — his own page */}
+      <div
+        className={"book-overlay" + (showCaptain ? " open" : "")}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setShowCaptain(false);
+        }}
+      >
+        <div className="book-overlay__inner">
+          <button
+            className="book-close"
+            onClick={() => setShowCaptain(false)}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+          <article className="village-page">
+            <p className="vp-eyebrow">The captain · Cinque Terre</p>
+            <h2 className="vp-title">Kristian Løkken</h2>
+            <p className="vp-lede">
+              Born to this shore — your skipper for the day.
+            </p>
+            <p className="vp-body">
+              An unhurried, elegant gentleman of the sea, he knows every cove
+              and every hour worth sailing. He is, by his own admission, still
+              seeking a rich lady over seventy; until she finds him, he is yours
+              alone for the day.
+            </p>
+            <p className="vp-body">
+              Ashore, he keeps a few simple rooms along this coast. Ask aboard,
+              and he will gladly tell you which one looks out on the sea you
+              sailed.
+            </p>
+            <div className="vp-foot">
+              <div className="vp-foot-row">
+                <button
+                  type="button"
+                  className="vp-cta"
+                  onClick={() => {
+                    setShowCaptain(false);
+                    setShowBoat(true);
+                  }}
+                >
+                  Aboard the Paolona →
+                </button>
+                <button type="button" className="vp-read" onClick={openHub}>
+                  Read more <Arrow />
+                </button>
+              </div>
+              <div className="vp-foot-cs">
+                <button type="button" className="cs-link" onClick={openService}>
+                  Customer service ›
+                </button>
+              </div>
+            </div>
+            <nav className="vp-nav">
+              <button type="button" onClick={openHub}>
+                ← Explore
+              </button>
+            </nav>
+          </article>
+        </div>
+      </div>
+
+      {/* NEWS — from the coast (built from what we have) */}
+      <div
+        className={"book-overlay" + (showNews ? " open" : "")}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setShowNews(false);
+        }}
+      >
+        <div className="book-overlay__inner">
+          <button
+            className="book-close"
+            onClick={() => setShowNews(false)}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+          <article className="village-page">
+            <p className="vp-eyebrow">From the coast · Cinque Terre</p>
+            <h2 className="vp-title">News</h2>
+            <p className="vp-lede">
+              A few words from the water, while the season is upon us.
+            </p>
+            <p className="vp-body">
+              The Paolona is sailing daily from Monterosso — sunrise, sunshine
+              and sunset departures, the sea calm and clear. The five villages
+              are at their finest now: lemon groves in flower, the terraces
+              green, golden hour long and slow.
+            </p>
+            <p className="vp-body">
+              New to this coast? Read the five village stories, then come and
+              see them from the deck — there is no finer way.
+            </p>
+            <div className="vp-foot">
+              <div className="vp-foot-row">
+                <button
+                  type="button"
+                  className="vp-cta"
+                  onClick={() => {
+                    setShowNews(false);
+                    setVillageIdx(0);
+                  }}
+                >
+                  The five villages →
+                </button>
+                <button type="button" className="vp-read" onClick={openHub}>
+                  Read more <Arrow />
+                </button>
+              </div>
+              <div className="vp-foot-cs">
+                <button type="button" className="cs-link" onClick={openService}>
+                  Customer service ›
+                </button>
+              </div>
+            </div>
+            <nav className="vp-nav">
+              <button type="button" onClick={openHub}>
+                ← Explore
+              </button>
+            </nav>
+          </article>
+        </div>
+      </div>
+
+      {/* CUSTOMER SERVICE — the help layer */}
+      <div
+        className={"book-overlay" + (showService ? " open" : "")}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setShowService(false);
+        }}
+      >
+        <div className="book-overlay__inner">
+          <button
+            className="book-close"
+            onClick={() => setShowService(false)}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+          <article className="village-page">
+            <p className="vp-eyebrow">Help · Cinque Terre</p>
+            <h2 className="vp-title">Customer service</h2>
+            <p className="vp-lede">
+              We are here to help — every step of the way.
+            </p>
+            <div className="cs-options">
+              <a
+                className="cs-opt"
+                href={`https://wa.me/${tour.phone.replace(
+                  /[^\d]/g,
+                  ""
+                )}?text=${encodeURIComponent(
+                  "Hello — I have a question about the Cinque Terre boat tour."
+                )}`}
+                target="_blank"
+                rel="noopener"
+              >
+                <span>
+                  <b>Message us on WhatsApp</b>
+                  <span>We usually reply within the hour</span>
+                </span>
+              </a>
+              <a
+                className="cs-opt"
+                href={`https://wa.me/${tour.phone.replace(
+                  /[^\d]/g,
+                  ""
+                )}?text=${encodeURIComponent(
+                  "Hello — I would like to change my booking."
+                )}`}
+                target="_blank"
+                rel="noopener"
+              >
+                <span>
+                  <b>Change a booking</b>
+                  <span>Tell us your code and we will sort it</span>
+                </span>
+              </a>
+              <button
+                type="button"
+                className="cs-opt"
+                onClick={() => {
+                  setShowService(false);
+                  setShowBook(true);
+                }}
+              >
+                <span>
+                  <b>Back to booking</b>
+                  <span>Reserve your place in a moment</span>
+                </span>
+              </button>
+              <a className="cs-opt" href={`tel:${tour.phone.replace(/\s/g, "")}`}>
+                <span>
+                  <b>Call us · {tour.phone}</b>
+                  <span>09:00–22:00, Monday–Saturday</span>
+                </span>
+              </a>
+            </div>
+            <p className="vp-body cs-where">
+              Find us at the main pier — Molo dei Pescatori, 19016 Monterosso al
+              Mare.
+            </p>
+            <nav className="vp-nav">
+              <button type="button" onClick={openHub}>
+                ← Explore
               </button>
             </nav>
           </article>

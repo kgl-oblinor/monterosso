@@ -1,8 +1,29 @@
 "use client";
 
+// A slim, elegant arrow that breathes with the loop script.
+function Arrow() {
+  return (
+    <svg
+      className="arr"
+      viewBox="0 0 44 12"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.1"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <line x1="1" y1="6" x2="37" y2="6" />
+      <path d="M30 1.8 41 6 30 10.2" />
+    </svg>
+  );
+}
+
 // The clean reading template (layer 1). Calm, minimal, generous whitespace —
 // a title, a short lede, a couple of paragraphs, a few quiet facts, one
-// Wikipedia link (desktop/tablet only), and gentle prev/next between villages.
+// Wikipedia link (desktop/tablet only), gentle prev/next between villages,
+// and the shared footer: a primary action, "Read more" → the hub, and a
+// quiet customer-service link.
 export default function VillagePage({
   village,
   prevName,
@@ -10,6 +31,8 @@ export default function VillagePage({
   onPrev,
   onNext,
   onBoat,
+  onReadMore,
+  onService,
 }) {
   return (
     <article className="village-page">
@@ -38,13 +61,23 @@ export default function VillagePage({
         target="_blank"
         rel="noopener"
       >
-        Read more on Wikipedia ↗
+        On Wikipedia ↗
       </a>
 
       <div className="vp-foot">
-        <button type="button" className="vp-cta" onClick={onBoat}>
-          Sail the Cinque Terre →
-        </button>
+        <div className="vp-foot-row">
+          <button type="button" className="vp-cta" onClick={onBoat}>
+            Sail the Cinque Terre →
+          </button>
+          <button type="button" className="vp-read" onClick={onReadMore}>
+            Read more <Arrow />
+          </button>
+        </div>
+        <div className="vp-foot-cs">
+          <button type="button" className="cs-link" onClick={onService}>
+            Customer service ›
+          </button>
+        </div>
       </div>
 
       <nav className="vp-nav">

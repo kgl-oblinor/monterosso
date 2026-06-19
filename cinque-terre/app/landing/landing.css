@@ -1363,3 +1363,183 @@ body {
   color: var(--plum);
   border-color: rgba(7, 24, 42, 0.2);
 }
+
+/* ===================================================================
+   LEVERANSE 2 — two-button footer · customer-service link · icon hub
+   =================================================================== */
+
+/* footer = a row of two equal-height buttons + a centred CS link */
+.landing-v2 .vp-foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  margin-top: var(--s7);
+}
+.landing-v2 .vp-foot-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+@media (min-width: 760px) {
+  .landing-v2 .vp-foot-row {
+    flex-direction: row;
+    align-items: stretch;
+  }
+  .landing-v2 .vp-foot-row .vp-cta,
+  .landing-v2 .vp-foot-row .vp-read {
+    flex: 1;
+  }
+}
+
+/* secondary "Read more" — sun-gold ticket stub, loop script */
+.landing-v2 .vp-read {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  text-align: center;
+  font-family: "Great Vibes", cursive;
+  font-weight: 400;
+  font-size: 1.7rem;
+  line-height: 1.05;
+  color: #c8862e;
+  padding: 10px var(--s4) 8px;
+  border: 1.5px solid #c8862e;
+  border-radius: var(--r-md);
+  background-color: rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.2s ease, filter 0.2s ease;
+}
+.landing-v2 .vp-read:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+  filter: brightness(1.04);
+}
+.landing-v2 .vp-read .arr {
+  width: 40px;
+  height: 13px;
+  margin-left: 8px;
+  opacity: 0.75;
+}
+
+/* customer-service link — loop script, ink, centred, bigger on desktop */
+.landing-v2 .vp-foot-cs {
+  display: flex;
+  justify-content: center;
+}
+.landing-v2 .cs-link {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-family: "Great Vibes", cursive;
+  font-size: 1.7rem;
+  color: var(--plum);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  text-decoration-thickness: 1px;
+  opacity: 0.95;
+  transition: opacity 0.2s ease;
+}
+.landing-v2 .cs-link:hover {
+  opacity: 1;
+}
+@media (min-width: 760px) {
+  .landing-v2 .cs-link {
+    font-size: 2.2rem;
+  }
+}
+
+/* the icon hub */
+.landing-v2 .hub-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s5) var(--s4);
+  margin: var(--s6) 0 var(--s2);
+}
+.landing-v2 .hub-tile {
+  width: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s2);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--plum);
+  -webkit-tap-highlight-color: transparent;
+}
+.landing-v2 .hub-tile__ic {
+  width: 84px;
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(255, 252, 245, 0.34), rgba(246, 239, 226, 0.2));
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.landing-v2 .hub-tile__ic svg {
+  width: 38px;
+  height: 38px;
+  fill: none;
+  stroke: var(--plum);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.landing-v2 .hub-tile:hover .hub-tile__ic {
+  transform: translateY(-3px);
+  box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.3),
+    0 0 22px -6px rgba(235, 200, 105, 0.55);
+}
+.landing-v2 .hub-tile__lbl {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: var(--t-sm);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* customer-service options */
+.landing-v2 .cs-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  margin: var(--s5) 0 0;
+}
+.landing-v2 .cs-opt {
+  display: flex;
+  align-items: center;
+  gap: var(--s4);
+  width: 100%;
+  padding: var(--s4);
+  text-align: left;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: var(--plum);
+  cursor: pointer;
+  font-family: "Fraunces", Georgia, serif;
+  transition: background 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.landing-v2 .cs-opt:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+.landing-v2 .cs-opt b {
+  font-weight: 600;
+  font-size: var(--t-base);
+}
+.landing-v2 .cs-opt span span {
+  display: block;
+  font-size: var(--t-sm);
+  color: var(--ink-55);
+  margin-top: 2px;
+}
+.landing-v2 .cs-where {
+  margin-top: var(--s5);
+  font-style: italic;
+}
