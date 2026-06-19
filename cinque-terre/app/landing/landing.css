@@ -1567,3 +1567,23 @@ body {
 .landing-v2 .book-close {
   display: none;
 }
+
+/* the booking card anchors its primary button at one fixed spot, low down —
+   so "Next" never jumps from step to step */
+.landing-v2 .book-form {
+  display: flex;
+  flex-direction: column;
+}
+.landing-v2 .book-form .pay {
+  margin-top: auto; /* push the gold button to the bottom of the card */
+}
+.landing-v2 .book-form .confirm__back,
+.landing-v2 .book-form .reassure {
+  flex: none;
+}
+@media (max-width: 759px) {
+  /* a steady card height on mobile so the button sits in the same place */
+  .landing-v2 .book-form {
+    min-height: 66svh;
+  }
+}
