@@ -14,7 +14,7 @@ export const tour = {
     sunshine: { label: "Sunshine", window: "09:00–18:00", start: "090000", end: "180000", priceMultiplier: 1 },
     sunset: { label: "Sunset", window: "14:00–20:00", start: "140000", end: "200000", priceMultiplier: 1 },
   },
-  phone: "+39 351 234 5678",
+  phone: "+47 93 00 86 00",
   // inbox used by the "Email" send option
-  email: "kristianlokken@me.com",
+  email: "kgl@oblinor.no",
 };

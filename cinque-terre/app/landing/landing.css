@@ -4,48 +4,32 @@
    globals.css for /landing and never touches the original home page.
    ============================================================ */
 
+/* ============================================================
+   STRICT DESIGN TOKENS — one rhythm for every glass surface.
+   spacing 4px-base · type 1.2 minor-third · sharp corners ·
+   silk rim (no divider lines) · ink/cream/gold/terracotta.
+   ============================================================ */
+.landing-v2 {
+  /* spacing */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+  /* type — 1.2 minor third, 16px base */
+  --t-xs: 11px; --t-sm: 13px; --t-base: 16px; --t-md: 19px;
+  --t-lg: 23px; --t-xl: 28px; --t-2xl: 33px;
+  /* radius — sharp, architectural */
+  --r-sm: 0; --r-md: 0; --r-pill: 0;
+  /* letter-spacing */
+  --ls-1: 0.02em; --ls-2: 0.08em; --ls-3: 0.14em;
+  /* colour */
+  --terracotta: #a8743f;
+  --ink-82: rgba(7, 24, 42, 0.82);
+  --ink-55: rgba(7, 24, 42, 0.55);
+  --ink-50: rgba(7, 24, 42, 0.50);
+}
+
 /* ---------- HERO CTA — refined deco "ticket" ---------- */
 /* Warm champagne-gold fill, crisp double stamp frame, a soft lifted
    shadow, and proper press feedback for touch. */
-/* weddings reveal — family story line in the "before you go" exit window */
-.landing-v2 .wed-story {
-  font-family: "Fraunces", Georgia, serif;
-  font-style: italic;
-  font-size: 1.05rem;
-  line-height: 1.5;
-  color: var(--cream);
-  opacity: 0.9;
-  margin-bottom: 18px;
-  max-width: 40ch;
-}
-
-/* weddings glass panel */
-.landing-v2 .wed-form {
-  min-height: auto;
-  text-align: center;
-  align-items: center;
-}
-.landing-v2 .wed-price {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 600;
-  font-size: clamp(1.6rem, 6vw, 2.2rem);
-  color: var(--gold);
-  margin-bottom: 14px;
-}
-.landing-v2 .wed-blurb {
-  font-size: 0.98rem;
-  line-height: 1.5;
-  color: var(--cream);
-  opacity: 0.85;
-  margin-bottom: 8px;
-  max-width: 42ch;
-}
-.landing-v2 .wed-form .pay {
-  margin-top: 12px;
-}
-.landing-v2 .wed-form .confirm__back {
-  margin-top: 18px;
-}
 
 /* working aid: "N / 7" counter at the top of each glass box (temporary) */
 
@@ -217,46 +201,6 @@
   height: auto;
 }
 
-/* SEO story popup (clock tower / the five villages) */
-.landing-v2 .seo-form {
-  min-height: auto;
-  text-align: left;
-  gap: 0;
-}
-.landing-v2 .seo-p {
-  font-size: 0.98rem;
-  line-height: 1.55;
-  color: var(--cream);
-  opacity: 0.9;
-  margin-bottom: 12px;
-}
-.landing-v2 .seo-facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 6px 0 18px;
-}
-.landing-v2 .seo-facts span {
-  font-family: "Jost", system-ui, sans-serif;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--plum);
-  background: linear-gradient(177deg, #f6ecc4 0%, #ecdaa0 100%);
-  border-radius: 999px;
-  padding: 5px 12px;
-}
-.landing-v2 .seo-signs {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin: 0 0 18px;
-}
-.landing-v2 .seo-sign {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
 .landing-v2 .woodsign-svg {
   width: min(300px, 100%);
   height: auto;
@@ -268,16 +212,6 @@
   font-size: 24px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-}
-.landing-v2 .seo-sign span {
-  margin: 3px 0 0 8px;
-  font-size: 0.82rem;
-  font-style: italic;
-  color: var(--cream);
-  opacity: 0.7;
-}
-.landing-v2 .seo-form .pay {
-  margin-top: 8px;
 }
 
 /* Wikipedia links — shown on desktop/tablet, hidden on mobile */
@@ -320,51 +254,51 @@
 }
 .landing-v2 .vp-eyebrow {
   font-family: "Jost", system-ui, sans-serif;
-  font-size: 0.72rem;
+  font-size: var(--t-xs);
   font-weight: 600;
-  letter-spacing: 0.22em;
+  letter-spacing: var(--ls-2);
   text-transform: uppercase;
   color: var(--gold);
   opacity: 0.85;
-  margin-bottom: 12px;
+  margin-bottom: var(--s3);
 }
 .landing-v2 .vp-title {
   font-family: "Fraunces", Georgia, serif;
   font-weight: 600;
-  font-size: clamp(2rem, 6vw, 3rem);
-  line-height: 1.05;
+  font-size: clamp(var(--t-xl), 6vw, var(--t-2xl));
+  line-height: 1.08;
+  letter-spacing: var(--ls-1);
   color: var(--cream);
-  margin-bottom: 14px;
+  margin-bottom: var(--s4);
 }
 .landing-v2 .vp-lede {
   font-family: "Fraunces", Georgia, serif;
   font-style: italic;
-  font-size: clamp(1.1rem, 3vw, 1.35rem);
+  font-size: var(--t-md);
   line-height: 1.45;
   color: var(--cream);
   opacity: 0.9;
-  margin-bottom: 22px;
+  margin-bottom: var(--s5);
 }
 .landing-v2 .vp-body {
-  font-size: 1.02rem;
-  line-height: 1.75;
+  font-size: var(--t-base);
+  line-height: 1.62;
   color: rgba(253, 246, 234, 0.86);
-  margin-bottom: 16px;
-  max-width: 58ch;
+  margin-bottom: var(--s4);
+  max-width: 62ch;
 }
+/* facts — separated by air, no lines */
 .landing-v2 .vp-facts {
-  margin: 24px 0 4px;
-  padding: 18px 0;
-  border-top: 1px solid rgba(255, 246, 236, 0.14);
-  border-bottom: 1px solid rgba(255, 246, 236, 0.14);
+  margin: var(--s6) 0 0;
+  padding: 0;
   display: grid;
-  gap: 10px;
+  gap: var(--s4) var(--s5);
 }
 .landing-v2 .vp-fact {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
-  font-size: 0.95rem;
+  gap: var(--s4);
+  font-size: var(--t-sm);
 }
 .landing-v2 .vp-fact dt {
   color: rgba(253, 246, 234, 0.55);
@@ -374,15 +308,13 @@
   font-weight: 500;
   text-align: right;
 }
-/* one shared footer on every clean page: divider + primary + secondary */
+/* one shared footer on every clean page: primary + secondary, no line */
 .landing-v2 .vp-foot {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 14px;
-  margin-top: 28px;
-  padding-top: 22px;
-  border-top: 1px solid rgba(255, 246, 236, 0.14);
+  align-items: stretch;
+  gap: var(--s3);
+  margin-top: var(--s7);
 }
 .landing-v2 .vp-foot .vp-cta,
 .landing-v2 .vp-foot .vp-link {
@@ -583,24 +515,28 @@ body {
   position: relative;
   font-family: "Jost", system-ui, sans-serif;
   font-weight: 600;
-  font-size: 0.92rem;
+  font-size: var(--t-sm);
   line-height: 1;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--ls-3);
   text-transform: uppercase;
   color: var(--plum);
-  padding: 18px clamp(34px, 9vw, 56px);
-  border-radius: 16px;
-  border: 2px solid var(--plum);
-  background: linear-gradient(177deg, #f6ecc4 0%, #ecdaa0 52%, #e3cd8f 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55),
-    0 14px 30px -14px rgba(2, 10, 20, 0.7),
-    0 3px 10px -6px rgba(2, 10, 20, 0.45);
+  padding: 18px clamp(28px, 9vw, 48px);
+  border-radius: var(--r-md);
+  border: 2px solid #b98e3c; /* warm gold rim */
+  /* shiny: a specular sheen layer over deep, rich gold */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.12) 30%, rgba(255, 255, 255, 0) 50%),
+    linear-gradient(178deg, #fdf0b2 0%, #f4dd8a 42%, #e9c75f 68%, #d8ad42 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -3px 8px rgba(120, 80, 10, 0.28),
+    0 14px 30px -12px rgba(2, 10, 20, 0.6),
+    0 0 24px -4px rgba(235, 200, 105, 0.6); /* gold glow */
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 0.22s ease, filter 0.22s ease, background 0.22s ease;
+    box-shadow 0.22s ease, filter 0.22s ease;
 }
-/* inner ticket frame line (overrides the old matte-gold fill) */
+/* inner ticket frame — sharp, gold-ink */
 .landing-v2 .book-form .pay::before,
 .landing-v2 .vp-cta::before {
   content: "";
@@ -608,12 +544,9 @@ body {
   position: absolute;
   inset: 6px;
   z-index: 0;
-  border: 1.4px solid rgba(7, 24, 42, 0.62);
-  border-radius: 9px;
+  border: 1.2px solid rgba(120, 80, 15, 0.5);
+  border-radius: 0;
   background: transparent;
-  box-shadow: none;
-  mix-blend-mode: normal;
-  opacity: 1;
 }
 .landing-v2 .book-form .pay::after,
 .landing-v2 .vp-cta::after {
@@ -623,23 +556,17 @@ body {
   .landing-v2 .book-form .pay:hover,
   .landing-v2 .vp-cta:hover {
     transform: translateY(-3px);
-    filter: brightness(1.05);
-    background: linear-gradient(177deg, #f9f0cd 0%, #efdfa9 52%, #e7d496 100%);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6),
-      0 20px 38px -16px rgba(2, 10, 20, 0.72),
-      0 4px 12px -6px rgba(2, 10, 20, 0.5);
-  }
-  /* keep the frame transparent on hover (old style turned it solid gold) */
-  .landing-v2 .book-form .pay:hover::before,
-  .landing-v2 .vp-cta:hover::before {
-    background: transparent;
-    box-shadow: none;
+    filter: brightness(1.06);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      inset 0 -3px 8px rgba(120, 80, 10, 0.3),
+      0 20px 38px -14px rgba(2, 10, 20, 0.62),
+      0 0 32px -2px rgba(235, 200, 105, 0.75); /* stronger gold glow */
   }
 }
 .landing-v2 .book-form .pay:active,
 .landing-v2 .vp-cta:active {
   transform: translateY(0) scale(0.97);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4),
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5),
     0 8px 18px -12px rgba(2, 10, 20, 0.7);
 }
 .landing-v2 .book-form .pay:focus-visible,
@@ -647,6 +574,18 @@ body {
   outline: none;
   box-shadow: 0 0 0 3px rgba(234, 210, 126, 0.6),
     0 14px 30px -14px rgba(2, 10, 20, 0.7);
+}
+/* mobile: full-width primary button, label on one line */
+@media (max-width: 759px) {
+  .landing-v2 .vp-cta {
+    display: block;
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+    letter-spacing: 0.06em;
+    padding-left: var(--s4);
+    padding-right: var(--s4);
+  }
 }
 
 /* ---------- CONFIRMATION STEP (after "Send request") ---------- */
@@ -1343,17 +1282,20 @@ body {
   max-width: 720px;
 }
 
-/* the shared light-glass card */
+/* the shared Apple-glass card — silk rim on ALL edges, sea shows through,
+   sharp corners, no divider lines (separation is by air, not strokes) */
 .landing-v2 .book-form,
 .landing-v2 .village-page {
+  position: relative;
   max-width: 100%;
   width: 100%;
   color: var(--plum);
-  background: linear-gradient(180deg, rgba(255, 251, 243, 0.92), rgba(247, 240, 227, 0.94));
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 0 30px 80px rgba(2, 10, 20, 0.5);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
+  background: linear-gradient(180deg, rgba(255, 252, 245, 0.40), rgba(246, 239, 226, 0.28));
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: var(--r-md);
+  box-shadow: inset 0 0 24px rgba(255, 255, 255, 0.18), 0 30px 80px rgba(2, 10, 20, 0.45);
+  -webkit-backdrop-filter: blur(30px) saturate(1.7);
+  backdrop-filter: blur(30px) saturate(1.7);
 }
 
 /* big, equal size on desktop */
@@ -1361,7 +1303,7 @@ body {
   .landing-v2 .book-form,
   .landing-v2 .village-page {
     min-height: 620px;
-    padding: 48px 56px;
+    padding: var(--s7) var(--s7);
   }
 }
 
@@ -1372,15 +1314,11 @@ body {
 }
 .landing-v2 .vp-lede,
 .landing-v2 .vp-body,
-.landing-v2 .seo-p,
-.landing-v2 .confirm-lead,
-.landing-v2 .wed-story,
-.landing-v2 .wed-blurb {
+.landing-v2 .confirm-lead {
   color: rgba(7, 24, 42, 0.82);
 }
 .landing-v2 .section-label,
-.landing-v2 .vp-eyebrow,
-.landing-v2 .wed-price {
+.landing-v2 .vp-eyebrow {
   color: #a8743f; /* warm terracotta — reads on cream */
 }
 
