@@ -1562,3 +1562,8 @@ body {
   font-size: var(--t-xs);
   line-height: 1.25;
 }
+
+/* the close ✕ was big and ugly — remove it; tap outside the card or Esc closes */
+.landing-v2 .book-close {
+  display: none;
+}
