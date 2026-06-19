@@ -1252,7 +1252,7 @@ body {
   max-width: 720px;
 }
 
-/* the shared Apple-glass card — silk rim on ALL edges, sea shows through,
+/* the shared card — a solid, single-colour warm ivory (no see-through glass),
    sharp corners, no divider lines (separation is by air, not strokes) */
 .landing-v2 .book-form,
 .landing-v2 .village-page {
@@ -1260,12 +1260,10 @@ body {
   max-width: 100%;
   width: 100%;
   color: var(--plum);
-  background: linear-gradient(180deg, rgba(255, 254, 251, 0.56), rgba(252, 248, 241, 0.46));
-  border: 1px solid rgba(255, 255, 255, 0.30);
+  background: #f7f1e3;
+  border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: var(--r-md);
-  box-shadow: inset 0 0 28px rgba(255, 255, 255, 0.28), 0 30px 80px rgba(2, 10, 20, 0.45);
-  -webkit-backdrop-filter: blur(30px) saturate(1.7);
-  backdrop-filter: blur(30px) saturate(1.7);
+  box-shadow: 0 30px 80px rgba(2, 10, 20, 0.5);
 }
 
 /* big, equal size on desktop */
