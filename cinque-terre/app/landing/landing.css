@@ -1267,11 +1267,13 @@ body {
   box-shadow: 0 30px 80px rgba(2, 10, 20, 0.5);
 }
 
-/* every popup is the SAME size on desktop — same width, same height */
+/* every popup is EXACTLY the same size on desktop — fixed height, long
+   content scrolls inside so no box is ever taller than another */
 @media (min-width: 760px) {
   .landing-v2 .book-form,
   .landing-v2 .village-page {
-    min-height: 620px;
+    height: 660px;
+    overflow-y: auto;
     padding: var(--s7) var(--s7);
   }
 }
@@ -1585,9 +1587,10 @@ body {
   flex: none;
 }
 @media (max-width: 759px) {
-  /* every popup the same height on mobile too */
+  /* every popup exactly the same height on mobile too (long content scrolls) */
   .landing-v2 .book-form,
   .landing-v2 .village-page {
-    min-height: 66svh;
+    height: 74svh;
+    overflow-y: auto;
   }
 }
