@@ -1266,13 +1266,11 @@ body {
   box-shadow: 0 30px 80px rgba(2, 10, 20, 0.5);
 }
 
-/* big, equal size on desktop */
+/* every popup is the SAME size on desktop — same width, same height */
 @media (min-width: 760px) {
-  .landing-v2 .book-form {
-    min-height: 620px;
-  }
   .landing-v2 .book-form,
   .landing-v2 .village-page {
+    min-height: 620px;
     padding: var(--s7) var(--s7);
   }
 }
@@ -1586,8 +1584,9 @@ body {
   flex: none;
 }
 @media (max-width: 759px) {
-  /* a steady card height on mobile so the button sits in the same place */
-  .landing-v2 .book-form {
+  /* every popup the same height on mobile too */
+  .landing-v2 .book-form,
+  .landing-v2 .village-page {
     min-height: 66svh;
   }
 }
