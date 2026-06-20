@@ -1183,9 +1183,10 @@ body {
   .landing-v2 .book-overlay {
     padding: 26px 14px;
   }
-  .landing-v2 .book-form {
-    padding: 34px 22px 30px;
-    border-radius: 26px;
+  .landing-v2 .book-form,
+  .landing-v2 .village-page {
+    padding: var(--s6) var(--s5);
+    border-radius: var(--r-md);
   }
   /* smaller dialog heading on phones (also clears the close button) */
   .landing-v2 .book-overlay .section-title {
