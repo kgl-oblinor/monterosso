@@ -1594,3 +1594,15 @@ body {
     overflow-y: auto;
   }
 }
+
+/* "Which day?" — 2 x 2 square cards instead of line rows */
+.landing-v2 .choice-grid--days2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s4);
+  justify-items: center;
+}
+.landing-v2 .choice-grid--days2 .choice--sq {
+  width: 100%;
+  max-width: 220px;
+}

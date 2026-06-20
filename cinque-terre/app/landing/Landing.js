@@ -1277,12 +1277,12 @@ function BookingForm({ active }) {
           ))}
         </div>
       ) : (
-        <div className="choice-grid">
+        <div className="choice-grid choice-grid--days2">
           {days.slice(0, 3).map((d) => (
             <button
               type="button"
               key={d.iso}
-              className={"choice" + (date === d.iso ? " is-sel" : "")}
+              className={"choice choice--sq" + (date === d.iso ? " is-sel" : "")}
               onClick={() => pickDate(d.iso)}
             >
               <span className="choice-label">{d.label}</span>
@@ -1291,7 +1291,7 @@ function BookingForm({ active }) {
           ))}
           <button
             type="button"
-            className="choice choice--more"
+            className="choice choice--sq choice--more"
             onClick={() => setDateMore(true)}
           >
             <span className="choice-label">Another day…</span>
