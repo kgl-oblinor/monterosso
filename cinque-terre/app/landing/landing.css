@@ -1267,13 +1267,13 @@ body {
   box-shadow: 0 30px 80px rgba(2, 10, 20, 0.5);
 }
 
-/* every popup is EXACTLY the same size on desktop — fixed height, long
-   content scrolls inside so no box is ever taller than another */
+/* every popup the same, generous size on desktop — tall enough for the
+   longest page so nothing ever scrolls; shorter pages match the height */
 @media (min-width: 760px) {
   .landing-v2 .book-form,
   .landing-v2 .village-page {
-    height: 660px;
-    overflow-y: auto;
+    min-height: 800px;
+    overflow: visible;
     padding: var(--s7) var(--s7);
   }
 }
