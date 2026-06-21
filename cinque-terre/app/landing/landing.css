@@ -163,13 +163,13 @@
 .landing-v2 .clocktower {
   position: fixed;
   bottom: calc(50% - 7px);
-  left: 24%;
+  left: 28%;
   width: clamp(56px, 7vw, 100px);
   margin: 0;
   padding: 0;
   border: none;
   background: none;
-  z-index: 12;
+  z-index: 1; /* behind the foreground houses; skyline is pointer-events:none so it stays clickable */
   cursor: pointer;
   transform-origin: bottom center;
   filter: drop-shadow(0 6px 10px rgba(3, 16, 29, 0.3));
