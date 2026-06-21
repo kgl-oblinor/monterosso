@@ -146,9 +146,16 @@
   width: 100%;
   height: auto;
 }
+/* Monterosso — a touch larger than the others */
+.landing-v2 .village-sign--here {
+  width: clamp(110px, 11.5vw, 168px);
+}
 @media (max-width: 640px) {
   .landing-v2 .village-sign {
     width: clamp(58px, 14vw, 96px);
+  }
+  .landing-v2 .village-sign--here {
+    width: clamp(70px, 17vw, 116px);
   }
 }
 
