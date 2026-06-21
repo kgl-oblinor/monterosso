@@ -1625,25 +1625,19 @@ body {
   border-radius: 0 0 2px 2px;
   box-shadow: 0 4px 6px rgba(2, 10, 20, 0.4);
 }
-.landing-v2 .vs-dot {
-  width: 13px;
-  height: 13px;
-  margin-top: -2px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #ef6b54, #c0392b);
-  box-shadow: 0 0 0 4px rgba(192, 57, 43, 0.28), 0 2px 4px rgba(2, 10, 20, 0.4);
-  animation: herePulse 2.4s ease-in-out infinite;
+/* "you are here" pin, stuck into the top of the Monterosso sign */
+.landing-v2 .vs-pin {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  width: clamp(16px, 2vw, 22px);
+  height: auto;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 3px 4px rgba(2, 10, 20, 0.45));
+  pointer-events: none;
+  animation: pinBob 2.6s ease-in-out infinite;
 }
-@keyframes herePulse {
-  0%, 100% { box-shadow: 0 0 0 4px rgba(192, 57, 43, 0.28), 0 2px 4px rgba(2, 10, 20, 0.4); }
-  50% { box-shadow: 0 0 0 9px rgba(192, 57, 43, 0.08), 0 2px 4px rgba(2, 10, 20, 0.4); }
-}
-.landing-v2 .vs-here-label {
-  margin-top: 5px;
-  font-family: "Fraunces", Georgia, serif;
-  font-style: italic;
-  font-size: var(--t-xs);
-  color: var(--cream);
-  text-shadow: 0 1px 6px rgba(2, 10, 20, 0.7);
-  white-space: nowrap;
+@keyframes pinBob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-3px); }
 }
