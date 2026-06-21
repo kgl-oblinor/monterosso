@@ -78,7 +78,7 @@ export default function VillagePage({
             The boat →
           </button>
           <button type="button" className="vp-read" onClick={onReadMore}>
-            Read more <Arrow />
+            Explore <Arrow />
           </button>
         </div>
         <div className="vp-foot-cs">

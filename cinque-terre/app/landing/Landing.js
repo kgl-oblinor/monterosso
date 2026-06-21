@@ -367,7 +367,7 @@ export default function Landing() {
                   Come aboard →
                 </button>
                 <button type="button" className="vp-read" onClick={openHub}>
-                  Read more <Arrow />
+                  Explore <Arrow />
                 </button>
               </div>
               <div className="vp-foot-cs">
@@ -515,7 +515,7 @@ export default function Landing() {
                   Aboard the Paolona →
                 </button>
                 <button type="button" className="vp-read" onClick={openHub}>
-                  Read more <Arrow />
+                  Explore <Arrow />
                 </button>
               </div>
               <div className="vp-foot-cs">
@@ -577,7 +577,7 @@ export default function Landing() {
                   The five villages →
                 </button>
                 <button type="button" className="vp-read" onClick={openHub}>
-                  Read more <Arrow />
+                  Explore <Arrow />
                 </button>
               </div>
               <div className="vp-foot-cs">
@@ -630,7 +630,7 @@ export default function Landing() {
               >
                 <span>
                   <b>Message us on WhatsApp</b>
-                  <span>We usually reply within the hour</span>
+                  <span>We usually reply within an hour</span>
                 </span>
               </a>
               <a
@@ -691,7 +691,7 @@ function BookingForm({ active }) {
   const [guests, setGuests] = useState(2);
   const [error, setError] = useState("");
   const [days, setDays] = useState([]);
-  const [step, setStep] = useState("receipt"); // receipt-first; "Another time" → time → guests → date → receipt
+  const [step, setStep] = useState("receipt"); // receipt-first; "Change the time" → time → guests → date → receipt
   const [done, setDone] = useState(false);
   const [sent, setSent] = useState(false);
   const [phone, setPhone] = useState("");
@@ -727,7 +727,7 @@ function BookingForm({ active }) {
   function nextFromDate() {
     setError("");
     if (!date) {
-      setError("Please pick a date for your tour.");
+      setError("Please choose a day first.");
       return;
     }
     setStep("receipt");
@@ -741,7 +741,7 @@ function BookingForm({ active }) {
   function review() {
     setError("");
     if (!date) {
-      setError("Please pick a date for your tour.");
+      setError("Please choose a day first.");
       return;
     }
     setDone(true);
@@ -797,9 +797,9 @@ function BookingForm({ active }) {
   if (sent) {
     return (
       <div className="book-form confirm-sent">
-        <p className="box-count">{boxNum} / 8</p>
+        
         <p className="confirm-lead">
-          Thank you — we shall be in touch at{" "}
+          Thank you — we'll be in touch at{" "}
           <strong>{phone || email || "your contact"}</strong> to confirm your
           place.
         </p>
@@ -871,7 +871,7 @@ function BookingForm({ active }) {
           className="pay pay--ghost share-btn"
           onClick={() => shareTrip({ when, guests })}
         >
-          Share with friends
+          Tell a friend
         </button>
         <button
           type="button"
@@ -881,7 +881,7 @@ function BookingForm({ active }) {
             setDone(false);
           }}
         >
-          Done
+          Finish
         </button>
       </div>
     );
@@ -894,7 +894,7 @@ function BookingForm({ active }) {
       const ph = phone.trim();
       const em = email.trim();
       if (!ph && !em) {
-        setError("Add a phone/WhatsApp number or email so we can reach you.");
+        setError("Please add a phone number or email so we can reach you.");
         return;
       }
       // 1) save the lead to our backend (D1)
@@ -952,9 +952,9 @@ function BookingForm({ active }) {
     };
     return (
       <div className="book-form">
-        <p className="box-count">{boxNum} / 8</p>
+        
         <p className="confirm-lead">
-          Leave your details and we shall confirm your place.
+          Leave your details and we'll confirm your place.
         </p>
         <form
           className="contact-form"
@@ -1015,7 +1015,7 @@ function BookingForm({ active }) {
             {guests === 1 ? "guest" : "guests"} · ${total}
           </p>
           <button type="submit" className="pay">
-            Send enquiry
+            Send my request
           </button>
         </form>
         <p className="err">{error}</p>
@@ -1028,21 +1028,21 @@ function BookingForm({ active }) {
             setStep("receipt");
           }}
         >
-          Change
+          Go back
         </button>
       </div>
     );
   }
 
   // SCREEN — RECEIPT: a guessed booking (two places, the next departure),
-  // shown first. Send it, or tap "Another time" to adjust.
+  // shown first. Send it, or tap "Change the time" to adjust.
   if (step === "receipt") {
     return (
       <div className="book-form">
         <p className="box-count">Your place</p>
         <p className="confirm-lead">
-          We have held <strong>two places</strong> on the next departure —
-          change anything you like, then send.
+          We've saved <strong>two seats</strong> on the next sailing.
+          Change anything, then continue.
         </p>
         <div className="conf-summary">
           <div className="conf-row">
@@ -1069,7 +1069,7 @@ function BookingForm({ active }) {
           </div>
         </div>
         <button className="pay" onClick={() => setDone(true)}>
-          Send →
+          Continue →
         </button>
         <button
           type="button"
@@ -1079,7 +1079,7 @@ function BookingForm({ active }) {
             setStep("time");
           }}
         >
-          Another time
+          Change the time
         </button>
       </div>
     );
@@ -1096,7 +1096,7 @@ function BookingForm({ active }) {
     ];
     return (
       <div className="book-form">
-        <p className="box-count">{boxNum} / 8</p>
+        
         <span className="field-head step-q">Where shall we meet you?</span>
         <div className="choice-grid">
           {towns.map((tn) => (
@@ -1117,7 +1117,7 @@ function BookingForm({ active }) {
           ))}
         </div>
         <button className="pay" onClick={() => setStep("guests")}>
-          Next
+          Continue
         </button>
         <button
           type="button"
@@ -1134,8 +1134,8 @@ function BookingForm({ active }) {
   if (step === "guests") {
     return (
       <div className="book-form">
-        <p className="box-count">{boxNum} / 8</p>
-        <span className="field-head step-q">How many in your party?</span>
+        
+        <span className="field-head step-q">How many of you?</span>
         <div className="choice-grid choice-grid--nums">
           {Array.from({ length: tour.maxGuests }, (_, i) => i + 1).map((n) => (
             <button
@@ -1152,7 +1152,7 @@ function BookingForm({ active }) {
           ))}
         </div>
         <button className="pay" onClick={() => setStep("date")}>
-          Next
+          Continue
         </button>
         <button
           type="button"
@@ -1179,9 +1179,9 @@ function BookingForm({ active }) {
     }));
     return (
       <div className="book-form">
-        <p className="box-count">{boxNum} / 8</p>
+        
         <span className="field-head step-q">
-          When would you care to set off?
+          What time would you like to leave?
         </span>
         <div className="choice-grid choice-grid--time">
           {opts.map((o) => (
@@ -1201,7 +1201,7 @@ function BookingForm({ active }) {
           ))}
         </div>
         <button className="pay" onClick={() => setStep("guests")}>
-          Next
+          Continue
         </button>
         <button
           type="button"
@@ -1218,9 +1218,9 @@ function BookingForm({ active }) {
   if (step === "aboard") {
     return (
       <div className="book-form">
-        <p className="box-count">{boxNum} / 8</p>
+        
         <span className="field-head step-q">
-          Will anyone require a hand coming aboard?
+          Would anyone like a hand getting on board?
         </span>
         <div className="choice-grid choice-grid--2">
           <button
@@ -1246,7 +1246,7 @@ function BookingForm({ active }) {
           </button>
         </div>
         <button className="pay" onClick={review}>
-          Next
+          Continue
         </button>
         <button
           type="button"
@@ -1262,7 +1262,7 @@ function BookingForm({ active }) {
   // STEP 1 — date (single popup)
   return (
     <div className="book-form">
-      <p className="box-count">{boxNum} / 8</p>
+      
       <span className="field-head step-q">Which day?</span>
       {dateMore ? (
         <div className="choice-grid choice-scroll">
@@ -1296,12 +1296,12 @@ function BookingForm({ active }) {
             className="choice choice--sq choice--more"
             onClick={() => setDateMore(true)}
           >
-            <span className="choice-label">Another day…</span>
+            <span className="choice-label">More dates…</span>
           </button>
         </div>
       )}
       <button className="pay" onClick={nextFromDate}>
-        Next
+        Continue
       </button>
       <button
         type="button"
@@ -1440,7 +1440,7 @@ async function shareTrip({ when, guests }) {
   }
   try {
     await navigator.clipboard.writeText(`${text} ${url}`);
-    alert("Link copied — share it with your friends!");
+    alert("Link copied — send it to a friend.");
   } catch {
     window.open(
       `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`,
