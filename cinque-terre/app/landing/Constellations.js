@@ -112,6 +112,29 @@ const C = [
   },
 ];
 
+// Deterministic PRNG so the scattered field is identical on server + client
+// (no hydration mismatch). Seeded once at module load.
+function mulberry32(a) {
+  return function () {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const rand = mulberry32(20240621);
+// a soft scatter of loose stars — mostly tiny, a few larger
+const FIELD = Array.from({ length: 150 }, () => {
+  const big = rand() > 0.86;
+  return {
+    x: rand() * 1000,
+    y: rand() * 500,
+    r: big ? 1.1 + rand() * 0.8 : 0.3 + rand() * 0.7,
+    o: (big ? 0.6 : 0.3) + rand() * 0.35,
+  };
+});
+
 export default function Constellations() {
   return (
     <svg
@@ -120,21 +143,23 @@ export default function Constellations() {
       preserveAspectRatio="none"
       aria-hidden="true"
     >
+      {/* loose scattered stars — small small, and a few bigger */}
+      {FIELD.map((p, i) => (
+        <circle
+          key={`f${i}`}
+          cx={Math.round(p.x * 10) / 10}
+          cy={Math.round(p.y * 10) / 10}
+          r={Math.round(p.r * 100) / 100}
+          className="cn-field"
+          style={{ opacity: Math.round(p.o * 100) / 100 }}
+        />
+      ))}
+      {/* the 20 constellations — just their stars, no joining lines */}
       {C.map((c) => (
         <g
           key={c.n}
           transform={`translate(${(c.x / 100) * 1000} ${(c.y / 100) * 500}) scale(${c.sc})`}
         >
-          {c.l.map(([a, b], i) => (
-            <line
-              key={i}
-              x1={c.s[a][0]}
-              y1={c.s[a][1]}
-              x2={c.s[b][0]}
-              y2={c.s[b][1]}
-              className="cn-line"
-            />
-          ))}
           {c.s.map(([x, y], i) => (
             <circle key={i} cx={x} cy={y} r={i === 0 ? 1.5 : 1.1} className="cn-star" />
           ))}

@@ -1671,3 +1671,11 @@ body {
 [data-theme="dark"] .landing-v2 .cn-line {
   stroke: rgba(200, 220, 255, 0.42);
 }
+
+/* loose scattered stars (opacity set inline per star) */
+.landing-v2 .cn-field {
+  fill: #fff7e6;
+}
+[data-theme="dark"] .landing-v2 .cn-field {
+  fill: #eaf1ff;
+}
