@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
-import { Building2, Mail, ShieldCheck } from "lucide-react";
+import { Mail, ShieldCheck, Ticket } from "lucide-react";
 
 import {
   Form,
@@ -35,8 +35,8 @@ import { AuthButton } from "./AuthButton";
 import { AuthError } from "./AuthError";
 import { AuthHeading } from "./AuthLayout";
 
-// Account claim: existing Oblinor participants verify their on-file email (investor by
-// email, loaner by org number) with a 6-digit code, then set a password.
+// Account onboarding: a customer or skipper verifies ownership of their on-file email (by
+// email, or — for customers — by reservation code) with a 6-digit code, then sets a password.
 export function RegisterForm() {
   const navigate = useNavigate();
   const setSession = useAuthStore((s) => s.setSession);
@@ -49,9 +49,9 @@ export function RegisterForm() {
 
   const idForm = useForm<ClaimStartForm>({
     resolver: zodResolver(claimStartForm),
-    defaultValues: { role: "investor", email: "", orgNumber: "" },
+    defaultValues: { mode: "email", email: "", reservationCode: "" },
   });
-  const role = idForm.watch("role");
+  const mode = idForm.watch("mode");
 
   const verifyForm = useForm<CodePasswordForm>({
     resolver: zodResolver(codePasswordForm),
@@ -60,7 +60,9 @@ export function RegisterForm() {
 
   const onIdentify = idForm.handleSubmit((values) => {
     const id: RegisterStartInput =
-      values.role === "investor" ? { email: values.email } : { orgNumber: values.orgNumber };
+      values.mode === "email"
+        ? { email: values.email }
+        : { reservationCode: values.reservationCode };
     start.mutate(id, {
       onSuccess: ({ sentTo }) => {
         setIdentifier(id);
@@ -175,25 +177,25 @@ export function RegisterForm() {
       <form onSubmit={onIdentify} className="space-y-5" noValidate>
         <AuthHeading
           title="Opprett konto"
-          subtitle="Aktiver din Oblinor-konto. Vi sender en kode til e-posten vi har registrert."
+          subtitle="Aktiver kontoen din. Vi sender en kode til e-posten vi har registrert."
         />
 
         {start.isError && <AuthError message={start.error.message} />}
 
         <FormField
           control={idForm.control}
-          name="role"
+          name="mode"
           render={({ field }) => (
             <FormItem>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger className="h-12 rounded-full border-2 border-white bg-white px-5 text-base text-black shadow-lg data-[placeholder]:text-black/60">
-                    <SelectValue placeholder="Jeg er (velg rolle)" />
+                    <SelectValue placeholder="Velg metode" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="loaner">Låntaker</SelectItem>
-                  <SelectItem value="investor">Långiver</SelectItem>
+                  <SelectItem value="email">Med e-post</SelectItem>
+                  <SelectItem value="reservation">Med reservasjonskode</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage className="ml-4 text-red-400" />
@@ -201,18 +203,16 @@ export function RegisterForm() {
           )}
         />
 
-        {role === "loaner" ? (
+        {mode === "reservation" ? (
           <FormField
             control={idForm.control}
-            name="orgNumber"
+            name="reservationCode"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
                   <IconInput
-                    icon={<Building2 className="h-5 w-5" />}
-                    inputMode="numeric"
-                    maxLength={9}
-                    placeholder="Organisasjonsnummer (9 sifre)"
+                    icon={<Ticket className="h-5 w-5" />}
+                    placeholder="Reservasjonskode (f.eks. MT-210625-2)"
                     autoFocus
                     {...field}
                   />

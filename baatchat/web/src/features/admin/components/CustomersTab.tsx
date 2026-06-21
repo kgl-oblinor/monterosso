@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 
-import { useInvestorDirectory, useSetInvestorEmail } from "../api/hooks";
+import { useCustomerDirectory, useSetCustomerEmail } from "../api/hooks";
 import { EditableEmail, Initials, RowActions, StatusBadge } from "./AdminUI";
-import { Centered, EmptyRow, ErrorBox, Pager, RowNum, SearchBox, Thead } from "./LoanersTab";
+import { Centered, EmptyRow, ErrorBox, Pager, RowNum, SearchBox, Thead } from "./SkippersTab";
 
 const PAGE_SIZE = 50;
 
-/** Långiver (investor) directory — 9k+ rows, so server-side search + pagination. Shares
- *  all table chrome with the låntaker table so the two look identical. */
-export function InvestorsTab() {
+/** Customer directory — server-side search + pagination. Shares all table chrome with
+ *  the skipper table so the two look identical. */
+export function CustomersTab() {
   const [query, setQuery] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
@@ -23,14 +23,14 @@ export function InvestorsTab() {
     return () => clearTimeout(t);
   }, [query]);
 
-  const { data, isLoading, isError, isFetching } = useInvestorDirectory({
+  const { data, isLoading, isError, isFetching } = useCustomerDirectory({
     search,
     page,
     pageSize: PAGE_SIZE,
   });
 
   const total = data?.total ?? 0;
-  const investors = data?.investors ?? [];
+  const customers = data?.customers ?? [];
   const start = page * PAGE_SIZE;
   const from = total === 0 ? 0 : start + 1;
   const to = Math.min(start + PAGE_SIZE, total);
@@ -41,37 +41,37 @@ export function InvestorsTab() {
 
       {isLoading ? (
         <Centered>
-          <Loader2 className="size-5 animate-spin" /> Laster långivere…
+          <Loader2 className="size-5 animate-spin" /> Laster kunder…
         </Centered>
       ) : isError ? (
-        <ErrorBox>Kunne ikke laste långivere.</ErrorBox>
+        <ErrorBox>Kunne ikke laste kunder.</ErrorBox>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-white/10">
           <table className="w-full min-w-[720px] text-left text-sm">
-            <Thead cols={["#", "Navn", "E-post", "Ordre", "Status", "Handling"]} />
+            <Thead cols={["#", "Navn", "E-post", "Turer", "Status", "Handling"]} />
             <tbody className="divide-y divide-white/5">
-              {investors.map((iv, i) => (
-                <tr key={iv.id} className="transition-colors hover:bg-white/[0.04]">
+              {customers.map((c, i) => (
+                <tr key={c.id} className="transition-colors hover:bg-white/[0.04]">
                   <RowNum n={start + i + 1} />
                   <td className="px-4 py-2.5">
                     <div className="flex items-center gap-3">
-                      <Initials name={iv.name} fallback={iv.email ?? "?"} />
-                      <span className="font-medium text-white">{iv.name ?? "—"}</span>
+                      <Initials name={c.name} fallback={c.email ?? "?"} />
+                      <span className="font-medium text-white">{c.name ?? "—"}</span>
                     </div>
                   </td>
                   <td className="px-4 py-2.5 text-white/70">
-                    <InvestorEmail id={iv.id} email={iv.email} />
+                    <CustomerEmail id={c.id} email={c.email} />
                   </td>
-                  <td className="px-4 py-2.5 text-white/70">{iv.orderCount}</td>
+                  <td className="px-4 py-2.5 text-white/70">{c.reservationCount}</td>
                   <td className="px-4 py-2.5">
-                    <StatusBadge status={iv.status} />
+                    <StatusBadge status={c.status} />
                   </td>
                   <td className="px-4 py-2.5">
-                    <RowActions accountId={iv.accountId} status={iv.status} />
+                    <RowActions accountId={c.accountId} status={c.status} />
                   </td>
                 </tr>
               ))}
-              {investors.length === 0 && <EmptyRow cols={6} label="Ingen långivere funnet." />}
+              {customers.length === 0 && <EmptyRow cols={6} label="Ingen kunder funnet." />}
             </tbody>
           </table>
         </div>
@@ -91,9 +91,9 @@ export function InvestorsTab() {
   );
 }
 
-/** An investor's editable on-file email (admin override). */
-function InvestorEmail({ id, email }: { id: number; email: string | null }) {
-  const setEmail = useSetInvestorEmail();
+/** A customer's editable on-file email (admin override). */
+function CustomerEmail({ id, email }: { id: number; email: string | null }) {
+  const setEmail = useSetCustomerEmail();
   return (
     <EditableEmail
       email={email}

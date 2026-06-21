@@ -1,5 +1,5 @@
-// Admin user-management API. Calls the JWT-guarded /admin/users endpoints (the admin's
-// token is attached automatically by the apiClient). Swaps to a mock when VITE_USE_MOCKS.
+// Admin (Kristian) management API. Calls the JWT-guarded /admin/users endpoints (the
+// admin's token is attached automatically by the apiClient). Swaps to a mock when VITE_USE_MOCKS.
 import { apiClient } from "@/lib/apiClient";
 import { env } from "@/lib/env";
 import { mockAdminApi } from "@/mocks/mockAdmin";

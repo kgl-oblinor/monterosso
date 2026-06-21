@@ -1,10 +1,10 @@
-// Auth API contracts — match the backend's account-claim flow:
-//   register/start  (email OR orgNumber) → sends a code to the on-file email
+// Auth API contracts — match the backend's account-onboarding flow:
+//   register/start  (email OR reservationCode) → sends a code to the on-file email
 //   register/complete (identifier + code + password) → creates the account, returns a JWT
 //   login (email + password) → returns a JWT
-// Existing Oblinor participants only; name/role come from the synced data, not the form.
+// name/role come from the booking data, not the form.
 
-export type UserRole = "loaner" | "investor" | "admin";
+export type UserRole = "skipper" | "customer" | "admin";
 
 export interface AuthUser {
   id?: number;
@@ -18,10 +18,10 @@ export interface LoginInput {
   password: string;
 }
 
-/** Identifier for the claim flow: investors use email, loaners use orgNumber (email works too). */
+/** Identifier for the onboarding flow: by email, or by reservation code (customers). */
 export interface RegisterStartInput {
   email?: string;
-  orgNumber?: string;
+  reservationCode?: string;
 }
 
 export interface RegisterCompleteInput extends RegisterStartInput {
@@ -34,7 +34,7 @@ export type AccountStatus = "pending" | "active" | "suspended";
 export interface AuthResult {
   token: string;
   user: AuthUser;
-  /** Approval status (investors/loaners). Undefined for admins. */
+  /** Approval status (customers/skippers). Undefined for admins. */
   status?: AccountStatus;
 }
 

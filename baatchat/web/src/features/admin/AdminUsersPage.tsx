@@ -1,19 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Building2, Clock, LogOut, Mail, Menu, MessageSquare, Users, X } from "lucide-react";
+import { Clock, LogOut, Menu, MessageSquare, Ship, Users, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import logoUrl from "@/oblinor-logo.svg";
 import { useAuthStore } from "@/features/auth/store";
-import { useInvestorDirectory, useLoanerDirectory, useUsers } from "./api/hooks";
+import { useCustomerDirectory, useSkipperDirectory, useUsers } from "./api/hooks";
 import { StatCard, StatGroup } from "./components/AdminUI";
 import { PendingTab } from "./components/PendingTab";
-import { LoanersTab } from "./components/LoanersTab";
-import { InvestorsTab } from "./components/InvestorsTab";
+import { SkippersTab } from "./components/SkippersTab";
+import { CustomersTab } from "./components/CustomersTab";
 import { ConversationsTab } from "./components/ConversationsTab";
-import { EmailTab } from "./components/EmailTab";
 
-type TabId = "pending" | "loaners" | "investors" | "conversations" | "email";
+type TabId = "pending" | "skippers" | "customers" | "conversations";
 
 interface NavItem {
   id: TabId;
@@ -31,23 +30,22 @@ export function AdminUsersPage() {
 
   // Stats: registered accounts come from /admin/users; totals from the directories.
   const { data: users } = useUsers();
-  const { data: loaners } = useLoanerDirectory();
-  const { data: investorPage } = useInvestorDirectory({ search: "", page: 0, pageSize: 1 });
+  const { data: skippers } = useSkipperDirectory();
+  const { data: customerPage } = useCustomerDirectory({ search: "", page: 0, pageSize: 1 });
 
   const accounts = users ?? [];
   const pending = accounts.filter((u) => u.status !== "active").length;
   const active = accounts.filter((u) => u.status === "active").length;
-  const regLoaners = accounts.filter((u) => u.role === "loaner").length;
-  const regInvestors = accounts.filter((u) => u.role === "investor").length;
-  const totalLoaners = loaners?.length;
-  const totalInvestors = investorPage?.total;
+  const regSkippers = accounts.filter((u) => u.role === "skipper").length;
+  const regCustomers = accounts.filter((u) => u.role === "customer").length;
+  const totalSkippers = skippers?.length;
+  const totalCustomers = customerPage?.total;
 
   const nav: NavItem[] = [
     { id: "pending", label: "Til godkjenning", icon: Clock, badge: pending || undefined },
-    { id: "loaners", label: "Låntakere", icon: Building2 },
-    { id: "investors", label: "Långivere", icon: Users },
+    { id: "skippers", label: "Skippere", icon: Ship },
+    { id: "customers", label: "Kunder", icon: Users },
     { id: "conversations", label: "Samtaler", icon: MessageSquare },
-    { id: "email", label: "Epost", icon: Mail },
   ];
 
   const onLogout = () => {
@@ -115,20 +113,20 @@ export function AdminUsersPage() {
           <div className="max-w-[1400px] px-4 py-6 md:px-8 md:py-8">
             <h1 className="mb-6 hidden text-2xl font-semibold md:block">{heading}</h1>
 
-            {/* Stats — only on the directory/approval tabs, not Samtaler/Epost */}
-            {tab !== "conversations" && tab !== "email" && (
+            {/* Stats — only on the directory/approval tabs, not Samtaler */}
+            {tab !== "conversations" && (
               <StatGroup>
                 <StatCard
-                  label="Låntakere"
-                  value={totalLoaners ?? "…"}
-                  hint={<Hint n={regLoaners} suffix="med konto" />}
-                  loading={totalLoaners == null}
+                  label="Skippere"
+                  value={totalSkippers ?? "…"}
+                  hint={<Hint n={regSkippers} suffix="med konto" />}
+                  loading={totalSkippers == null}
                 />
                 <StatCard
-                  label="Långivere"
-                  value={totalInvestors?.toLocaleString("nb-NO") ?? "…"}
-                  hint={<Hint n={regInvestors} suffix="med konto" />}
-                  loading={totalInvestors == null}
+                  label="Kunder"
+                  value={totalCustomers?.toLocaleString("nb-NO") ?? "…"}
+                  hint={<Hint n={regCustomers} suffix="med konto" />}
+                  loading={totalCustomers == null}
                 />
                 <StatCard
                   label="Aktive kontoer"
@@ -144,10 +142,9 @@ export function AdminUsersPage() {
             )}
 
             {tab === "pending" && <PendingTab />}
-            {tab === "loaners" && <LoanersTab />}
-            {tab === "investors" && <InvestorsTab />}
+            {tab === "skippers" && <SkippersTab />}
+            {tab === "customers" && <CustomersTab />}
             {tab === "conversations" && <ConversationsTab />}
-            {tab === "email" && <EmailTab />}
           </div>
         </main>
       </div>

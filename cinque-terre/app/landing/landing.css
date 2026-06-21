@@ -202,11 +202,11 @@
 /* Wikipedia links — shown on desktop/tablet, hidden on mobile */
 .landing-v2 .wiki-link {
   display: inline-block;
-  margin-left: 8px;
+  margin-left: var(--s2);
   font-family: "Fraunces", Georgia, serif;
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-1);
   color: var(--gold);
   text-decoration: none;
   opacity: 0.85;
@@ -217,7 +217,7 @@
 }
 .landing-v2 .wiki-link--block {
   display: block;
-  margin: 0 0 14px 0;
+  margin: 0 0 var(--s4) 0;
 }
 @media (max-width: 640px) {
   .landing-v2 .wiki-link {
@@ -300,7 +300,7 @@
 }
 .landing-v2 .vp-link {
   display: inline-block;
-  margin: 18px 0 0 18px;
+  margin: var(--s4) 0 0 var(--s4);
   background: none;
   border: none;
   color: var(--cream);
@@ -308,7 +308,7 @@
   font-family: "Fraunces", Georgia, serif;
   font-weight: 500;
   font-size: 0.84rem;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-1);
   text-decoration: none;
   cursor: pointer;
   transition: opacity 0.2s ease;
@@ -321,8 +321,8 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
-  margin-top: 8px;
+  gap: var(--s3);
+  margin-top: var(--s2);
 }
 .landing-v2 .vp-actions .vp-link {
   margin: 0;
@@ -330,8 +330,8 @@
 .landing-v2 .vp-nav {
   display: flex;
   justify-content: space-between;
-  gap: 14px;
-  margin-top: 24px;
+  gap: var(--s4);
+  margin-top: var(--s5);
 }
 .landing-v2 .vp-nav button {
   background: none;
@@ -341,10 +341,10 @@
   font-style: italic;
   font-size: var(--t-sm);
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-1);
   cursor: pointer;
   opacity: 0.85;
-  padding: 6px 2px;
+  padding: var(--s2) var(--s1);
   transition: opacity 0.2s ease;
 }
 .landing-v2 .vp-nav button:hover {
@@ -356,11 +356,11 @@
   font-family: "Fraunces", Georgia, serif;
   font-weight: 300;
   font-size: 0.62rem;
-  letter-spacing: 0.32em;
+  letter-spacing: var(--ls-3);
   text-transform: uppercase;
   color: var(--cream);
   opacity: 0.4;
-  margin: 0 0 12px;
+  margin: 0 0 var(--s3);
 }
 
 /* normal native mouse cursor everywhere — no custom cursor ring/dot */
@@ -403,7 +403,7 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 0 24px;
+  padding: 0 var(--s5);
 }
 
 .landing-v2 .cta {
@@ -421,8 +421,8 @@ body {
   -webkit-text-stroke: 0;
   text-shadow: none;
   /* nudge the text down so the space above/below reads even */
-  padding: 22px 46px 15px;
-  border-radius: 14px;
+  padding: 24px 48px 16px;
+  border-radius: var(--r-md);
   border: 2px solid var(--plum);
   box-shadow: 0 10px 26px -12px rgba(2, 10, 20, 0.6);
   max-width: 100%;
@@ -437,8 +437,8 @@ body {
 @media (min-width: 760px) {
   .landing-v2 .cta {
     font-size: clamp(2.4rem, 3.8vw, 3.2rem);
-    padding: 30px 72px 22px;
-    border-radius: 18px;
+    padding: 32px 72px 24px;
+    border-radius: var(--r-md);
   }
   /* tagline sits just below where the sea starts (≈10px under the 50% line) */
   .landing-v2 .hero .sea-copy {
@@ -454,7 +454,7 @@ body {
   inset: 6px;
   z-index: 0;
   border: 1.4px solid rgba(7, 24, 42, 0.7);
-  border-radius: 8px;
+  border-radius: var(--r-md);
   background: transparent;
   box-shadow: none;
   mix-blend-mode: normal;
@@ -496,10 +496,10 @@ body {
   font-weight: 400;
   font-size: 0.98rem;
   line-height: 1.1;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--ls-2);
   text-transform: uppercase;
   color: var(--plum);
-  padding: 18px clamp(28px, 9vw, 48px);
+  padding: var(--s5) clamp(28px, 9vw, 48px);
   border-radius: var(--r-md);
   border: 2px solid #b98e3c; /* warm gold rim */
   /* shiny: a specular sheen layer over deep, rich gold */
@@ -559,7 +559,7 @@ body {
     width: 100%;
     text-align: center;
     white-space: nowrap;
-    letter-spacing: 0.06em;
+    letter-spacing: var(--ls-2);
     padding-left: var(--s4);
     padding-right: var(--s4);
   }
@@ -570,26 +570,25 @@ body {
   font-size: 0.92rem;
   line-height: 1.5;
   color: rgba(7, 24, 42, 0.7);
-  margin: 2px 0 4px;
+  margin: var(--s1) 0 var(--s2);
 }
+/* separation by air, not lines — no divider borders */
 .landing-v2 .conf-summary {
   display: grid;
-  gap: 8px;
-  margin: 4px 0 6px;
-  padding: 14px 2px;
-  border-top: 1px solid rgba(7, 24, 42, 0.14);
-  border-bottom: 1px solid rgba(7, 24, 42, 0.14);
+  gap: var(--s2);
+  margin: var(--s3) 0 var(--s4);
+  padding: 0;
 }
 .landing-v2 .conf-row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 14px;
+  gap: var(--s4);
   font-size: 0.95rem;
 }
 .landing-v2 .conf-row span {
   color: rgba(7, 24, 42, 0.55);
-  letter-spacing: 0.02em;
+  letter-spacing: var(--ls-1);
 }
 .landing-v2 .conf-row strong {
   color: var(--plum);
@@ -615,31 +614,31 @@ body {
   text-align: center;
   font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: var(--ls-3);
   text-transform: uppercase;
   color: rgba(7, 24, 42, 0.5);
-  margin: 14px 0 10px;
+  margin: var(--s4) 0 var(--s3);
 }
 .landing-v2 .cal-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
+  gap: var(--s3);
 }
 .landing-v2 .cal-btn {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--s2);
   font-family: "Fraunces", Georgia, serif;
   font-weight: 600;
   font-size: 0.76rem;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--ls-2);
   text-transform: uppercase;
   text-decoration: none;
   color: var(--plum);
-  padding: 13px 6px;
-  border-radius: 13px;
+  padding: 12px 8px;
+  border-radius: var(--r-md);
   border: 2px solid var(--plum);
   background: linear-gradient(177deg, #f6ecc4 0%, #ecdaa0 52%, #e3cd8f 100%);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5),
@@ -665,17 +664,17 @@ body {
 }
 /* share sits a touch apart from the calendar pair */
 .landing-v2 .share-btn {
-  margin-top: 14px;
+  margin-top: var(--s4);
 }
 
 /* contact-capture form on the confirm step */
 .landing-v2 .contact-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--s3);
 }
 .landing-v2 .contact-field {
-  gap: 6px;
+  gap: var(--s2);
 }
 .landing-v2 .contact-field input {
   width: 100%;
@@ -684,8 +683,8 @@ body {
   color: var(--plum);
   background: rgba(255, 255, 255, 0.92);
   border: 1.5px solid rgba(7, 24, 42, 0.25);
-  border-radius: 12px;
-  padding: 13px 14px;
+  border-radius: var(--r-md);
+  padding: 12px 16px;
   outline: none;
   -webkit-appearance: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -702,17 +701,17 @@ body {
 .landing-v2 .crew {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin: 8px 0 6px;
+  gap: var(--s4);
+  margin: var(--s2) 0 var(--s2);
 }
 .landing-v2 .crew-card {
   text-align: center;
 }
 .landing-v2 .crew-photo {
-  width: 82px;
-  height: 82px;
-  margin: 0 auto 10px;
-  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto var(--s3);
+  border-radius: 50%; /* intentional circle — kept round */
   border: 2px solid var(--plum);
   background: radial-gradient(120% 120% at 35% 25%, #f4ead0 0%, #d9b86a 60%, #c39d4b 100%);
   display: grid;
@@ -727,7 +726,7 @@ body {
   font-weight: 600;
   font-size: 1.05rem;
   color: var(--plum);
-  margin: 0 0 5px;
+  margin: 0 0 var(--s1);
 }
 .landing-v2 .crew-seeks {
   font-size: 0.88rem;
@@ -739,9 +738,9 @@ body {
 .landing-v2 .about-note {
   text-align: center;
   font-size: 0.78rem;
-  letter-spacing: 0.02em;
+  letter-spacing: var(--ls-1);
   color: rgba(7, 24, 42, 0.5);
-  margin: 12px 0 14px;
+  margin: var(--s3) 0 var(--s4);
 }
 
 /* big, senior-friendly choice tiles for the intermediate steps */
@@ -754,12 +753,12 @@ body {
   font-size: 1.1rem;
   line-height: 1.35;
   color: rgba(7, 24, 42, 0.92);
-  margin: 10px 0 16px;
+  margin: var(--s3) 0 var(--s4);
 }
 .landing-v2 .choice-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: var(--s3);
 }
 .landing-v2 .choice-grid--2 {
   grid-template-columns: 1fr 1fr;
@@ -769,10 +768,10 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: var(--s1);
   min-height: 60px;
-  padding: 14px 14px;
-  border-radius: 14px;
+  padding: var(--s4);
+  border-radius: var(--r-md);
   border: 2px solid rgba(7, 24, 42, 0.3);
   background: rgba(255, 252, 246, 0.82);
   color: var(--plum);
@@ -803,20 +802,20 @@ body {
 /* send-channel on/off toggles */
 .landing-v2 .send-via {
   display: block;
-  margin: 6px 0 8px;
+  margin: var(--s2) 0 var(--s2);
 }
 .landing-v2 .send-toggles {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--s3);
 }
 .landing-v2 .toggle-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 13px 16px;
-  border-radius: 12px;
+  padding: 12px 16px;
+  border-radius: var(--r-md);
   border: 1.5px solid rgba(7, 24, 42, 0.2);
   background: rgba(255, 255, 255, 0.55);
   color: var(--plum);
@@ -826,7 +825,7 @@ body {
   font-family: "Fraunces", Georgia, serif;
   font-size: 0.95rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--ls-1);
   transition: border-color 0.15s ease, background 0.15s ease;
 }
 .landing-v2 .toggle-row.is-on {
@@ -836,7 +835,7 @@ body {
   position: relative;
   width: 52px;
   height: 30px;
-  border-radius: 999px;
+  border-radius: 999px; /* intentional pill — kept round */
   background: rgba(7, 24, 42, 0.28);
   flex: none;
   transition: background 0.18s ease;
@@ -872,11 +871,11 @@ body {
 }
 .landing-v2 .choice-grid--nums {
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  gap: var(--s3);
 }
 .landing-v2 .choice--num {
-  min-height: 58px;
-  padding: 10px 6px;
+  min-height: 56px;
+  padding: var(--s3) var(--s2);
 }
 .landing-v2 .choice--num .choice-label {
   font-size: 1.4rem;
@@ -1003,7 +1002,7 @@ body {
   font-family: "Fraunces", Georgia, serif;
   font-size: 0.74rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--ls-3);
   line-height: 1.7;
   text-transform: uppercase;
   text-align: center;
@@ -1022,13 +1021,13 @@ body {
 
 /* ---------- PRICE ROW — readable, not cursive + more top space ---------- */
 .landing-v2 .book-form .total-row {
-  margin-top: 26px;
+  margin-top: var(--s5);
 }
 .landing-v2 .book-form .price-note {
   font-family: "Fraunces", Georgia, serif;
   font-weight: 500;
   font-size: 0.9rem;
-  letter-spacing: 0.02em;
+  letter-spacing: var(--ls-1);
   color: var(--gold);
   opacity: 0.85;
 }
@@ -1036,7 +1035,7 @@ body {
   font-family: "Fraunces", Georgia, serif;
   font-weight: 500;
   font-size: 1rem;
-  letter-spacing: 0.02em;
+  letter-spacing: var(--ls-1);
 }
 .landing-v2 .book-form .total-row .t-val {
   font-family: "Fraunces", Georgia, serif;
@@ -1096,7 +1095,7 @@ body {
   font-family: "Fraunces", Georgia, serif;
   font-weight: 600;
   font-size: 0.95rem;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--ls-1);
   line-height: 1.5;
   color: var(--cream);
   opacity: 0.95;
@@ -1147,13 +1146,13 @@ body {
     overflow-x: clip;
   }
   .landing-v2 .hero {
-    padding: 5vh 20px 0;
+    padding: 5vh var(--s5) 0;
   }
   /* the wide 0.42em tracking overflows narrow screens — tighten it */
   .landing-v2 .hero .eyebrow {
     font-size: 0.68rem;
     letter-spacing: 0.24em;
-    margin-bottom: 16px;
+    margin-bottom: var(--s4);
   }
   /* title scales down and may wrap to two lines instead of clipping */
   .landing-v2 .hero h1 {
@@ -1167,28 +1166,28 @@ body {
     line-height: 1.3;
   }
   .landing-v2 .hero .sea-copy {
-    padding: 0 18px;
+    padding: 0 var(--s4);
   }
   /* place the CTA directly under the tagline (which sits at top:58%),
      not pinned to the bottom — keeps it clearly visible on phones too */
   .landing-v2 .cta-wrap {
     top: 68%;
     bottom: auto;
-    padding: 0 20px;
+    padding: 0 var(--s5);
   }
   /* keep the scroll hint above the home indicator */
   .landing-v2 .scroll-hint {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + var(--s4));
   }
   /* full-width tap target, capped so it stays elegant on big phones */
   .landing-v2 .cta {
     width: 100%;
     max-width: 360px;
-    padding: 16px 24px;
+    padding: var(--s4) var(--s5);
   }
   /* booking card + overlay fit small screens */
   .landing-v2 .book-overlay {
-    padding: 26px 14px;
+    padding: var(--s6) var(--s4);
   }
   .landing-v2 .book-form,
   .landing-v2 .village-page {
@@ -1198,16 +1197,16 @@ body {
   /* smaller dialog heading on phones (also clears the close button) */
   .landing-v2 .book-overlay .section-title {
     font-size: clamp(1.45rem, 6vw, 1.9rem);
-    margin-bottom: 26px;
-    padding: 0 24px;
+    margin-bottom: var(--s5);
+    padding: 0 var(--s5);
   }
   .landing-v2 .book-overlay .section-label {
-    margin-bottom: 8px;
+    margin-bottom: var(--s2);
   }
   /* date & guests sit close together instead of spanning the full width */
   .landing-v2 .book-form .row {
     justify-content: center;
-    gap: 10px;
+    gap: var(--s3);
   }
   .landing-v2 .book-form .row .field {
     flex: 0 1 132px;
@@ -1237,14 +1236,16 @@ body {
   .landing-v2 .hero h1 {
     font-size: clamp(2rem, 12vw, 2.7rem);
   }
+  /* keep the Great Vibes script all the way down — only scale the size,
+     never switch to spaced caps */
   .landing-v2 .cta {
-    font-size: 0.82rem;
-    letter-spacing: 0.1em;
+    font-size: 1.5rem;
+    letter-spacing: 0;
   }
   /* keep the one-line meta inside the narrow card */
   .landing-v2 .book-form .meta {
     font-size: 0.62rem;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--ls-2);
   }
 }
 
@@ -1274,13 +1275,13 @@ body {
   box-shadow: 0 30px 80px rgba(2, 10, 20, 0.5);
 }
 
-/* every popup the same, generous size on desktop — tall enough for the
-   longest page so nothing ever scrolls; shorter pages match the height */
+/* every popup the EXACT same size on desktop — fixed height so every cream
+   surface matches; longer pages scroll inside instead of growing the card */
 @media (min-width: 760px) {
   .landing-v2 .book-form,
   .landing-v2 .village-page {
-    min-height: 860px;
-    overflow: visible;
+    height: 860px;
+    overflow-y: auto;
     padding: var(--s7) var(--s7);
   }
 }
@@ -1327,11 +1328,6 @@ body {
 }
 .landing-v2 .vp-fact dd {
   color: var(--plum);
-}
-.landing-v2 .vp-facts,
-.landing-v2 .vp-foot,
-.landing-v2 .conf-summary {
-  border-color: rgba(7, 24, 42, 0.14);
 }
 .landing-v2 .conf-row span {
   color: rgba(7, 24, 42, 0.55);
@@ -1448,13 +1444,21 @@ body {
   }
 }
 
-/* the icon hub */
+/* the icon hub — a fixed 3-column grid so 5 tiles always read 3 + 2,
+   each row centred under the one above (no lone, off-centre tile) */
 .landing-v2 .hub-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 96px);
   justify-content: center;
   gap: var(--s5) var(--s4);
   margin: var(--s6) 0 var(--s2);
+}
+/* the trailing 2 tiles centre under the 3 above:
+   row is 3·96 + 2·16 = 320px; two tiles span 96+16+96 = 208px;
+   so shift the pair right by (320−208)/2 = 56px = (96+16)/2 */
+.landing-v2 .hub-tile:nth-child(4),
+.landing-v2 .hub-tile:nth-child(5) {
+  transform: translateX(calc((96px + var(--s4)) / 2));
 }
 .landing-v2 .hub-tile {
   width: 96px;
@@ -1498,6 +1502,21 @@ body {
   font-size: var(--t-sm);
   text-align: center;
   line-height: 1.2;
+}
+/* narrow phones: shrink the 3-col grid so it never overflows the card,
+   keeping the same predictable 3 + 2 centred layout */
+@media (max-width: 400px) {
+  .landing-v2 .hub-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s4) var(--s3);
+  }
+  .landing-v2 .hub-tile {
+    width: 100%;
+  }
+  .landing-v2 .hub-tile:nth-child(4),
+  .landing-v2 .hub-tile:nth-child(5) {
+    transform: translateX(calc(50% + var(--s3) / 2));
+  }
 }
 
 /* customer-service options */
@@ -1598,18 +1617,50 @@ body {
   display: none;
 }
 
+/* sharp corners everywhere (radius 0) — override the rounded rescode-box
+   inherited from globals so it matches the architectural edges */
+.landing-v2 .rescode-box {
+  border-radius: var(--r-md);
+}
+
 /* the booking card anchors its primary button at one fixed spot, low down —
-   so "Next" never jumps from step to step */
+   so "Continue" never jumps from step to step.
+   The gold CTA is pushed to the bottom by margin-top:auto, then a single,
+   fixed-height "Back" link sits directly under it (identical on every step).
+   The optional reassure/err line is pinned to the very bottom so its
+   presence/absence never shifts the gold button's y-position. */
 .landing-v2 .book-form {
   display: flex;
   flex-direction: column;
 }
 .landing-v2 .book-form .pay {
-  margin-top: auto; /* push the gold button to the bottom of the card */
+  margin-top: auto; /* push the gold button down to the fixed CTA line */
 }
+/* one consistent footprint for the Back link under the CTA on every step.
+   Override the inherited "Jost" from globals — all landing text is Fraunces. */
 .landing-v2 .book-form .confirm__back,
-.landing-v2 .book-form .reassure {
+.landing-v2 .confirm__back {
   flex: none;
+  margin: var(--s5) auto 0;
+  font-family: "Fraunces", Georgia, serif;
+}
+.landing-v2 .book-form .reassure,
+.landing-v2 .book-form .err {
+  flex: none;
+  text-align: center;
+}
+/* on desktop the card has a fixed 860px height, so pin reassure/err to the
+   card bottom (out of flow) — the gold CTA then keeps the SAME y on every
+   step whether or not these lines are present */
+@media (min-width: 760px) {
+  .landing-v2 .book-form .reassure,
+  .landing-v2 .book-form .err {
+    position: absolute;
+    left: var(--s7);
+    right: var(--s7);
+    bottom: var(--s5);
+    margin: 0;
+  }
 }
 @media (max-width: 759px) {
   /* every popup exactly the same height on mobile too (long content scrolls) */
@@ -1620,16 +1671,15 @@ body {
   }
 }
 
-/* "Which day?" — 2 x 2 square cards instead of line rows */
+/* "Which day?" — 2 x 2 square cards; same gap + tile footprint as the
+   time-step grid so the two near-identical choice steps match */
 .landing-v2 .choice-grid--days2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--s4);
-  justify-items: center;
+  gap: var(--s3);
 }
 .landing-v2 .choice-grid--days2 .choice--sq {
   width: 100%;
-  max-width: 220px;
 }
 
 /* the posts live in their own layer BEHIND the shore (skyline z2) but in

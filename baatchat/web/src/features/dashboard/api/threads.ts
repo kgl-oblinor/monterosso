@@ -2,21 +2,22 @@
 // Polling-based: message + thread queries refetch on an interval (no WebSockets).
 //
 // Backend contracts (see src/worker/index.ts, chat.ts):
-//   GET  /chat/contacts                       → { contacts: Contact[] }
-//   GET  /chat/threads                        → { threads: ThreadSummary[] }
-//   POST /chat/threads { contactId }          → { thread: { id } }
-//   GET  /chat/threads/:id/messages?since=N   → { messages: ChatMessage[] }  (also marks read)
-//   POST /chat/threads/:id/messages { body }  → { message: { id } }
+//   GET  /chat/contacts                            → { contacts: Contact[] }
+//   GET  /chat/threads                             → { threads: ThreadSummary[] }
+//   POST /chat/threads { contactId }               → { thread: { id } }
+//   GET  /chat/threads/:id/messages?since=N        → { messages: ChatMessage[] }  (also marks read)
+//   POST /chat/threads/:id/messages { body }       → { message: { id } }
+//   GET  /chat/contacts/:id/reservations           → { reservations: Reservation[] }
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { apiClient } from "@/lib/apiClient";
 
 // --- backend shapes ---------------------------------------------------------
 
-/** A party the user is eligible to chat with (derived from shared orders). */
+/** A party the user is eligible to chat with (derived from shared reservations). */
 export interface Contact {
-  id: number; // loaner_id (for investors) or investor user_id (for loaners)
-  role: "investor" | "loaner";
+  id: number; // skipper_id (for customers) or customer_id (for skippers)
+  role: "skipper" | "customer";
   name: string | null;
   threadId: number | null; // existing thread, if any
 }
@@ -35,7 +36,7 @@ export interface ThreadSummary {
 export interface ChatMessage {
   id: number;
   senderId: number;
-  senderRole: "investor" | "loaner";
+  senderRole: "skipper" | "customer";
   body: string;
   createdAt: string; // "YYYY-MM-DD HH:MM:SS" (UTC)
   editedAt: string | null;
@@ -47,8 +48,8 @@ export interface Conversation {
   threadId: number | null;
   name: string;
   initials: string;
-  subtitle: string; // role label ("Långiver" / "Investor")
-  role: "investor" | "loaner";
+  subtitle: string; // role label ("Skipper" / "Kunde")
+  role: "skipper" | "customer";
   preview: string;
   timeLabel: string;
   unread: number;
@@ -68,8 +69,6 @@ function initialsOf(name: string | null): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return "?";
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  // First two words — company names almost always end in "AS", so first + last
-  // would collapse most avatars to "·A". First + second reads as "PB", "VH", "AE".
   return (parts[0][0] + parts[1][0]).toUpperCase();
 }
 
@@ -92,15 +91,14 @@ export function messageClock(s: string): string {
   return parseUtc(s).toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
 }
 
-// A loaner is the borrower (låntaker); an investor is the lender (långiver). The label
-// shown on a contact row is therefore the *contact's* role: an investor's contacts are
-// loaners → "Låntaker"; a loaner's contacts are investors → "Långiver".
-const roleLabel = (role: "investor" | "loaner") =>
-  role === "loaner" ? "Låntaker" : "Långiver";
+// The label shown on a contact row is the *contact's* role: a customer's contacts are
+// skippers → "Skipper"; a skipper's contacts are customers → "Kunde".
+const roleLabel = (role: "skipper" | "customer") =>
+  role === "skipper" ? "Skipper" : "Kunde";
 
 function fallbackName(c: Contact): string {
   if (c.name && c.name.trim()) return c.name.trim();
-  return c.role === "loaner" ? `Låntaker #${c.id}` : `Långiver #${c.id}`;
+  return c.role === "skipper" ? `Skipper #${c.id}` : `Kunde #${c.id}`;
 }
 
 // --- queries ----------------------------------------------------------------
@@ -166,31 +164,35 @@ export function useConversations() {
   };
 }
 
-export interface ThreadLoan {
-  loanId: number;
-  address: string | null;
-  amount: number | null;
+export interface Reservation {
+  code: string;
+  tripDate: string | null;
+  guests: number | null;
+  status: string;
 }
 
-/** Loans a conversation concerns — the contact's loans the user is tied to via orders.
+/** Reservations a conversation concerns — the trips the user shares with this contact.
  *  Keyed by contact, so it's available immediately on selecting a conversation. */
-export function useContactLoans(contactId: number | null) {
+export function useContactReservations(contactId: number | null) {
   return useQuery({
-    queryKey: ["contactLoans", contactId],
+    queryKey: ["contactReservations", contactId],
     enabled: contactId != null,
-    staleTime: 60_000, // loan set rarely changes mid-conversation
+    staleTime: 60_000, // reservation set rarely changes mid-conversation
     queryFn: async () => {
-      const r = await apiClient.get<{ ok: true; loans: ThreadLoan[] }>(
-        `/chat/contacts/${contactId}/loans`
+      const r = await apiClient.get<{ ok: true; reservations: Reservation[] }>(
+        `/chat/contacts/${contactId}/reservations`
       );
-      return r.loans;
+      return r.reservations;
     },
   });
 }
 
-export function formatAmount(n: number | null): string {
-  if (n == null) return "";
-  return new Intl.NumberFormat("nb-NO").format(n) + " kr";
+/** Pretty trip-date label, e.g. "21.06.2025". Falls back to the raw value. */
+export function formatTripDate(s: string | null): string {
+  if (!s) return "";
+  const d = new Date(s);
+  if (isNaN(d.getTime())) return s;
+  return d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
 export function useMessages(threadId: number | null) {

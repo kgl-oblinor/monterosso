@@ -2,9 +2,9 @@ import { Loader2 } from "lucide-react";
 
 import { useUsers } from "../api/hooks";
 import { Initials, RowActions, StatusBadge } from "./AdminUI";
-import { Centered, EmptyRow, ErrorBox, Thead } from "./LoanersTab";
+import { Centered, EmptyRow, ErrorBox, Thead } from "./SkippersTab";
 
-const ROLE_LABEL: Record<string, string> = { investor: "Långiver", loaner: "Låntaker" };
+const ROLE_LABEL: Record<string, string> = { customer: "Kunde", skipper: "Skipper" };
 
 /** Accounts awaiting a decision — the admin's main queue. Pending first, then suspended. */
 export function PendingTab() {

@@ -1,10 +1,10 @@
-// Phase 2 — authentication.
+// Authentication.
 //
 // Returning users: email + password (POST /auth/login).
-// First-time "claim your account": an existing Oblinor investor (by email) or loaner
-// (by org number) proves they own the on-file email via a 6-digit code, then sets a
-// password. Identity is gated by the synced data; the emailed code is the real proof.
-// Admins: a separate password login (allow-listed emails + shared secret).
+// First-time onboarding ("claim your account"): a customer or skipper proves they own the
+// on-file email via a 6-digit code, then sets a password. A customer can also onboard via a
+// RESERVATION CODE — the code is sent to the email on file for that reservation's customer.
+// Admins (Kristian): a separate password login (allow-listed emails + shared secret).
 
 import { sign, verify } from "hono/jwt";
 import type { Env } from "./index";
@@ -27,14 +27,14 @@ const PBKDF2_ITERATIONS = 100_000;
 
 export interface SessionUser {
   id: number;
-  role: "investor" | "loaner" | "admin";
+  role: "skipper" | "customer" | "admin";
   name: string | null;
   email: string;
 }
 
 export interface RegisterId {
   email?: string;
-  orgNumber?: string;
+  reservationCode?: string;
 }
 
 const normEmail = (e: string) => e.trim().toLowerCase();
@@ -104,36 +104,40 @@ async function verifyPassword(password: string, stored: string): Promise<boolean
 
 // --- identity resolution + OTP ---------------------------------------------
 
-// Resolve a registration identifier to the on-file account. Loaners need an email on
-// file (else we can't send the proof code).
+// Resolve an onboarding identifier to the on-file account + its email (so we can send the
+// proof code). A reservation code resolves to that reservation's customer.
 async function resolveForRegistration(
   env: Env,
   id: RegisterId
-): Promise<{ oblinorId: number; role: "investor" | "loaner"; email: string; name: string | null } | null> {
-  if (id.orgNumber) {
+): Promise<{ partyId: number; role: "skipper" | "customer"; email: string; name: string | null } | null> {
+  if (id.reservationCode) {
+    const code = id.reservationCode.trim().toUpperCase();
     const r = await env.DB.prepare(
-      `SELECT loaner_id AS oblinorId, email, company_name AS name FROM loaners WHERE org_number = ? LIMIT 1`
+      `SELECT c.customer_id AS partyId, c.email, c.name
+         FROM reservations rv
+         JOIN customers c ON rv.customer_id = c.customer_id
+        WHERE rv.reservation_code = ? LIMIT 1`
     )
-      .bind(String(id.orgNumber).trim())
-      .first<{ oblinorId: number; email: string | null; name: string | null }>();
-    if (r?.email) return { oblinorId: r.oblinorId, role: "loaner", email: normEmail(r.email), name: r.name };
+      .bind(code)
+      .first<{ partyId: number; email: string | null; name: string | null }>();
+    if (r?.email) return { partyId: r.partyId, role: "customer", email: normEmail(r.email), name: r.name };
     return null;
   }
   if (id.email) {
     const e = normEmail(id.email);
-    const inv = await env.DB.prepare(
-      `SELECT user_id AS oblinorId, name FROM investors WHERE lower(email) = ? LIMIT 1`
+    const cust = await env.DB.prepare(
+      `SELECT customer_id AS partyId, name FROM customers WHERE lower(email) = ? LIMIT 1`
     )
       .bind(e)
-      .first<{ oblinorId: number; name: string | null }>();
-    if (inv) return { oblinorId: inv.oblinorId, role: "investor", email: e, name: inv.name };
-    // Loaners can also claim/reset by their on-file email (org number is the alternative).
-    const loaner = await env.DB.prepare(
-      `SELECT loaner_id AS oblinorId, company_name AS name FROM loaners WHERE lower(email) = ? LIMIT 1`
+      .first<{ partyId: number; name: string | null }>();
+    if (cust) return { partyId: cust.partyId, role: "customer", email: e, name: cust.name };
+    const skipper = await env.DB.prepare(
+      `SELECT skipper_id AS partyId, COALESCE(name, boat_name) AS name
+         FROM skippers WHERE lower(email) = ? LIMIT 1`
     )
       .bind(e)
-      .first<{ oblinorId: number; name: string | null }>();
-    if (loaner) return { oblinorId: loaner.oblinorId, role: "loaner", email: e, name: loaner.name };
+      .first<{ partyId: number; name: string | null }>();
+    if (skipper) return { partyId: skipper.partyId, role: "skipper", email: e, name: skipper.name };
     return null;
   }
   return null;
@@ -162,7 +166,7 @@ async function issueToken(env: Env, user: SessionUser): Promise<string> {
   );
 }
 
-// --- account claim (registration) ------------------------------------------
+// --- account claim (onboarding) --------------------------------------------
 
 // Send the verification code to the account's ON-FILE email. Returns the masked address
 // it went to, or null if no matching account (caller shows a generic message either way).
@@ -176,7 +180,7 @@ export async function registerStart(env: Env, id: RegisterId): Promise<{ sentTo:
     await env.OTP.put(`otp:${acct.email}`, JSON.stringify({ code, attempts: 0 }), { expirationTtl: CODE_TTL });
     await env.OTP.put(`cd:${acct.email}`, "1", { expirationTtl: RESEND_COOLDOWN });
     if (env.SENDGRID_API_KEY) await sendOtpEmail(env, acct.email, code);
-    else console.log(`[auth] DEV code for ${acct.email}: ${code} (registration; SENDGRID unset)`);
+    else console.log(`[auth] DEV code for ${acct.email}: ${code} (onboarding; SENDGRID unset)`);
   }
   return { sentTo: mask(acct.email) };
 }
@@ -201,17 +205,17 @@ export async function registerComplete(
   // New accounts start `pending` (awaiting admin approval) and email_verified (code
   // proven). On re-claim/reset, KEEP the existing status (don't lock out approved users).
   await env.DB.prepare(
-    `INSERT INTO chat_accounts (oblinor_id, email, role, display_name, password_hash, status, email_verified, last_login_at)
+    `INSERT INTO chat_accounts (party_id, email, role, display_name, password_hash, status, email_verified, last_login_at)
      VALUES (?, ?, ?, ?, ?, 'pending', 1, datetime('now'))
      ON CONFLICT(email) DO UPDATE SET
-       oblinor_id = excluded.oblinor_id, role = excluded.role,
+       party_id = excluded.party_id, role = excluded.role,
        display_name = excluded.display_name, password_hash = excluded.password_hash,
        email_verified = 1, last_login_at = datetime('now')`
   )
-    .bind(acct.oblinorId, acct.email, acct.role, acct.name, hash)
+    .bind(acct.partyId, acct.email, acct.role, acct.name, hash)
     .run();
 
-  const user: SessionUser = { id: acct.oblinorId, role: acct.role, name: acct.name, email: acct.email };
+  const user: SessionUser = { id: acct.partyId, role: acct.role, name: acct.name, email: acct.email };
   return { ok: true, token: await issueToken(env, user), user };
 }
 
@@ -228,7 +232,7 @@ export async function passwordLogin(env: Env, rawEmail: string, password: string
   if (fails >= LOGIN_FAIL_MAX) return { ok: false, reason: "locked" };
 
   const row = await env.DB.prepare(
-    `SELECT oblinor_id AS id, role, display_name AS name, email, password_hash,
+    `SELECT party_id AS id, role, display_name AS name, email, password_hash,
             status, email_verified AS ev
        FROM chat_accounts WHERE email = ? LIMIT 1`
   )
@@ -292,10 +296,9 @@ export async function adminLogin(env: Env, rawEmail: string, password: string): 
 }
 
 // --- admin recovery (forgot password → email code login) --------------------
-// Admins share one ADMIN_PASSWORD secret (managed in Cloudflare), so there's no per-admin
-// password to "reset". Instead, an admin who forgot it proves control of their allow-listed
-// email via a 6-digit code and is logged straight in. The code is ONLY ever sent to an
-// address in ADMIN_EMAILS — any other email gets a generic response with nothing sent.
+// Admins share one ADMIN_PASSWORD secret, so there's no per-admin password to "reset".
+// Instead, an admin who forgot it proves control of their allow-listed email via a 6-digit
+// code and is logged straight in. The code is ONLY ever sent to an address in ADMIN_EMAILS.
 
 function isAdminEmail(env: Env, email: string): boolean {
   const admins = (env.ADMIN_EMAILS ?? "").split(",").map((s) => normEmail(s)).filter(Boolean);

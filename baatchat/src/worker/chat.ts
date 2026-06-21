@@ -1,6 +1,6 @@
-// Phase 2 — chat API (contacts, threads, messages). All gated by the JWT and by real
-// eligibility: an investor and a loaner may chat only if the investor holds an order in
-// one of that loaner's loans. Polling-based (no WebSockets) per the ROADMAP.
+// Chat API (contacts, threads, messages). All gated by the JWT and by real eligibility:
+// a customer and a skipper may chat only when they share at least one RESERVATION.
+// Polling-based (no WebSockets).
 
 import type { Env } from "./index";
 import type { SessionUser } from "./auth";
@@ -8,75 +8,77 @@ import type { SessionUser } from "./auth";
 const MAX_BODY = 4000;
 
 export interface Contact {
-  id: number; // loaner_id (for investors) or investor user_id (for loaners)
-  role: "investor" | "loaner";
+  id: number; // skipper_id (for customers) or customer_id (for skippers)
+  role: "skipper" | "customer";
   name: string | null;
   threadId: number | null; // existing thread, if any
 }
 
-// Eligibility: does this investor↔loaner pair share at least one order?
-async function eligible(env: Env, investorId: number, loanerId: number): Promise<boolean> {
+// Eligibility: does this customer↔skipper pair share at least one reservation?
+async function eligible(env: Env, customerId: number, skipperId: number): Promise<boolean> {
   const row = await env.DB.prepare(
-    `SELECT 1 FROM orders o JOIN loans l ON o.loan_id = l.loan_id
-      WHERE o.user_id = ? AND l.loaner_id = ? LIMIT 1`
+    `SELECT 1 FROM reservations WHERE customer_id = ? AND skipper_id = ? LIMIT 1`
   )
-    .bind(investorId, loanerId)
+    .bind(customerId, skipperId)
     .first();
   return !!row;
 }
 
 // Who the logged-in user is allowed to chat with.
 export async function listContacts(env: Env, user: SessionUser): Promise<Contact[]> {
-  if (user.role === "investor") {
+  if (user.role === "customer") {
     const { results } = await env.DB.prepare(
-      `SELECT DISTINCT ln.loaner_id AS id, ln.company_name AS name, t.id AS threadId
-         FROM orders o
-         JOIN loans  l  ON o.loan_id = l.loan_id
-         JOIN loaners ln ON l.loaner_id = ln.loaner_id
-         LEFT JOIN threads t ON t.loaner_id = ln.loaner_id AND t.investor_id = ?
-        WHERE o.user_id = ?
-        ORDER BY ln.company_name`
+      `SELECT DISTINCT s.skipper_id AS id,
+              COALESCE(s.listing_title, s.boat_name, s.name) AS name,
+              t.id AS threadId
+         FROM reservations r
+         JOIN skippers s ON r.skipper_id = s.skipper_id
+         LEFT JOIN threads t ON t.skipper_id = s.skipper_id AND t.customer_id = ?
+        WHERE r.customer_id = ?
+        ORDER BY name`
     )
       .bind(user.id, user.id)
       .all<{ id: number; name: string | null; threadId: number | null }>();
-    return (results ?? []).map((r) => ({ ...r, role: "loaner" as const }));
+    return (results ?? []).map((r) => ({ ...r, role: "skipper" as const }));
   }
-  if (user.role === "loaner") {
+  if (user.role === "skipper") {
     const { results } = await env.DB.prepare(
-      `SELECT DISTINCT iv.user_id AS id, iv.name AS name, t.id AS threadId
-         FROM orders o
-         JOIN loans l ON o.loan_id = l.loan_id
-         JOIN investors iv ON o.user_id = iv.user_id
-         LEFT JOIN threads t ON t.investor_id = iv.user_id AND t.loaner_id = ?
-        WHERE l.loaner_id = ?
-        ORDER BY iv.name`
+      `SELECT DISTINCT c.customer_id AS id, c.name AS name, t.id AS threadId
+         FROM reservations r
+         JOIN customers c ON r.customer_id = c.customer_id
+         LEFT JOIN threads t ON t.customer_id = c.customer_id AND t.skipper_id = ?
+        WHERE r.skipper_id = ?
+        ORDER BY c.name`
     )
       .bind(user.id, user.id)
       .all<{ id: number; name: string | null; threadId: number | null }>();
-    return (results ?? []).map((r) => ({ ...r, role: "investor" as const }));
+    return (results ?? []).map((r) => ({ ...r, role: "customer" as const }));
   }
   return []; // admins use the moderation endpoints, not these
 }
 
 // The user's conversations, newest first, with the other party's name + unread count.
 export async function listThreads(env: Env, user: SessionUser) {
-  const col = user.role === "investor" ? "investor_id" : "loaner_id";
+  const col = user.role === "customer" ? "customer_id" : "skipper_id";
   const otherJoin =
-    user.role === "investor"
-      ? `JOIN loaners p ON p.loaner_id = t.loaner_id`
-      : `JOIN investors p ON p.user_id = t.investor_id`;
-  const otherName = user.role === "investor" ? "p.company_name" : "p.name";
-  const otherId = user.role === "investor" ? "t.loaner_id" : "t.investor_id";
+    user.role === "customer"
+      ? `JOIN skippers p ON p.skipper_id = t.skipper_id`
+      : `JOIN customers p ON p.customer_id = t.customer_id`;
+  const otherName =
+    user.role === "customer"
+      ? "COALESCE(p.listing_title, p.boat_name, p.name)"
+      : "p.name";
+  const otherId = user.role === "customer" ? "t.skipper_id" : "t.customer_id";
 
   const { results } = await env.DB.prepare(
     `SELECT t.id, ${otherId} AS contactId, ${otherName} AS contactName,
             t.status, t.last_message_at AS lastMessageAt, t.last_message_preview AS preview,
             (SELECT count(*) FROM messages m
               WHERE m.thread_id = t.id AND m.deleted_at IS NULL
-                AND m.sender_oblinor_id != ?
+                AND m.sender_party_id != ?
                 AND m.id > COALESCE(
                   (SELECT last_read_message_id FROM read_state
-                    WHERE thread_id = t.id AND reader_oblinor_id = ?), 0)
+                    WHERE thread_id = t.id AND reader_party_id = ?), 0)
             ) AS unread
        FROM threads t ${otherJoin}
       WHERE t.${col} = ?
@@ -93,25 +95,25 @@ export async function openThread(
   user: SessionUser,
   contactId: number
 ): Promise<{ id: number } | null> {
-  const investorId = user.role === "investor" ? user.id : contactId;
-  const loanerId = user.role === "loaner" ? user.id : contactId;
-  if (!(await eligible(env, investorId, loanerId))) return null;
+  const customerId = user.role === "customer" ? user.id : contactId;
+  const skipperId = user.role === "skipper" ? user.id : contactId;
+  if (!(await eligible(env, customerId, skipperId))) return null;
 
   await env.DB.prepare(
-    `INSERT INTO threads (loaner_id, investor_id) VALUES (?, ?)
-     ON CONFLICT(loaner_id, investor_id) DO NOTHING`
+    `INSERT INTO threads (skipper_id, customer_id) VALUES (?, ?)
+     ON CONFLICT(skipper_id, customer_id) DO NOTHING`
   )
-    .bind(loanerId, investorId)
+    .bind(skipperId, customerId)
     .run();
 
-  return env.DB.prepare(`SELECT id FROM threads WHERE loaner_id = ? AND investor_id = ?`)
-    .bind(loanerId, investorId)
+  return env.DB.prepare(`SELECT id FROM threads WHERE skipper_id = ? AND customer_id = ?`)
+    .bind(skipperId, customerId)
     .first<{ id: number }>();
 }
 
 // Confirm the user is a participant in the thread (authorization for message access).
 async function participantThread(env: Env, user: SessionUser, threadId: number) {
-  const col = user.role === "investor" ? "investor_id" : "loaner_id";
+  const col = user.role === "customer" ? "customer_id" : "skipper_id";
   return env.DB.prepare(`SELECT * FROM threads WHERE id = ? AND ${col} = ?`)
     .bind(threadId, user.id)
     .first<{ id: number; status: string }>();
@@ -127,7 +129,7 @@ export async function getMessages(
   if (!thread) return null; // not a participant → caller returns 403/404
 
   const { results } = await env.DB.prepare(
-    `SELECT id, sender_oblinor_id AS senderId, sender_role AS senderRole, body,
+    `SELECT id, sender_party_id AS senderId, sender_role AS senderRole, body,
             created_at AS createdAt, edited_at AS editedAt
        FROM messages
       WHERE thread_id = ? AND deleted_at IS NULL AND id > ?
@@ -158,7 +160,7 @@ export async function postMessage(
   const preview = body.slice(0, 100);
 
   const inserted = await env.DB.prepare(
-    `INSERT INTO messages (thread_id, sender_oblinor_id, sender_role, body)
+    `INSERT INTO messages (thread_id, sender_party_id, sender_role, body)
      VALUES (?, ?, ?, ?) RETURNING id`
   )
     .bind(threadId, user.id, user.role, body)
@@ -175,27 +177,25 @@ export async function postMessage(
   return inserted;
 }
 
-// The specific loans a conversation is about: the loaner's loans this investor actually
-// holds an order in. Gives both parties context — which property/loan the other is asking
-// about (a loaner has many loans; an investor may span several). Keyed by contact (not
-// thread) so it works before the first message is sent. Returns [] if the pair shares no
-// orders (i.e. not eligible) — no leak.
-export async function contactLoans(
+// The reservation(s) a conversation is about: the trips this customer↔skipper pair share.
+// Gives both parties context (which booking the other is asking about). Keyed by contact
+// so it works before the first message is sent. Returns [] if they share none (no leak).
+export async function contactReservations(
   env: Env,
   user: SessionUser,
   contactId: number
-): Promise<{ loanId: number; address: string | null; amount: number | null }[]> {
-  const investorId = user.role === "investor" ? user.id : contactId;
-  const loanerId = user.role === "loaner" ? user.id : contactId;
+): Promise<{ code: string; tripDate: string | null; guests: number | null; status: string }[]> {
+  const customerId = user.role === "customer" ? user.id : contactId;
+  const skipperId = user.role === "skipper" ? user.id : contactId;
 
   const { results } = await env.DB.prepare(
-    `SELECT DISTINCT l.loan_id AS loanId, l.address AS address, l.amount AS amount
-       FROM orders o JOIN loans l ON o.loan_id = l.loan_id
-      WHERE o.user_id = ? AND l.loaner_id = ?
-      ORDER BY l.address, l.loan_id`
+    `SELECT reservation_code AS code, trip_date AS tripDate, guests, status
+       FROM reservations
+      WHERE customer_id = ? AND skipper_id = ?
+      ORDER BY trip_date DESC, reservation_id DESC`
   )
-    .bind(investorId, loanerId)
-    .all<{ loanId: number; address: string | null; amount: number | null }>();
+    .bind(customerId, skipperId)
+    .all<{ code: string; tripDate: string | null; guests: number | null; status: string }>();
   return results ?? [];
 }
 
@@ -206,9 +206,9 @@ export async function markRead(
   lastMessageId: number
 ): Promise<void> {
   await env.DB.prepare(
-    `INSERT INTO read_state (thread_id, reader_oblinor_id, last_read_message_id, last_read_at)
+    `INSERT INTO read_state (thread_id, reader_party_id, last_read_message_id, last_read_at)
      VALUES (?, ?, ?, datetime('now'))
-     ON CONFLICT(thread_id, reader_oblinor_id) DO UPDATE SET
+     ON CONFLICT(thread_id, reader_party_id) DO UPDATE SET
        last_read_message_id = max(last_read_message_id, excluded.last_read_message_id),
        last_read_at = excluded.last_read_at`
   )

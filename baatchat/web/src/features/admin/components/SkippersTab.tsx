@@ -2,35 +2,42 @@ import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, Loader2, Search } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { useLoanerDirectory, useSetLoanerEmail } from "../api/hooks";
+import { useSkipperDirectory, useSetSkipperEmail } from "../api/hooks";
 import { EditableEmail, Initials, RowActions, statusRank, StatusBadge } from "./AdminUI";
 
 const PAGE_SIZE = 50;
 
-/** Full låntaker (borrower) directory — all synced loaners, registered or not. Paginated
- *  client-side (the list is small) so it matches the långiver table exactly. */
-export function LoanersTab() {
-  const { data: loaners, isLoading, isError } = useLoanerDirectory();
+const SERVICE_LABEL: Record<string, string> = {
+  charter: "Charter",
+  taxi: "Taxibåt",
+  freight: "Frakt",
+};
+
+/** Full skipper directory — all skippers/listings, onboarded or not. Paginated
+ *  client-side (the list is small) so it matches the customer table exactly. */
+export function SkippersTab() {
+  const { data: skippers, isLoading, isError } = useSkipperDirectory();
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
 
   const q = query.trim().toLowerCase();
   const filtered = useMemo(
     () =>
-      (loaners ?? [])
+      (skippers ?? [])
         .filter(
-          (l) =>
+          (s) =>
             !q ||
-            l.name?.toLowerCase().includes(q) ||
-            l.orgNumber?.toLowerCase().includes(q) ||
-            l.email?.toLowerCase().includes(q)
+            s.name?.toLowerCase().includes(q) ||
+            s.boatName?.toLowerCase().includes(q) ||
+            s.location?.toLowerCase().includes(q) ||
+            s.email?.toLowerCase().includes(q)
         )
         .sort(
           (a, b) =>
             statusRank(a.status) - statusRank(b.status) ||
             (a.name ?? "").localeCompare(b.name ?? "", "nb-NO")
         ),
-    [loaners, q]
+    [skippers, q]
   );
 
   // Reset to the first page whenever the search narrows the list.
@@ -44,43 +51,48 @@ export function LoanersTab() {
 
   return (
     <div>
-      <SearchBox value={query} onChange={setQuery} placeholder="Søk på navn, org.nr eller e-post" />
+      <SearchBox value={query} onChange={setQuery} placeholder="Søk på navn, båt, sted eller e-post" />
 
       {isLoading ? (
         <Centered>
-          <Loader2 className="size-5 animate-spin" /> Laster låntakere…
+          <Loader2 className="size-5 animate-spin" /> Laster skippere…
         </Centered>
       ) : isError ? (
-        <ErrorBox>Kunne ikke laste låntakere.</ErrorBox>
+        <ErrorBox>Kunne ikke laste skippere.</ErrorBox>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-white/10">
           <table className="w-full min-w-[760px] text-left text-sm">
-            <Thead cols={["#", "Selskap", "Org.nr", "Kontakt / e-post", "Lån", "Status", "Handling"]} />
+            <Thead cols={["#", "Skipper / båt", "Tjeneste", "Kontakt / e-post", "Turer", "Status", "Handling"]} />
             <tbody className="divide-y divide-white/5">
-              {pageRows.map((l, i) => (
-                <tr key={l.id} className="transition-colors hover:bg-white/[0.04]">
+              {pageRows.map((s, i) => (
+                <tr key={s.id} className="transition-colors hover:bg-white/[0.04]">
                   <RowNum n={start + i + 1} />
                   <td className="px-4 py-2.5">
                     <div className="flex items-center gap-3">
-                      <Initials name={l.name} fallback={l.orgNumber ?? "?"} />
-                      <span className="font-medium text-white">{l.name ?? "—"}</span>
+                      <Initials name={s.name ?? s.boatName} fallback={s.boatName ?? "?"} />
+                      <div className="min-w-0">
+                        <div className="font-medium text-white">{s.name ?? "—"}</div>
+                        {s.boatName && <div className="text-xs text-white/45">{s.boatName}</div>}
+                      </div>
                     </div>
                   </td>
-                  <td className="px-4 py-2.5 font-mono text-xs text-white/60">{l.orgNumber ?? "—"}</td>
                   <td className="px-4 py-2.5 text-white/70">
-                    <div>{l.contactPerson ?? "—"}</div>
-                    <LoanerEmail id={l.id} email={l.email} />
+                    {SERVICE_LABEL[s.serviceType] ?? s.serviceType}
+                    {s.location && <span className="text-white/40"> · {s.location}</span>}
                   </td>
-                  <td className="px-4 py-2.5 text-white/70">{l.loanCount}</td>
+                  <td className="px-4 py-2.5 text-white/70">
+                    <SkipperEmail id={s.id} email={s.email} />
+                  </td>
+                  <td className="px-4 py-2.5 text-white/70">{s.reservationCount}</td>
                   <td className="px-4 py-2.5">
-                    <StatusBadge status={l.status} />
+                    <StatusBadge status={s.status} />
                   </td>
                   <td className="px-4 py-2.5">
-                    <RowActions accountId={l.accountId} status={l.status} />
+                    <RowActions accountId={s.accountId} status={s.status} />
                   </td>
                 </tr>
               ))}
-              {pageRows.length === 0 && <EmptyRow cols={7} label="Ingen låntakere funnet." />}
+              {pageRows.length === 0 && <EmptyRow cols={7} label="Ingen skippere funnet." />}
             </tbody>
           </table>
         </div>
@@ -99,9 +111,9 @@ export function LoanersTab() {
   );
 }
 
-/** A loaner's editable on-file email (admin override). */
-function LoanerEmail({ id, email }: { id: number; email: string | null }) {
-  const setEmail = useSetLoanerEmail();
+/** A skipper's editable on-file email (admin override). */
+function SkipperEmail({ id, email }: { id: number; email: string | null }) {
+  const setEmail = useSetSkipperEmail();
   return (
     <EditableEmail
       email={email}
@@ -111,7 +123,7 @@ function LoanerEmail({ id, email }: { id: number; email: string | null }) {
   );
 }
 
-// --- shared table chrome (used by both directory tables) --------------------
+// --- shared table chrome (used by both directory tables + the others) --------
 
 export function SearchBox({
   value,

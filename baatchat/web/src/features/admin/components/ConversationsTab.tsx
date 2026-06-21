@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
 import { useAdminThreadMessages, useAdminThreads } from "../api/hooks";
 import { Initials } from "./AdminUI";
-import { Centered, ErrorBox, SearchBox } from "./LoanersTab";
+import { Centered, ErrorBox, SearchBox } from "./SkippersTab";
 
 function initialsOf(name: string | null, fallback: string): string {
   const src = name?.trim() || fallback;
@@ -70,7 +70,7 @@ export function ConversationsTab() {
     <div className="lg:grid lg:gap-4 lg:grid-cols-[340px_1fr]">
       {/* Thread list — hidden on mobile while a conversation is open */}
       <div className={cn(openOnMobile && "hidden lg:block")}>
-        <SearchBox value={query} onChange={setQuery} placeholder="Søk på låntaker eller långiver" />
+        <SearchBox value={query} onChange={setQuery} placeholder="Søk på skipper eller kunde" />
 
         {isLoading ? (
           <Centered>
@@ -98,18 +98,18 @@ export function ConversationsTab() {
                       t.id === selectedId && "bg-teal-500/10"
                     )}
                   >
-                    <Initials name={t.loanerName} fallback="?" />
+                    <Initials name={t.skipperName} fallback="?" />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline justify-between gap-2">
                         <span className="truncate text-sm font-medium text-white">
-                          {t.loanerName ?? `Låntaker #${t.loanerId}`}
+                          {t.skipperName ?? `Skipper #${t.skipperId}`}
                         </span>
                         <span className="shrink-0 text-[11px] text-white/35">
                           {t.lastMessageAt ? clock(t.lastMessageAt).split(",")[0] : ""}
                         </span>
                       </div>
                       <div className="truncate text-xs text-white/45">
-                        ↔ {t.investorName ?? `Långiver #${t.investorId}`}
+                        ↔ {t.customerName ?? `Kunde #${t.customerId}`}
                       </div>
                       <div className="mt-0.5 truncate text-xs text-white/40">
                         {t.preview || "Ingen meldinger"} · {t.messageCount} meld.
@@ -190,16 +190,16 @@ function MessagePanel({ threadId, onBack }: { threadId: number | null; onBack: (
           >
             <ArrowLeft className="size-5" />
           </button>
-          <Avatar initials={initialsOf(data.thread.loanerName, "?")} />
+          <Avatar initials={initialsOf(data.thread.skipperName, "?")} />
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5 truncate text-sm font-semibold text-white">
-              {data.thread.loanerName ?? `Låntaker #${data.thread.loanerId}`}
+              {data.thread.skipperName ?? `Skipper #${data.thread.skipperId}`}
               <span className="text-white/40">↔</span>
               <span className="font-normal text-white/70">
-                {data.thread.investorName ?? `Långiver #${data.thread.investorId}`}
+                {data.thread.customerName ?? `Kunde #${data.thread.customerId}`}
               </span>
             </div>
-            <div className="text-xs text-white/45">Låntaker ↔ Långiver</div>
+            <div className="text-xs text-white/45">Skipper ↔ Kunde</div>
           </div>
           <span className="rounded-full bg-white/5 px-2.5 py-1 text-[11px] text-white/40">
             kun lesing
@@ -220,19 +220,19 @@ function MessagePanel({ threadId, onBack }: { threadId: number | null; onBack: (
               <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-white/50">Meldinger</span>
             </div>
             {data.messages.map((m) => {
-              const fromInvestor = m.senderRole === "investor";
+              const fromCustomer = m.senderRole === "customer";
               return (
                 <div
                   key={m.id}
-                  className={cn("flex flex-col", fromInvestor ? "items-end" : "items-start")}
+                  className={cn("flex flex-col", fromCustomer ? "items-end" : "items-start")}
                 >
                   <span className="mb-1 px-1 text-[11px] text-white/40">
-                    {fromInvestor ? "Långiver" : "Låntaker"}
+                    {fromCustomer ? "Kunde" : "Skipper"}
                   </span>
                   <div
                     className={cn(
                       "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm md:max-w-[72%]",
-                      fromInvestor
+                      fromCustomer
                         ? "rounded-br-md bg-teal-600/70 text-white"
                         : "rounded-bl-md bg-white/[0.07] text-white/90"
                     )}

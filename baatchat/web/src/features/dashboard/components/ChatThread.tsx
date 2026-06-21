@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ChevronDown, Home, Loader2, SendHorizontal } from "lucide-react";
+import { ArrowLeft, ChevronDown, Loader2, SendHorizontal, Ship, Users } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { ApiError } from "@/lib/apiClient";
 import { Avatar } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  formatAmount,
+  formatTripDate,
   messageClock,
-  useContactLoans,
+  useContactReservations,
   useEnsureThread,
   useMessages,
   useSendMessage,
@@ -120,8 +120,8 @@ export function ChatThread({
         </div>
       </header>
 
-      {/* Which loan(s)/property this conversation is about */}
-      <LoanContext contactId={conversation.contactId} />
+      {/* Which reservation(s)/trip this conversation is about */}
+      <ReservationContext contactId={conversation.contactId} />
 
       {/* Messages */}
       <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4 md:px-6">
@@ -203,17 +203,15 @@ export function ChatThread({
   );
 }
 
-/** Collapsible strip showing which loan(s)/property the conversation concerns. A borrower
- *  (loaner) has many loans; this makes clear which ones the lender is connected to. */
-function LoanContext({ contactId }: { contactId: number }) {
-  const { data: loans } = useContactLoans(contactId);
+/** Collapsible strip showing which reservation(s)/trip the conversation concerns. A
+ *  customer may have several bookings with the same skipper; this clarifies which. */
+function ReservationContext({ contactId }: { contactId: number }) {
+  const { data: reservations } = useContactReservations(contactId);
   const [open, setOpen] = useState(false);
 
-  if (!loans || loans.length === 0) return null;
+  if (!reservations || reservations.length === 0) return null;
 
-  const properties = new Set(loans.map((l) => l.address ?? "—"));
-  const propLabel = `${properties.size} ${properties.size === 1 ? "eiendom" : "eiendommer"}`;
-  const loanLabel = `${loans.length} ${loans.length === 1 ? "lån" : "lån"}`;
+  const tripLabel = `${reservations.length} ${reservations.length === 1 ? "tur" : "turer"}`;
 
   return (
     <div className="border-b border-white/5 bg-white/[0.02]">
@@ -223,12 +221,14 @@ function LoanContext({ contactId }: { contactId: number }) {
         aria-expanded={open}
         className="flex w-full items-center gap-2 px-4 py-2 text-left transition-colors hover:bg-white/[0.03] md:px-6"
       >
-        <Home className="size-3.5 shrink-0 text-teal-300/70" />
+        <Ship className="size-3.5 shrink-0 text-teal-300/70" />
         <span className="text-xs font-medium text-white/50">Gjelder</span>
         <span className="truncate text-xs text-white/75">
-          {loans.length === 1
-            ? `Lån #${loans[0].loanId}${loans[0].address ? ` · ${loans[0].address}` : ""}`
-            : `${loanLabel} · ${propLabel}`}
+          {reservations.length === 1
+            ? `${reservations[0].code}${
+                reservations[0].tripDate ? ` · ${formatTripDate(reservations[0].tripDate)}` : ""
+              }`
+            : tripLabel}
         </span>
         <ChevronDown
           className={cn(
@@ -239,16 +239,19 @@ function LoanContext({ contactId }: { contactId: number }) {
       </button>
       {open && (
         <ul className="max-h-48 space-y-0.5 overflow-y-auto px-4 pb-2 md:px-6">
-          {loans.map((l) => (
+          {reservations.map((r) => (
             <li
-              key={l.loanId}
+              key={r.code}
               className="flex items-baseline justify-between gap-3 rounded-md px-2 py-1 text-xs hover:bg-white/[0.03]"
             >
-              <span className="shrink-0 font-mono text-white/40">#{l.loanId}</span>
+              <span className="shrink-0 font-mono text-white/40">{r.code}</span>
               <span className="min-w-0 flex-1 truncate text-white/75">
-                {l.address ?? "Ukjent adresse"}
+                {r.tripDate ? formatTripDate(r.tripDate) : "Ukjent dato"}
               </span>
-              <span className="shrink-0 text-white/45">{formatAmount(l.amount)}</span>
+              <span className="flex shrink-0 items-center gap-1 text-white/45">
+                <Users className="size-3" />
+                {r.guests ?? "?"}
+              </span>
             </li>
           ))}
         </ul>

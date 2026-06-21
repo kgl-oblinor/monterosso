@@ -8,17 +8,17 @@ import { ChatThread } from "./ChatThread";
 import { ChatThreadSkeleton, ConversationsPanelSkeleton } from "./ChatSkeletons";
 
 /** Authenticated chat shell: icon rail · conversations · active thread.
- *  Same UI for loaner and investor — only the data (who you can chat with) differs.
+ *  Same UI for skipper and customer — only the data (who you can chat with) differs.
  *
  *  Responsive: at md+ the conversations list and the thread sit side by side. On smaller
  *  screens only one shows at a time — the list, or the thread (with a back button). */
 export function DashboardLayout() {
   const myId = useAuthStore((s) => s.user?.id ?? null);
   const myRole = useAuthStore((s) => s.user?.role);
-  // The contacts list shows the *other* party: an investor sees borrowers (låntakere),
-  // a loaner sees lenders (långivere).
+  // The contacts list shows the *other* party: a customer sees skippers,
+  // a skipper sees customers.
   const contactsLabel =
-    myRole === "investor" ? "Låntakere" : myRole === "loaner" ? "Långivere" : "Kontakter";
+    myRole === "customer" ? "Skippere" : myRole === "skipper" ? "Kunder" : "Kontakter";
   const { conversations, isLoading, isError } = useConversations();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   // Mobile-only: which pane is visible. Ignored at md+ (both always show).

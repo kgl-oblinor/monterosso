@@ -8,10 +8,12 @@ export const emailSchema = z
   .min(1, "E-post er påkrevd")
   .email("Oppgi en gyldig e-postadresse");
 
-export const orgNumberSchema = z
+// Reservation code, e.g. "MT-210625-2" (prefix-DDMMYY-guests). Loose validation — the
+// backend is the source of truth; we just require a non-trivial code.
+export const reservationCodeSchema = z
   .string()
-  .min(1, "Organisasjonsnummer er påkrevd")
-  .regex(/^\d{9}$/, "Organisasjonsnummer er 9 sifre");
+  .min(1, "Reservasjonskode er påkrevd")
+  .regex(/^[A-Za-z]{2,}-\d{6}-\d+$/, "Ugyldig reservasjonskode (f.eks. MT-210625-2)");
 
 export const passwordSchema = z.string().min(8, "Minst 8 tegn");
 
@@ -21,23 +23,24 @@ export const loginForm = z.object({
 });
 export type LoginForm = z.infer<typeof loginForm>;
 
-// Claim step 1 — identify the existing Oblinor account. Investors by email, loaners by
-// org number. The right field is validated based on the chosen role.
+// Onboarding step 1 — identify the account. A customer can use their email OR their
+// reservation code; a skipper uses their on-file email. The right field is validated
+// based on the chosen identifier mode.
 export const claimStartForm = z
   .object({
-    role: z.enum(["investor", "loaner"], { required_error: "Velg en rolle" }),
+    mode: z.enum(["email", "reservation"], { required_error: "Velg en metode" }),
     email: z.string().optional(),
-    orgNumber: z.string().optional(),
+    reservationCode: z.string().optional(),
   })
   .superRefine((val, ctx) => {
-    if (val.role === "investor") {
+    if (val.mode === "email") {
       const r = emailSchema.safeParse(val.email);
       if (!r.success)
         ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["email"], message: r.error.issues[0].message });
-    } else if (val.role === "loaner") {
-      const r = orgNumberSchema.safeParse(val.orgNumber);
+    } else if (val.mode === "reservation") {
+      const r = reservationCodeSchema.safeParse(val.reservationCode);
       if (!r.success)
-        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["orgNumber"], message: r.error.issues[0].message });
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["reservationCode"], message: r.error.issues[0].message });
     }
   });
 export type ClaimStartForm = z.infer<typeof claimStartForm>;
