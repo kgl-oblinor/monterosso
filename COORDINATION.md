@@ -31,6 +31,17 @@ To kodebaser i samme repo: **`cinque-terre/`** (landingen, Next.js) og **`baatch
 - SYM **append-only**: `[ ] [tid] [side/viewport] problem (px/mål) → forslag → fil`. Aldri editér kode.
 - LAND/DASH plukker øverste `[ ]`, fikser, setter `[x]` + logger i WORKLOG. Krin reviewer.
 
+## Globale design-regler (gjelder LIKT overalt — aldri halvveis, ingen tilfeldige unntak)
+Prinsipp (Kristian): **velg alltid det som ser best ut, men gjør det til én global regel som gjelder likt hver gang.**
+- **Hjørner:** alt rektangulært (kort, popups, knapper, inputs, choice/cal-tiles) = **radius 0 (skarpt)**. Iboende runde primitiver (avatar/crew-bilde = sirkel, toggle = pille) = **helt runde** — én konsistent klasse. **Ingen mellomting (12–18px).**
+- **Spacing:** alltid multiplum av **4px** (token-skala `--s1..--s8`). Ingen 6/10/13/22-verdier.
+- **Letter-spacing:** alltid fra token-skala (`--ls-1 .02 / --ls-2 .08 / --ls-3 .14`). Ingen hardkodede avvik.
+- **Fonter:** Fraunces (all tekst), Limelight (gull-CTA), Great Vibes (script-lenker). **Aldri Jost** (arves fra globals — overstyr).
+- **Separasjon med LUFT, ikke linjer:** ingen divider-borders; bruk margin/gap.
+- **Popups:** identisk farge (#f7f1e3), identisk størrelse (720px bred, **fast** 860px høy desktop), identisk indre padding på samme viewport.
+- **Primær-CTA:** fast footprint, **samme y-posisjon** i alle steg.
+- Når en regel velges: **anvend den globalt i hele kodebasen i samme pass** (landing + baatchat + SEO-sider).
+
 ## CLAIMS (aktive fil-låser)
 | Fil/mappe | Agent | Status | Tid |
 |---|---|---|---|
