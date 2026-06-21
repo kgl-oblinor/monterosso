@@ -1,35 +1,39 @@
 # 🤝 KOORDINERING — flere agenter samtidig (les før du rører noe)
 
-Mål: Kristians claudesquad-agenter + Krins team jobber samtidig **uten å krasje** (aldri to i samme fil), og alle ser hva som skjer. tmux er klart (`claudesquad_A/B/C/Frontendartist`, `krin`).
+Mål: alle agenter jobber samtidig **uten å krasje** (aldri to i samme fil), og alle ser hva som skjer. Les `MÅL.md` (fasiten) FØRST. tmux klart.
 
 ## Reglene (kort)
-1. **Les `MÅL.md` først.** Alt arbeid tjener målet der.
-2. **Velg ÉN lane.** Jobb kun i din lane sine filer (lanes overlapper ikke).
-3. **Claim før du redigerer** noe utenfor din lane: legg en rad i CLAIMS (fil · agent · `LÅST` · tid). Sett `FRI` når ferdig.
-4. **Aldri rør en `LÅST` fil.** Sjekk CLAIMS + `WORKLOG.md` først.
+1. **Les `MÅL.md`** (fasiten) først. Alt tjener målet.
+2. **Velg ÉN lane.** Jobb kun i din lane sine filer (overlapper ikke). Lag **bare nye filer** i din mappe — rør aldri andres.
+3. **Claim før** du rører noe utenfor din lane (rad i CLAIMS: fil · agent · `LÅST` · tid; `FRI` når ferdig).
+4. **Aldri rør en `LÅST` fil.** Sjekk CLAIMS + `WORKLOG.md`.
 5. **Logg alltid** i `WORKLOG.md`: `[tid] [agent] hva — filer`. Append-only.
-6. **Små, hyppige commits.** `git pull --rebase` før commit. Egen branch om mulig: `agent/<navn>/<lane>`.
-7. **Delte filer** (`MÅL.md`, `COORDINATION.md`): kun via claim, helst kun Kristian/Krin.
+6. Egen branch/worktree: `agent/<navn>/<lane>`. Små, hyppige commits.
 
-## Lanes (ikke-overlappende) — kodebase: `cinque-terre/`
-| Lane | Eier | Mappe/filer (kun disse) |
+## Lanes (ikke-overlappende) — kodebase `cinque-terre/`
+| Lane | Eier | Mappe/filer |
 |---|---|---|
-| **A · Chat (kunde↔skipper)** | _ledig_ | `cinque-terre/app/chat/**`, `cinque-terre/components/chat/**`, `cinque-terre/app/api/messages/**` |
-| **B · Onboarding/konto + verifisering** | _ledig_ | `cinque-terre/app/(auth)/**`, `cinque-terre/app/api/auth/**`, `cinque-terre/lib/auth*` |
-| **C · Admin/skipper-side** | _ledig_ | `cinque-terre/app/admin/**`, `cinque-terre/components/admin/**` |
-| **D · Data/DB (D1 + meldinger)** | _ledig_ | `cinque-terre/db/**`, `cinque-terre/lib/db*`, migrasjoner |
-| **E · Innhold/copy** | _ledig_ | tekst-strenger i landing (IKKE layout/CSS) |
-| **F · Krin: landing-polish + integrasjon + review** | **Krin** | `cinque-terre/app/landing/**`, `cinque-terre/app/landing/landing.css`, rot-config |
+| **A · Chat (kunde↔skipper)** | Krin-team | `cinque-terre/app/chat/**`, `cinque-terre/components/chat/**`, `cinque-terre/app/api/messages/**` |
+| **B · Onboarding/konto + verifisering** | Krin-team | `cinque-terre/app/(auth)/**`, `cinque-terre/app/api/auth/**`, `cinque-terre/lib/auth*` |
+| **C · Admin/skipper-side** | Krin-team | `cinque-terre/app/admin/**`, `cinque-terre/components/admin/**` |
+| **D · Data/DB (D1: users, messages)** | Krin-team | `cinque-terre/db/**`, `cinque-terre/lib/db*` |
+| **E · Innhold/copy** | _ledig_ | tekst-strenger (IKKE layout/CSS) |
+| **G · Design (dashboard)** | Krin-team | `cinque-terre/components/dashboard/**` (+ egne `.css`, IKKE `landing.css`) · design-spec |
+| **F · Krin: landing + integrasjon + review** | **Krin** | `cinque-terre/app/landing/**`, `landing.css`, rot-config, merge |
 
-> Krin eier **F** (landingssiden + integrasjon). Gi dine agenter A–E.
+## Oppdrag per lane (briefs)
+- **A Chat:** kunde↔skipper-tråd, knyttet til reservasjonskode. Gjenbruk Oblinor-chatmønster. Cream-flater, Fraunces, skarpe kanter.
+- **B Onboarding:** valgfri e-post + SMS/WhatsApp-nr → lett bruker → verifisering (e-post + SMS). Ingen passord-friksjon.
+- **C Admin:** skipper/Kristian = admin. Innboks med tråder per kode + svar.
+- **D Data:** D1-schema: `users` (epost/tlf, verifisert), `messages` (kode, sender, tekst, tid), kobling til booking-kode.
+- **G Design:** stilrent desktop-dashboard: **lukket venstre-sidebar (chat-ikon øverst, profil nederst), tomt til høyre.** Design-tokens fra fasiten. Lever spec + komponenter i `components/dashboard/`.
 
 ## CLAIMS (aktive fil-låser)
-| Fil | Agent | Status | Tid |
+| Fil/mappe | Agent | Status | Tid |
 |---|---|---|---|
-| `cinque-terre/app/landing/**` | Krin | LÅST | 2026-06-21 10:25 |
+| `cinque-terre/app/landing/**`, `landing.css` | Krin | LÅST | 2026-06-21 10:40 |
+| Lanes A,B,C,D,G (mapper over) | Krin-team (worktrees) | LÅST | 2026-06-21 10:40 |
 
-## Slik unngår claudesquad-agentene Krins filer
-- Gi hver agent **én ledig lane (A–E)**. Da rører de aldri `app/landing/**` (Krins F).
-- Be hver agent: *«Les COORDINATION.md + CLAIMS + WORKLOG. Jobb kun i din lane. Vil du røre en delt/annen fil: legg CLAIM-rad + logg. Aldri rør en LÅST fil.»*
-- Design å gjenbruke: **Oblinor** (chat + onboarding) — se det repoet for mønster, men bygg her i båt-prosjektet.
-- Tryggest: hver agent på **egen branch** (`agent/navn/lane`); Kristian/Krin merger.
+## Slik unngår claudesquad-agentene oss
+- Ta en **ledig lane (E)** eller en av A–D/G hvis Krin-teamet ikke alt kjører den — sjekk CLAIMS.
+- Les COORDINATION + CLAIMS + WORKLOG før hver økt; claim før delt fil; aldri rør LÅST. Egen branch.
