@@ -22,7 +22,7 @@ Format: `- [ ] <slug> | <title> | angle | facts (with source) | tags`
 
 ## Corniglia
 
-- [ ] corniglia-highest-village | Corniglia: The Quiet Village in the Sky | The smallest, highest and most peaceful of the five villages, perched above the sea. | Corniglia is the smallest and highest of the five, on a promontory about 100 m above the sea, surrounded on three sides by vineyards and terraces (en.wikipedia.org/wiki/Corniglia). | tags: corniglia, villages, calm, views
+- [x] corniglia-highest-village | Corniglia: The Quiet Village in the Sky | The smallest, highest and most peaceful of the five villages, perched above the sea. | Corniglia is the smallest and highest of the five, on a promontory about 100 m above the sea, surrounded on three sides by vineyards and terraces (en.wikipedia.org/wiki/Corniglia). | tags: corniglia, villages, calm, views
 - [ ] corniglia-lardarina-steps | Climbing the Lardarina: 382 Steps Worth Every One | A loving look at the brick stairway that links Corniglia to its station. | The Lardarina links the village to its train station via 33 flights of brick steps (sources cite 382–383 steps) (en.wikipedia.org/wiki/Corniglia, evendo.com). | tags: corniglia, walking, history, landmarks
 - [ ] corniglia-vineyard-village | Wrapped in Vineyards: Corniglia's Terraced Embrace | How terraces and olive groves cradle the only village without direct sea access. | Corniglia sits atop a ~100 m promontory entirely surrounded on its inland sides by terraced vineyards and olive groves, linked to neighbours by the Sentiero Azzurro (en.wikipedia.org/wiki/Corniglia). | tags: corniglia, vineyards, nature, agriculture
 
