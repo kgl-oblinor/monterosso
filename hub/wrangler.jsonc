@@ -1,0 +1,7 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "monterosso-hub",
+  "main": "worker.js",
+  "compatibility_date": "2026-06-16"
+  // HUB_PASSWORD is set as a secret: wrangler secret put HUB_PASSWORD
+}
