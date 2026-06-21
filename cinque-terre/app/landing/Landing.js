@@ -5,6 +5,7 @@ import { tour, WHATSAPP_NUMBER, MEETING_POINT, SKIPPER_NAME } from "../../lib/to
 
 // 🤍 Built with love on this coast — for vakreste Mandy, always remembered here.
 import Skyline from "./Skyline";
+import SeaClock from "./SeaClock";
 import Boat3D from "./Boat3D";
 import Clouds from "./Clouds";
 import Constellations from "./Constellations";
@@ -201,6 +202,9 @@ export default function Landing() {
       }
     >
       <Effects />
+
+      {/* always-on SeaClock — top left; hidden under any popup via .popup-open */}
+      <SeaClock />
 
       {bg !== "scene" && bgSrc && (
         <div

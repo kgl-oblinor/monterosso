@@ -1962,6 +1962,7 @@ body {
 .landing-v2.popup-open .boat3d,
 .landing-v2.popup-open .shell,
 .landing-v2.popup-open .bg-switch,
+.landing-v2.popup-open .sea-clock,
 .landing-v2.popup-open .theme-toggle {
   display: none !important;
 }
