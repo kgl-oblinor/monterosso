@@ -76,9 +76,8 @@ export default function FlowMap() {
         </div>
         <div className="fm-exit">
           <b>✕ Cancel / close (any step)</b> → opens the “Before you go”
-          window: the family story + <b>Weddings aboard · all-inclusive, from
-          $1,500</b> + enquire (WhatsApp / email / call). The luxurious reveal —
-          not linked from the front page.
+          window: the family story + enquire (WhatsApp / email / call). The
+          luxurious reveal — not linked from the front page.
         </div>
       </div>
 
