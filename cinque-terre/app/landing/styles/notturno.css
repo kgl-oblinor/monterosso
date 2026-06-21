@@ -1,0 +1,509 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap");
+
+/* =====================================================================
+   STYLE — «Notturno» (kinomatisk mørk)
+   Scoped to `.landing-v2.style-notturno`. Appearance only — never text,
+   flow or function. Deep near-black ink, ONE warm gold glint, very large
+   dramatic display type, generous negative space, high contrast, calm
+   luxurious night. Cinematic.
+
+   Promises kept:
+   - mobile first (base styles are the small-screen styles)
+   - contrast ≥ 4.5:1 (light cream text on near-black; see notes at end)
+   - gold CTA = ink label + readable edge, applied to EVERY gold button
+   - carried through on ALL surfaces (hero, booking, village/boat/captain,
+     hub, customer service, confirm, inputs, toggles)
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   PALETTE & TOKENS (override the base ink/cream/gold for a dark film grade)
+   --------------------------------------------------------------------- */
+.landing-v2.style-notturno {
+  /* near-black blacks — the deep blekk of night */
+  --nt-black: #060709;       /* darkest — page floor / scrims */
+  --nt-ink: #0a0d12;         /* primary dark surface */
+  --nt-ink-2: #11151c;       /* lifted dark surface (cards) */
+  --nt-ink-3: #161b24;       /* hover / input fill */
+
+  /* the single gold glint — warm, cinematic, restrained */
+  --nt-gold: #d9b25b;        /* the one accent */
+  --nt-gold-soft: #c9a24e;   /* rim / pressed */
+  --nt-gold-glow: rgba(217, 178, 91, 0.55);
+
+  /* light text on the dark grade — high contrast, warm white */
+  --nt-light: #f4ecdc;       /* primary text (15:1+ on near-black) */
+  --nt-light-2: rgba(244, 236, 220, 0.82); /* body */
+  --nt-light-3: rgba(244, 236, 220, 0.6);  /* quiet labels */
+  --nt-light-4: rgba(244, 236, 220, 0.42); /* faintest */
+
+  /* hairline edges — barely-there light strokes */
+  --nt-line: rgba(244, 236, 220, 0.14);
+  --nt-line-2: rgba(244, 236, 220, 0.22);
+
+  /* remap the inherited base tokens so existing rules pick up the night grade */
+  --cream: var(--nt-light);
+  --plum: var(--nt-ink);
+  --plum-2: var(--nt-black);
+  --gold: var(--nt-gold);
+  --terracotta: var(--nt-gold-soft);
+  --ink-82: var(--nt-light-2);
+  --ink-55: var(--nt-light-3);
+  --ink-50: var(--nt-light-4);
+
+  /* slightly wider rhythm — negative space is the luxury here */
+  --s7: 56px;
+  --s8: 80px;
+
+  background: var(--nt-black);
+  color: var(--nt-light);
+  font-family: "Cormorant Garamond", "Fraunces", Georgia, serif;
+}
+
+/* the dark film grade sits under the whole landing as a calm floor */
+.landing-v2.style-notturno::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% -10%, #12161f 0%, var(--nt-ink) 38%, var(--nt-black) 100%);
+}
+
+/* =====================================================================
+   HERO — enormous dramatic display, lots of air, one gold whisper
+   ===================================================================== */
+.landing-v2.style-notturno .hero .eyebrow {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 400;
+  font-style: italic;
+  text-transform: none;
+  font-size: clamp(0.95rem, 4.5vw, 1.25rem);
+  letter-spacing: 0.18em;
+  color: var(--nt-gold);
+  opacity: 0.95;
+  margin-bottom: var(--s5);
+}
+
+.landing-v2.style-notturno .hero h1 {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;            /* thin + huge = cinematic */
+  font-size: clamp(3.6rem, 22vw, 11rem);
+  line-height: 0.92;
+  letter-spacing: 0.005em;
+  color: var(--nt-light);
+  text-shadow: 0 2px 40px rgba(0, 0, 0, 0.6);
+}
+
+.landing-v2.style-notturno .hero .tagline {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1.15rem, 5.6vw, 1.7rem);
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  color: var(--nt-light-2);
+}
+
+/* keep hero text legible whatever scene/photo sits behind it (floor fade) */
+.landing-v2.style-notturno .hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 7, 9, 0.55) 0%,
+    rgba(6, 7, 9, 0.15) 38%,
+    rgba(6, 7, 9, 0.35) 72%,
+    rgba(6, 7, 9, 0.78) 100%
+  );
+}
+
+/* =====================================================================
+   HERO CTA — «Come aboard»
+   GOLD-CTA LAW: gold fill + ink label + a readable rim.
+   ===================================================================== */
+.landing-v2.style-notturno .cta {
+  font-family: "Great Vibes", cursive; /* keep the script invariant */
+  color: var(--nt-ink);                /* ink label on gold — readable */
+  background: linear-gradient(180deg, #e6c071 0%, var(--nt-gold) 52%, var(--nt-gold-soft) 100%);
+  border: 1.5px solid var(--nt-gold-soft);
+  box-shadow:
+    0 0 0 1px rgba(6, 7, 9, 0.6),                 /* dark separation edge */
+    0 18px 50px -18px rgba(0, 0, 0, 0.85),
+    0 0 46px -10px var(--nt-gold-glow);           /* the single glint */
+  text-shadow: none;
+}
+.landing-v2.style-notturno .cta::before {
+  border-color: rgba(6, 7, 9, 0.55);   /* ink inner ticket line on gold */
+}
+@media (hover: hover) {
+  .landing-v2.style-notturno .cta:hover {
+    filter: brightness(1.05);
+    background: linear-gradient(180deg, #ecc97e 0%, #ddb761 52%, var(--nt-gold-soft) 100%);
+    box-shadow:
+      0 0 0 1px rgba(6, 7, 9, 0.6),
+      0 22px 56px -18px rgba(0, 0, 0, 0.9),
+      0 0 64px -8px var(--nt-gold-glow);
+  }
+}
+.landing-v2.style-notturno .cta:focus-visible {
+  box-shadow:
+    0 0 0 3px var(--nt-gold-glow),
+    0 18px 44px -16px rgba(0, 0, 0, 0.85);
+}
+
+/* scroll hint / Andiamo stream — soft gold on black */
+.landing-v2.style-notturno .scroll-hint .af-bit {
+  color: rgba(244, 236, 220, 0.42);
+}
+.landing-v2.style-notturno .scroll-hint .af-bit--gold {
+  color: var(--nt-gold);
+}
+
+/* =====================================================================
+   GLASS POPUPS — deep ink glass (booking, village, boat, captain, news,
+   hub, customer service). ink-tinted glass per the night grade.
+   ===================================================================== */
+.landing-v2.style-notturno .book-form,
+.landing-v2.style-notturno .village-page {
+  color: var(--nt-light);
+  background: rgba(10, 13, 18, 0.62);
+  border: 1px solid var(--nt-line-2);
+  -webkit-backdrop-filter: blur(40px) saturate(105%);
+  backdrop-filter: blur(40px) saturate(105%);
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(244, 236, 220, 0.06);
+}
+
+/* a solid floor behind the reading zone so body copy stays ≥4.5:1 on any backdrop */
+.landing-v2.style-notturno .book-form::after,
+.landing-v2.style-notturno .village-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(8, 11, 16, 0.72);
+}
+
+/* graceful fallback: solid ink panel when blur/transparency is unavailable */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .landing-v2.style-notturno .book-form,
+  .landing-v2.style-notturno .village-page {
+    background: var(--nt-ink);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .landing-v2.style-notturno .book-form,
+  .landing-v2.style-notturno .village-page {
+    background: var(--nt-ink);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* headings & body inside popups */
+.landing-v2.style-notturno .section-title,
+.landing-v2.style-notturno .vp-title {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  color: var(--nt-light);
+}
+.landing-v2.style-notturno .vp-title {
+  font-size: clamp(2rem, 9vw, 3.4rem);
+  line-height: 1.02;
+}
+.landing-v2.style-notturno .vp-lede {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  color: var(--nt-light-2);
+}
+.landing-v2.style-notturno .vp-body,
+.landing-v2.style-notturno .confirm-lead {
+  color: var(--nt-light-2);
+}
+.landing-v2.style-notturno .section-label,
+.landing-v2.style-notturno .vp-eyebrow,
+.landing-v2.style-notturno .vp-subhead {
+  color: var(--nt-gold);
+  letter-spacing: 0.14em;
+}
+
+/* quiet labels */
+.landing-v2.style-notturno .reassure,
+.landing-v2.style-notturno .box-count,
+.landing-v2.style-notturno .send-summary,
+.landing-v2.style-notturno .send-via,
+.landing-v2.style-notturno .cal-label,
+.landing-v2.style-notturno .confirm__back,
+.landing-v2.style-notturno .vp-link,
+.landing-v2.style-notturno .about-note,
+.landing-v2.style-notturno .cs-where {
+  color: var(--nt-light-3) !important;
+}
+.landing-v2.style-notturno .field-head.step-q {
+  color: var(--nt-light);
+}
+.landing-v2.style-notturno .field-head {
+  color: var(--nt-light-2);
+}
+
+/* facts / receipt rows / nav — light on ink */
+.landing-v2.style-notturno .vp-fact dt,
+.landing-v2.style-notturno .conf-row span {
+  color: var(--nt-light-3);
+}
+.landing-v2.style-notturno .vp-fact dd,
+.landing-v2.style-notturno .conf-row strong {
+  color: var(--nt-light);
+}
+.landing-v2.style-notturno .vp-nav button {
+  color: var(--nt-gold);
+  font-style: italic;
+}
+
+/* =====================================================================
+   GOLD ACTION BUTTONS in dialogs/villages — same gold-CTA law everywhere
+   (.pay primary, .vp-cta, calendar buttons)
+   ===================================================================== */
+.landing-v2.style-notturno .book-form .pay,
+.landing-v2.style-notturno .vp-cta {
+  font-family: "Limelight", "Cormorant Garamond", serif;
+  color: var(--nt-ink);                 /* ink label */
+  border: 1.5px solid var(--nt-gold-soft);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0) 46%),
+    linear-gradient(178deg, #e9c478 0%, var(--nt-gold) 56%, var(--nt-gold-soft) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 14px 36px -14px rgba(0, 0, 0, 0.8),
+    0 0 40px -10px var(--nt-gold-glow);  /* the glint */
+}
+.landing-v2.style-notturno .book-form .pay::before,
+.landing-v2.style-notturno .vp-cta::before {
+  border-color: rgba(6, 7, 9, 0.5);     /* ink inner line */
+}
+@media (hover: hover) {
+  .landing-v2.style-notturno .book-form .pay:hover,
+  .landing-v2.style-notturno .vp-cta:hover {
+    filter: brightness(1.06);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.45),
+      0 18px 44px -14px rgba(0, 0, 0, 0.85),
+      0 0 56px -8px var(--nt-gold-glow);
+  }
+}
+
+/* secondary / ghost — light hairline outline on ink, no gold fill */
+.landing-v2.style-notturno .book-form .pay.pay--ghost {
+  color: var(--nt-light);
+  background: transparent;
+  box-shadow: none;
+}
+.landing-v2.style-notturno .book-form .pay.pay--ghost::before {
+  border-color: var(--nt-line-2);
+}
+@media (hover: hover) {
+  .landing-v2.style-notturno .book-form .pay.pay--ghost:hover {
+    background: rgba(244, 236, 220, 0.06);
+  }
+}
+
+/* calendar pair — gold tickets too (ink label) */
+.landing-v2.style-notturno .cal-btn {
+  font-family: "Cormorant Garamond", serif;
+  color: var(--nt-ink);
+  border: 1.5px solid var(--nt-gold-soft);
+  background: linear-gradient(177deg, #e9c478 0%, var(--nt-gold) 60%, var(--nt-gold-soft) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 12px 28px -16px rgba(0, 0, 0, 0.8);
+}
+
+/* «Read more» secondary script stub + customer-service script link */
+.landing-v2.style-notturno .vp-read {
+  color: var(--nt-gold);
+  border: 1.5px solid var(--nt-gold-soft);
+  background-color: rgba(244, 236, 220, 0.04);
+}
+.landing-v2.style-notturno .vp-read:hover {
+  background-color: rgba(244, 236, 220, 0.09);
+}
+.landing-v2.style-notturno .cs-link {
+  color: var(--nt-gold);
+}
+
+/* =====================================================================
+   FORM SURFACES — choices, toggles, inputs, hub tiles (all on ink)
+   ===================================================================== */
+.landing-v2.style-notturno .field-head.step-q {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 400;
+  font-size: clamp(1.25rem, 5.5vw, 1.6rem);
+}
+
+.landing-v2.style-notturno .choice {
+  color: var(--nt-light);
+  background: var(--nt-ink-2);
+  border: 1.5px solid var(--nt-line-2);
+}
+.landing-v2.style-notturno .choice.is-sel {
+  border-color: var(--nt-gold);
+  background: linear-gradient(177deg, rgba(217, 178, 91, 0.2) 0%, rgba(217, 178, 91, 0.08) 100%);
+  box-shadow: 0 0 28px -10px var(--nt-gold-glow);
+}
+.landing-v2.style-notturno .choice-label {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 500;
+}
+.landing-v2.style-notturno .choice-sub {
+  color: var(--nt-light-3);
+}
+.landing-v2.style-notturno .choice--more {
+  background: transparent;
+}
+
+/* send-channel toggles */
+.landing-v2.style-notturno .toggle-row {
+  color: var(--nt-light);
+  background: var(--nt-ink-2);
+  border: 1.5px solid var(--nt-line-2);
+}
+.landing-v2.style-notturno .toggle-row.is-on {
+  border-color: rgba(217, 178, 91, 0.55);
+}
+.landing-v2.style-notturno .switch {
+  background: rgba(244, 236, 220, 0.22);
+}
+.landing-v2.style-notturno .toggle-row.is-on .switch {
+  background: var(--nt-gold);
+}
+
+/* inputs — dark glass fields, light text */
+.landing-v2.style-notturno .book-form input,
+.landing-v2.style-notturno .contact-field input,
+.landing-v2.style-notturno .book-form select,
+.landing-v2.style-notturno .book-form textarea {
+  background: var(--nt-ink-3);
+  color: var(--nt-light);
+  border-color: var(--nt-line-2);
+  color-scheme: dark;
+}
+.landing-v2.style-notturno .contact-field input::placeholder {
+  color: var(--nt-light-4);
+}
+.landing-v2.style-notturno .contact-field input:focus,
+.landing-v2.style-notturno .book-form input:focus {
+  border-color: var(--nt-gold);
+  box-shadow: 0 0 0 3px var(--nt-gold-glow);
+}
+
+/* hub tiles — ink glass squares, gold glint on hover */
+.landing-v2.style-notturno .hub-tile {
+  color: var(--nt-light);
+}
+.landing-v2.style-notturno .hub-tile__ic {
+  background: linear-gradient(180deg, rgba(244, 236, 220, 0.08), rgba(244, 236, 220, 0.03));
+  border: 1px solid var(--nt-line-2);
+  box-shadow: inset 0 0 18px rgba(244, 236, 220, 0.05);
+}
+.landing-v2.style-notturno .hub-tile__ic svg {
+  stroke: var(--nt-light);
+}
+.landing-v2.style-notturno .hub-tile:hover .hub-tile__ic {
+  box-shadow:
+    inset 0 0 18px rgba(244, 236, 220, 0.08),
+    0 0 26px -6px var(--nt-gold-glow);
+}
+.landing-v2.style-notturno .hub-tile__lbl {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 0.95rem;
+}
+
+/* customer-service option rows */
+.landing-v2.style-notturno .cs-opt {
+  color: var(--nt-light);
+  background: var(--nt-ink-2);
+  border: 1px solid var(--nt-line-2);
+  font-family: "Cormorant Garamond", serif;
+}
+.landing-v2.style-notturno .cs-opt:hover {
+  background: var(--nt-ink-3);
+}
+.landing-v2.style-notturno .cs-opt span span {
+  color: var(--nt-light-3);
+}
+
+/* crew avatars (chi siamo) */
+.landing-v2.style-notturno .crew-photo {
+  border: 2px solid var(--nt-gold-soft);
+  background: radial-gradient(120% 120% at 35% 25%, #2a2418 0%, #4a3d22 60%, var(--nt-gold-soft) 100%);
+  color: var(--nt-light-2);
+}
+.landing-v2.style-notturno .crew-name {
+  font-family: "Cormorant Garamond", serif;
+  color: var(--nt-light);
+}
+.landing-v2.style-notturno .crew-seeks {
+  color: var(--nt-light-2);
+}
+
+/* total / price row — large dramatic figure */
+.landing-v2.style-notturno .book-form .total-row .t-val {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 400;
+  color: var(--nt-light);
+}
+.landing-v2.style-notturno .book-form .price-note {
+  color: var(--nt-gold);
+}
+
+/* close button & switcher tweaks for the dark grade */
+.landing-v2.style-notturno .book-close {
+  background: rgba(6, 7, 9, 0.7);
+  color: var(--nt-light);
+  border-color: var(--nt-line-2);
+}
+.landing-v2.style-notturno .bg-dot.is-sel {
+  border-color: var(--nt-gold);
+  box-shadow: 0 0 0 2px var(--nt-gold);
+}
+
+/* =====================================================================
+   MOBILE FIRST — base rules above ARE the mobile rules. This block only
+   lets the display type breathe larger once there's room.
+   ===================================================================== */
+@media (min-width: 760px) {
+  .landing-v2.style-notturno .hero h1 {
+    font-size: clamp(7rem, 16vw, 13rem);
+  }
+  .landing-v2.style-notturno .hero .eyebrow {
+    font-size: 1.4rem;
+    letter-spacing: 0.22em;
+  }
+  .landing-v2.style-notturno .hero .tagline {
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+  }
+}
+
+/* respect reduced motion (the base scene already does, this is a safety net) */
+@media (prefers-reduced-motion: reduce) {
+  .landing-v2.style-notturno .scroll-hint .af-bit {
+    animation: none;
+  }
+}
+
+/* =====================================================================
+   CONTRAST NOTES (verified against WCAG 4.5:1 for normal text)
+   Background floor: #060709 / #0a0d12 (near-black).
+   - #f4ecdc (primary text) on #0a0d12     ≈ 16.6:1  ✓ AAA
+   - light-2 .82 alpha over #0a0d12         ≈ 11.2:1  ✓ AAA
+   - light-3 .60 alpha over #0a0d12         ≈ 6.3:1   ✓ AAA (quiet labels)
+   - #d9b25b (gold accent text) on #0a0d12  ≈ 9.7:1   ✓ AAA  → safe for labels & links
+   - GOLD CTA: ink #0a0d12 label on gold #d9b25b ≈ 9.7:1 ✓ + ink rim/inner line
+     so the gold shape stays defined on the dark grade (gold-CTA law honored).
+   ===================================================================== */

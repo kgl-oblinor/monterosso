@@ -1,0 +1,389 @@
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap");
+
+/* ============================================================
+   STYLE · CARTOLINA — "warm editorial / vintage postcard"
+   A self-contained skin for the landing. APPEARANCE ONLY —
+   never text, never flow, never function. Every rule is nested
+   under `.landing-v2.style-cartolina`, so it changes nothing
+   unless this style is active.
+
+   Mood: a sun-faded Ligurian postcard. Warm reading serif
+   (Newsreader), terracotta / ochre / cream palette, generous
+   line-height, soft edges of light, nostalgic magazine warmth.
+
+   Globale lover honoured:
+   · radius 0 on rectangles (sharp, architectural)
+   · 4px spacing scale · letter-spacing tokens
+   · ONE accent (terracotta/ochre), gold reserved for the CTA
+   · separation by air, not lines
+   · gold CTA = ink label (--plum) + readable ink border
+     (gold+cream ≈ 1.33:1 fails — so the ticket carries ink text
+      and a 2px ink rim; gold #e7cf86 + ink #34210f ≈ 9.5:1 AAA)
+   · mobile first · all on-glass text verified ≥ 4.5:1
+   ============================================================ */
+
+/* ---------- 1 · PALETTE + TYPE TOKENS ----------
+   Same custom-property NAMES the components already read; only the
+   VALUES change, so the page re-skins with zero structural edits.
+   Warm browns for ink, paper cream for light text on glass, a
+   single sun-bleached gold accent, dusty terracotta for headings. */
+.landing-v2.style-cartolina {
+  font-family: "Newsreader", Georgia, "Times New Roman", serif;
+
+  /* core palette — warm, sun-faded */
+  --plum: #34210f;          /* warm espresso-ink — CTA label, ink rim, body ink */
+  --plum-2: #241509;        /* deep cocoa for shadows */
+  --cream: #f7eedb;         /* paper cream — light text on glass */
+  --ink: #34210f;           /* ink == plum here (one warm dark) */
+  --gold: #e7cf86;          /* sun-bleached postcard gold — the CTA accent */
+  --terracotta: #b9663a;    /* dusty terracotta — large headings/accents only */
+
+  /* warm-tinted ink alphas (rebased on the espresso ink) */
+  --ink-82: rgba(52, 33, 15, 0.82);
+  --ink-55: rgba(52, 33, 15, 0.55);
+  --ink-50: rgba(52, 33, 15, 0.50);
+
+  /* postcard sky helpers (style-local) */
+  --carto-cream:  #f3e3c2;  /* high sky — warm paper                */
+  --carto-ochre:  #e0b673;  /* mid sky — soft ochre                 */
+  --carto-terra:  #c07d49;  /* low sky — terracotta glow            */
+  --carto-umber:  #7c4a2c;  /* horizon — warm umber                 */
+
+  /* generous, postcard line-height & a touch warmer tracking */
+  line-height: 1.66;
+  letter-spacing: 0.006em;
+}
+
+/* ---------- 2 · BACKGROUND — a faded postcard sky ----------
+   A warm vertical wash (cream → ochre → terracotta → umber) with a
+   soft sun-bloom upper-right and a gentle aged vignette in the
+   corners. Painted on the page, behind the living scene. Calm and
+   still — no motion. */
+.landing-v2.style-cartolina {
+  background:
+    radial-gradient(
+      120% 122% at 50% 40%,
+      transparent 50%,
+      rgba(70, 42, 22, 0.18) 82%,
+      rgba(70, 42, 22, 0.34) 100%
+    ),
+    radial-gradient(
+      56% 42% at 76% 24%,
+      rgba(255, 234, 184, 0.50) 0%,
+      rgba(231, 188, 122, 0.22) 38%,
+      transparent 68%
+    ),
+    linear-gradient(
+      180deg,
+      var(--carto-cream) 0%,
+      var(--carto-ochre) 40%,
+      var(--carto-terra) 74%,
+      var(--carto-umber) 100%
+    );
+  background-attachment: fixed;
+}
+
+/* ---------- 3 · TYPOGRAPHY — warm serif everywhere ----------
+   Re-point every Fraunces/Georgia/Jost run to Newsreader, open the
+   line-height for a magazine feel, and let titles breathe with a
+   softer optical weight. APPEARANCE only — never changes the words. */
+.landing-v2.style-cartolina,
+.landing-v2.style-cartolina .vp-eyebrow,
+.landing-v2.style-cartolina .vp-title,
+.landing-v2.style-cartolina .vp-lede,
+.landing-v2.style-cartolina .vp-body,
+.landing-v2.style-cartolina .vp-subhead,
+.landing-v2.style-cartolina .vp-link,
+.landing-v2.style-cartolina .vp-nav button,
+.landing-v2.style-cartolina .wiki-link,
+.landing-v2.style-cartolina .section-title,
+.landing-v2.style-cartolina .section-label,
+.landing-v2.style-cartolina .field-head,
+.landing-v2.style-cartolina .choice-label,
+.landing-v2.style-cartolina .choice-sub,
+.landing-v2.style-cartolina .toggle-row,
+.landing-v2.style-cartolina .hub-tile__lbl,
+.landing-v2.style-cartolina .cs-opt,
+.landing-v2.style-cartolina .book-form .meta,
+.landing-v2.style-cartolina .book-form .total-row .t-label,
+.landing-v2.style-cartolina .book-form .total-row .t-val,
+.landing-v2.style-cartolina .book-form .price-note,
+.landing-v2.style-cartolina .book-form .send-summary,
+.landing-v2.style-cartolina .crew-name,
+.landing-v2.style-cartolina .cal-btn,
+.landing-v2.style-cartolina .confirm__back,
+.landing-v2.style-cartolina input,
+.landing-v2.style-cartolina select,
+.landing-v2.style-cartolina textarea {
+  font-family: "Newsreader", Georgia, "Times New Roman", serif;
+}
+
+/* hero title — warm display serif, a little nostalgic italic life,
+   generous leading. Size/flow untouched (inherits the base clamp). */
+.landing-v2.style-cartolina .hero h1 {
+  font-family: "Newsreader", Georgia, serif;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: 0.005em;
+  line-height: 1.04;
+  color: var(--cream);
+  text-shadow: 0 2px 18px rgba(40, 24, 10, 0.4);
+}
+.landing-v2.style-cartolina .hero .eyebrow {
+  color: var(--gold);
+}
+.landing-v2.style-cartolina .hero .tagline,
+.landing-v2.style-cartolina .hero .sea-copy {
+  font-family: "Newsreader", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--cream);
+}
+
+/* reading copy on the glass — open, postcard line-height */
+.landing-v2.style-cartolina .vp-body,
+.landing-v2.style-cartolina .vp-incl li,
+.landing-v2.style-cartolina .confirm-lead {
+  line-height: 1.7;
+}
+.landing-v2.style-cartolina .vp-title {
+  font-weight: 500;
+  line-height: 1.14;
+}
+.landing-v2.style-cartolina .vp-lede {
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* terracotta is a HEADINGS/accents colour only (fails 4.5:1 as small
+   body) — use it on the large lede & sub-heads where it reads big */
+.landing-v2.style-cartolina .vp-subhead {
+  color: var(--terracotta);
+}
+
+/* ---------- 4 · GLASS POPUPS — a warm paper lens ----------
+   Keep the unified popup structure; re-tone the glass to a warm
+   amber-brown so paper-cream text reads at high contrast. An inset
+   warm-dark wash guarantees ≥4.5:1 over any sky behind the blur. */
+.landing-v2.style-cartolina .book-form,
+.landing-v2.style-cartolina .village-page {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(150, 104, 60, 0.18) 0%,
+      rgba(70, 46, 26, 0.22) 100%
+    ),
+    rgba(58, 38, 22, 0.18);
+  border: 1px solid rgba(247, 238, 219, 0.26);   /* paper-cream hairline rim */
+  -webkit-backdrop-filter: blur(20px) saturate(115%) sepia(12%);
+  backdrop-filter: blur(20px) saturate(115%) sepia(12%);
+  box-shadow:
+    0 30px 80px rgba(26, 15, 6, 0.52),
+    inset 0 0 0 9999px rgba(48, 30, 16, 0.32);    /* warm-dark wash → cream copy stays legible */
+}
+
+/* solid fallback — no backdrop-filter OR reduced transparency:
+   a near-solid warm-cocoa panel, same layout, no blur */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .landing-v2.style-cartolina .book-form,
+  .landing-v2.style-cartolina .village-page {
+    background: rgba(56, 36, 20, 0.95);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .landing-v2.style-cartolina .book-form,
+  .landing-v2.style-cartolina .village-page {
+    background: rgba(56, 36, 20, 0.96);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* on-glass text → warm paper-cream / gold (mirrors base rules,
+   re-pointed at the cartolina cream). Verified over the dark wash:
+   · cream  #f7eedb  ≈ 9:1   · gold #e7cf86 ≈ 7:1  · terracotta
+     #b9663a as small body fails, so it stays on large heads only. */
+.landing-v2.style-cartolina .section-title,
+.landing-v2.style-cartolina .vp-title {
+  color: var(--cream);
+}
+.landing-v2.style-cartolina .vp-lede,
+.landing-v2.style-cartolina .vp-body,
+.landing-v2.style-cartolina .confirm-lead {
+  color: rgba(247, 238, 219, 0.88);
+}
+.landing-v2.style-cartolina .section-label,
+.landing-v2.style-cartolina .vp-eyebrow {
+  color: var(--gold);
+}
+.landing-v2.style-cartolina .vp-incl li {
+  color: rgba(247, 238, 219, 0.86);
+}
+.landing-v2.style-cartolina .vp-incl li::before {
+  color: var(--terracotta);
+}
+
+/* tiles inside the glass — warm their neutral white into the
+   postcard world (appearance only) */
+.landing-v2.style-cartolina .hub-tile__ic {
+  background: linear-gradient(
+    180deg,
+    rgba(247, 238, 219, 0.18),
+    rgba(150, 104, 60, 0.12)
+  );
+  border-color: rgba(247, 238, 219, 0.38);
+}
+.landing-v2.style-cartolina .hub-tile__ic svg {
+  stroke: var(--cream);
+}
+.landing-v2.style-cartolina .hub-tile__lbl {
+  color: var(--cream);
+}
+.landing-v2.style-cartolina .cs-opt {
+  background: rgba(247, 238, 219, 0.10);
+  border-color: rgba(247, 238, 219, 0.38);
+  color: var(--cream);
+}
+.landing-v2.style-cartolina .cs-opt:hover {
+  background: rgba(247, 238, 219, 0.18);
+}
+.landing-v2.style-cartolina .cs-opt span span {
+  color: rgba(247, 238, 219, 0.6);
+}
+
+/* choice tiles / toggles inside the glass → warm, cream text */
+.landing-v2.style-cartolina .choice {
+  background: rgba(247, 238, 219, 0.10);
+  border-color: rgba(247, 238, 219, 0.34);
+  color: var(--cream);
+}
+.landing-v2.style-cartolina .choice.is-sel {
+  border-color: var(--gold);
+  background: linear-gradient(177deg, rgba(231, 207, 134, 0.30) 0%, rgba(192, 125, 73, 0.22) 100%);
+}
+.landing-v2.style-cartolina .choice-sub {
+  color: rgba(247, 238, 219, 0.7);
+}
+.landing-v2.style-cartolina .toggle-row {
+  background: rgba(247, 238, 219, 0.08);
+  border-color: rgba(247, 238, 219, 0.24);
+  color: var(--cream);
+}
+
+/* inputs → warm glass fields, cream text */
+.landing-v2.style-cartolina .book-form input,
+.landing-v2.style-cartolina .contact-field input,
+.landing-v2.style-cartolina .book-form select,
+.landing-v2.style-cartolina .book-form textarea {
+  background: rgba(247, 238, 219, 0.10);
+  color: var(--cream);
+  border-color: rgba(247, 238, 219, 0.30);
+  color-scheme: dark;
+}
+.landing-v2.style-cartolina .contact-field input::placeholder {
+  color: rgba(247, 238, 219, 0.45);
+}
+
+/* ---------- 5 · THE GOLD CTA — postcard "ticket", ink label ----------
+   Gold + cream ≈ 1.33:1 (invisible) and gold + cream label is unreadable.
+   So the ticket carries an INK label (--plum espresso) and a 2px ink rim
+   for a definition edge. Sun-bleached gold fill keeps the warm mood.
+   gold #e7cf86 + ink #34210f ≈ 9.5:1 (AAA). */
+
+/* hero CTA — "Come aboard" champagne ticket */
+.landing-v2.style-cartolina .cta {
+  color: var(--plum);
+  background: linear-gradient(180deg, #efdda4 0%, #e3c879 100%);
+  border: 2px solid var(--plum);                 /* readable ink edge on cream */
+  box-shadow: 0 12px 28px -12px rgba(40, 24, 10, 0.6);
+}
+.landing-v2.style-cartolina .cta::before {
+  border-color: rgba(52, 33, 15, 0.7);           /* inner espresso frame */
+}
+@media (hover: hover) {
+  .landing-v2.style-cartolina .cta:hover {
+    background: linear-gradient(180deg, #f3e3b0 0%, #e7cf86 100%);
+    filter: brightness(1.04);
+  }
+}
+
+/* dialog primary buttons + village CTA — the warm shiny gold ticket */
+.landing-v2.style-cartolina .book-form .pay,
+.landing-v2.style-cartolina .vp-cta {
+  color: var(--plum);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.10) 30%, rgba(255, 255, 255, 0) 50%),
+    linear-gradient(178deg, #f3e3ad 0%, #e7cf86 42%, #d9b85f 68%, #c89f44 100%);
+  border: 2px solid #9a6a30;                      /* warm gold-brown rim */
+}
+.landing-v2.style-cartolina .book-form .pay::before,
+.landing-v2.style-cartolina .vp-cta::before {
+  border-color: rgba(52, 33, 15, 0.55);          /* inner ink frame */
+}
+
+/* ghost / secondary — ink outline, transparent, cream label on glass */
+.landing-v2.style-cartolina .book-form .pay.pay--ghost {
+  color: var(--cream);
+  background: transparent;
+}
+.landing-v2.style-cartolina .book-form .pay.pay--ghost::before {
+  border-color: rgba(247, 238, 219, 0.5);
+}
+@media (hover: hover) {
+  .landing-v2.style-cartolina .book-form .pay.pay--ghost:hover {
+    background: rgba(247, 238, 219, 0.08);
+  }
+}
+
+/* calendar pair — same warm gold ticket, ink label */
+.landing-v2.style-cartolina .cal-btn {
+  color: var(--plum);
+  background: linear-gradient(177deg, #efdca2 0%, #e3c879 52%, #d6b35c 100%);
+  border: 2px solid var(--plum);
+}
+
+/* "Read more" secondary stub + customer-service script link — terracotta
+   on glass reads big enough (script ≥24px), warm postcard ink on cream */
+.landing-v2.style-cartolina .vp-read {
+  color: var(--gold);
+  border-color: var(--gold);
+  background-color: rgba(247, 238, 219, 0.08);
+}
+.landing-v2.style-cartolina .cs-link {
+  color: var(--cream);
+}
+.landing-v2.style-cartolina .vp-nav button {
+  color: var(--gold);
+}
+
+/* the caret chevron + wiki/links accent → the single gold accent */
+.landing-v2.style-cartolina .dq__caret {
+  border-color: var(--gold);
+}
+.landing-v2.style-cartolina .wiki-link {
+  color: var(--gold);
+}
+
+/* ---------- 6 · MOBILE FIRST — keep the warmth on small screens ----------
+   The base file already handles layout at ≤640px; here we only make sure
+   the postcard sky and the open serif leading survive on phones (no
+   structural overrides — appearance only). */
+@media (max-width: 640px) {
+  .landing-v2.style-cartolina {
+    /* keep the fixed warm wash from creating a seam under iOS toolbars */
+    background-attachment: scroll;
+    line-height: 1.62;
+  }
+  .landing-v2.style-cartolina .vp-body,
+  .landing-v2.style-cartolina .vp-incl li {
+    line-height: 1.66;
+  }
+}
+
+/* respect reduced motion — nothing animated added, but make the intent
+   explicit for any inherited scene motion left visible behind the glass */
+@media (prefers-reduced-motion: reduce) {
+  .landing-v2.style-cartolina * {
+    scroll-behavior: auto;
+  }
+}

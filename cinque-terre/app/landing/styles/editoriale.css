@@ -1,0 +1,642 @@
+/* ============================================================
+   STYLE — «Editoriale» (minimalist gallery / luxury magazine)
+   ------------------------------------------------------------
+   Scoped ENTIRELY under `.landing-v2.style-editoriale`.
+   Overrides ONLY appearance — typography, palette, buttons,
+   geometry, spacing, background calm. Never text / flow / function.
+
+   Art direction (Kristian's brief):
+   - elegant, minimalist, NO icons
+   - world-class geometry, enormous whitespace
+   - restrained refined typography: a beautiful serif display paired
+     with a quiet serif body (Cormorant Garamond + EB Garamond)
+   - ONE calm accent (muted bronze-olive), hairline rules, generous margins
+   - reads like a gallery wall / a luxury magazine spread
+
+   Laws honoured:
+   - mobile-first (beautiful + legible on a phone)
+   - contrast ≥ 4.5:1 everywhere (see contrast notes at the foot)
+   - gold-CTA law: where the accent fills a button it carries an INK
+     label + a legible edge
+   - air, not arbitrary lines
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap");
+
+/* ============================================================
+   TOKENS — the editorial palette + rhythm.
+   We redefine the SAME token names the base uses, so every
+   component (incl. the SeaClock maker-mark) inherits the new
+   palette automatically. Geometry stays sharp (radius 0).
+   ============================================================ */
+.landing-v2.style-editoriale {
+  /* --- type families --- */
+  --ed-display: "Cormorant Garamond", "Fraunces", Georgia, serif;
+  --ed-body: "EB Garamond", Georgia, serif;
+
+  /* --- palette: paper, ink, ONE calm accent --- */
+  --ed-paper: #f4f1ea;        /* warm gallery ivory */
+  --ed-paper-2: #efebe2;      /* a half-tone deeper, for hover wash */
+  --ed-ink: #1a1a18;          /* near-black editorial ink */
+  --ed-ink-2: #2b2b27;        /* slightly softer ink for headings on paper */
+  --ed-accent: #7c6a3c;       /* muted bronze-olive — the single accent */
+  --ed-accent-deep: #5e5030;  /* deeper accent for legible edges/labels */
+  --ed-hair: rgba(26, 26, 24, 0.16); /* hairline rule colour */
+
+  /* readable ink steps on PAPER (light) surfaces */
+  --ed-on-paper-90: rgba(26, 26, 24, 0.92);
+  --ed-on-paper-70: rgba(26, 26, 24, 0.74);  /* ≥4.5:1 on paper */
+  --ed-on-paper-55: rgba(26, 26, 24, 0.62);  /* large/quiet labels */
+
+  /* readable steps on the DARK glass popups */
+  --ed-on-glass: #f6f3ec;
+  --ed-on-glass-80: rgba(246, 243, 236, 0.86);
+  --ed-on-glass-60: rgba(246, 243, 236, 0.66);
+
+  /* --- remap the BASE tokens so inherited rules + SVG vars follow --- */
+  --plum: var(--ed-ink);
+  --cream: var(--ed-on-glass);
+  --gold: #c9b27a;            /* a softened, paper-friendly gold for hairline accents on glass */
+  --terracotta: var(--ed-accent);
+
+  /* sharp, architectural geometry (already 0 in base — keep explicit) */
+  --r-sm: 0; --r-md: 0; --r-pill: 0;
+
+  /* letter-spacing — quiet, editorial */
+  --ls-1: 0.01em; --ls-2: 0.10em; --ls-3: 0.22em;
+
+  /* a calm, generous reading colour everywhere by default */
+  font-family: var(--ed-body);
+  color: var(--ed-on-paper-90);
+  background: var(--ed-paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ============================================================
+   BACKGROUND RO — a still, gallery-calm paper ground.
+   The living scene still works in the base; here we keep the
+   page itself serene so the type carries the page.
+   ============================================================ */
+.landing-v2.style-editoriale {
+  background:
+    radial-gradient(120% 90% at 50% -10%, #f7f4ee 0%, var(--ed-paper) 58%, var(--ed-paper-2) 100%);
+}
+
+/* ============================================================
+   HERO — the cover of the magazine. Enormous whitespace,
+   a hairline above the title, a single quiet accent on the eyebrow.
+   ============================================================ */
+.landing-v2.style-editoriale .hero {
+  text-align: center;
+}
+
+.landing-v2.style-editoriale .hero .eyebrow {
+  font-family: var(--ed-body);
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: var(--ls-3);
+  text-transform: uppercase;
+  color: var(--ed-accent-deep);
+  opacity: 1;
+  margin-bottom: var(--s5);
+  /* a hairline flourish under the kicker — restraint, not decoration */
+  position: relative;
+  padding-bottom: var(--s4);
+}
+.landing-v2.style-editoriale .hero .eyebrow::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 38px;
+  height: 1px;
+  transform: translateX(-50%);
+  background: var(--ed-accent);
+}
+
+.landing-v2.style-editoriale .hero h1 {
+  font-family: var(--ed-display);
+  font-weight: 400;                 /* light, gallery-poised */
+  font-size: clamp(3.2rem, 12vw, 8rem);
+  line-height: 0.96;
+  letter-spacing: 0.005em;
+  color: var(--ed-ink-2);
+  text-shadow: none;
+}
+
+.landing-v2.style-editoriale .hero .tagline {
+  font-family: var(--ed-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.25rem, 3.4vw, 1.9rem);
+  line-height: 1.4;
+  letter-spacing: var(--ls-1);
+  color: var(--ed-on-paper-70);
+  margin-top: var(--s5);
+}
+
+/* «Andiamo» scroll hint — quiet small-caps, accent drift kept restrained */
+.landing-v2.style-editoriale .scroll-hint > span:first-child {
+  font-family: var(--ed-body);
+  font-size: 0.72rem;
+  letter-spacing: var(--ls-3);
+  text-transform: uppercase;
+  color: var(--ed-on-paper-55);
+}
+.landing-v2.style-editoriale .scroll-hint .af-bit {
+  font-family: var(--ed-display);
+  color: rgba(26, 26, 24, 0.45);
+  filter: blur(1.4px);
+  text-shadow: none;
+}
+.landing-v2.style-editoriale .scroll-hint .af-bit--gold {
+  color: var(--ed-accent);
+}
+
+/* ============================================================
+   HERO CTA «Come aboard» — the gallery's one invitation.
+   A composed ink-outline ticket on paper: paper fill, hairline-
+   doubled ink frame, ink label. No champagne, no glow — pure
+   restraint. (Primary action on a light page reads best as a
+   crisp ink frame; the accent stays scarce for the eyebrow.)
+   ============================================================ */
+.landing-v2.style-editoriale .cta {
+  font-family: var(--ed-display);
+  font-weight: 500;
+  font-style: normal;
+  font-size: clamp(1.15rem, 2.6vw, 1.5rem);
+  letter-spacing: var(--ls-2);
+  text-transform: uppercase;
+  color: var(--ed-ink);                 /* ink label — 12:1+ on paper */
+  background: var(--ed-paper);
+  border: 1.5px solid var(--ed-ink);    /* legible edge on paper */
+  border-radius: 0;
+  padding: 22px 52px 20px;
+  box-shadow: none;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+.landing-v2.style-editoriale .cta::before {
+  /* the inner hairline — the doubled editorial frame */
+  inset: 5px;
+  border: 1px solid var(--ed-hair);
+  border-radius: 0;
+}
+@media (min-width: 760px) {
+  .landing-v2.style-editoriale .cta {
+    font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+    padding: 28px 76px 26px;
+  }
+}
+@media (hover: hover) {
+  .landing-v2.style-editoriale .cta:hover {
+    background: var(--ed-ink);          /* invert — calm, confident */
+    color: var(--ed-paper);
+    filter: none;
+    transform: translateY(-2px);
+  }
+  .landing-v2.style-editoriale .cta:hover::before {
+    border-color: rgba(244, 241, 234, 0.4);
+  }
+}
+.landing-v2.style-editoriale .cta:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: none;
+}
+.landing-v2.style-editoriale .cta:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ed-paper), 0 0 0 4px var(--ed-accent);
+}
+
+/* ============================================================
+   POPUP GLASS — keep the base dark glass, but recolour to a
+   warm charcoal-ink so the editorial paper-light type reads,
+   and trade thick borders for hairlines + air.
+   ============================================================ */
+.landing-v2.style-editoriale .book-form,
+.landing-v2.style-editoriale .village-page {
+  color: var(--ed-on-glass);
+  background: rgba(20, 19, 16, 0.62);          /* warm charcoal glass */
+  border: 1px solid rgba(246, 243, 236, 0.14);
+  border-radius: 0;
+  -webkit-backdrop-filter: blur(26px) saturate(108%);
+  backdrop-filter: blur(26px) saturate(108%);
+  box-shadow: 0 40px 90px rgba(10, 9, 7, 0.55);
+}
+
+/* headings + body → editorial light on glass */
+.landing-v2.style-editoriale .section-title,
+.landing-v2.style-editoriale .vp-title {
+  font-family: var(--ed-display);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: var(--ed-on-glass);
+}
+.landing-v2.style-editoriale .vp-lede {
+  font-family: var(--ed-display);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ed-on-glass-80);
+}
+.landing-v2.style-editoriale .vp-body,
+.landing-v2.style-editoriale .confirm-lead {
+  font-family: var(--ed-body);
+  font-size: 1.02rem;
+  line-height: 1.7;                              /* generous magazine leading */
+  color: var(--ed-on-glass-80);
+}
+
+/* eyebrows / labels / subheads → the single accent (soft gold on glass
+   for contrast, accent-bronze elsewhere) — quiet small caps */
+.landing-v2.style-editoriale .section-label,
+.landing-v2.style-editoriale .vp-eyebrow,
+.landing-v2.style-editoriale .vp-subhead {
+  font-family: var(--ed-body);
+  font-weight: 600;
+  letter-spacing: var(--ls-3);
+  text-transform: uppercase;
+  color: var(--gold);                            /* #c9b27a on charcoal ≈ 6:1 */
+  opacity: 1;
+}
+
+/* quiet supporting labels — soft cream, never muddy */
+.landing-v2.style-editoriale .reassure,
+.landing-v2.style-editoriale .box-count,
+.landing-v2.style-editoriale .send-summary,
+.landing-v2.style-editoriale .send-via,
+.landing-v2.style-editoriale .cal-label,
+.landing-v2.style-editoriale .confirm__back,
+.landing-v2.style-editoriale .vp-link {
+  font-family: var(--ed-body);
+  color: var(--ed-on-glass-60) !important;
+  letter-spacing: var(--ls-2);
+}
+.landing-v2.style-editoriale .field-head.step-q {
+  font-family: var(--ed-display);
+  font-weight: 400;
+  font-size: 1.35rem;
+  color: var(--ed-on-glass);
+}
+.landing-v2.style-editoriale .field-head {
+  font-family: var(--ed-body);
+  color: var(--ed-on-glass-80);
+  letter-spacing: var(--ls-2);
+}
+
+/* facts, rows, confirm summary → light on glass */
+.landing-v2.style-editoriale .vp-fact dt,
+.landing-v2.style-editoriale .conf-row span {
+  font-family: var(--ed-body);
+  color: var(--ed-on-glass-60);
+  letter-spacing: var(--ls-1);
+}
+.landing-v2.style-editoriale .vp-fact dd,
+.landing-v2.style-editoriale .conf-row strong {
+  font-family: var(--ed-body);
+  color: var(--ed-on-glass);
+  font-weight: 600;
+}
+
+/* ============================================================
+   PRIMARY DIALOG BUTTONS (.pay / .vp-cta) — the accent ticket.
+   ONE calm bronze fill, INK label, legible edge (gold-CTA law).
+   No glow, no champagne sheen — flat, gallery-grade.
+   ============================================================ */
+.landing-v2.style-editoriale .book-form .pay,
+.landing-v2.style-editoriale .vp-cta {
+  font-family: var(--ed-body);
+  font-weight: 600;
+  font-size: 0.86rem;
+  letter-spacing: var(--ls-3);
+  text-transform: uppercase;
+  color: var(--ed-ink);                          /* ink on bronze */
+  background: #c9b27a;                            /* soft gold/bronze fill */
+  border: 1.5px solid #e3d3a4;                    /* lighter rim → legible edge on charcoal */
+  border-radius: 0;
+  box-shadow: none;
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+.landing-v2.style-editoriale .book-form .pay::before,
+.landing-v2.style-editoriale .vp-cta::before {
+  inset: 5px;
+  border: 1px solid rgba(26, 26, 24, 0.28);      /* inner ink hairline */
+  border-radius: 0;
+}
+@media (hover: hover) {
+  .landing-v2.style-editoriale .book-form .pay:hover,
+  .landing-v2.style-editoriale .vp-cta:hover {
+    background: #d8c490;
+    filter: none;
+    box-shadow: none;
+    transform: translateY(-1px);
+  }
+}
+.landing-v2.style-editoriale .book-form .pay:active,
+.landing-v2.style-editoriale .vp-cta:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: none;
+}
+.landing-v2.style-editoriale .book-form .pay:focus-visible,
+.landing-v2.style-editoriale .vp-cta:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(20, 19, 16, 0.9), 0 0 0 4px #e3d3a4;
+}
+
+/* secondary / ghost — hairline outline, light label, no fill */
+.landing-v2.style-editoriale .book-form .pay.pay--ghost {
+  background: transparent;
+  color: var(--ed-on-glass);
+  border-color: rgba(246, 243, 236, 0.45);
+}
+.landing-v2.style-editoriale .book-form .pay.pay--ghost::before {
+  border-color: rgba(246, 243, 236, 0.18);
+}
+@media (hover: hover) {
+  .landing-v2.style-editoriale .book-form .pay.pay--ghost:hover {
+    background: rgba(246, 243, 236, 0.08);
+  }
+}
+
+/* ============================================================
+   CALENDAR PAIR — match the editorial ticket (flat bronze, ink).
+   ============================================================ */
+.landing-v2.style-editoriale .cal-btn {
+  font-family: var(--ed-body);
+  font-weight: 600;
+  letter-spacing: var(--ls-2);
+  color: var(--ed-ink);
+  background: #c9b27a;
+  border: 1.5px solid #e3d3a4;
+  border-radius: 0;
+  box-shadow: none;
+}
+@media (hover: hover) {
+  .landing-v2.style-editoriale .cal-btn:hover {
+    background: #d8c490;
+    filter: none;
+    transform: translateY(-1px);
+  }
+}
+
+/* ============================================================
+   CHOICE / TOGGLE / FIELD TILES — hairline rectangles on glass.
+   Selected = the accent, flat. No rounded edges, no heavy fills.
+   ============================================================ */
+.landing-v2.style-editoriale .choice {
+  background: rgba(246, 243, 236, 0.05);
+  border: 1px solid rgba(246, 243, 236, 0.22);
+  border-radius: 0;
+  color: var(--ed-on-glass);
+}
+.landing-v2.style-editoriale .choice.is-sel {
+  border-color: #c9b27a;
+  background: rgba(201, 178, 122, 0.16);
+  box-shadow: none;
+}
+.landing-v2.style-editoriale .choice-label {
+  font-family: var(--ed-display);
+  font-weight: 500;
+  color: var(--ed-on-glass);
+}
+.landing-v2.style-editoriale .choice-sub {
+  font-family: var(--ed-body);
+  color: var(--ed-on-glass-60);
+}
+.landing-v2.style-editoriale .choice--more {
+  border-style: dashed;
+}
+
+.landing-v2.style-editoriale .toggle-row {
+  font-family: var(--ed-body);
+  border: 1px solid rgba(246, 243, 236, 0.2);
+  border-radius: 0;
+  background: rgba(246, 243, 236, 0.05);
+  color: var(--ed-on-glass);
+  letter-spacing: var(--ls-1);
+}
+.landing-v2.style-editoriale .toggle-row.is-on {
+  border-color: #c9b27a;
+}
+.landing-v2.style-editoriale .toggle-row.is-on .switch {
+  background: var(--ed-accent);   /* accent, not green — one accent only */
+}
+
+/* the chevron caret — a fine accent mark, no icon weight */
+.landing-v2.style-editoriale .dq__caret {
+  border-right-color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+/* glass inputs — hairline underline feel, light text */
+.landing-v2.style-editoriale .book-form input,
+.landing-v2.style-editoriale .contact-field input,
+.landing-v2.style-editoriale .book-form select,
+.landing-v2.style-editoriale .book-form textarea {
+  font-family: var(--ed-body);
+  background: rgba(246, 243, 236, 0.06);
+  color: var(--ed-on-glass);
+  border: 1px solid rgba(246, 243, 236, 0.28);
+  border-radius: 0;
+}
+.landing-v2.style-editoriale .book-form input:focus,
+.landing-v2.style-editoriale .contact-field input:focus {
+  border-color: #c9b27a;
+  box-shadow: 0 0 0 2px rgba(201, 178, 122, 0.3);
+}
+
+/* ============================================================
+   PRICE / TOTAL — large editorial serif numerals.
+   ============================================================ */
+.landing-v2.style-editoriale .book-form .meta,
+.landing-v2.style-editoriale .book-form .send-summary {
+  font-family: var(--ed-body);
+  color: var(--ed-on-glass-80);
+}
+.landing-v2.style-editoriale .book-form .meta .meta-dot {
+  color: var(--gold);
+}
+.landing-v2.style-editoriale .book-form .price-note,
+.landing-v2.style-editoriale .book-form .total-row .t-label,
+.landing-v2.style-editoriale .book-form .t-per {
+  font-family: var(--ed-body);
+  color: var(--ed-on-glass-80);
+}
+.landing-v2.style-editoriale .book-form .total-row .t-val {
+  font-family: var(--ed-display);
+  font-weight: 500;
+  font-size: 2.8rem;
+  color: var(--ed-on-glass);
+}
+
+/* ============================================================
+   THE HUB — Kristian: NO ICONS. Turn the icon tiles into a
+   clean editorial index: typographic plates, hairline frame,
+   no glyph. We HIDE the svg icon and let the label carry it.
+   ============================================================ */
+.landing-v2.style-editoriale .hub-tile__ic {
+  background: transparent;
+  border: 1px solid var(--ed-hair);
+  box-shadow: none;
+  border-radius: 0;
+}
+.landing-v2.style-editoriale .hub-tile__ic svg {
+  display: none;                  /* NO icons — index reads as type */
+}
+.landing-v2.style-editoriale .hub-tile:hover .hub-tile__ic {
+  background: rgba(124, 106, 60, 0.08);
+  border-color: var(--ed-accent);
+  box-shadow: none;
+  transform: translateY(-2px);
+}
+.landing-v2.style-editoriale .hub-tile__lbl {
+  font-family: var(--ed-display);
+  font-weight: 500;
+  font-size: 1.02rem;
+  letter-spacing: var(--ls-1);
+  color: var(--ed-on-glass);
+}
+
+/* ============================================================
+   CUSTOMER-SERVICE OPTIONS — hairline list rows, no chrome.
+   ============================================================ */
+.landing-v2.style-editoriale .cs-opt {
+  font-family: var(--ed-body);
+  background: rgba(246, 243, 236, 0.05);
+  border: 1px solid rgba(246, 243, 236, 0.2);
+  border-radius: 0;
+  color: var(--ed-on-glass);
+}
+@media (hover: hover) {
+  .landing-v2.style-editoriale .cs-opt:hover {
+    background: rgba(246, 243, 236, 0.1);
+  }
+}
+.landing-v2.style-editoriale .cs-opt b {
+  font-family: var(--ed-display);
+  font-weight: 600;
+  color: var(--ed-on-glass);
+}
+.landing-v2.style-editoriale .cs-opt span span {
+  color: var(--ed-on-glass-60);
+}
+
+/* ============================================================
+   FOOTER LINKS — script becomes restrained italic serif.
+   «Read more» + customer-service: quiet italic, underline-on-air.
+   ============================================================ */
+.landing-v2.style-editoriale .vp-read {
+  font-family: var(--ed-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.25rem;
+  color: var(--ed-on-glass);
+  border: 1px solid rgba(246, 243, 236, 0.4);
+  border-radius: 0;
+  background-color: rgba(246, 243, 236, 0.04);
+}
+@media (hover: hover) {
+  .landing-v2.style-editoriale .vp-read:hover {
+    background-color: rgba(246, 243, 236, 0.1);
+    filter: none;
+  }
+}
+.landing-v2.style-editoriale .cs-link {
+  font-family: var(--ed-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.4rem;
+  color: var(--ed-on-glass);
+  text-decoration-color: var(--gold);
+  text-underline-offset: 6px;
+}
+@media (min-width: 760px) {
+  .landing-v2.style-editoriale .cs-link {
+    font-size: 1.7rem;
+  }
+}
+
+.landing-v2.style-editoriale .vp-nav button {
+  font-family: var(--ed-display);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--gold);
+}
+.landing-v2.style-editoriale .vp-link {
+  font-family: var(--ed-display);
+  font-style: italic;
+}
+
+/* included-list bullets → the single accent dot, refined */
+.landing-v2.style-editoriale .vp-incl li {
+  font-family: var(--ed-body);
+  color: var(--ed-on-glass-80);
+}
+.landing-v2.style-editoriale .vp-incl li::before {
+  color: var(--gold);
+}
+
+/* ============================================================
+   WIKI LINKS — quiet accent italic.
+   ============================================================ */
+.landing-v2.style-editoriale .wiki-link {
+  font-family: var(--ed-display);
+  font-style: italic;
+  color: var(--gold);
+}
+
+/* ============================================================
+   VILLAGE SIGNS / WOOD LABELS — keep structure; quiet the
+   sign typography into the editorial sans-serif-free voice.
+   (These are SVG-driven; only the embedded text class is here.)
+   ============================================================ */
+.landing-v2.style-editoriale .woodsign-text {
+  font-family: var(--ed-body);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+/* ============================================================
+   CONTACT FORM, RESCODE — sharp + hairline (already 0 radius).
+   ============================================================ */
+.landing-v2.style-editoriale .rescode-box {
+  border-radius: 0;
+}
+
+/* ============================================================
+   MOBILE — the magazine cover must be beautiful + legible on a
+   phone first. Larger leading, comfortable taps, no overflow.
+   ============================================================ */
+@media (max-width: 640px) {
+  .landing-v2.style-editoriale .hero .eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;       /* tighten so wide tracking never overflows */
+  }
+  .landing-v2.style-editoriale .hero h1 {
+    font-size: clamp(3rem, 18vw, 5rem);
+    line-height: 0.98;
+  }
+  .landing-v2.style-editoriale .hero .tagline {
+    font-size: clamp(1.15rem, 5.6vw, 1.6rem);
+    line-height: 1.45;
+  }
+  .landing-v2.style-editoriale .cta {
+    width: 100%;
+    max-width: 360px;
+    font-size: 1.1rem;
+    letter-spacing: var(--ls-2);
+    padding: 18px var(--s5);
+  }
+  /* generous reading on glass when the card is small */
+  .landing-v2.style-editoriale .vp-body,
+  .landing-v2.style-editoriale .confirm-lead {
+    font-size: 1.05rem;
+    line-height: 1.72;
+  }
+}
+@media (max-width: 380px) {
+  .landing-v2.style-editoriale .cta {
+    font-size: 1rem;
+    letter-spacing: var(--ls-1);
+    padding: 16px var(--s4);
+  }
+}

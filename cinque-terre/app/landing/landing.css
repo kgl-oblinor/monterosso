@@ -1966,3 +1966,47 @@ body {
 .landing-v2.popup-open .theme-toggle {
   display: none !important;
 }
+
+/* ── Style switcher — 7 complete looks, discreet stack top-right under the bg dots ── */
+.landing-v2 .style-switch {
+  position: fixed;
+  top: 248px;
+  right: 18px;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+}
+.landing-v2 .style-chip {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(253, 246, 234, 0.72);
+  background: rgba(7, 24, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 4px 9px;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.landing-v2 .style-chip:hover { color: #fff; }
+.landing-v2 .style-chip.is-sel {
+  color: #07182a;
+  background: var(--gold);
+  border-color: var(--gold);
+}
+.landing-v2.popup-open .style-switch { display: none; }
+@media (max-width: 640px) {
+  .landing-v2 .style-switch {
+    top: auto;
+    bottom: 12px;
+    right: 8px;
+    left: 8px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .landing-v2 .style-chip { font-size: 10px; padding: 3px 7px; }
+}

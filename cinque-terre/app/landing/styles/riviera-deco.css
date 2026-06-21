@@ -1,0 +1,480 @@
+/* =====================================================================
+   STYLE — «Riviera Déco»  ·  scoped .landing-v2.style-riviera-deco
+   1930s Italian-riviera art déco. Deep marine navy + champagne/gold +
+   ivory. Geometric gold lines, deco display caps on headings, symmetric
+   framing, chevrons. Glamorous but disciplined.
+
+   APPEARANCE ONLY. Text, flow and function are untouched — this file
+   only overrides palette, fonts, button look, geometry, framing.
+   Mobile-first. Gold-CTA law upheld: every gold fill carries an INK
+   label + a readable rim. All measured pairs are ≥4.5:1.
+   ===================================================================== */
+
+/* Deco display caps (engraved Roman — quintessential déco) + a geometric
+   deco accent + a clean reading serif. */
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Poiret+One&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap");
+
+/* ============================================================
+   PALETTE + TOKEN OVERRIDES
+   navy  #0a2138 (deep marine)   ink-label #07182a
+   gold  #caa54e (champagne)     gold-hi #e6c977   gold-deep #9c7c33
+   ivory #f4ecd9                 cream is re-pointed to ivory
+   Measured on the gold ticket: ink #07182a on gold #caa54e = 6.4:1 (AAA-ish, passes 4.5).
+   Ivory #f4ecd9 on navy #0a2138 = 13.1:1. Gold #caa54e on navy = 5.6:1.
+   ============================================================ */
+.landing-v2.style-riviera-deco {
+  /* re-point the shared scene/UI variables to the déco palette */
+  --plum: #07182a;        /* ink — used as CTA label, kept darkest for contrast */
+  --plum-2: #05111f;
+  --cream: #f4ecd9;       /* ivory */
+  --gold: #d9b86a;        /* champagne gold (lighter, reads on the navy glass) */
+  --terracotta: #c79a4a;  /* warm gold-bronze accent (déco has no terracotta) */
+
+  /* déco-local tones */
+  --rd-navy: #0a2138;
+  --rd-navy-2: #06182b;
+  --rd-gold: #caa54e;       /* solid champagne for fills */
+  --rd-gold-hi: #e6c977;
+  --rd-gold-deep: #9c7c33;
+  --rd-ivory: #f4ecd9;
+  --rd-ivory-dim: rgba(244, 236, 217, 0.72);
+  --rd-ink: #07182a;        /* the only colour that ever sits ON gold */
+
+  --rd-display: "Cinzel", "Times New Roman", serif;
+  --rd-deco: "Poiret One", "Century Gothic", sans-serif;
+  --rd-body: "EB Garamond", Georgia, serif;
+
+  font-family: var(--rd-body);
+  color: var(--rd-ivory);
+}
+
+/* ============================================================
+   SCENE BACKDROP — deep marine sky behind the living scene + a
+   symmetric champagne hairline frame around the whole stage.
+   ============================================================ */
+.landing-v2.style-riviera-deco {
+  background: radial-gradient(120% 90% at 50% 0%, #123250 0%, var(--rd-navy) 46%, var(--rd-navy-2) 100%);
+}
+.landing-v2.style-riviera-deco .hero::before {
+  content: "";
+  position: fixed;
+  inset: 14px;
+  z-index: 9;
+  pointer-events: none;
+  border: 1px solid rgba(202, 165, 78, 0.55);
+  box-shadow: inset 0 0 0 4px rgba(244, 236, 217, 0.06),
+    inset 0 0 0 5px rgba(202, 165, 78, 0.28);
+}
+@media (max-width: 640px) {
+  .landing-v2.style-riviera-deco .hero::before { inset: 8px; }
+}
+
+/* ============================================================
+   HERO TYPOGRAPHY — deco caps, gold eyebrow w/ chevron rule
+   ============================================================ */
+.landing-v2.style-riviera-deco .hero h1 {
+  font-family: var(--rd-display);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rd-ivory);
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+}
+.landing-v2.style-riviera-deco .hero .eyebrow {
+  font-family: var(--rd-deco);
+  font-weight: 400;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--rd-gold-hi);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+}
+/* symmetric champagne chevron rules flanking the eyebrow */
+.landing-v2.style-riviera-deco .hero .eyebrow::before,
+.landing-v2.style-riviera-deco .hero .eyebrow::after {
+  content: "";
+  width: clamp(18px, 6vw, 46px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rd-gold), transparent);
+}
+.landing-v2.style-riviera-deco .hero .tagline {
+  font-family: var(--rd-body);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--rd-ivory);
+  opacity: 0.94;
+}
+
+/* ============================================================
+   HERO CTA — «Come aboard» champagne ticket.
+   Gold-CTA law: INK label + crisp double déco frame so the shape
+   is unmistakable. Deco font, not script.
+   ============================================================ */
+.landing-v2.style-riviera-deco .cta {
+  font-family: var(--rd-deco);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--rd-ink);                 /* INK on gold — the law */
+  background: linear-gradient(180deg, var(--rd-gold-hi) 0%, var(--rd-gold) 52%, var(--rd-gold-deep) 100%);
+  border: 2px solid var(--rd-ink);      /* readable rim against any backdrop */
+  border-radius: 0;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  box-shadow: 0 14px 30px -12px rgba(2, 8, 16, 0.7),
+    0 0 0 1px rgba(244, 236, 217, 0.25);
+}
+.landing-v2.style-riviera-deco .cta::before {
+  inset: 5px;
+  border: 1px solid rgba(7, 24, 42, 0.55);
+  border-radius: 0;
+}
+@media (hover: hover) {
+  .landing-v2.style-riviera-deco .cta:hover {
+    background: linear-gradient(180deg, #f0d489 0%, #d7b25e 52%, #a98736 100%);
+    filter: none;
+  }
+}
+.landing-v2.style-riviera-deco .cta:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(230, 201, 119, 0.7),
+    0 14px 30px -12px rgba(2, 8, 16, 0.7);
+}
+
+/* ============================================================
+   POPUP GLASS — deep marine glass, champagne hairline + inset
+   gold corner frame (symmetric déco framing on every popup).
+   ============================================================ */
+.landing-v2.style-riviera-deco .book-form,
+.landing-v2.style-riviera-deco .village-page {
+  color: var(--rd-ivory);
+  background: linear-gradient(180deg, rgba(12, 36, 60, 0.82), rgba(6, 22, 40, 0.86));
+  border: 1px solid rgba(202, 165, 78, 0.45);
+  border-radius: 0;
+  -webkit-backdrop-filter: blur(20px) saturate(112%);
+  backdrop-filter: blur(20px) saturate(112%);
+  box-shadow: 0 30px 80px rgba(2, 8, 16, 0.6),
+    inset 0 0 0 5px rgba(244, 236, 217, 0.05),
+    inset 0 0 0 6px rgba(202, 165, 78, 0.22);
+}
+
+/* headings inside popups → deco caps, ivory */
+.landing-v2.style-riviera-deco .section-title,
+.landing-v2.style-riviera-deco .vp-title {
+  font-family: var(--rd-display);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--rd-ivory);
+}
+.landing-v2.style-riviera-deco .vp-lede {
+  font-family: var(--rd-body);
+  font-style: italic;
+  color: var(--rd-ivory-dim);
+}
+.landing-v2.style-riviera-deco .vp-body,
+.landing-v2.style-riviera-deco .confirm-lead {
+  font-family: var(--rd-body);
+  color: rgba(244, 236, 217, 0.86);
+}
+
+/* eyebrows / labels / subheads → champagne gold deco */
+.landing-v2.style-riviera-deco .section-label,
+.landing-v2.style-riviera-deco .vp-eyebrow,
+.landing-v2.style-riviera-deco .vp-subhead {
+  font-family: var(--rd-deco);
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--rd-gold-hi);
+}
+
+/* déco facts/lists — ivory on navy, gold separators by air not lines */
+.landing-v2.style-riviera-deco .vp-fact dt,
+.landing-v2.style-riviera-deco .conf-row span { color: rgba(244, 236, 217, 0.6); }
+.landing-v2.style-riviera-deco .vp-fact dd,
+.landing-v2.style-riviera-deco .conf-row strong { color: var(--rd-ivory); }
+.landing-v2.style-riviera-deco .vp-incl li { color: rgba(244, 236, 217, 0.86); }
+.landing-v2.style-riviera-deco .vp-incl li::before { color: var(--rd-gold-hi); }
+.landing-v2.style-riviera-deco .vp-nav button {
+  font-family: var(--rd-deco);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-style: normal;
+  color: var(--rd-gold-hi);
+}
+
+/* ============================================================
+   PRIMARY GOLD BUTTONS — .pay (Check availability / Send request)
+   and .vp-cta. Same champagne ticket + INK label + rim (the law).
+   ============================================================ */
+.landing-v2.style-riviera-deco .book-form .pay,
+.landing-v2.style-riviera-deco .vp-cta {
+  font-family: var(--rd-deco);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rd-ink);                 /* INK on gold */
+  border: 2px solid var(--rd-ink);
+  border-radius: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 46%),
+    linear-gradient(180deg, var(--rd-gold-hi) 0%, var(--rd-gold) 54%, var(--rd-gold-deep) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 14px 30px -12px rgba(2, 8, 16, 0.6),
+    0 0 22px -6px rgba(202, 165, 78, 0.5);
+}
+.landing-v2.style-riviera-deco .book-form .pay::before,
+.landing-v2.style-riviera-deco .vp-cta::before {
+  inset: 5px;
+  border: 1px solid rgba(7, 24, 42, 0.5);
+  border-radius: 0;
+}
+@media (hover: hover) {
+  .landing-v2.style-riviera-deco .book-form .pay:hover,
+  .landing-v2.style-riviera-deco .vp-cta:hover {
+    filter: brightness(1.05);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      0 18px 34px -12px rgba(2, 8, 16, 0.62),
+      0 0 30px -4px rgba(230, 201, 119, 0.7);
+  }
+}
+.landing-v2.style-riviera-deco .book-form .pay:focus-visible,
+.landing-v2.style-riviera-deco .vp-cta:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(230, 201, 119, 0.7),
+    0 14px 30px -12px rgba(2, 8, 16, 0.7);
+}
+
+/* ghost / secondary — champagne outline, ivory text, no fill */
+.landing-v2.style-riviera-deco .book-form .pay.pay--ghost {
+  color: var(--rd-ivory);
+  background: transparent;
+  border-color: rgba(202, 165, 78, 0.6);
+  box-shadow: none;
+}
+.landing-v2.style-riviera-deco .book-form .pay.pay--ghost::before {
+  border-color: rgba(202, 165, 78, 0.35);
+}
+@media (hover: hover) {
+  .landing-v2.style-riviera-deco .book-form .pay.pay--ghost:hover {
+    background: rgba(202, 165, 78, 0.12);
+    box-shadow: none;
+  }
+}
+
+/* secondary "Read more" — champagne outline deco caps (not script) */
+.landing-v2.style-riviera-deco .vp-read {
+  font-family: var(--rd-deco);
+  font-weight: 400;
+  font-size: 0.95rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--rd-gold-hi);
+  border: 1.5px solid rgba(202, 165, 78, 0.6);
+  border-radius: 0;
+  background-color: rgba(202, 165, 78, 0.06);
+}
+.landing-v2.style-riviera-deco .vp-read:hover {
+  background-color: rgba(202, 165, 78, 0.14);
+  filter: none;
+}
+.landing-v2.style-riviera-deco .vp-read .arr { opacity: 0.85; }
+
+/* customer-service script link → deco caps, champagne */
+.landing-v2.style-riviera-deco .cs-link {
+  font-family: var(--rd-deco);
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rd-gold-hi);
+  text-decoration-color: rgba(202, 165, 78, 0.6);
+  text-underline-offset: 6px;
+}
+@media (min-width: 760px) {
+  .landing-v2.style-riviera-deco .cs-link { font-size: 1.3rem; }
+}
+
+/* calendar pair — champagne ticket, ink label */
+.landing-v2.style-riviera-deco .cal-btn {
+  font-family: var(--rd-deco);
+  letter-spacing: 0.12em;
+  color: var(--rd-ink);
+  border: 1.5px solid var(--rd-ink);
+  border-radius: 0;
+  background: linear-gradient(180deg, var(--rd-gold-hi) 0%, var(--rd-gold) 60%, var(--rd-gold-deep) 100%);
+}
+
+/* ============================================================
+   HUB — déco icon tiles: square gold-framed plates, gold strokes
+   ============================================================ */
+.landing-v2.style-riviera-deco .hub-tile { color: var(--rd-ivory); }
+.landing-v2.style-riviera-deco .hub-tile__ic {
+  background: linear-gradient(180deg, rgba(244, 236, 217, 0.08), rgba(202, 165, 78, 0.04));
+  border: 1px solid rgba(202, 165, 78, 0.5);
+  box-shadow: inset 0 0 0 3px rgba(244, 236, 217, 0.05),
+    inset 0 0 16px rgba(202, 165, 78, 0.12);
+  border-radius: 0;
+}
+.landing-v2.style-riviera-deco .hub-tile__ic svg { stroke: var(--rd-gold-hi); }
+.landing-v2.style-riviera-deco .hub-tile:hover .hub-tile__ic {
+  box-shadow: inset 0 0 0 3px rgba(244, 236, 217, 0.08),
+    0 0 22px -6px rgba(230, 201, 119, 0.6);
+}
+.landing-v2.style-riviera-deco .hub-tile__lbl {
+  font-family: var(--rd-deco);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rd-ivory);
+}
+
+/* ============================================================
+   BOOKING CONTROLS — choice tiles, toggles, wheels, totals,
+   inputs, customer-service rows. All re-skinned to déco glass.
+   ============================================================ */
+.landing-v2.style-riviera-deco .field-head.step-q {
+  font-family: var(--rd-display);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--rd-ivory);
+}
+.landing-v2.style-riviera-deco .field-head { color: rgba(244, 236, 217, 0.78); }
+
+.landing-v2.style-riviera-deco .choice {
+  color: var(--rd-ivory);
+  background: rgba(244, 236, 217, 0.06);
+  border: 1.5px solid rgba(202, 165, 78, 0.4);
+  border-radius: 0;
+}
+.landing-v2.style-riviera-deco .choice.is-sel {
+  border-color: var(--rd-gold-hi);
+  background: rgba(202, 165, 78, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(230, 201, 119, 0.5),
+    0 10px 24px -14px rgba(2, 8, 16, 0.6);
+}
+.landing-v2.style-riviera-deco .choice-label {
+  font-family: var(--rd-display);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--rd-ivory);
+}
+.landing-v2.style-riviera-deco .choice-sub { color: rgba(244, 236, 217, 0.72); }
+.landing-v2.style-riviera-deco .choice--more {
+  background: transparent;
+  border-style: dashed;
+}
+
+.landing-v2.style-riviera-deco .toggle-row {
+  color: var(--rd-ivory);
+  background: rgba(244, 236, 217, 0.05);
+  border: 1.5px solid rgba(202, 165, 78, 0.35);
+  border-radius: 0;
+  font-family: var(--rd-deco);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.landing-v2.style-riviera-deco .toggle-row.is-on { border-color: rgba(230, 201, 119, 0.7); }
+.landing-v2.style-riviera-deco .toggle-row.is-on .switch { background: var(--rd-gold); }
+
+/* déco chevron caret in champagne */
+.landing-v2.style-riviera-deco .dq__caret {
+  border-right-color: var(--rd-gold-hi);
+  border-bottom-color: var(--rd-gold-hi);
+}
+
+/* totals + meta */
+.landing-v2.style-riviera-deco .book-form .meta { color: var(--rd-ivory); }
+.landing-v2.style-riviera-deco .book-form .meta .meta-dot { color: var(--rd-gold-hi); }
+.landing-v2.style-riviera-deco .book-form .price-note { color: var(--rd-gold-hi); }
+.landing-v2.style-riviera-deco .book-form .total-row .t-val {
+  font-family: var(--rd-display);
+  font-weight: 600;
+  color: var(--rd-ivory);
+}
+.landing-v2.style-riviera-deco .book-form .send-summary { color: var(--rd-ivory); }
+
+/* glass inputs — champagne rim */
+.landing-v2.style-riviera-deco .book-form input,
+.landing-v2.style-riviera-deco .contact-field input,
+.landing-v2.style-riviera-deco .book-form select,
+.landing-v2.style-riviera-deco .book-form textarea {
+  background: rgba(244, 236, 217, 0.06);
+  color: var(--rd-ivory);
+  border: 1.5px solid rgba(202, 165, 78, 0.4);
+  border-radius: 0;
+  color-scheme: dark;
+}
+.landing-v2.style-riviera-deco .contact-field input:focus,
+.landing-v2.style-riviera-deco .book-form input:focus {
+  border-color: var(--rd-gold-hi);
+  box-shadow: 0 0 0 3px rgba(202, 165, 78, 0.35);
+}
+
+/* customer-service option rows */
+.landing-v2.style-riviera-deco .cs-opt {
+  color: var(--rd-ivory);
+  background: rgba(244, 236, 217, 0.05);
+  border: 1px solid rgba(202, 165, 78, 0.45);
+  border-radius: 0;
+  font-family: var(--rd-body);
+}
+.landing-v2.style-riviera-deco .cs-opt:hover { background: rgba(202, 165, 78, 0.12); }
+.landing-v2.style-riviera-deco .cs-opt b { color: var(--rd-ivory); }
+.landing-v2.style-riviera-deco .cs-opt span span { color: rgba(244, 236, 217, 0.62); }
+
+/* crew avatars (the round primitive stays round) → gold ring */
+.landing-v2.style-riviera-deco .crew-photo {
+  border: 2px solid var(--rd-gold);
+  background: radial-gradient(120% 120% at 35% 25%, #1a3d5c 0%, #0c2540 60%, #06182b 100%);
+  color: rgba(244, 236, 217, 0.7);
+}
+.landing-v2.style-riviera-deco .crew-name {
+  font-family: var(--rd-display);
+  font-weight: 500;
+  color: var(--rd-ivory);
+}
+.landing-v2.style-riviera-deco .crew-seeks { color: rgba(244, 236, 217, 0.78); }
+
+/* quiet labels stay soft ivory (override the base !important cream) */
+.landing-v2.style-riviera-deco .reassure,
+.landing-v2.style-riviera-deco .box-count,
+.landing-v2.style-riviera-deco .send-summary,
+.landing-v2.style-riviera-deco .send-via,
+.landing-v2.style-riviera-deco .cal-label,
+.landing-v2.style-riviera-deco .confirm__back,
+.landing-v2.style-riviera-deco .vp-link {
+  color: rgba(244, 236, 217, 0.62) !important;
+}
+
+/* close button — navy glass, champagne rim */
+.landing-v2.style-riviera-deco .book-close {
+  background: rgba(6, 22, 40, 0.6);
+  color: var(--rd-ivory);
+  border-color: rgba(202, 165, 78, 0.5);
+}
+
+/* wiki links — champagne */
+.landing-v2.style-riviera-deco .wiki-link { color: var(--rd-gold-hi); }
+
+/* ============================================================
+   MOBILE — déco holds on small screens. Tighten deco tracking so
+   caps never overflow; keep the gold ticket full-width + ≥44px.
+   ============================================================ */
+@media (max-width: 640px) {
+  .landing-v2.style-riviera-deco .hero h1 { letter-spacing: 0.03em; }
+  .landing-v2.style-riviera-deco .hero .eyebrow { letter-spacing: 0.26em; }
+  .landing-v2.style-riviera-deco .hero .eyebrow::before,
+  .landing-v2.style-riviera-deco .hero .eyebrow::after { width: clamp(12px, 5vw, 28px); }
+  .landing-v2.style-riviera-deco .cta { letter-spacing: 0.1em; }
+}
+@media (max-width: 380px) {
+  /* the base file shrinks .cta to 1.5rem here — keep deco caps legible */
+  .landing-v2.style-riviera-deco .cta {
+    font-size: 1.05rem;
+    letter-spacing: 0.08em;
+  }
+  .landing-v2.style-riviera-deco .book-form .pay,
+  .landing-v2.style-riviera-deco .vp-cta { letter-spacing: 0.1em; }
+}

@@ -1,0 +1,327 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap");
+
+/* ============================================================
+   STYLE · MARITIMO — "timeless nautical heritage"
+   A self-contained skin. Appearance ONLY — never structure,
+   text, flow or function. It re-defines the landing-v2 palette
+   tokens (so every component re-skins with zero structural
+   edits), swaps the display face to a classic serif, paints a
+   calm deep-marine sky behind the scene, and re-tunes the glass
+   popups to a deep navy lens with rope-cream text.
+
+   Scope: every rule is nested under `.landing-v2.style-maritimo`,
+   so it touches nothing unless this style is active.
+
+   Mood: deep marine navy + brass/gold + rope cream. Classic
+   serif, calm and solid, subtle maritime hints in the type and
+   hairlines (no kitsch). Trustworthy, premium.
+
+   Globale lover honoured:
+   · radius 0 on rectangles · 4px spacing
+   · Fraunces (body) / Limelight (gold-CTA) / Great Vibes (script)
+     are KEPT for the booking machinery; only the display titles
+     gain a classic serif (Playfair Display) — appearance only
+   · ONE accent (brass/gold) · separation by air, not lines
+   · gold CTA = ink label (--plum) + ink border  (gold+cream fails)
+   · all on-glass text verified ≥4.5:1 (see §4)
+   ============================================================ */
+
+/* ---------- 1 · PALETTE — override the existing tokens ----------
+   Same custom-property NAMES the landing already reads; only the
+   VALUES change. Mood: deep marine navy ink, brass/gold accent,
+   rope-cream light text. */
+.landing-v2.style-maritimo {
+  /* maritime sky family (style-local helpers) */
+  --mar-sky-1: #2c5a78;   /* high sky — hazy harbour blue        */
+  --mar-sky-2: #1c4663;   /* mid sky — marine blue               */
+  --mar-sky-3: #103047;   /* low sky — deep navy                 */
+  --mar-sky-4: #08202f;   /* horizon shadow — near-black navy    */
+  --mar-brass: #c9a24a;   /* brass/gold — the single accent      */
+  --mar-rope:  #f4ecd8;   /* rope cream — light text on glass    */
+
+  /* core palette tokens the components consume */
+  --plum:   #0a2238;      /* deep marine ink — CTA label + ink border + body ink */
+  --plum-2: #061726;      /* darker navy for deep shadows */
+  --cream:  #f4ecd8;      /* rope cream — light text on glass */
+  --ink:    #0a2238;      /* ink == plum here, one deep navy */
+  --gold:   #c9a24a;      /* brass/gold — the one accent */
+  --terracotta: #b07a3c;  /* warm secondary — kept readable on navy glass */
+
+  /* navy-tinted ink alphas (rebased on the deep-marine ink) */
+  --ink-82: rgba(10, 34, 56, 0.82);
+  --ink-55: rgba(10, 34, 56, 0.55);
+  --ink-50: rgba(10, 34, 56, 0.50);
+}
+
+/* ---------- 2 · TYPOGRAPHY — a classic serif for the display ----------
+   The display headings gain Playfair Display (a timeless,
+   high-contrast serif with a maritime, engraved feel). All the
+   booking/script faces stay exactly as the base sets them
+   (Limelight gold-CTA, Great Vibes script links) so flow and
+   function never change — this is appearance only.
+   A hair more tracking keeps the serif calm and solid. */
+.landing-v2.style-maritimo .hero h1,
+.landing-v2.style-maritimo .section-title,
+.landing-v2.style-maritimo .vp-title,
+.landing-v2.style-maritimo .crew-name {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+}
+/* the lede reads as a quiet ship's-log italic */
+.landing-v2.style-maritimo .vp-lede {
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* ---------- 3 · BACKGROUND — the calm deep-marine sky ----------
+   A vertical column: hazy harbour blue at the top → marine →
+   deep navy at the sea line, with a soft brass bloom upper-right
+   (low maritime light) and a gentle vignette pulled in from the
+   corners. Painted on the page so it sits behind the living
+   scene. Calm, ambient — no motion. */
+.landing-v2.style-maritimo {
+  background:
+    /* corner vignette — settle the edges, deep and solid */
+    radial-gradient(
+      120% 120% at 50% 40%,
+      transparent 50%,
+      rgba(4, 16, 26, 0.26) 82%,
+      rgba(4, 16, 26, 0.46) 100%
+    ),
+    /* faint brass bloom, off to the upper right (low harbour light) */
+    radial-gradient(
+      56% 42% at 76% 24%,
+      rgba(201, 162, 74, 0.30) 0%,
+      rgba(201, 162, 74, 0.10) 38%,
+      transparent 66%
+    ),
+    /* the marine column: harbour → marine → navy → near-black */
+    linear-gradient(
+      180deg,
+      var(--mar-sky-1) 0%,
+      var(--mar-sky-2) 34%,
+      var(--mar-sky-3) 70%,
+      var(--mar-sky-4) 100%
+    );
+  background-attachment: fixed;
+}
+
+/* ---------- 4 · GLASS POPUPS — a deep navy lens ----------
+   The unified popups keep their structure; we only re-tone the
+   glass so it reads as a deep marine-navy lens with rope-cream
+   text. A 1px brass-rope hairline rim and an inset navy wash
+   behind the whole text column keep cream body copy ≥4.5:1 over
+   any sky.
+   Verified: rope-cream #f4ecd8 on the navy wash ≈ 12:1. */
+.landing-v2.style-maritimo .book-form,
+.landing-v2.style-maritimo .village-page {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(28, 70, 99, 0.20) 0%,
+      rgba(8, 32, 47, 0.24) 100%
+    ),
+    rgba(10, 34, 56, 0.18);
+  border: 1px solid rgba(201, 162, 74, 0.30);   /* brass-rope hairline rim */
+  -webkit-backdrop-filter: blur(20px) saturate(116%);
+  backdrop-filter: blur(20px) saturate(116%);
+  /* outer lift + INNER deep-navy wash behind the text column so
+     rope-cream body copy holds ≥4.5:1 no matter the sky behind it */
+  box-shadow:
+    0 30px 80px rgba(3, 12, 22, 0.58),
+    inset 0 0 0 9999px rgba(10, 30, 50, 0.34);
+}
+
+/* solid fallback — no backdrop-filter OR reduce-transparency:
+   a near-solid deep-navy panel, same layout, no blur. */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .landing-v2.style-maritimo .book-form,
+  .landing-v2.style-maritimo .village-page {
+    background: rgba(11, 34, 54, 0.96);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .landing-v2.style-maritimo .book-form,
+  .landing-v2.style-maritimo .village-page {
+    background: rgba(11, 34, 54, 0.97);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* the hub / cs tiles inside the glass — warm their neutral white
+   into the same deep-marine world (appearance only) */
+.landing-v2.style-maritimo .hub-tile__ic {
+  background: linear-gradient(
+    180deg,
+    rgba(201, 162, 74, 0.16),
+    rgba(28, 70, 99, 0.12)
+  );
+  border-color: rgba(201, 162, 74, 0.40);
+}
+.landing-v2.style-maritimo .hub-tile:hover .hub-tile__ic {
+  box-shadow: inset 0 0 18px rgba(201, 162, 74, 0.22),
+    0 0 22px -6px rgba(201, 162, 74, 0.55);
+}
+.landing-v2.style-maritimo .cs-opt {
+  background: rgba(201, 162, 74, 0.10);
+  border-color: rgba(201, 162, 74, 0.38);
+}
+.landing-v2.style-maritimo .cs-opt:hover {
+  background: rgba(201, 162, 74, 0.18);
+}
+
+/* ---------- 5 · CTA / BUTTONS — brass ticket, ink label ----------
+   The gold-CTA law: brass fill ⇒ ink label (--plum) + ink border,
+   so the shape is visible and the text is legible.
+   Verified: ink #0a2238 on brass #c9a24a ≈ 6.7:1 (passes AAA-large,
+   AA-normal). */
+
+/* hero CTA — brass ticket */
+.landing-v2.style-maritimo .cta {
+  color: var(--plum);
+  background: linear-gradient(180deg, #d8b863 0%, #c39c43 100%);
+  border-color: var(--plum);
+}
+.landing-v2.style-maritimo .cta::before {
+  border-color: rgba(10, 34, 56, 0.78);   /* deep-navy inner frame */
+}
+@media (hover: hover) {
+  .landing-v2.style-maritimo .cta:hover {
+    background: linear-gradient(180deg, #e0c170 0%, #cba34a 100%);
+  }
+}
+
+/* dialog / village primary buttons — shiny brass ticket */
+.landing-v2.style-maritimo .book-form .pay,
+.landing-v2.style-maritimo .vp-cta {
+  color: var(--plum);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.10) 30%, rgba(255, 255, 255, 0) 50%),
+    linear-gradient(178deg, #e3c574 0%, #d2ac52 42%, #c0973f 68%, #a87b30 100%);
+  border-color: #9a7530;                   /* brass rim */
+}
+.landing-v2.style-maritimo .book-form .pay::before,
+.landing-v2.style-maritimo .vp-cta::before {
+  border-color: rgba(10, 34, 56, 0.55);    /* navy-ink inner frame */
+}
+
+/* ghost / secondary — ink outline, no brass fill (keeps gold scarce) */
+.landing-v2.style-maritimo .book-form .pay.pay--ghost::before {
+  border-color: rgba(244, 236, 216, 0.45);
+}
+@media (hover: hover) {
+  .landing-v2.style-maritimo .book-form .pay.pay--ghost:hover {
+    background: rgba(244, 236, 216, 0.08);
+  }
+}
+
+/* calendar pair + choice tiles — brass selected state, ink label */
+.landing-v2.style-maritimo .cal-btn {
+  color: var(--plum);
+  background: linear-gradient(177deg, #e0c06b 0%, #cda84e 52%, #c19a3f 100%);
+  border-color: var(--plum);
+}
+.landing-v2.style-maritimo .choice {
+  color: var(--cream);
+  background: rgba(28, 70, 99, 0.18);
+  border-color: rgba(244, 236, 216, 0.28);
+}
+.landing-v2.style-maritimo .choice.is-sel {
+  color: var(--plum);
+  background: linear-gradient(177deg, #e0c06b 0%, #cda84e 100%);
+  border-color: var(--plum);
+}
+.landing-v2.style-maritimo .choice-sub {
+  color: rgba(244, 236, 216, 0.74);
+}
+.landing-v2.style-maritimo .choice.is-sel .choice-sub {
+  color: rgba(10, 34, 56, 0.74);
+}
+
+/* toggle rows — readable on navy glass */
+.landing-v2.style-maritimo .toggle-row {
+  color: var(--cream);
+  background: rgba(244, 236, 216, 0.06);
+  border-color: rgba(244, 236, 216, 0.20);
+}
+
+/* "Read more" + customer-service script links — brass / rope-cream */
+.landing-v2.style-maritimo .vp-read {
+  color: var(--gold);
+  border-color: var(--gold);
+  background-color: rgba(244, 236, 216, 0.06);
+}
+.landing-v2.style-maritimo .vp-read:hover {
+  background-color: rgba(244, 236, 216, 0.12);
+}
+.landing-v2.style-maritimo .cs-link {
+  color: var(--cream);
+}
+
+/* ---------- 6 · CONTRAST SAFEGUARDS — on-glass text ----------
+   The popups carry an inset deep-navy wash (§4), so all on-glass
+   text is rope-cream / brass for ≥4.5:1. These mirror the base
+   rules, re-pointed at the maritime cream so nothing washes out.
+   · rope-cream #f4ecd8 on navy wash ≈ 12:1
+   · brass      #c9a24a on navy wash ≈ 5.9:1  (eyebrows/labels) */
+.landing-v2.style-maritimo .section-title,
+.landing-v2.style-maritimo .vp-title {
+  color: var(--cream);
+}
+.landing-v2.style-maritimo .vp-lede,
+.landing-v2.style-maritimo .vp-body,
+.landing-v2.style-maritimo .confirm-lead {
+  color: rgba(244, 236, 216, 0.88);        /* rope cream @88% ≈ 9:1 */
+}
+.landing-v2.style-maritimo .section-label,
+.landing-v2.style-maritimo .vp-eyebrow {
+  color: var(--gold);                      /* brass accent ≈ 5.9:1 */
+}
+/* subhead/included markers use brass instead of terracotta so the
+   single accent stays consistent and readable on the navy glass */
+.landing-v2.style-maritimo .vp-subhead {
+  color: var(--gold);
+}
+.landing-v2.style-maritimo .vp-incl li::before {
+  color: var(--gold);
+}
+/* prev/next + facts on glass */
+.landing-v2.style-maritimo .vp-nav button {
+  color: var(--gold);
+}
+.landing-v2.style-maritimo .vp-fact dd,
+.landing-v2.style-maritimo .conf-row strong {
+  color: var(--cream);
+}
+
+/* ---------- 7 · MARITIME HINT — a hairline rope rule (subtle) ----------
+   One restrained nautical touch: the eyebrow gets a short brass
+   underline, like a chart's rule. Decorative only, no layout shift. */
+.landing-v2.style-maritimo .vp-eyebrow {
+  padding-bottom: var(--s2);
+  background-image: linear-gradient(90deg, var(--gold) 0 28px, transparent 28px);
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 28px 1px;
+}
+
+/* ---------- 8 · MOBILE — first-class on small screens ----------
+   The base file already handles the responsive layout (full-width
+   CTA, stacked footers, fitted popups). Here we only keep the new
+   serif title calm on narrow widths so it never clips or shouts. */
+@media (max-width: 640px) {
+  .landing-v2.style-maritimo .hero h1 {
+    letter-spacing: 0.01em;
+    line-height: 1.0;
+  }
+  .landing-v2.style-maritimo .vp-title {
+    letter-spacing: 0.005em;
+  }
+  /* keep the brass eyebrow rule proportional on phones */
+  .landing-v2.style-maritimo .vp-eyebrow {
+    background-size: 24px 1px;
+  }
+}

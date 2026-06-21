@@ -6,6 +6,12 @@ import { tour, WHATSAPP_NUMBER, MEETING_POINT, SKIPPER_NAME } from "../../lib/to
 // 🤍 Built with love on this coast — for vakreste Mandy, always remembered here.
 import Skyline from "./Skyline";
 import SeaClock from "./SeaClock";
+import "./styles/editoriale.css";
+import "./styles/riviera-deco.css";
+import "./styles/studio.css";
+import "./styles/maritimo.css";
+import "./styles/cartolina.css";
+import "./styles/notturno.css";
 import Boat3D from "./Boat3D";
 import Clouds from "./Clouds";
 import Constellations from "./Constellations";
@@ -95,8 +101,28 @@ const ICON = {
   ),
 };
 
+const STYLES = [
+  { key: "", label: "Classic" },
+  { key: "editoriale", label: "Editoriale" },
+  { key: "riviera-deco", label: "Riviera" },
+  { key: "studio", label: "Studio" },
+  { key: "maritimo", label: "Maritimo" },
+  { key: "cartolina", label: "Cartolina" },
+  { key: "notturno", label: "Notturno" },
+];
+
 export default function Landing() {
   const [theme, setTheme] = useState("light");
+  const [styleKey, setStyleKey] = useState("");
+  useEffect(() => {
+    const s = localStorage.getItem("style");
+    if (s) setStyleKey(s);
+  }, []);
+  useEffect(() => {
+    try {
+      localStorage.setItem("style", styleKey);
+    } catch {}
+  }, [styleKey]);
   useEffect(() => {
     const saved = localStorage.getItem("theme");
     if (saved === "dark" || saved === "light") setTheme(saved);
@@ -198,6 +224,7 @@ export default function Landing() {
       className={
         "landing-v2" +
         (bg !== "scene" ? " bg-photo-on" : "") +
+        (styleKey ? " style-" + styleKey : "") +
         (anyOpen ? " popup-open" : "")
       }
     >
@@ -258,6 +285,20 @@ export default function Landing() {
             title={b.label}
             style={{ backgroundImage: `url(${b.src})` }}
           />
+        ))}
+      </div>
+
+      {/* style switcher — 7 complete looks; "Classic" = today (no class) */}
+      <div className="style-switch" role="group" aria-label="Choose a style">
+        {STYLES.map((s) => (
+          <button
+            key={s.key || "classic"}
+            type="button"
+            className={"style-chip" + (styleKey === s.key ? " is-sel" : "")}
+            onClick={() => setStyleKey(s.key)}
+          >
+            {s.label}
+          </button>
         ))}
       </div>
 
