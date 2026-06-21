@@ -16,7 +16,7 @@ Format: `- [ ] <slug> | <title> | angle | facts (with source) | tags`
 
 ## Vernazza
 
-- [ ] vernazza-natural-harbor | The Only Natural Harbour of the Cinque Terre | Vernazza's protected cove and why it shaped the village's seafaring soul. | Vernazza is the only natural port of the Cinque Terre, its harbour sheltered by the cliff promontory beneath the Doria tower (en.wikipedia.org/wiki/Vernazza). | tags: vernazza, harbour, history, sea
+- [x] vernazza-natural-harbor | The Only Natural Harbour of the Cinque Terre | Vernazza's protected cove and why it shaped the village's seafaring soul. | Vernazza is the only natural port of the Cinque Terre, its harbour sheltered by the cliff promontory beneath the Doria tower (en.wikipedia.org/wiki/Vernazza). | tags: vernazza, harbour, history, sea
 - [ ] vernazza-doria-castle | The Doria Tower: A Thousand-Year Lookout Over the Sea | The cylindrical tower crowning Vernazza and its origins as a coastal watch post. | First recorded as a fortified town in 1080; Genoa made it a commercial maritime base in 1209; the cylindrical Doria tower is the oldest part of the fortification, restored in the 20th century (en.wikipedia.org/wiki/Vernazza, atlasobscura.com). | tags: vernazza, history, castle, views
 - [ ] vernazza-belforte-view | Belforte Tower: The Cliff-Top Postcard View | The lookout that frames the most classic photograph of the Cinque Terre. | The Castello Doria and Belforte tower sit atop the promontory protecting Vernazza's cove, offering the village's signature panorama (nomads-travel-guide.com). | tags: vernazza, views, photography, landmarks
 
