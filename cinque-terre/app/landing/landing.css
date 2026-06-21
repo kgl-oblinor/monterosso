@@ -1652,10 +1652,10 @@ body {
   z-index: 2;
   pointer-events: none;
   opacity: 0; /* no stars in daylight */
-  transition: opacity 0.6s ease;
+  transition: opacity 3s ease; /* slowly creep in when night falls */
 }
 [data-theme="dark"] .landing-v2 .constellations {
-  opacity: 0.85; /* only at night */
+  opacity: 0.7; /* only at night, gently transparent */
 }
 .landing-v2 .cn-star {
   fill: #fffae8;
@@ -1679,4 +1679,26 @@ body {
 }
 [data-theme="dark"] .landing-v2 .cn-field {
   fill: #eaf1ff;
+}
+
+/* stars gently twinkle (opacity set per-star via --o; timing via --tw/--td) */
+@keyframes twinkle {
+  0%, 100% { opacity: var(--o, 0.4); }
+  48% { opacity: calc(var(--o, 0.4) * 0.32); }
+}
+.landing-v2 .cn-field,
+.landing-v2 .cn-star {
+  opacity: var(--o, 0.4);
+  animation: twinkle var(--tw, 4s) ease-in-out infinite;
+  animation-delay: var(--td, 0s);
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-v2 .cn-field,
+  .landing-v2 .cn-star { animation: none; }
+}
+
+/* no clouds at night */
+[data-theme="dark"] .landing-v2 .clouds,
+[data-theme="dark"] .clouds {
+  display: none;
 }

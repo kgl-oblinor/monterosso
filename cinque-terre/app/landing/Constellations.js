@@ -125,14 +125,17 @@ function mulberry32(a) {
 }
 const rand = mulberry32(20240621);
 // a soft scatter of loose stars — mostly tiny, a few larger
-const FIELD = Array.from({ length: 150 }, () => {
+const FIELD = Array.from({ length: 150 }, (_, i) => {
+  // same rand() order as before → positions never move; only size/opacity tuned
   const big = rand() > 0.86;
-  return {
-    x: rand() * 1000,
-    y: rand() * 500,
-    r: big ? 0.8 + rand() * 0.45 : 0.25 + rand() * 0.4,
-    o: (big ? 0.46 : 0.24) + rand() * 0.28,
-  };
+  const x = rand() * 1000;
+  const y = rand() * 500;
+  const r = big ? 0.62 + rand() * 0.33 : 0.18 + rand() * 0.28;
+  const o = (big ? 0.34 : 0.16) + rand() * 0.18;
+  // twinkle timing derived from index (deterministic, no rand → positions fixed)
+  const td = ((i * 0.37) % 6).toFixed(2);
+  const tw = (3.6 + ((i * 0.53) % 3.8)).toFixed(2);
+  return { x, y, r, o, td, tw };
 });
 
 export default function Constellations() {
@@ -151,7 +154,11 @@ export default function Constellations() {
           cy={Math.round(p.y * 10) / 10}
           r={Math.round(p.r * 100) / 100}
           className="cn-field"
-          style={{ opacity: Math.round(p.o * 100) / 100 }}
+          style={{
+            "--o": Math.round(p.o * 100) / 100,
+            "--td": `${p.td}s`,
+            "--tw": `${p.tw}s`,
+          }}
         />
       ))}
       {/* the 20 constellations — just their stars, no joining lines */}
@@ -161,7 +168,18 @@ export default function Constellations() {
           transform={`translate(${(c.x / 100) * 1000} ${(c.y / 100) * 500}) scale(${c.sc})`}
         >
           {c.s.map(([x, y], i) => (
-            <circle key={i} cx={x} cy={y} r={i === 0 ? 1.0 : 0.8} className="cn-star" />
+            <circle
+              key={i}
+              cx={x}
+              cy={y}
+              r={i === 0 ? 0.85 : 0.65}
+              className="cn-star"
+              style={{
+                "--o": i === 0 ? 0.7 : 0.55,
+                "--td": `${((i * 0.6) % 5).toFixed(2)}s`,
+                "--tw": `${(3.8 + ((i * 0.7) % 3)).toFixed(2)}s`,
+              }}
+            />
           ))}
         </g>
       ))}
