@@ -594,6 +594,28 @@ body {
   color: var(--plum);
   font-weight: 600;
 }
+/* tappable receipt rows: change one thing, then straight back to the receipt.
+   Looks like a row, behaves like a button — sharp corners, no fill. */
+.landing-v2 .conf-row--edit {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: var(--s1) 0;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.landing-v2 .conf-row--edit:hover strong,
+.landing-v2 .conf-row--edit:focus-visible strong {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+/* quiet "more than 8?" escape hatch in the guests step */
+.landing-v2 .guests-more {
+  display: inline-block;
+  margin: var(--s2) 0;
+}
 /* secondary buttons: same ticket frame, no champagne fill */
 .landing-v2 .book-form .pay.pay--ghost {
   background: transparent;
@@ -1251,8 +1273,8 @@ body {
 
 /* =========================================================================
    UNIFIED LIGHT-GLASS POPUPS
-   Every popup (booking, village, boat, rental, weddings) shares one light
-   frosted-glass card and one large desktop size — regardless of content.
+   Every popup (booking, village, boat, hub, captain, news, customer service)
+   shares one light card and one large desktop size — regardless of content.
    Text is recoloured to dark/ink so it reads on the light glass.
    ========================================================================= */
 

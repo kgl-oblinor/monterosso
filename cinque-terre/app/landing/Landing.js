@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { tour, WHATSAPP_NUMBER } from "../../lib/tour";
+import { tour, WHATSAPP_NUMBER, MEETING_POINT, SKIPPER_NAME } from "../../lib/tour";
 
 // 🤍 Built with love on this coast — for vakreste Mandy, always remembered here.
 import Skyline from "./Skyline";
@@ -18,7 +18,7 @@ const firstName = (n) => n.split(" ")[0]; // "Monterosso al Mare" → "Monteross
 // Ready-made WhatsApp openers the customer can pick instead of booking outright.
 const WA_ALTS = [
   "Hi! Which times do you have available this week?",
-  "Hi! We're a group of 4 — what's the price for a private tour?",
+  "Hi! We are four — what is the price for a private tour?",
 ];
 
 // slim arrow that breathes with the loop script (stroke = currentColor)
@@ -322,25 +322,22 @@ export default function Landing() {
             <p className="vp-eyebrow">The boat · Cinque Terre</p>
             <h2 className="vp-title">Aboard the Paolona</h2>
             <p className="vp-lede">
-              A family boat — and a captain who is the real Italy.
+              A family boat, built for this coast — yours alone for the day.
             </p>
             <p className="vp-body">
               The Paolona is a traditional Ligurian gozzo — some seven metres of
               varnished wood, blue topsides and an awning against the sun:
-              stable, comfortable, and built for this coast. There is no finer
-              way to see the five villages than from her deck.
+              stable, comfortable, and unhurried. There is no finer way to see
+              the five villages than from her deck.
             </p>
             <p className="vp-body">
-              Her captain was born and raised on this shore — an unhurried,
-              elegant gentleman of the sea who knows every cove and every hour
-              worth sailing. He is, by his own admission, still seeking a rich
-              lady over seventy; until she finds him, he is yours alone for the
-              day.
+              She carries up to eight guests, and on every sailing she is yours
+              alone — never shared with strangers. Cold drinks and an aperitivo
+              wait aboard; a swim in a hidden cove waits along the way.
             </p>
             <p className="vp-body">
-              Ashore, he keeps a few simple rooms along this coast. Ask aboard,
-              and he will gladly tell you which one looks out on the sea you
-              sailed.
+              And the man at her helm is half the pleasure. Meet him on the
+              captain's page.
             </p>
             <p className="vp-subhead">Included</p>
             <ul className="vp-incl">
@@ -356,7 +353,11 @@ export default function Landing() {
               </div>
               <div className="vp-fact">
                 <dt>Guests</dt>
-                <dd>up to {tour.maxGuests}</dd>
+                <dd>up to {tour.maxGuests}, privately</dd>
+              </div>
+              <div className="vp-fact">
+                <dt>Duration</dt>
+                <dd>~{tour.durationHours} hours</dd>
               </div>
               <div className="vp-fact">
                 <dt>Departures</dt>
@@ -500,9 +501,9 @@ export default function Landing() {
           </button>
           <article className="village-page">
             <p className="vp-eyebrow">The captain · Cinque Terre</p>
-            <h2 className="vp-title">Kristian Løkken</h2>
+            <h2 className="vp-title">{SKIPPER_NAME || "The captain"}</h2>
             <p className="vp-lede">
-              Born to this shore — your skipper for the day.
+              Born and raised on this shore — your skipper for the day.
             </p>
             <p className="vp-body">
               An unhurried, elegant gentleman of the sea, he knows every cove
@@ -565,13 +566,13 @@ export default function Landing() {
             <p className="vp-eyebrow">From the coast · Cinque Terre</p>
             <h2 className="vp-title">News</h2>
             <p className="vp-lede">
-              A few words from the water, while the season is upon us.
+              A few quiet words from the water.
             </p>
             <p className="vp-body">
-              The Paolona is sailing daily from Monterosso — sunrise, sunshine
-              and sunset departures, the sea calm and clear. The five villages
-              are at their finest now: lemon groves in flower, the terraces
-              green, golden hour long and slow.
+              The Paolona sails daily from Monterosso — sunrise, sunshine and
+              sunset departures, the sea calm and clear. The five villages are a
+              slow, golden pleasure from the deck: lemon groves and terraced
+              hills, coves for swimming, an aperitivo as the light softens.
             </p>
             <p className="vp-body">
               New to this coast? Read the five village stories, then come and
@@ -704,59 +705,29 @@ function BookingForm({ active }) {
   const [guests, setGuests] = useState(2);
   const [error, setError] = useState("");
   const [days, setDays] = useState([]);
-  const [step, setStep] = useState("receipt"); // receipt-first; "Change the time" → time → guests → date → receipt
+  const [step, setStep] = useState("receipt"); // receipt-first; each step returns to the receipt
   const [done, setDone] = useState(false);
   const [sent, setSent] = useState(false);
   const [slot, setSlot] = useState("sunset");
-  const [boarding, setBoarding] = useState("no");
   const [dateMore, setDateMore] = useState(false);
-  const [pickup, setPickup] = useState("Monterosso");
 
   useEffect(() => {
     setDays(buildDays(21));
-    // smart guess: two places on the next departure, ~4 hours from now
-    const now = new Date();
-    const t = now.getHours() + 4;
-    let guessSlot = "sunset";
-    let guessIso = todayISO();
-    if (t < 9) guessSlot = "sunrise";
-    else if (t < 14) guessSlot = "sunshine";
-    else if (t <= 20) guessSlot = "sunset";
-    else {
-      // too late today → tomorrow's sunrise
-      guessSlot = "sunrise";
-      const d = new Date(now);
-      d.setDate(d.getDate() + 1);
-      guessIso = d.toISOString().slice(0, 10);
-    }
+    // smart guess: two places on the next real departure, in Monterosso time.
+    const { slot: guessSlot, iso: guessIso } = nextDeparture();
     setSlot(guessSlot);
     setDate((d) => d || guessIso);
   }, []);
 
-  function nextFromDate() {
-    setError("");
-    if (!date) {
-      setError("Please choose a day first.");
-      return;
-    }
-    setStep("receipt");
-  }
   // pick a date tile → set it and return to the receipt
   function pickDate(iso) {
     setError("");
     setDate(iso);
     setStep("receipt");
   }
-  function review() {
-    setError("");
-    if (!date) {
-      setError("Please choose a day first.");
-      return;
-    }
-    setDone(true);
-  }
 
-  // ← / → step through date → guests → confirm while the popup is open
+  // ← / → move between the receipt and each single edit step, then back.
+  // Each step is a one-tap change that returns to the receipt.
   useEffect(() => {
     if (!active) return;
     const onKey = (e) => {
@@ -764,23 +735,18 @@ function BookingForm({ active }) {
         e.preventDefault();
         if (done || sent) return;
         if (step === "receipt") setStep("time");
-        else if (step === "time") setStep("guests");
-        else if (step === "guests") setStep("date");
-        else if (step === "date") nextFromDate();
       } else if (e.key === "ArrowLeft") {
         e.preventDefault();
         if (done) {
           setDone(false);
           setStep("receipt");
-        } else if (step === "time") setStep("receipt");
-        else if (step === "guests") setStep("time");
-        else if (step === "date") setStep("guests");
+        } else if (step !== "receipt") setStep("receipt");
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, done, sent, step, date]);
+  }, [active, done, sent, step]);
 
   const sel = days.find((d) => d.iso === date);
   const code = makeCode(date, guests);
@@ -789,29 +755,14 @@ function BookingForm({ active }) {
   const slotLabel = tour.slots[slot]?.label || "Sunset";
   // priority-1 booking link: WhatsApp, prefilled from the customer's choices
   const bookingWa = waLink(bookingMessage({ iso: date, slot, guests }));
-  // working aid: which glass box are we on (of 8)
-  const boxNum = sent
-    ? 7
-    : done
-    ? 6
-    : step === "pickup"
-    ? 2
-    : step === "guests"
-    ? 3
-    : step === "time"
-    ? 4
-    : step === "aboard"
-    ? 5
-    : 1;
 
   // SCREEN 3 — confirmation: combined info + add-to-calendar + share
   if (sent) {
     return (
       <div className="book-form confirm-sent">
-        
         <p className="confirm-lead">
-          Thank you — send the message we opened for you, and we'll confirm your
-          place right there.
+          Thank you — send the message we opened for you, and we will confirm
+          your place right there.
         </p>
         <div className="conf-summary">
           <div className="conf-row">
@@ -824,7 +775,7 @@ function BookingForm({ active }) {
           </div>
           <div className="conf-row">
             <span>Meeting point</span>
-            <strong>{pickup}</strong>
+            <strong>{MEETING_POINT}</strong>
           </div>
           <div className="conf-row">
             <span>Guests</span>
@@ -840,12 +791,6 @@ function BookingForm({ active }) {
             <span>Code</span>
             <strong>{code}</strong>
           </div>
-          {boarding === "yes" && (
-            <div className="conf-row">
-              <span>Aboard</span>
-              <strong>A hand, please</strong>
-            </div>
-          )}
         </div>
         <p className="cal-label">Add me to your calendar</p>
         <div className="cal-row">
@@ -911,8 +856,6 @@ function BookingForm({ active }) {
                 dato: date,
                 guests,
                 slot,
-                boarding,
-                pickup,
               }),
             ],
             { type: "application/json" }
@@ -934,9 +877,7 @@ function BookingForm({ active }) {
       saveLead();
       const details = `Monterosso sea tour\nCode: ${code}\n${when} · ${slotLabel} · ${guests} ${
         guests === 1 ? "guest" : "guests"
-      } · $${total}${
-        boarding === "yes" ? "\nNeeds a hand coming aboard" : ""
-      }\nMeeting point: ${pickup}`;
+      } · $${total}\nMeeting point: ${MEETING_POINT}`;
       const mailto = `mailto:${tour.email}?subject=${encodeURIComponent(
         `Booking enquiry — Monterosso sea tour (${code})`
       )}&body=${encodeURIComponent(details)}`;
@@ -948,7 +889,7 @@ function BookingForm({ active }) {
     return (
       <div className="book-form">
         <p className="confirm-lead">
-          One tap and we'll pick it up on WhatsApp — your message is ready.
+          One tap, and we will pick it up on WhatsApp — your message is ready.
         </p>
         <p className="send-summary">
           {when} · {slotLabel} · {guests}{" "}
@@ -999,27 +940,48 @@ function BookingForm({ active }) {
       <div className="book-form">
         <p className="box-count">Your place</p>
         <p className="confirm-lead">
-          We've saved <strong>two seats</strong> on the next sailing.
-          Change anything, then continue.
+          We have set aside <strong>two seats</strong> on the next sailing.
+          Change anything you like, then continue.
         </p>
         <div className="conf-summary">
-          <div className="conf-row">
+          <button
+            type="button"
+            className="conf-row conf-row--edit"
+            onClick={() => {
+              setError("");
+              setStep("date");
+            }}
+          >
             <span>When</span>
             <strong>{when}</strong>
-          </div>
-          <div className="conf-row">
+          </button>
+          <button
+            type="button"
+            className="conf-row conf-row--edit"
+            onClick={() => {
+              setError("");
+              setStep("time");
+            }}
+          >
             <span>Departure</span>
             <strong>{slotLabel}</strong>
-          </div>
-          <div className="conf-row">
+          </button>
+          <button
+            type="button"
+            className="conf-row conf-row--edit"
+            onClick={() => {
+              setError("");
+              setStep("guests");
+            }}
+          >
             <span>Guests</span>
             <strong>
               {guests} {guests === 1 ? "guest" : "guests"}
             </strong>
-          </div>
+          </button>
           <div className="conf-row">
             <span>Meeting point</span>
-            <strong>Molo dei Pescatori</strong>
+            <strong>{MEETING_POINT}</strong>
           </div>
           <div className="conf-row">
             <span>Total</span>
@@ -1027,7 +989,7 @@ function BookingForm({ active }) {
           </div>
         </div>
         <button className="pay" onClick={() => setDone(true)}>
-          Continue →
+          Continue
         </button>
         <button
           type="button"
@@ -1043,56 +1005,10 @@ function BookingForm({ active }) {
     );
   }
 
-  // STEP — pickup point (default Monterosso; we collect from any village)
-  if (step === "pickup") {
-    const towns = [
-      "Monterosso",
-      "Vernazza",
-      "Corniglia",
-      "Manarola",
-      "Riomaggiore",
-    ];
-    return (
-      <div className="book-form">
-        
-        <span className="field-head step-q">Where shall we meet you?</span>
-        <div className="choice-grid">
-          {towns.map((tn) => (
-            <button
-              type="button"
-              key={tn}
-              className={"choice" + (pickup === tn ? " is-sel" : "")}
-              onClick={() => {
-                setPickup(tn);
-                setStep("guests");
-              }}
-            >
-              <span className="choice-label">{tn}</span>
-              <span className="choice-sub">
-                {tn === "Monterosso" ? "our home port" : "we'll come to you"}
-              </span>
-            </button>
-          ))}
-        </div>
-        <button className="pay" onClick={() => setStep("guests")}>
-          Continue
-        </button>
-        <button
-          type="button"
-          className="confirm__back"
-          onClick={() => setStep("date")}
-        >
-          Back
-        </button>
-      </div>
-    );
-  }
-
-  // STEP 2 — guests (single popup), after the date
+  // EDIT — guests (single tap returns to the receipt)
   if (step === "guests") {
     return (
       <div className="book-form">
-        
         <span className="field-head step-q">How many of you?</span>
         <div className="choice-grid choice-grid--nums">
           {Array.from({ length: tour.maxGuests }, (_, i) => i + 1).map((n) => (
@@ -1102,22 +1018,22 @@ function BookingForm({ active }) {
               className={"choice choice--num" + (guests === n ? " is-sel" : "")}
               onClick={() => {
                 setGuests(n);
-                setStep("date");
+                setStep("receipt");
               }}
             >
               <span className="choice-label">{n}</span>
             </button>
           ))}
         </div>
-        <button className="pay" onClick={() => setStep("date")}>
-          Continue
-        </button>
+        <a className="cs-link guests-more" href={waLink(WA_ALTS[1])} target="_blank" rel="noopener">
+          More than {tour.maxGuests}? Ask us ›
+        </a>
         <button
           type="button"
           className="confirm__back"
           onClick={() => {
             setError("");
-            setStep("time");
+            setStep("receipt");
           }}
         >
           Back
@@ -1127,7 +1043,7 @@ function BookingForm({ active }) {
     );
   }
 
-  // STEP 3 — departure time (single popup, big tap tiles)
+  // EDIT — departure time (single tap returns to the receipt)
   if (step === "time") {
     const opts = ["sunrise", "sunshine", "sunset"].map((v) => ({
       v,
@@ -1137,7 +1053,6 @@ function BookingForm({ active }) {
     }));
     return (
       <div className="book-form">
-        
         <span className="field-head step-q">
           What time would you like to leave?
         </span>
@@ -1149,7 +1064,7 @@ function BookingForm({ active }) {
               className={"choice choice--sq" + (slot === o.v ? " is-sel" : "")}
               onClick={() => {
                 setSlot(o.v);
-                setStep("guests");
+                setStep("receipt");
               }}
             >
               <span className="choice-label">{o.label}</span>
@@ -1158,9 +1073,6 @@ function BookingForm({ active }) {
             </button>
           ))}
         </div>
-        <button className="pay" onClick={() => setStep("guests")}>
-          Continue
-        </button>
         <button
           type="button"
           className="confirm__back"
@@ -1172,55 +1084,9 @@ function BookingForm({ active }) {
     );
   }
 
-  // STEP 4 — a hand getting aboard? (single popup, big tap tiles)
-  if (step === "aboard") {
-    return (
-      <div className="book-form">
-        
-        <span className="field-head step-q">
-          Would anyone like a hand getting on board?
-        </span>
-        <div className="choice-grid choice-grid--2">
-          <button
-            type="button"
-            className={"choice" + (boarding === "yes" ? " is-sel" : "")}
-            onClick={() => {
-              setBoarding("yes");
-              review();
-            }}
-          >
-            <span className="choice-label">Yes, please</span>
-            <span className="choice-sub">we shall be ready to help</span>
-          </button>
-          <button
-            type="button"
-            className={"choice" + (boarding === "no" ? " is-sel" : "")}
-            onClick={() => {
-              setBoarding("no");
-              review();
-            }}
-          >
-            <span className="choice-label">No, thank you</span>
-          </button>
-        </div>
-        <button className="pay" onClick={review}>
-          Continue
-        </button>
-        <button
-          type="button"
-          className="confirm__back"
-          onClick={() => setStep("time")}
-        >
-          Back
-        </button>
-      </div>
-    );
-  }
-
-  // STEP 1 — date (single popup)
+  // EDIT — date (single tap returns to the receipt)
   return (
     <div className="book-form">
-      
       <span className="field-head step-q">Which day?</span>
       {dateMore ? (
         <div className="choice-grid choice-scroll">
@@ -1258,28 +1124,21 @@ function BookingForm({ active }) {
           </button>
         </div>
       )}
-      <button className="pay" onClick={nextFromDate}>
-        Continue
-      </button>
       <button
         type="button"
         className="confirm__back"
         onClick={() => {
           setError("");
-          setStep("guests");
+          setStep("receipt");
         }}
       >
         Back
       </button>
-      <p className="err">{error}</p>
       <p className="reassure">No prepayment · from ${tour.priceUsd} per guest</p>
     </div>
   );
 }
 
-function todayISO() {
-  return new Date().toLocaleDateString("sv-SE");
-}
 /* Reservation code the owner can read back: MT-DDMMYY-<guests>. */
 function makeCode(iso, guests) {
   const [y, m, d] = iso.split("-");
@@ -1390,7 +1249,7 @@ async function shareTrip({ when, guests }) {
   const text = `Join me on the Monterosso · Cinque Terre sea tour — ${when}, ${g}.`;
   try {
     if (navigator.share) {
-      await navigator.share({ title: "Cinque Terre sea tour", text, url });
+      await navigator.share({ title: "Monterosso · Cinque Terre sea tour", text, url });
       return;
     }
   } catch {
@@ -1413,6 +1272,42 @@ function waLink(text) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 }
 
+/* The next real departure in Monterosso time (Europe/Rome), so the receipt
+   guess always lands on an actual, still-bookable slot. We read the current
+   hour:minute in Rome, then pick the first slot whose start is still ahead
+   today; if the day's last departure has gone, we roll to tomorrow's sunrise.
+   Slot order matches tour.js (sunrise → sunshine → sunset). */
+function nextDeparture() {
+  const order = ["sunrise", "sunshine", "sunset"];
+  // current minutes-since-midnight in Europe/Rome
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: CAL_TZ,
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(new Date());
+  const hh = Number(parts.find((p) => p.type === "hour")?.value ?? 0);
+  const mm = Number(parts.find((p) => p.type === "minute")?.value ?? 0);
+  const nowMin = hh * 60 + mm;
+  const startMin = (s) =>
+    Number(s.start.slice(0, 2)) * 60 + Number(s.start.slice(2, 4));
+  for (const v of order) {
+    if (nowMin < startMin(tour.slots[v])) {
+      return { slot: v, iso: romeISO(0) };
+    }
+  }
+  // every departure has passed today → tomorrow's first slot
+  return { slot: order[0], iso: romeISO(1) };
+}
+
+/* ISO date (YYYY-MM-DD) for "today + offset" as seen in Europe/Rome. */
+function romeISO(offsetDays) {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  // en-CA gives YYYY-MM-DD; tie it to Rome so the calendar day is correct
+  return new Intl.DateTimeFormat("en-CA", { timeZone: CAL_TZ }).format(d);
+}
+
 /* Natural English day phrase from an ISO date, relative to today:
    "today" / "tomorrow" / "on Friday 27 June". */
 function dayPhrase(iso) {
@@ -1432,9 +1327,9 @@ function dayPhrase(iso) {
    Neutral skipper name (Kristian confirms the name later). */
 function bookingMessage({ iso, slot, guests }) {
   const label = (tour.slots[slot]?.label || "Sunset").toLowerCase();
-  const people = `${guests} ${guests === 1 ? "person" : "people"}`;
+  const party = `${guests} ${guests === 1 ? "guest" : "guests"}`;
   const emoji = slot === "sunset" ? " 🌅" : slot === "sunrise" ? " 🌄" : " ⛵";
-  return `Hi! I'd like to book the ${label} tour ${dayPhrase(iso)} for ${people}${emoji}`;
+  return `Hi! I'd like to book the ${label} tour ${dayPhrase(iso)} for ${party}${emoji}`;
 }
 
 function CalGlyph() {
@@ -1462,7 +1357,7 @@ function CalGlyph() {
 /* Friendly day picker: today / tomorrow / day-after-tomorrow, then weekdays,
    with the actual date kept small and subtle in the poster's gold. */
 function buildDays(n) {
-  const rel = ["Today", "Tomorrow", "Day after"];
+  const rel = ["Today", "Tomorrow", "Day after tomorrow"];
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
   const base = new Date();
   base.setHours(0, 0, 0, 0);

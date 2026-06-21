@@ -2,23 +2,33 @@
 export const tour = {
   name: "Monterosso · Cinque Terre — sea tour",
   tagline: "The Cinque Terre, seen from the water.",
-  description: "Three unhurried hours on the Ligurian blue — hidden coves, swims in clear water, an aperitivo at golden hour, and a skipper who's yours alone.",
+  description: "Three unhurried hours on the Ligurian blue — hidden coves, swims in clear water, an aperitivo at golden hour, and a skipper who is yours alone.",
   priceUsd: 100,
   unit: "per guest",
   durationHours: 3,
   maxGuests: 8,
-  // The two daily departures. priceMultiplier scales priceUsd per guest;
+  // The three daily departures. priceMultiplier scales priceUsd per guest;
   // start/end (HHMMSS) feed the add-to-calendar event for that slot.
+  // Windows are non-overlapping so the receipt's "next departure" guess always
+  // lands on exactly one real slot (Europe/Rome time).
   slots: {
     sunrise: { label: "Sunrise", window: "07:00–09:00", start: "070000", end: "090000", priceMultiplier: 1.5 },
-    sunshine: { label: "Sunshine", window: "09:00–18:00", start: "090000", end: "180000", priceMultiplier: 1 },
-    sunset: { label: "Sunset", window: "14:00–20:00", start: "140000", end: "200000", priceMultiplier: 1 },
+    sunshine: { label: "Sunshine", window: "10:00–14:00", start: "100000", end: "140000", priceMultiplier: 1 },
+    sunset: { label: "Sunset", window: "17:00–20:00", start: "170000", end: "200000", priceMultiplier: 1 },
   },
   phone: "+47 93 00 86 00",
   // inbox used by the "Email" send option
   email: "kgl@oblinor.no",
 };
 
+// The one meeting point, shown consistently everywhere (receipt, confirmation,
+// customer service). The customer always departs from here.
+export const MEETING_POINT = "Molo dei Pescatori, Monterosso";
+
+// The skipper's display name. Empty = neutral ("the captain") for now;
+// Kristian fills in the real name later via admin.
+export const SKIPPER_NAME = "";
+
 // WhatsApp is the primary booking channel (wa.me/<number>). Digits only, no "+".
-// TODO: Andre/Andrea (Paolona) sitt ekte WhatsApp-nummer — bytt ut plassholderen.
+// TODO: skipperens (Paolona) ekte WhatsApp-nummer — bytt ut plassholderen via admin.
 export const WHATSAPP_NUMBER = "4793008600";

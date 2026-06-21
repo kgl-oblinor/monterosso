@@ -8,7 +8,7 @@ export const VILLAGES = [
     lede: "The largest of the five — and the only one with a true beach.",
     body: [
       "The oldest village on record — first noted in 1056, though people sheltered here as far back as the 7th century. It is really two in one: the medieval old town and the newer quarter of Fegina, joined by a tunnel beneath the San Cristoforo headland.",
-      "Its long pebble beach, lemon groves and pale white wine give it an easy, sun-warmed calm. Look for Il Gigante — a fourteen-metre Neptune carved into the cliff in 1910 — still bearing the weight of an old seaside terrace.",
+      "Its long pebble beach, lemon groves and pale white wine give it an easy, sun-warmed calm. Look for Il Gigante — a fourteen-metre Neptune, built around 1910 — still bearing the weight of an old seaside terrace.",
     ],
     facts: [
       { k: "First recorded", v: "1056" },
@@ -39,13 +39,13 @@ export const VILLAGES = [
     eyebrow: "Cinque Terre · Liguria",
     lede: "The quiet one — high on the cliff, among the vineyards.",
     body: [
-      "Corniglia is the only village that does not meet the sea. It sits a hundred metres up on a rocky promontory, reached from the station by the Lardarina: a zig-zag of 377 steps in thirty-three flights. Its name is Roman, from the Cornelia family who once held this land.",
+      "Corniglia is the only village that does not meet the sea. It sits a hundred metres up on a rocky promontory, reached from the station by the Lardarina: a zig-zag of 382 steps in thirty-three flights. Its name is Roman, from the Cornelia family who once held this land.",
       "Ringed by terraced vineyards, Corniglia feels more like a hill town than a coastal one — low, wide houses, narrow lanes, and the Gothic-Baroque church of San Pietro at its heart. The fewest people live here, and that is its gift: stillness.",
     ],
     facts: [
       { k: "Origins", v: "Roman" },
       { k: "Residents", v: "≈ 150 (the smallest)" },
-      { k: "The climb", v: "377 steps (the Lardarina)" },
+      { k: "The climb", v: "382 steps (the Lardarina)" },
       { k: "Above the sea", v: "≈ 100 m" },
     ],
     wiki: "Corniglia",
