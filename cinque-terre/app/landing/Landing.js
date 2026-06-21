@@ -26,9 +26,9 @@ const WA_ALTS = [
 // hidden — only the hero text + CTA sit over the image.
 const BGS = [
   { key: "scene", label: "Living scene" },
-  { key: "bay", label: "Aerial bay", src: "/backgrounds/aerial-bay.png" },
-  { key: "deepblue", label: "Deep blue", src: "/backgrounds/aerial-deepblue.png" },
-  { key: "villages", label: "Villages", src: "/backgrounds/village-panorama.png" },
+  { key: "bay", label: "Aerial bay", src: "/backgrounds/aerial-bay.webp" },
+  { key: "deepblue", label: "Deep blue", src: "/backgrounds/aerial-deepblue.webp" },
+  { key: "villages", label: "Villages", src: "/backgrounds/village-panorama.webp" },
 ];
 
 // slim arrow that breathes with the loop script (stroke = currentColor)
@@ -129,6 +129,16 @@ export default function Landing() {
   const [showCaptain, setShowCaptain] = useState(false); // the captain's own page
   const [showNews, setShowNews] = useState(false); // news / from the coast
   const [showService, setShowService] = useState(false); // customer service / help
+  // any popup open → hide everything "alive" (boat, hero, animations); only the
+  // still backdrop (sky or photo) stays behind the glass popup
+  const anyOpen =
+    showBook ||
+    villageIdx !== null ||
+    showBoat ||
+    showHub ||
+    showCaptain ||
+    showNews ||
+    showService;
   // open the hub from any card's "Read more"
   const openHub = () => {
     setShowBook(false);
@@ -183,7 +193,13 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className={"landing-v2" + (bg !== "scene" ? " bg-photo-on" : "")}>
+    <div
+      className={
+        "landing-v2" +
+        (bg !== "scene" ? " bg-photo-on" : "") +
+        (anyOpen ? " popup-open" : "")
+      }
+    >
       <Effects />
 
       {bg !== "scene" && bgSrc && (
