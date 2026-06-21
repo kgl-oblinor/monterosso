@@ -1283,17 +1283,20 @@ body {
   max-width: 720px;
 }
 
-/* the shared card — a solid, single-colour warm ivory (no see-through glass),
-   sharp corners, no divider lines (separation is by air, not strokes) */
+/* the shared card — beautiful, quite-transparent glass over the still
+   backdrop (the moving scene is hidden while a popup is open), sharp
+   corners, separation by air not strokes */
 .landing-v2 .book-form,
 .landing-v2 .village-page {
   position: relative;
   max-width: 100%;
   width: 100%;
-  color: var(--plum);
-  background: #f7f1e3;
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  color: var(--cream);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: var(--r-md);
+  -webkit-backdrop-filter: blur(22px) saturate(118%);
+  backdrop-filter: blur(22px) saturate(118%);
   box-shadow: 0 30px 80px rgba(2, 10, 20, 0.5);
 }
 
@@ -1312,22 +1315,22 @@ body {
   margin: 0 0 var(--s5);
 }
 
-/* headings + body → ink on light */
+/* headings + body → light on glass */
 .landing-v2 .section-title,
 .landing-v2 .vp-title {
-  color: var(--plum);
+  color: var(--cream);
 }
 .landing-v2 .vp-lede,
 .landing-v2 .vp-body,
 .landing-v2 .confirm-lead {
-  color: rgba(7, 24, 42, 0.82);
+  color: rgba(255, 246, 236, 0.82);
 }
 .landing-v2 .section-label,
 .landing-v2 .vp-eyebrow {
-  color: var(--terracotta); /* warm terracotta — reads on cream */
+  color: var(--gold); /* warm gold — reads on glass, matches the CTA */
 }
 
-/* quiet labels that used cream → dark muted */
+/* quiet labels → soft cream */
 .landing-v2 .reassure,
 .landing-v2 .box-count,
 .landing-v2 .send-summary,
@@ -1335,48 +1338,48 @@ body {
 .landing-v2 .cal-label,
 .landing-v2 .confirm__back,
 .landing-v2 .vp-link {
-  color: rgba(7, 24, 42, 0.55) !important;
+  color: rgba(255, 246, 236, 0.6) !important;
 }
 .landing-v2 .field-head.step-q {
-  color: rgba(7, 24, 42, 0.9);
+  color: rgba(255, 246, 236, 0.92);
 }
 .landing-v2 .field-head {
-  color: rgba(7, 24, 42, 0.7);
+  color: rgba(255, 246, 236, 0.72);
 }
 
-/* facts + dividers + nav on light */
+/* facts + dividers + nav on glass */
 .landing-v2 .vp-fact dt {
-  color: rgba(7, 24, 42, 0.5);
+  color: rgba(255, 246, 236, 0.55);
 }
 .landing-v2 .vp-fact dd {
-  color: var(--plum);
+  color: var(--cream);
 }
 .landing-v2 .conf-row span {
-  color: rgba(7, 24, 42, 0.55);
+  color: rgba(255, 246, 236, 0.6);
 }
 .landing-v2 .conf-row strong {
-  color: var(--plum);
+  color: var(--cream);
 }
 .landing-v2 .vp-nav button {
-  color: var(--terracotta);
+  color: var(--gold);
 }
 
-/* inputs → light fields */
+/* inputs → glass fields */
 .landing-v2 .book-form input,
 .landing-v2 .contact-field input,
 .landing-v2 .book-form select,
 .landing-v2 .book-form textarea {
-  background: rgba(255, 255, 255, 0.85);
-  color: var(--plum);
-  border-color: rgba(7, 24, 42, 0.25);
-  color-scheme: light;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--cream);
+  border-color: rgba(255, 255, 255, 0.28);
+  color-scheme: dark;
 }
 
-/* close button → light */
+/* close button → dark glass */
 .landing-v2 .book-close {
-  background: rgba(255, 251, 243, 0.92);
-  color: var(--plum);
-  border-color: rgba(7, 24, 42, 0.2);
+  background: rgba(3, 16, 29, 0.5);
+  color: var(--cream);
+  border-color: rgba(255, 246, 236, 0.25);
 }
 
 /* ===================================================================
@@ -1922,4 +1925,25 @@ body {
 .landing-v2 .bg-dot.is-sel {
   border-color: var(--gold);
   box-shadow: 0 0 0 2px var(--gold);
+}
+
+/* ============================================================
+   POPUP OPEN — when any glass popup is open, everything "alive"
+   fades away (boat, hero text, CTA, the whole moving scene and
+   the switcher). Behind the glass stays only the still backdrop:
+   the sky gradient (scene mode) or the chosen photo.
+   ============================================================ */
+.landing-v2.popup-open .stars,
+.landing-v2.popup-open .constellations,
+.landing-v2.popup-open .clouds,
+.landing-v2.popup-open .aurora,
+.landing-v2.popup-open .skyline,
+.landing-v2.popup-open .clocktower,
+.landing-v2.popup-open .village-posts,
+.landing-v2.popup-open .village-signs,
+.landing-v2.popup-open .boat3d,
+.landing-v2.popup-open .shell,
+.landing-v2.popup-open .bg-switch,
+.landing-v2.popup-open .theme-toggle {
+  display: none !important;
 }
