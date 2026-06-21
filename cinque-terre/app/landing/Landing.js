@@ -122,7 +122,7 @@ export default function Landing() {
   // Scroll / swipe / button all bring the booking card in as an overlay —
   // same screen, no navigation.
   const [showBook, setShowBook] = useState(false);
-  const [bg, setBg] = useState("scene"); // "scene" | photo key
+  const [bg, setBg] = useState("bay"); // "scene" | photo key — land on the aerial bay photo by default
   const bgSrc = BGS.find((b) => b.key === bg)?.src;
   const [villageIdx, setVillageIdx] = useState(null); // open village page (0–4) or null
   const [showBoat, setShowBoat] = useState(false); // "the boat & her captain" page
