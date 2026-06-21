@@ -15,11 +15,14 @@
 Eldre person bestiller fra mobil på **~3 tap**, og chatter etterpå **direkte med skipperen** — og det **skalerer til mange båter/skippere** over hele Italia. Varm men stram. Aldri «BESTILL NÅ!» — rolig guiding («Continue»).
 
 ## Sanne fakta (fasit)
+- **Første kunde (pilot-skipper):** Andrea (Monterosso), båt «Paolona» — landingssiden er hennes tur.
 - **Design:** strengt system — 4px-spacing, 1.2 type-skala, skarpe kanter (radius 0), **solide cream-popups (#f7f1e3) av lik størrelse** (720px bred, 860px høy desktop). Fonter: Fraunces (tekst), Limelight (gull-CTA), Great Vibes («Read more»/CS).
 - **Stemme:** varm/stram; rolige fremover-verb; ingen falske fakta. Kaptein-whimsy («søker rik dame over 70») **beholdes** bevisst.
 - **Booking:** kvittering-først (gjett 2 gjester, neste avgang) → Continue → kontakt → bekreftelse (~3 tap). Avslutning via WhatsApp/e-post.
+- **Flyt:** landing → **én knapp** → rask booking (~3 tap). Bestemmer kunden seg ikke der og da → **avdekk web-app-skallet**.
+- **Web-app-skall:** venstre **sidebar, default lukket**; **profil-ikon nederst, chat øverst**; rekkefølge ovenfra: **Chat · Turer · Kvitteringer · Andre reiser · Andre land**.
 - **Kontakt:** +47 93 00 86 00 · kgl@oblinor.no · møtepunkt Molo dei Pescatori, Monterosso.
-- **Ny funksjon:** kunde↔skipper-**chat** + lett onboarding (kun **e-post ELLER telefon** — ingen kode/passord). **Gjenbruk fra `oblinor-borrower-chat`** (kun kopiere, aldri endre originalen), **egen D1**. **Rolle-mapping:** Oblinor **låntaker → båteier/skipper**, **långiver → kunde/reisende**, **admin → Kristian**.
+- **Ny funksjon:** kunde↔skipper-**chat** + lett onboarding (kun **e-post ELLER telefon** — ingen kode/passord). **Chatten lever KUN inne i brukersiden (web-app-skallet)** — som opprettes nettopp ved e-post ELLER telefon. **Gjenbruk fra `oblinor-borrower-chat`** (kun kopiere, aldri endre originalen), **egen D1**. **Rolle-mapping:** Oblinor **låntaker → båteier/skipper**, **långiver → kunde/reisende**, **admin → Kristian**.
   - **Gjenbruk KUN mekanikken:** chat (1-til-1, polling, meldings-UI), lett onboarding, admin-innboks/oversikt, struktur.
   - **IKKE gjenbruk:** låne-/utlåns-domenet (lån, ordrer, investor/loaner-sync fra oblinor.no, matrikkel/eiendom, mislighold) eller noe hardkodet til Oblinor. **Kontakter/tråder kommer fra bestilling (reservasjonskode), ikke lån.**
 
