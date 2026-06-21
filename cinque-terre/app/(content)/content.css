@@ -1,0 +1,178 @@
+/* ============================================================
+   Content / SEO pages — Monterosso · Cinque Terre
+   Own stylesheet. Reuses the brand FEELING (cream, Fraunces,
+   sharp edges, calm spacing) but never imports or edits
+   landing.css. Fonts are already loaded globally in layout.js.
+   ============================================================ */
+
+.content {
+  --c-cream: #f7f1e3;        /* solid cream surface (per fasit) */
+  --c-cream-deep: #efe6d2;   /* faint band */
+  --c-ink: #20140c;          /* warm near-black text */
+  --c-ink-soft: #5a4a3c;     /* muted body */
+  --c-line: #d8c9ad;         /* hairline */
+  --c-sea: #115f79;          /* link / accent, from the sea palette */
+  --c-sea-deep: #06304a;
+  --c-gold: #b8923a;         /* muted vintage gold for the quiet CTA */
+
+  background: var(--c-cream);
+  color: var(--c-ink);
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 400;
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.content__wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ---------- top bar ---------- */
+.content__nav {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 0 20px;
+  border-bottom: 1px solid var(--c-line);
+}
+.content__brand {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-ink);
+  text-decoration: none;
+}
+.content__navlink {
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  color: var(--c-sea);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.content__navlink:hover { border-bottom-color: var(--c-sea); }
+
+/* ---------- hero ---------- */
+.content__hero { padding: 56px 0 8px; }
+.content__eyebrow {
+  font-family: "Great Vibes", cursive;
+  font-size: 28px;
+  color: var(--c-sea);
+  margin: 0 0 8px;
+  line-height: 1;
+}
+.content h1 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(34px, 6vw, 52px);
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+  margin: 0 0 16px;
+}
+.content__lede {
+  font-size: 20px;
+  line-height: 1.55;
+  color: var(--c-ink-soft);
+  margin: 0 0 8px;
+  max-width: 60ch;
+}
+.content__meta {
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-ink-soft);
+  margin: 24px 0 0;
+}
+
+/* ---------- body ---------- */
+.content section { padding: 40px 0; border-top: 1px solid var(--c-line); }
+.content section:first-of-type { border-top: none; }
+.content h2 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(24px, 4vw, 32px);
+  letter-spacing: 0.01em;
+  margin: 0 0 16px;
+}
+.content h3 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: 20px;
+  margin: 28px 0 8px;
+}
+.content p { font-size: 18px; margin: 0 0 16px; max-width: 64ch; }
+.content p:last-child { margin-bottom: 0; }
+.content a { color: var(--c-sea); text-decoration: underline; text-underline-offset: 3px; }
+.content a:hover { color: var(--c-sea-deep); }
+
+.content ul { margin: 0 0 16px; padding-left: 20px; }
+.content li { font-size: 18px; margin: 0 0 8px; max-width: 60ch; }
+
+/* pull-quote / fact band */
+.content__fact {
+  background: var(--c-cream-deep);
+  border-left: 3px solid var(--c-gold);
+  padding: 20px 24px;
+  margin: 24px 0;
+  font-size: 18px;
+  font-style: italic;
+  color: var(--c-ink-soft);
+}
+
+/* ---------- quiet CTA ---------- */
+.content__cta {
+  text-align: center;
+  padding: 48px 0 24px;
+  border-top: 1px solid var(--c-line);
+}
+.content__cta p {
+  margin: 0 auto 20px;
+  font-size: 20px;
+  color: var(--c-ink-soft);
+}
+.content__cta-link {
+  display: inline-block;
+  font-family: "Limelight", "Fraunces", serif;
+  font-size: 16px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-ink);
+  text-decoration: none;
+  padding: 14px 28px;
+  border: 1px solid var(--c-gold);
+  background: transparent;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.content__cta-link:hover { background: var(--c-gold); color: var(--c-cream); }
+
+/* ---------- nearby / internal links ---------- */
+.content__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin: 8px 0 0;
+}
+.content__links a { font-size: 16px; }
+
+/* ---------- footer / sources ---------- */
+.content__foot {
+  padding: 40px 0 64px;
+  border-top: 1px solid var(--c-line);
+  font-size: 13px;
+  color: var(--c-ink-soft);
+}
+.content__foot h2 { font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; }
+.content__foot ul { padding-left: 18px; }
+.content__foot li { font-size: 13px; line-height: 1.5; }
+.content__foot a { color: var(--c-sea); word-break: break-word; }
+
+@media (max-width: 520px) {
+  .content__wrap { padding: 0 18px; }
+  .content__hero { padding: 36px 0 4px; }
+  .content p, .content li { font-size: 17px; }
+}
