@@ -24,7 +24,7 @@ function renderFlow() {
 describe("AdminForgotFlow", () => {
   it("lets the admin type the 6-digit recovery code", async () => {
     renderFlow();
-    await userEvent.type(screen.getByPlaceholderText("E-postadresse"), "bk@oblinor.no");
+    await userEvent.type(screen.getByPlaceholderText("E-postadresse"), "bk@example.com");
     await userEvent.click(screen.getByRole("button", { name: "Send kode" }));
 
     const codeInput = await screen.findByPlaceholderText("6-sifret kode");
@@ -34,7 +34,7 @@ describe("AdminForgotFlow", () => {
 
   it("accepts digits only and ignores whitespace/letters", async () => {
     renderFlow();
-    await userEvent.type(screen.getByPlaceholderText("E-postadresse"), "bk@oblinor.no");
+    await userEvent.type(screen.getByPlaceholderText("E-postadresse"), "bk@example.com");
     await userEvent.click(screen.getByRole("button", { name: "Send kode" }));
 
     const codeInput = await screen.findByPlaceholderText("6-sifret kode");

@@ -11,7 +11,7 @@ Mål: alle agenter jobber samtidig **uten å krasje** (aldri to i samme fil), og
 6. Egen branch/worktree: `agent/<navn>/<lane>`. Små, hyppige commits.
 
 ## Lanes (ikke-overlappende) — tmux-teamet
-To kodebaser i samme repo: **`cinque-terre/`** (landingen, Next.js) og **`baatchat/`** (chat-plattformen, kopi av Oblinor — Cloudflare Worker + Vite).
+To kodebaser i samme repo: **`cinque-terre/`** (landingen, Next.js) og **`baatchat/`** (chat-plattformen, kopi av kilde-appen — Cloudflare Worker + Vite).
 
 | Lane | Eier (tmux) | Mappe/filer | Rolle |
 |---|---|---|---|
@@ -22,7 +22,7 @@ To kodebaser i samme repo: **`cinque-terre/`** (landingen, Next.js) og **`baatch
 | **F · Krin: koordinering + integrasjon + review/merge** | **Krin** | rot-config, `MÅL.md`/`COORDINATION.md`/`WORKLOG.md`, merge, D1-migrasjon, deploy | Dirigent |
 
 ## Oppdrag per lane (briefs)
-- **DASH:** tilpass den kopierte `baatchat/` til båt: **strip lån-domenet** (lån, ordrer, oblinor.no-sync, matrikkel, mislighold), rebrand til kunde↔skipper, admin=Kristian, kontakter/tråder fra **reservasjonskode** (ikke lån). Egen D1. Behold chat/onboarding/admin-mekanikken. Design-tokens fra fasiten.
+- **DASH:** tilpass den kopierte `baatchat/` til båt: **strip lån-domenet** (lån, ordrer, ekstern WP-sync, matrikkel, mislighold), rebrand til kunde↔skipper, admin=Kristian, kontakter/tråder fra **reservasjonskode** (ikke lån). Egen D1. Behold chat/onboarding/admin-mekanikken. Design-tokens fra fasiten.
 - **LAND:** perfeksjoner landingssidene (scene, popups, booking-flyt, hub, copy). Cream-flater, Fraunces, skarpe kanter, 4px-spacing. Tar imot fikser fra `SYMMETRI-KØ.md`.
 - **SEO:** by-sider (om byene), gjøremål, blogg, fakta-tekster — varmt men stramt, researchede fakta, ingen falske påstander. SEO: titler, meta, sitemap, struktur. Lager **nye** sider/tekst; rører ikke `landing.css`.
 - **SYM:** mål symmetri/spacing/align på **desktop OG mobil**, pixel for pixel. Den **utfører ingenting selv** — den skriver **ferdige, konkrete prompts** (med mål/px + fil + hva som er skjevt) til `SYMMETRI-KØ.md`, som LAND/DASH plukker opp og fikser.

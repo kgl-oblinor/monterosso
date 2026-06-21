@@ -21,6 +21,16 @@ const WA_ALTS = [
   "Hi! We are four — what is the price for a private tour?",
 ];
 
+// Selectable backgrounds. "scene" = the live animated scene (day/night).
+// The rest are still photos; when one is active the whole live scene is
+// hidden — only the hero text + CTA sit over the image.
+const BGS = [
+  { key: "scene", label: "Living scene" },
+  { key: "bay", label: "Aerial bay", src: "/backgrounds/aerial-bay.png" },
+  { key: "deepblue", label: "Deep blue", src: "/backgrounds/aerial-deepblue.png" },
+  { key: "villages", label: "Villages", src: "/backgrounds/village-panorama.png" },
+];
+
 // slim arrow that breathes with the loop script (stroke = currentColor)
 function Arrow() {
   return (
@@ -111,6 +121,8 @@ export default function Landing() {
   // Scroll / swipe / button all bring the booking card in as an overlay —
   // same screen, no navigation.
   const [showBook, setShowBook] = useState(false);
+  const [bg, setBg] = useState("scene"); // "scene" | photo key
+  const bgSrc = BGS.find((b) => b.key === bg)?.src;
   const [villageIdx, setVillageIdx] = useState(null); // open village page (0–4) or null
   const [showBoat, setShowBoat] = useState(false); // "the boat & her captain" page
   const [showHub, setShowHub] = useState(false); // "Explore" — the hub of everything
@@ -171,8 +183,16 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="landing-v2">
+    <div className={"landing-v2" + (bg !== "scene" ? " bg-photo-on" : "")}>
       <Effects />
+
+      {bg !== "scene" && bgSrc && (
+        <div
+          className="bg-photo"
+          aria-hidden="true"
+          style={{ backgroundImage: `url(${bgSrc})` }}
+        />
+      )}
 
       <button
         className="theme-toggle"
@@ -181,6 +201,23 @@ export default function Landing() {
       >
         {theme === "light" ? <SunIcon /> : <MoonIcon />}
       </button>
+
+      {/* background switcher — the living scene + still photo backdrops */}
+      <div className="bg-switch" role="group" aria-label="Choose a background">
+        {BGS.map((b) => (
+          <button
+            key={b.key}
+            type="button"
+            className={"bg-dot" + (bg === b.key ? " is-sel" : "")}
+            onClick={() => setBg(b.key)}
+            aria-label={b.label}
+            title={b.label}
+            style={b.src ? { backgroundImage: `url(${b.src})` } : undefined}
+          >
+            {b.key === "scene" ? "✦" : ""}
+          </button>
+        ))}
+      </div>
 
       <div className="grain" aria-hidden="true"></div>
       <div className="cursor" aria-hidden="true"></div>

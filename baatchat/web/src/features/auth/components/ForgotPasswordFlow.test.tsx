@@ -24,7 +24,7 @@ function renderFlow() {
 describe("ForgotPasswordFlow (user reset)", () => {
   it("code field is digits-only (whitespace/letters ignored) and password accepts input", async () => {
     renderFlow();
-    await userEvent.type(screen.getByPlaceholderText("E-postadresse"), "kari@oblinor.no");
+    await userEvent.type(screen.getByPlaceholderText("E-postadresse"), "kari@example.com");
     await userEvent.click(screen.getByRole("button", { name: "Send kode" }));
 
     const codeInput = await screen.findByPlaceholderText("6-sifret kode");

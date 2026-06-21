@@ -1847,3 +1847,79 @@ body {
 @media (max-width: 759px) {
   .landing-v2 .vp-incl { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   BACKGROUND TOGGLES — still photo backdrops behind the hero.
+   When a photo is active the whole living scene is hidden; only
+   the hero text + CTA sit over the image (with a soft scrim).
+   ============================================================ */
+.landing-v2 .bg-photo {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.landing-v2 .bg-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(3, 16, 29, 0.34) 0%,
+    rgba(3, 16, 29, 0.12) 32%,
+    rgba(3, 16, 29, 0.16) 64%,
+    rgba(3, 16, 29, 0.46) 100%
+  );
+}
+.landing-v2.bg-photo-on .sky,
+.landing-v2.bg-photo-on .stars,
+.landing-v2.bg-photo-on .constellations,
+.landing-v2.bg-photo-on .clouds,
+.landing-v2.bg-photo-on .aurora,
+.landing-v2.bg-photo-on .skyline,
+.landing-v2.bg-photo-on .clocktower,
+.landing-v2.bg-photo-on .village-posts,
+.landing-v2.bg-photo-on .boat3d {
+  display: none !important;
+}
+.landing-v2 .bg-switch {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: flex;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(7, 24, 42, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.landing-v2 .bg-dot {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  background-color: rgba(255, 255, 255, 0.12);
+  background-size: cover;
+  background-position: center;
+  color: var(--cream);
+  font-size: 13px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.landing-v2 .bg-dot:hover {
+  transform: translateY(-2px);
+}
+.landing-v2 .bg-dot.is-sel {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px var(--gold);
+}

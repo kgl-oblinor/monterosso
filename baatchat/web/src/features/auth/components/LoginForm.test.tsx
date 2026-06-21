@@ -39,14 +39,14 @@ describe("LoginForm (password)", () => {
 
   it("logs in and stores the session on valid credentials", async () => {
     renderLogin();
-    await userEvent.type(screen.getByPlaceholderText("E-postadresse"), "kari@oblinor.no");
+    await userEvent.type(screen.getByPlaceholderText("E-postadresse"), "kari@example.com");
     await userEvent.type(screen.getByPlaceholderText("Passord"), "hunter2pw");
     await userEvent.click(screen.getByRole("button", { name: "Logg inn" }));
 
     await waitFor(() => expect(useAuthStore.getState().token).toBeTruthy(), {
       timeout: 3000,
     });
-    expect(useAuthStore.getState().user?.email).toBe("kari@oblinor.no");
+    expect(useAuthStore.getState().user?.email).toBe("kari@example.com");
   });
 
   it("reveals the forgot-password flow", async () => {

@@ -2,9 +2,6 @@
 
 > **Øverst = fasiten: sannheten om produktet NÅ.** Aldri «nylig rettet» her. Endrede/forkastede sannheter flyttes ned til 🗑️ Skraphaugen (med kategori + dato/tid). Endres bare av Kristian (eller Krin på hans ordre). Alle agenter leser dette før de gjør noe.
 
-## 🚫 ABSOLUTT REGEL (alle agenter)
-**Det er STRENGT FORBUDT å endre originale Oblinor-filer** (`~/_ref/oblinor-borrower-chat` og Oblinor på GitHub). De er **kun kilde/referanse**. Fremgangsmåte: **kopier HELE over til vår egen kopi først**, og tilpass kun DEN kopien (strip lån-domenet etterpå). Aldri rør originalen.
-
 ## Visjon
 **«Uber for båtturer» i Italia** — en markedsplass som kobler reisende med lokale båteiere/skippere langs hele kysten. **Monterosso · Cinque Terre er piloten** (live i dag). Skipperen = «føreren», kunden bestiller + chatter, **Kristian = plattform-admin**.
 
@@ -19,14 +16,13 @@ Eldre person bestiller fra mobil på **~3 tap**, og chatter etterpå **direkte m
 - **Design:** strengt system — 4px-spacing, 1.2 type-skala, skarpe kanter (radius 0), **glass-popups (ganske transparente, vakre) av lik størrelse** (720px bred, 860px høy desktop). Fonter: Fraunces (tekst), Limelight (gull-CTA), Great Vibes («Read more»/CS).
 - **Stemme:** varm/stram; rolige fremover-verb; ingen falske fakta. Kaptein-whimsy («søker rik dame over 70») **beholdes** bevisst.
 - **Booking:** kvittering-først (gjett 2 gjester, neste avgang) → Continue → kontakt → bekreftelse (~3 tap). Avslutning via WhatsApp/e-post.
+- **Pris:** **$100 per gjest, ingen rabatt** (flat standardpris). **Lokketilbud** (spesialtilbud/kampanjer) kan lages av **admin/skipper** og vises på utvalgte undersider — men standardprisen er alltid $100/gjest. Pris + tilbud er **konfigurerbart per skipper** (admin styrer).
 - **Flyt:** landing → **én knapp** → rask booking (~3 tap). Bestemmer kunden seg ikke der og da → **avdekk web-app-skallet**.
 - **Web-app-skall:** venstre **sidebar, default lukket**; **profil-ikon nederst, chat øverst**; rekkefølge ovenfra: **Chat · Turer · Kvitteringer · Andre reiser · Andre land**.
 - **Bakgrunner (landing):** velgbare via toggles — dagens **2 animerte scener** (dag/natt) + **5 bilde-bakgrunner** (fullskjerm). Når booking-popupen åpnes (uansett bakgrunn) skjules **ALT levende** — båt, overskrift, hero-knapp, alle animasjoner — bak **glass-popupen** er kun den stille bakgrunnen. Tekst/knapper matcher glass-uttrykket.
 - **Konfigurerbart per oppføring (skipper/tjeneste):** **copy/tekst**, **båttider** (slots), **sted/land**, og **tjenestetype** — charterturer, **taxibåt**, frakt/transport, eller andre båt-former. Hver skipper-side genereres fra sin egen oppførings-konfig (generalisert `tour.js`); plattformen er **ikke hardkodet** til Monterosso/Paolona.
 - **Kontakt:** +47 93 00 86 00 · kgl@oblinor.no · møtepunkt Molo dei Pescatori, Monterosso.
-- **Ny funksjon:** kunde↔skipper-**chat** + lett onboarding (kun **e-post ELLER telefon** — ingen kode/passord). **Chatten lever KUN inne i brukersiden (web-app-skallet)** — som opprettes nettopp ved e-post ELLER telefon. **Gjenbruk fra `oblinor-borrower-chat`** (kun kopiere, aldri endre originalen), **egen D1**. **Rolle-mapping:** Oblinor **låntaker → båteier/skipper**, **långiver → kunde/reisende**, **admin → Kristian**.
-  - **Gjenbruk KUN mekanikken:** chat (1-til-1, polling, meldings-UI), lett onboarding, admin-innboks/oversikt, struktur.
-  - **IKKE gjenbruk:** låne-/utlåns-domenet (lån, ordrer, investor/loaner-sync fra oblinor.no, matrikkel/eiendom, mislighold) eller noe hardkodet til Oblinor. **Kontakter/tråder kommer fra bestilling (reservasjonskode), ikke lån.**
+- **Ny funksjon:** kunde↔skipper-**chat** + lett onboarding — **TRE veier inn for kunden**: (1) lag konto via **telefon**, (2) lag konto via **e-post**, ELLER (3) **ingen konto i det hele tatt** — kontakt skipperen direkte (WhatsApp-melding eller ring). Ingen kode/passord, ingen tvang. **Chatten lever KUN inne i brukersiden (web-app-skallet)** — som opprettes ved telefon ELLER e-post; de som hopper over konto, bruker WhatsApp/telefon direkte. **Roller:** skipper (båteier) · kunde/reisende · admin (Kristian). **Egen D1.** Kontakter/tråder kommer fra bestilling (reservasjonskode).
 
 ## Tilstand nå
 - ✅ Båt-landingsside ferdig-polert (scene, popups, booking-flyt, hub, copy)
