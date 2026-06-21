@@ -2,6 +2,9 @@
 
 > **Øverst = fasiten: sannheten om produktet NÅ.** Aldri «nylig rettet» her. Endrede/forkastede sannheter flyttes ned til 🗑️ Skraphaugen (med kategori + dato/tid). Endres bare av Kristian (eller Krin på hans ordre). Alle agenter leser dette før de gjør noe.
 
+## 🚫 ABSOLUTT REGEL (alle agenter)
+**Det er STRENGT FORBUDT å endre originale Oblinor-filer** (`~/_ref/oblinor-borrower-chat` og Oblinor på GitHub). De er **kun kilde/referanse**. Fremgangsmåte: **kopier HELE over til vår egen kopi først**, og tilpass kun DEN kopien (strip lån-domenet etterpå). Aldri rør originalen.
+
 ## Visjon
 **«Uber for båtturer» i Italia** — en markedsplass som kobler reisende med lokale båteiere/skippere langs hele kysten. **Monterosso · Cinque Terre er piloten** (live i dag). Skipperen = «føreren», kunden bestiller + chatter, **Kristian = plattform-admin**.
 

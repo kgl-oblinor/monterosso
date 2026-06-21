@@ -10,30 +10,34 @@ Mål: alle agenter jobber samtidig **uten å krasje** (aldri to i samme fil), og
 5. **Logg alltid** i `WORKLOG.md`: `[tid] [agent] hva — filer`. Append-only.
 6. Egen branch/worktree: `agent/<navn>/<lane>`. Små, hyppige commits.
 
-## Lanes (ikke-overlappende) — kodebase `cinque-terre/`
-| Lane | Eier | Mappe/filer |
-|---|---|---|
-| **A · Chat (kunde↔skipper)** | Krin-team | `cinque-terre/app/chat/**`, `cinque-terre/components/chat/**`, `cinque-terre/app/api/messages/**` |
-| **B · Onboarding/konto + verifisering** | Krin-team | `cinque-terre/app/(auth)/**`, `cinque-terre/app/api/auth/**`, `cinque-terre/lib/auth*` |
-| **C · Admin/skipper-side** | Krin-team | `cinque-terre/app/admin/**`, `cinque-terre/components/admin/**` |
-| **D · Data/DB (D1: users, messages)** | Krin-team | `cinque-terre/db/**`, `cinque-terre/lib/db*` |
-| **E · Innhold/copy** | _ledig_ | tekst-strenger (IKKE layout/CSS) |
-| **G · Design (dashboard)** | Krin-team | `cinque-terre/components/dashboard/**` (+ egne `.css`, IKKE `landing.css`) · design-spec |
-| **F · Krin: landing + integrasjon + review** | **Krin** | `cinque-terre/app/landing/**`, `landing.css`, rot-config, merge |
+## Lanes (ikke-overlappende) — tmux-teamet
+To kodebaser i samme repo: **`cinque-terre/`** (landingen, Next.js) og **`baatchat/`** (chat-plattformen, kopi av Oblinor — Cloudflare Worker + Vite).
+
+| Lane | Eier (tmux) | Mappe/filer | Rolle |
+|---|---|---|---|
+| **DASH · Dashboard / chat-plattform** | agent 1 | `baatchat/**` | Utfører |
+| **LAND · Landingssider** | agent 2 | `cinque-terre/app/landing/**`, `landing.css` | Utfører |
+| **SEO · SEO + innhold** | agent 3 | `cinque-terre/app/(by-sider)/**`, blogg-sider, `gjøremål`/innhold, metadata/sitemap — **nye sider + tekst, IKKE `landing.css`** | Utfører |
+| **SYM · Symmetri-analyse (desktop+mobil)** | agent 4 | **rører INGEN kode** — kun måler/leser; skriver til `SYMMETRI-KØ.md` | Analytiker |
+| **F · Krin: koordinering + integrasjon + review/merge** | **Krin** | rot-config, `MÅL.md`/`COORDINATION.md`/`WORKLOG.md`, merge, D1-migrasjon, deploy | Dirigent |
 
 ## Oppdrag per lane (briefs)
-- **A Chat:** kunde↔skipper-tråd, knyttet til reservasjonskode. Gjenbruk Oblinor-chatmønster. Cream-flater, Fraunces, skarpe kanter.
-- **B Onboarding:** valgfri e-post + SMS/WhatsApp-nr → lett bruker → verifisering (e-post + SMS). Ingen passord-friksjon.
-- **C Admin:** skipper/Kristian = admin. Innboks med tråder per kode + svar.
-- **D Data:** D1-schema: `users` (epost/tlf, verifisert), `messages` (kode, sender, tekst, tid), kobling til booking-kode.
-- **G Design:** stilrent desktop-dashboard: **lukket venstre-sidebar (chat-ikon øverst, profil nederst), tomt til høyre.** Design-tokens fra fasiten. Lever spec + komponenter i `components/dashboard/`.
+- **DASH:** tilpass den kopierte `baatchat/` til båt: **strip lån-domenet** (lån, ordrer, oblinor.no-sync, matrikkel, mislighold), rebrand til kunde↔skipper, admin=Kristian, kontakter/tråder fra **reservasjonskode** (ikke lån). Egen D1. Behold chat/onboarding/admin-mekanikken. Design-tokens fra fasiten.
+- **LAND:** perfeksjoner landingssidene (scene, popups, booking-flyt, hub, copy). Cream-flater, Fraunces, skarpe kanter, 4px-spacing. Tar imot fikser fra `SYMMETRI-KØ.md`.
+- **SEO:** by-sider (om byene), gjøremål, blogg, fakta-tekster — varmt men stramt, researchede fakta, ingen falske påstander. SEO: titler, meta, sitemap, struktur. Lager **nye** sider/tekst; rører ikke `landing.css`.
+- **SYM:** mål symmetri/spacing/align på **desktop OG mobil**, pixel for pixel. Den **utfører ingenting selv** — den skriver **ferdige, konkrete prompts** (med mål/px + fil + hva som er skjevt) til `SYMMETRI-KØ.md`, som LAND/DASH plukker opp og fikser.
+
+## SYMMETRI-KØ.md (analytiker → utfører)
+- SYM **append-only**: `[ ] [tid] [side/viewport] problem (px/mål) → forslag → fil`. Aldri editér kode.
+- LAND/DASH plukker øverste `[ ]`, fikser, setter `[x]` + logger i WORKLOG. Krin reviewer.
 
 ## CLAIMS (aktive fil-låser)
 | Fil/mappe | Agent | Status | Tid |
 |---|---|---|---|
-| `cinque-terre/app/landing/**`, `landing.css` | Krin | LÅST | 2026-06-21 10:40 |
-| Lanes A,B,C,D,G (mapper over) | Krin-team (worktrees) | LÅST | 2026-06-21 10:40 |
+| `cinque-terre/app/landing/**`, `landing.css` | LAND | LÅST | 2026-06-21 11:35 |
+| `baatchat/**` | DASH | LÅST | 2026-06-21 11:35 |
+| `cinque-terre/` chat-stillas (app/chat, app/(auth), app/admin/inbox, components/chat|admin|dashboard, lib/db|auth, db) | _superseded av baatchat_ | FRYST | 2026-06-21 11:35 |
 
-## Slik unngår claudesquad-agentene oss
-- Ta en **ledig lane (E)** eller en av A–D/G hvis Krin-teamet ikke alt kjører den — sjekk CLAIMS.
-- Les COORDINATION + CLAIMS + WORKLOG før hver økt; claim før delt fil; aldri rør LÅST. Egen branch.
+## Slik unngår agentene hverandre
+- Én lane hver. Les COORDINATION + CLAIMS + WORKLOG før hver økt; claim før delt fil; aldri rør LÅST. Egen branch/worktree.
+- **SYM skriver aldri kode.** Landing-stillaset i `cinque-terre/` er FRYST (erstattes av `baatchat/`) — ikke bygg videre på det.
