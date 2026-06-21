@@ -1888,44 +1888,61 @@ body {
 .landing-v2.bg-photo-on .boat3d {
   display: none !important;
 }
+/* top-right column: sun · moon · the photo backdrops, one by one */
 .landing-v2 .bg-switch {
   position: fixed;
-  left: 50%;
-  bottom: 16px;
-  transform: translateX(-50%);
+  top: 24px;
+  right: 30px;
   z-index: 60;
   display: flex;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(7, 24, 42, 0.3);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 .landing-v2 .bg-dot {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   padding: 0;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.55);
+  border: 2px solid rgba(255, 255, 255, 0.5);
   background-color: rgba(255, 255, 255, 0.12);
   background-size: cover;
   background-position: center;
-  color: var(--cream);
-  font-size: 13px;
-  line-height: 1;
   display: grid;
   place-items: center;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: transform 0.15s ease, border-color 0.15s ease;
+  transition: transform 0.18s ease, border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+/* sun + moon are celestial glyphs, not photo swatches — no swatch chrome */
+.landing-v2 .bg-dot--sun,
+.landing-v2 .bg-dot--moon {
+  border-color: transparent;
+  background-color: transparent;
+}
+.landing-v2 .bg-dot--sun {
+  filter: drop-shadow(0 0 9px rgba(224, 192, 106, 0.55));
+}
+.landing-v2 .bg-dot--moon {
+  filter: drop-shadow(0 0 9px rgba(190, 215, 255, 0.5));
+}
+.landing-v2 .bg-dot .celestial {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 .landing-v2 .bg-dot:hover {
-  transform: translateY(-2px);
+  transform: scale(1.1);
 }
 .landing-v2 .bg-dot.is-sel {
   border-color: var(--gold);
   box-shadow: 0 0 0 2px var(--gold);
+}
+/* a selected celestial gets the gold ring drawn around the glyph */
+.landing-v2 .bg-dot--sun.is-sel,
+.landing-v2 .bg-dot--moon.is-sel {
+  border-color: var(--gold);
 }
 
 /* ============================================================

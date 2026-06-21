@@ -210,17 +210,41 @@ export default function Landing() {
         />
       )}
 
-      <button
-        className="theme-toggle"
-        onClick={() => setTheme((t) => (t === "light" ? "dark" : "light"))}
-        aria-label="Toggle light or dark mode"
-      >
-        {theme === "light" ? <SunIcon /> : <MoonIcon />}
-      </button>
-
-      {/* background switcher — the living scene + still photo backdrops */}
+      {/* background switcher — a top-right column: sun (day scene), moon
+          (night scene), then the photo backdrops, one by one. Sun/moon also
+          set the light/dark theme of the living scene. */}
       <div className="bg-switch" role="group" aria-label="Choose a background">
-        {BGS.map((b) => (
+        <button
+          type="button"
+          className={
+            "bg-dot bg-dot--sun" +
+            (bg === "scene" && theme === "light" ? " is-sel" : "")
+          }
+          onClick={() => {
+            setBg("scene");
+            setTheme("light");
+          }}
+          aria-label="Daytime scene"
+          title="Daytime scene"
+        >
+          <SunIcon />
+        </button>
+        <button
+          type="button"
+          className={
+            "bg-dot bg-dot--moon" +
+            (bg === "scene" && theme === "dark" ? " is-sel" : "")
+          }
+          onClick={() => {
+            setBg("scene");
+            setTheme("dark");
+          }}
+          aria-label="Night scene"
+          title="Night scene"
+        >
+          <MoonIcon />
+        </button>
+        {BGS.filter((b) => b.src).map((b) => (
           <button
             key={b.key}
             type="button"
@@ -228,10 +252,8 @@ export default function Landing() {
             onClick={() => setBg(b.key)}
             aria-label={b.label}
             title={b.label}
-            style={b.src ? { backgroundImage: `url(${b.src})` } : undefined}
-          >
-            {b.key === "scene" ? "✦" : ""}
-          </button>
+            style={{ backgroundImage: `url(${b.src})` }}
+          />
         ))}
       </div>
 
