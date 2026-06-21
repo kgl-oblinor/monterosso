@@ -7,6 +7,7 @@ import { tour } from "../../lib/tour";
 import Skyline from "./Skyline";
 import Boat3D from "./Boat3D";
 import Clouds from "./Clouds";
+import Constellations from "./Constellations";
 import ClockTower from "./ClockTower";
 import Signpost from "./Signpost";
 import VillagePage from "./VillagePage";
@@ -182,6 +183,7 @@ export default function Landing() {
       {/* sky — upper half */}
       <div className="sky" aria-hidden="true"></div>
       <div className="stars" aria-hidden="true"></div>
+      <Constellations />
       <Clouds />
 
       {/* living sea — lower half */}

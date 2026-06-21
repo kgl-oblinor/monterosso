@@ -25,22 +25,17 @@ export default function Signpost({ onSelect }) {
           onClick={() => onSelect(i)}
           aria-label={`${v.name} — read about the village`}
         >
-          <WoodSign name={v.name} board={v.board} hi={v.hi} lo={v.lo} />
+          <WoodSign
+            name={v.name}
+            board={v.board}
+            hi={v.hi}
+            lo={v.lo}
+            here={v.here}
+          />
           {v.here && (
-            <>
-              <svg className="vs-pin" viewBox="0 0 24 32" aria-hidden="true">
-                <path
-                  d="M12 1C6 1 2 5 2 11c0 7 10 20 10 20s10-13 10-20c0-6-4-10-10-10z"
-                  fill="#f5f0e2"
-                  stroke="#3a2412"
-                  strokeWidth="1.6"
-                />
-                <circle cx="12" cy="11" r="3.4" fill="#3a2412" />
-              </svg>
-              <span className="vs-below" aria-hidden="true">
-                <span className="vs-post" />
-              </span>
-            </>
+            <span className="vs-below" aria-hidden="true">
+              <span className="vs-post" />
+            </span>
           )}
         </button>
       ))}

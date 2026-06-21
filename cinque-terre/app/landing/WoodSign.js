@@ -8,6 +8,7 @@ export default function WoodSign({
   board = "#6e4a2a",
   hi = "#8a5e34",
   lo = "#43291b",
+  here = false,
 }) {
   const id = name.toLowerCase();
   return (
@@ -59,6 +60,19 @@ export default function WoodSign({
       >
         {name}
       </text>
+
+      {/* "you are here" pin, just after the name */}
+      {here && (
+        <g transform="translate(250 15) scale(0.78)">
+          <path
+            d="M12 1C6 1 2 5 2 11c0 7 10 20 10 20s10-13 10-20c0-6-4-10-10-10z"
+            fill="#f5f0e2"
+            stroke="#23140a"
+            strokeWidth="1.6"
+          />
+          <circle cx="12" cy="11" r="3.4" fill="#23140a" />
+        </g>
+      )}
     </svg>
   );
 }

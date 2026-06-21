@@ -1641,3 +1641,33 @@ body {
   0%, 100% { transform: translateX(-50%) translateY(0); }
   50% { transform: translateX(-50%) translateY(-3px); }
 }
+
+/* the 20 best-known constellations — subtle by day, present at night */
+.landing-v2 .constellations {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 55vh;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.55;
+}
+[data-theme="dark"] .landing-v2 .constellations {
+  opacity: 0.9;
+}
+.landing-v2 .cn-star {
+  fill: #fffae8;
+  filter: drop-shadow(0 0 2px rgba(255, 250, 230, 0.85));
+}
+.landing-v2 .cn-line {
+  stroke: rgba(255, 250, 235, 0.3);
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+}
+[data-theme="dark"] .landing-v2 .cn-star {
+  fill: #eef4ff;
+}
+[data-theme="dark"] .landing-v2 .cn-line {
+  stroke: rgba(200, 220, 255, 0.42);
+}
