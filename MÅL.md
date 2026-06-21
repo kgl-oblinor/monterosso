@@ -16,11 +16,12 @@ Eldre person bestiller fra mobil på **~3 tap**, og chatter etterpå **direkte m
 
 ## Sanne fakta (fasit)
 - **Første kunde (pilot-skipper):** **mann** (Monterosso), båt «Paolona» — landingssiden er hans tur. Navn låses senere via admin (**aldri «Kristian Løkken»** — Kristian = plattform-admin). Kaptein-whimsy «søker rik dame over 70» beholdes (mannlig kaptein, He/his).
-- **Design:** strengt system — 4px-spacing, 1.2 type-skala, skarpe kanter (radius 0), **solide cream-popups (#f7f1e3) av lik størrelse** (720px bred, 860px høy desktop). Fonter: Fraunces (tekst), Limelight (gull-CTA), Great Vibes («Read more»/CS).
+- **Design:** strengt system — 4px-spacing, 1.2 type-skala, skarpe kanter (radius 0), **glass-popups (ganske transparente, vakre) av lik størrelse** (720px bred, 860px høy desktop). Fonter: Fraunces (tekst), Limelight (gull-CTA), Great Vibes («Read more»/CS).
 - **Stemme:** varm/stram; rolige fremover-verb; ingen falske fakta. Kaptein-whimsy («søker rik dame over 70») **beholdes** bevisst.
 - **Booking:** kvittering-først (gjett 2 gjester, neste avgang) → Continue → kontakt → bekreftelse (~3 tap). Avslutning via WhatsApp/e-post.
 - **Flyt:** landing → **én knapp** → rask booking (~3 tap). Bestemmer kunden seg ikke der og da → **avdekk web-app-skallet**.
 - **Web-app-skall:** venstre **sidebar, default lukket**; **profil-ikon nederst, chat øverst**; rekkefølge ovenfra: **Chat · Turer · Kvitteringer · Andre reiser · Andre land**.
+- **Bakgrunner (landing):** velgbare via toggles — dagens **2 animerte scener** (dag/natt) + **5 bilde-bakgrunner** (fullskjerm). Når booking-popupen åpnes (uansett bakgrunn) skjules **ALT levende** — båt, overskrift, hero-knapp, alle animasjoner — bak **glass-popupen** er kun den stille bakgrunnen. Tekst/knapper matcher glass-uttrykket.
 - **Konfigurerbart per oppføring (skipper/tjeneste):** **copy/tekst**, **båttider** (slots), **sted/land**, og **tjenestetype** — charterturer, **taxibåt**, frakt/transport, eller andre båt-former. Hver skipper-side genereres fra sin egen oppførings-konfig (generalisert `tour.js`); plattformen er **ikke hardkodet** til Monterosso/Paolona.
 - **Kontakt:** +47 93 00 86 00 · kgl@oblinor.no · møtepunkt Molo dei Pescatori, Monterosso.
 - **Ny funksjon:** kunde↔skipper-**chat** + lett onboarding (kun **e-post ELLER telefon** — ingen kode/passord). **Chatten lever KUN inne i brukersiden (web-app-skallet)** — som opprettes nettopp ved e-post ELLER telefon. **Gjenbruk fra `oblinor-borrower-chat`** (kun kopiere, aldri endre originalen), **egen D1**. **Rolle-mapping:** Oblinor **låntaker → båteier/skipper**, **långiver → kunde/reisende**, **admin → Kristian**.
@@ -39,7 +40,8 @@ Eldre person bestiller fra mobil på **~3 tap**, og chatter etterpå **direkte m
 > Her ligger det som EN GANG var sant men ikke er det lenger. Kategori · dato/tid · hva.
 
 ### Design
-- *Glass-popups* · 2026-06-21 ~09:30 · transparent Apple-glass (sjøen gjennom) → **forkastet**, ble grått/grumsete → nå solide cream-flater.
+- *Glass-popups (forsøk 1)* · 2026-06-21 ~09:30 · transparent Apple-glass over den **bevegelige scenen** (sjøen gjennom) → ble grått/grumsete → midlertidig cream.
+- *Solide cream-popups* · 2026-06-21 ~18:30 · **reversert** — vi går tilbake til **glass** (ganske transparent, vakkert), men nå over **stille bakgrunner** (bilde eller frosset scene; alt levende skjult når popup åpnes), så det ikke blir grumsete.
 - *Popup-størrelse* · 2026-06-21 ~09:50 · `min-height` (vokste ulikt) → fast 860px (alle like).
 - *Lukke-knapp ✕* · 2026-06-21 · fjernet (stygg) → lukk via klikk-utenfor/Esc.
 
