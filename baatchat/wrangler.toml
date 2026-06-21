@@ -18,7 +18,7 @@ SUPPORT_EMAIL = "kgl@oblinor.no"
 # Admin (Kristian) emails allowed to use password login (/auth/admin-login). Password is
 # the ADMIN_PASSWORD secret (set via `wrangler secret put`), never stored here.
 ADMIN_EMAILS = "kgl@oblinor.no"
-ALLOWED_ORIGINS = "http://localhost:5173"
+ALLOWED_ORIGINS = "https://monterosso-app.kgl-56a.workers.dev,http://localhost:5173"
 # Defaults for local dev. CI overrides these per deploy with `--var`.
 APP_VERSION = "dev"
 GIT_SHA = "local"
@@ -28,11 +28,11 @@ GIT_SHA = "local"
 [[d1_databases]]
 binding = "DB"
 database_name = "monterosso_chat"
-database_id = "REPLACE_WITH_NEW_D1_ID"
+database_id = "a05b340f-7834-49a8-a825-8a09de0ab0ab"
 migrations_dir = "migrations"
 
 # KV — short-lived OTP codes (native TTL) + rate-limit counters.
 # `id` is filled in after `wrangler kv namespace create OTP`.
 [[kv_namespaces]]
 binding = "OTP"
-id = "REPLACE_WITH_NEW_KV_ID"
+id = "0de8d22894e743bf91eb55f87d8aa76f"
