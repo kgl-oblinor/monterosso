@@ -1,33 +1,45 @@
 /* ============================================================
    Content / SEO pages — Monterosso · Cinque Terre
-   Own stylesheet. Reuses the brand FEELING (cream, Fraunces,
-   sharp edges, calm spacing) but never imports or edits
-   landing.css. Fonts are already loaded globally in layout.js.
+   Own stylesheet, but the SAME design system as landing.css:
+   spacing 4px-base (--s1..--s8) · type 1.2 minor-third (--t-*) ·
+   sharp corners (radius 0) · separation by AIR not lines ·
+   ink #07182a / cream #f7f1e3 / gold #ead27e / terracotta #a8743f.
+   Fonts are already loaded globally in layout.js.
    ============================================================ */
 
 .content {
-  --c-cream: #f7f1e3;        /* solid cream surface (per fasit) */
-  --c-cream-deep: #efe6d2;   /* faint band */
-  --c-ink: #20140c;          /* warm near-black text */
-  --c-ink-soft: #5a4a3c;     /* muted body */
-  --c-line: #d8c9ad;         /* hairline */
-  --c-sea: #115f79;          /* link / accent, from the sea palette */
-  --c-sea-deep: #06304a;
-  --c-gold: #b8923a;         /* muted vintage gold for the quiet CTA */
+  /* spacing — 4px base */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+  /* type — 1.2 minor third, 16px base */
+  --t-xs: 11px; --t-sm: 13px; --t-base: 16px; --t-md: 19px;
+  --t-lg: 23px; --t-xl: 28px; --t-2xl: 33px;
+  /* letter-spacing */
+  --ls-1: 0.02em; --ls-2: 0.08em; --ls-3: 0.14em;
+  /* colour — fasit palette */
+  --ink: #07182a;            /* blekk — primary text */
+  --ink-soft: rgba(7, 24, 42, 0.62);
+  --cream: #f7f1e3;          /* solid cream surface (per fasit) */
+  --cream-deep: #efe6d2;     /* faint band */
+  --gold: #ead27e;           /* vintage poster gold */
+  --terracotta: #a8743f;     /* link / accent */
 
-  background: var(--c-cream);
-  color: var(--c-ink);
+  background: var(--cream);
+  color: var(--ink);
   font-family: "Fraunces", Georgia, serif;
   font-weight: 400;
   line-height: 1.6;
-  min-height: 100vh;
+  min-height: 100svh;
   -webkit-font-smoothing: antialiased;
+}
+@supports not (min-height: 100svh) {
+  .content { min-height: 100vh; }
 }
 
 .content__wrap {
   max-width: 760px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 var(--s5);
 }
 
 /* ---------- top bar ---------- */
@@ -35,157 +47,153 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 16px;
-  padding: 24px 0 20px;
-  border-bottom: 1px solid var(--c-line);
+  gap: var(--s4);
+  padding: var(--s5) 0;
 }
 .content__brand {
   font-family: "Fraunces", Georgia, serif;
   font-weight: 500;
-  font-size: 16px;
-  letter-spacing: 0.16em;
+  font-size: var(--t-base);
+  letter-spacing: var(--ls-3);
   text-transform: uppercase;
-  color: var(--c-ink);
+  color: var(--ink);
   text-decoration: none;
 }
 .content__navlink {
-  font-size: 14px;
-  letter-spacing: 0.08em;
-  color: var(--c-sea);
+  font-size: var(--t-sm);
+  letter-spacing: var(--ls-2);
+  color: var(--terracotta);
   text-decoration: none;
-  border-bottom: 1px solid transparent;
 }
-.content__navlink:hover { border-bottom-color: var(--c-sea); }
+.content__navlink:hover { color: var(--gold); }
 
 /* ---------- hero ---------- */
-.content__hero { padding: 56px 0 8px; }
+.content__hero { padding: var(--s7) 0 var(--s2); }
 .content__eyebrow {
   font-family: "Great Vibes", cursive;
-  font-size: 28px;
-  color: var(--c-sea);
-  margin: 0 0 8px;
+  font-size: var(--t-xl);
+  color: var(--gold);
+  margin: 0 0 var(--s2);
   line-height: 1;
 }
 .content h1 {
   font-family: "Fraunces", Georgia, serif;
   font-weight: 500;
-  font-size: clamp(34px, 6vw, 52px);
+  font-size: clamp(33px, 6vw, 52px);
   line-height: 1.08;
-  letter-spacing: 0.01em;
-  margin: 0 0 16px;
+  letter-spacing: var(--ls-1);
+  margin: 0 0 var(--s4);
 }
 .content__lede {
-  font-size: 20px;
+  font-size: var(--t-lg);
   line-height: 1.55;
-  color: var(--c-ink-soft);
-  margin: 0 0 8px;
+  color: var(--ink-soft);
+  margin: 0 0 var(--s2);
   max-width: 60ch;
 }
 .content__meta {
-  font-size: 13px;
-  letter-spacing: 0.12em;
+  font-size: var(--t-sm);
+  letter-spacing: var(--ls-3);
   text-transform: uppercase;
-  color: var(--c-ink-soft);
-  margin: 24px 0 0;
+  color: var(--ink-soft);
+  margin: var(--s5) 0 0;
 }
 
-/* ---------- body ---------- */
-.content section { padding: 40px 0; border-top: 1px solid var(--c-line); }
-.content section:first-of-type { border-top: none; }
+/* ---------- body — separated by AIR, not lines ---------- */
+.content section { padding: var(--s7) 0; }
+.content section:first-of-type { padding-top: var(--s5); }
 .content h2 {
   font-family: "Fraunces", Georgia, serif;
   font-weight: 500;
   font-size: clamp(24px, 4vw, 32px);
-  letter-spacing: 0.01em;
-  margin: 0 0 16px;
+  letter-spacing: var(--ls-1);
+  margin: 0 0 var(--s4);
 }
 .content h3 {
   font-family: "Fraunces", Georgia, serif;
   font-weight: 500;
-  font-size: 20px;
-  margin: 28px 0 8px;
+  font-size: var(--t-md);
+  margin: var(--s6) 0 var(--s2);
 }
-.content p { font-size: 18px; margin: 0 0 16px; max-width: 64ch; }
+.content p { font-size: var(--t-md); margin: 0 0 var(--s4); max-width: 64ch; }
 .content p:last-child { margin-bottom: 0; }
-.content a { color: var(--c-sea); text-decoration: underline; text-underline-offset: 3px; }
-.content a:hover { color: var(--c-sea-deep); }
+.content a { color: var(--terracotta); text-decoration: underline; text-underline-offset: 3px; }
+.content a:hover { color: var(--gold); }
 
-.content ul { margin: 0 0 16px; padding-left: 20px; }
-.content li { font-size: 18px; margin: 0 0 8px; max-width: 60ch; }
+.content ul { margin: 0 0 var(--s4); padding-left: var(--s5); }
+.content li { font-size: var(--t-md); margin: 0 0 var(--s2); max-width: 60ch; }
 
-/* pull-quote / fact band */
+/* pull-quote / fact band — gold ledge, no boxing lines */
 .content__fact {
-  background: var(--c-cream-deep);
-  border-left: 3px solid var(--c-gold);
-  padding: 20px 24px;
-  margin: 24px 0;
-  font-size: 18px;
+  background: var(--cream-deep);
+  border-left: 3px solid var(--gold);
+  padding: var(--s5) var(--s5);
+  margin: var(--s5) 0;
+  font-size: var(--t-md);
   font-style: italic;
-  color: var(--c-ink-soft);
+  color: var(--ink-soft);
 }
 
-/* ---------- quiet CTA ---------- */
+/* ---------- primary CTA — solid gold "ticket" (matches landing) ---------- */
 .content__cta {
   text-align: center;
-  padding: 48px 0 24px;
-  border-top: 1px solid var(--c-line);
+  padding: var(--s7) 0 var(--s5);
 }
 .content__cta p {
-  margin: 0 auto 20px;
-  font-size: 20px;
-  color: var(--c-ink-soft);
+  margin: 0 auto var(--s5);
+  font-size: var(--t-lg);
+  color: var(--ink-soft);
 }
 .content__cta-link {
   display: inline-block;
   font-family: "Limelight", "Fraunces", serif;
-  font-size: 16px;
-  letter-spacing: 0.18em;
+  font-size: var(--t-base);
+  letter-spacing: var(--ls-3);
   text-transform: uppercase;
-  color: var(--c-ink);
+  color: var(--ink);
   text-decoration: none;
-  padding: 14px 28px;
-  border: 1px solid var(--c-gold);
-  background: transparent;
-  transition: background 0.25s ease, color 0.25s ease;
+  padding: var(--s4) var(--s6);
+  border: 1px solid var(--ink);
+  background: var(--gold);
+  transition: filter 0.2s ease, transform 0.1s ease;
 }
-.content__cta-link:hover { background: var(--c-gold); color: var(--c-cream); }
+.content__cta-link:hover { filter: brightness(1.05); }
+.content__cta-link:active { transform: translateY(1px); }
 
 /* ---------- nearby / internal links ---------- */
 .content__links {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 20px;
-  margin: 8px 0 0;
+  gap: var(--s3) var(--s5);
+  margin: var(--s2) 0 0;
 }
-.content__links a { font-size: 16px; }
+.content__links a { font-size: var(--t-base); }
 
-/* ---------- hub card grid ---------- */
+/* ---------- hub card grid — air between cards, no grid lines ---------- */
 .content__grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1px;
-  background: var(--c-line);
-  border: 1px solid var(--c-line);
-  margin: 8px 0 0;
+  gap: var(--s4);
+  margin: var(--s2) 0 0;
 }
 .content__card {
-  background: var(--c-cream);
-  padding: 24px;
+  background: var(--cream-deep);
+  padding: var(--s5);
   text-decoration: none;
-  color: var(--c-ink);
+  color: var(--ink);
   display: block;
-  transition: background 0.2s ease;
+  transition: filter 0.2s ease;
 }
-.content__card:hover { background: var(--c-cream-deep); }
+.content__card:hover { filter: brightness(0.98); }
 .content__card h3 {
-  margin: 0 0 6px;
-  font-size: 19px;
-  color: var(--c-ink);
+  margin: 0 0 var(--s2);
+  font-size: var(--t-md);
+  color: var(--ink);
 }
 .content__card p {
   margin: 0;
-  font-size: 15px;
-  color: var(--c-ink-soft);
+  font-size: var(--t-sm);
+  color: var(--ink-soft);
   line-height: 1.45;
 }
 @media (max-width: 520px) {
@@ -194,18 +202,17 @@
 
 /* ---------- footer / sources ---------- */
 .content__foot {
-  padding: 40px 0 64px;
-  border-top: 1px solid var(--c-line);
-  font-size: 13px;
-  color: var(--c-ink-soft);
+  padding: var(--s7) 0 var(--s8);
+  font-size: var(--t-sm);
+  color: var(--ink-soft);
 }
-.content__foot h2 { font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; }
-.content__foot ul { padding-left: 18px; }
-.content__foot li { font-size: 13px; line-height: 1.5; }
-.content__foot a { color: var(--c-sea); word-break: break-word; }
+.content__foot h2 { font-size: var(--t-sm); letter-spacing: var(--ls-3); text-transform: uppercase; }
+.content__foot ul { padding-left: var(--s5); }
+.content__foot li { font-size: var(--t-sm); line-height: 1.5; }
+.content__foot a { color: var(--terracotta); word-break: break-word; }
 
 @media (max-width: 520px) {
-  .content__wrap { padding: 0 18px; }
-  .content__hero { padding: 36px 0 4px; }
-  .content p, .content li { font-size: 17px; }
+  .content__wrap { padding: 0 var(--s4); }
+  .content__hero { padding: var(--s6) 0 var(--s1); }
+  .content p, .content li { font-size: var(--t-base); }
 }

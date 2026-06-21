@@ -4,7 +4,7 @@ export const metadata = {
   title:
     "Monterosso al Mare — Things to Do, Beaches & the Old Town | Cinque Terre",
   description:
-    "Monterosso al Mare is the seaside heart of the Cinque Terre — a sandy beach, a medieval old town, the 14-metre Giant, and the best anchovies in Liguria. A local's guide.",
+    "Monterosso al Mare is the seaside heart of the Cinque Terre — a sandy beach, a medieval old town, the 14-metre Giant, and the salt-cured anchovies Liguria is known for. A local's guide.",
 };
 
 // JSON-LD structured data for the place. Helps search engines understand the page.
