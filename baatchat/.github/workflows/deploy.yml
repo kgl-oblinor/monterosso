@@ -1,0 +1,76 @@
+name: Deploy to Cloudflare
+
+# Anything that lands on `production` (i.e. merged from `main`) ships to Cloudflare.
+# `main` and feature branches do NOT deploy — open a PR and merge into production to release.
+on:
+  push:
+    branches: [production]
+  workflow_dispatch: {} # lets you re-run a deploy by hand from the Actions tab
+
+# Never run two production deploys at once; let an in-flight one finish.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: write # needed to push the per-deploy release tag back to the repo
+
+# Run the JS-based actions on Node 24 (Node 20 is deprecated as of 2026-06-16).
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4 # reads the pinned pnpm version from package.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Typecheck before we ship — a broken build never reaches production.
+      - run: pnpm run typecheck
+
+      # Deploy. Stamp the build number + commit into the Worker so /version reports
+      # exactly what is live. wrangler reads the two secrets from the environment.
+      - name: Deploy Worker (API) to Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pnpm exec wrangler deploy \
+            --var APP_VERSION:"${{ github.run_number }}" \
+            --var GIT_SHA:"${{ github.sha }}"
+
+      # Build + ship the frontend (Pages). Without this, UI changes never go live.
+      # Uses web/.env.production (committed) for VITE_API_BASE. The Pages project's
+      # production branch is "main", so we force --branch=main to publish to the live
+      # custom domain (chat.oblinor.no) even though CI runs on the `production` branch.
+      - name: Build frontend
+        run: pnpm --filter @oblinor/web build
+
+      - name: Deploy frontend (Pages) to Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pnpm exec wrangler pages deploy web/dist \
+            --project-name=oblinorchat-web \
+            --branch=main \
+            --commit-dirty=true
+
+      # Record every production deploy as a git tag, so the build number on /version
+      # maps straight back to a commit you can check out, diff, or revert.
+      - name: Tag this release
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          TAG="release-${{ github.run_number }}"
+          git tag -a "$TAG" -m "Production deploy ${{ github.run_number }} (${GITHUB_SHA:0:7})"
+          git push origin "$TAG"

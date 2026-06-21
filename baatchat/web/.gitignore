@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.local
+.env
+.env.*
+!.env.example
+# Build-time public config (API base URL + mock flag — no secrets). Committed so CI
+# builds the frontend with the right VITE_API_BASE.
+!.env.production
+
+# TS incremental build cache
+*.tsbuildinfo

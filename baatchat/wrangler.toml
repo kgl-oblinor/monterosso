@@ -1,0 +1,52 @@
+# Oblinor Borrower Chat (Loaner ↔ Investor) — Worker config (v1: no Durable Objects)
+name = "oblinor-borrower-chat"
+main = "src/worker/index.ts"
+compatibility_date = "2026-06-16"
+compatibility_flags = ["nodejs_compat"]
+
+# API is served on the workers.dev URL (oblinor-borrower-chat.bk-39a.workers.dev). It's a
+# non-.app domain on established Cloudflare infra, so corporate filters like Telenor
+# SafeZone reach it fine. The old api.oblinorchat.app custom domain has been retired.
+workers_dev = true
+
+# Non-secret config. Secrets (OBLINOR_ADMIN_PASSWORD, ADMIN_SYNC_KEY,
+# CHAT_JWT_SECRET, SENDGRID_API_KEY) are set with: pnpm exec wrangler secret put <NAME>
+[vars]
+OBLINOR_WP_BASE = "https://oblinor.no"
+# Non-personal service account for the pull-only data sync from oblinor.no.
+# Password is the OBLINOR_ADMIN_PASSWORD secret (set via `wrangler secret put`),
+# never stored here.
+OBLINOR_ADMIN_USERNAME = "git@oblinor.no"
+# Verified SendGrid sender for login OTP emails (Phase 2).
+# Using post@oblinor.no — the main company domain (authenticated in SendGrid),
+# since oblinorchat.app's sender identity was never verified (403 on send).
+SENDGRID_FROM = "post@oblinor.no"
+# Admin staff emails allowed to use password login (/auth/admin-login). Password is
+# the ADMIN_PASSWORD secret (set via `wrangler secret put`), never stored here.
+ADMIN_EMAILS = "bk@oblinor.no,kgl@oblinor.no"
+ALLOWED_ORIGINS = "http://localhost:5173,https://chat.oblinor.no"
+# Defaults for local dev. CI overrides these per deploy with `--var` so the live
+# Worker reports the build number + commit it was shipped from (see /version).
+APP_VERSION = "dev"
+GIT_SHA = "local"
+
+# D1 — relational data + message history. `database_id` is filled in after
+# `wrangler d1 create oblinor_borrower_chat` (Phase 0 provisioning).
+[[d1_databases]]
+binding = "DB"
+database_name = "oblinor_borrower_chat"
+database_id = "9e0547b0-3ad0-4e74-a9ca-8e2b71a1b542"
+migrations_dir = "migrations"
+
+# KV — short-lived OTP codes (native TTL) + optional rate-limit counters.
+# `id` is filled in after `wrangler kv namespace create OTP`.
+[[kv_namespaces]]
+binding = "OTP"
+id = "a346a9d9e6d04c3fa9deab055bd231a3"
+
+# Cron — hourly pull-only sync from Oblinor (§3 / §11 decision 4).
+# Deferred to Phase 1 (the sync handler doesn't exist yet). The schedules API
+# returned 403 on this fresh account — re-enable once Cron Triggers are enabled
+# for the account and the sync handler lands. Re-add: crons = ["0 * * * *"]
+# [triggers]
+# crons = ["0 * * * *"]
