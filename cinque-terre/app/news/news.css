@@ -1,0 +1,265 @@
+/* ============================================================
+   News — Monterosso · Cinque Terre
+   Nordic editorial calm. Own stylesheet (these pages live outside
+   the (content) route group), but the SAME design system as the
+   rest of the site: 4px spacing rhythm · 1.2 type scale ·
+   sharp corners (radius 0) · separation by AIR, hairlines only
+   where strictly needed · muted fasit palette
+   (ink #07182a / cream #f7f1e3 / gold #ead27e / terracotta #a8743f).
+   Fonts (Fraunces, Great Vibes, Limelight) load globally in layout.js.
+   ============================================================ */
+
+.news {
+  /* spacing — 4px base */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+  /* type — 1.2 minor third, 16px base */
+  --t-xs: 11px; --t-sm: 13px; --t-base: 16px; --t-md: 19px;
+  --t-lg: 23px; --t-xl: 28px; --t-2xl: 33px;
+  /* letter-spacing */
+  --ls-1: 0.02em; --ls-2: 0.08em; --ls-3: 0.14em;
+  /* colour — fasit palette */
+  --ink: #07182a;
+  --ink-soft: rgba(7, 24, 42, 0.62);
+  --ink-faint: rgba(7, 24, 42, 0.40);
+  --cream: #f7f1e3;
+  --cream-deep: #efe6d2;
+  --gold: #ead27e;
+  --terracotta: #a8743f;
+  --hair: rgba(7, 24, 42, 0.12);
+
+  background: var(--cream);
+  color: var(--ink);
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 400;
+  line-height: 1.65;
+  min-height: 100svh;
+  -webkit-font-smoothing: antialiased;
+}
+@supports not (min-height: 100svh) {
+  .news { min-height: 100vh; }
+}
+
+.news__wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 var(--s5);
+}
+
+/* ---------- top bar ---------- */
+.news__nav {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s4);
+  padding: var(--s5) 0;
+}
+.news__brand {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: var(--t-base);
+  letter-spacing: var(--ls-3);
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+}
+.news__navlink {
+  font-size: var(--t-sm);
+  letter-spacing: var(--ls-2);
+  color: var(--terracotta);
+  text-decoration: none;
+}
+.news__navlink:hover { color: var(--gold); }
+
+/* ---------- index hero ---------- */
+.news__hero { padding: var(--s7) 0 var(--s6); }
+.news__eyebrow {
+  font-family: "Great Vibes", cursive;
+  font-size: var(--t-xl);
+  color: var(--gold);
+  margin: 0 0 var(--s2);
+  line-height: 1;
+}
+.news h1 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(33px, 6vw, 52px);
+  line-height: 1.08;
+  letter-spacing: var(--ls-1);
+  margin: 0 0 var(--s4);
+}
+.news__lede {
+  font-size: var(--t-lg);
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: 56ch;
+}
+
+/* ---------- the list — separated by AIR, one hairline per item ---------- */
+.news__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.news__item {
+  padding: var(--s6) 0;
+  border-top: 1px solid var(--hair);
+}
+.news__item:first-child { border-top: none; }
+
+.news__date {
+  font-size: var(--t-sm);
+  letter-spacing: var(--ls-2);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 var(--s3);
+}
+.news__item h2 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(23px, 4vw, 30px);
+  line-height: 1.15;
+  letter-spacing: var(--ls-1);
+  margin: 0 0 var(--s3);
+}
+.news__item h2 a {
+  color: var(--ink);
+  text-decoration: none;
+}
+.news__item h2 a:hover { color: var(--terracotta); }
+.news__dek {
+  font-size: var(--t-md);
+  color: var(--ink-soft);
+  margin: 0 0 var(--s3);
+  max-width: 60ch;
+}
+.news__more {
+  font-size: var(--t-sm);
+  letter-spacing: var(--ls-2);
+  color: var(--terracotta);
+  text-decoration: none;
+}
+.news__more:hover { color: var(--gold); }
+
+/* ---------- tags — quiet, no boxing ---------- */
+.news__tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s4);
+  margin: var(--s3) 0 0;
+  padding: 0;
+}
+.news__tag {
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-3);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.news__tag::before { content: "·"; margin-right: var(--s4); color: var(--gold); }
+.news__tag:first-child::before { content: none; }
+
+/* ---------- calm empty state ---------- */
+.news__empty {
+  padding: var(--s8) 0;
+  text-align: center;
+}
+.news__empty p {
+  font-size: var(--t-md);
+  color: var(--ink-soft);
+  margin: 0 auto;
+  max-width: 44ch;
+}
+
+/* ---------- article (detail) ---------- */
+.news__article { padding: var(--s7) 0 0; }
+.news__article-head { margin: 0 0 var(--s7); }
+.news__article h1 {
+  margin: var(--s4) 0 var(--s4);
+}
+.news__standfirst {
+  font-size: var(--t-lg);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: 56ch;
+}
+
+.news__body {
+  font-size: var(--t-md);
+  line-height: 1.75;
+}
+.news__body p { margin: 0 0 var(--s5); max-width: 62ch; }
+.news__body p:last-child { margin-bottom: 0; }
+.news__body h2 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: var(--t-xl);
+  margin: var(--s7) 0 var(--s3);
+}
+.news__body h3 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: var(--t-md);
+  margin: var(--s6) 0 var(--s2);
+}
+.news__body a {
+  color: var(--terracotta);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.news__body a:hover { color: var(--gold); }
+.news__body ul { margin: 0 0 var(--s5); padding-left: var(--s5); }
+.news__body li { margin: 0 0 var(--s2); max-width: 60ch; }
+.news__body em { font-style: italic; }
+.news__body strong { font-weight: 600; }
+
+/* ---------- article foot — back link + quiet CTA ---------- */
+.news__article-foot {
+  margin: var(--s8) 0 0;
+  padding: var(--s7) 0 var(--s8);
+  border-top: 1px solid var(--hair);
+  text-align: center;
+}
+.news__article-foot p {
+  font-size: var(--t-lg);
+  color: var(--ink-soft);
+  margin: 0 auto var(--s5);
+  max-width: 48ch;
+}
+.news__cta-link {
+  display: inline-block;
+  font-family: "Limelight", "Fraunces", serif;
+  font-size: var(--t-base);
+  letter-spacing: var(--ls-3);
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  padding: var(--s4) var(--s6);
+  border: 1px solid var(--ink);
+  background: var(--gold);
+  transition: filter 0.2s ease, transform 0.1s ease;
+}
+.news__cta-link:hover { filter: brightness(1.05); }
+.news__cta-link:active { transform: translateY(1px); }
+.news__back {
+  display: block;
+  margin: var(--s6) 0 0;
+  font-size: var(--t-sm);
+  letter-spacing: var(--ls-2);
+  color: var(--terracotta);
+  text-decoration: none;
+}
+.news__back:hover { color: var(--gold); }
+
+/* ---------- index foot ---------- */
+.news__foot {
+  padding: var(--s7) 0 var(--s8);
+}
+
+@media (max-width: 520px) {
+  .news__wrap { padding: 0 var(--s4); }
+  .news__hero { padding: var(--s6) 0 var(--s5); }
+  .news__body p, .news__body li { font-size: var(--t-base); }
+}

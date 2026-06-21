@@ -1,0 +1,258 @@
+/* ============================================================
+   MODE · AZURE — "Azure Bay over Monterosso"
+   A self-contained theme. Appearance only — never structure or
+   content. It overrides the landing-v2 palette tokens, sets a
+   full-screen aerial photo of the bay behind the scene, and
+   re-tunes the glass popups to a light, airy cool-turquoise lens
+   with DARK ink text inside (the bright, luminous counterpart to
+   mode-sunset).
+
+   Scope: every rule is nested under `.landing-v2.mode-azure`,
+   so it touches nothing unless this mode is active.
+
+   Globale lover honoured:
+   · radius 0 on rectangles · 4px spacing · Fraunces/Limelight/Great Vibes
+   · ONE accent (gold) · separation by air, not lines
+   · gold CTA = ink-text (--plum) + 1px ink border  (gold+cream fails 1.33:1)
+
+   The photo: upper ~1/3 = bright, busy travel village (needs a
+   scrim for cream hero text); lower ~2/3 = deep turquoise water
+   (dark enough for cream text). Glass uses blur ≥40px over the
+   busy photo and a tint behind text for ≥4.5:1 (RESEARCH-GLASS).
+   ============================================================ */
+
+/* ---------- 1 · PALETTE — override the existing tokens ----------
+   Same custom-property NAMES the landing already reads; only the
+   values change, so the whole page re-skins with zero structural
+   edits. Mood: turquoise → aqua → sand-cream → white. Light, airy,
+   elegant — the daylight opposite of sunset's warm dusk. */
+.landing-v2.mode-azure {
+  /* azure-bay sky/water family (mode-local helpers) */
+  --azure-aqua:  #57c4d4;   /* bright shallow-water aqua  */
+  --azure-deep:  #1d6f93;   /* deep turquoise bay         */
+  --azure-ink:   #06283d;   /* dark sea-ink, the text dark */
+  --azure-sand:  #f3ead7;   /* warm sand-cream            */
+
+  /* core palette tokens the components consume */
+  --plum: #06283d;          /* dark sea-ink — CTA label + ink border + body ink */
+  --plum-2: #041a29;        /* darker ink for deep shadows */
+  --cream: #fbf7ee;         /* bright sand-cream — light text on dark scrim/photo */
+  --ink: #06283d;           /* ink == plum here, one cool dark */
+  --gold: #e8c25c;          /* the single accent — kept gold across all modes */
+  --terracotta: #c06a3e;    /* secondary warm accent (rooftops of the bay) */
+
+  /* cool-tinted ink alphas (rebased on the deep sea-ink) */
+  --ink-82: rgba(6, 40, 61, 0.82);
+  --ink-55: rgba(6, 40, 61, 0.55);
+  --ink-50: rgba(6, 40, 61, 0.50);
+}
+
+/* ---------- 2 · BACKGROUND — the aerial bay photo + hero scrim ----------
+   Full-screen aerial photo, fixed, covering the page behind the
+   living scene. A top-weighted dark scrim sits over the photo: it
+   is strongest over the bright/busy upper-third village (so cream
+   hero text holds ≥4.5:1 there) and fades to near-clear over the
+   dark turquoise water below (which already supports cream text).
+   This is the §3 floor-fade, inverted — a "ceiling fade" — because
+   our busy region is at the TOP of this particular crop. */
+.landing-v2.mode-azure {
+  background:
+    /* top-weighted scrim: dark over the village band, clearing into the water */
+    linear-gradient(
+      180deg,
+      rgba(4, 22, 36, 0.52) 0%,
+      rgba(4, 22, 36, 0.40) 22%,
+      rgba(4, 22, 36, 0.20) 44%,
+      rgba(4, 22, 36, 0.12) 100%
+    ),
+    /* the aerial bay photo itself */
+    url("/backgrounds/aerial-bay.webp");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+}
+
+/* ---------- 3 · GLASS POPUPS — a light, airy cool-turquoise lens ----------
+   The unified popups (.book-form / .village-page) keep their
+   structure; here we re-tone them into LIGHT glass with DARK ink
+   text (the airy counterpart to sunset). Because the photo behind
+   is busy and bright, blur is pushed to ≥40px.
+
+   RESEARCH-GLASS compliance:
+   · light cool fill ~24% so dark ink text holds ≥4.5:1     (§1.2)
+   · blur 42px over the busy photo                          (§1.1)
+   · 1px hairline stroke around the panel                   (§1.3)
+   · a ~26% light wash behind text blocks via inset shadow  (§1.4)
+     so dark ink stays ≥4.5:1 over any part of the photo. */
+.landing-v2.mode-azure .book-form,
+.landing-v2.mode-azure .village-page {
+  /* cool sand-into-aqua light translucent fill (~24% effective) */
+  background:
+    linear-gradient(
+      180deg,
+      rgba(251, 247, 238, 0.30) 0%,
+      rgba(87, 196, 212, 0.18) 100%
+    ),
+    rgba(243, 234, 215, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.55);   /* bright cool hairline rim */
+  -webkit-backdrop-filter: blur(42px) saturate(115%);
+  backdrop-filter: blur(42px) saturate(115%);
+  /* outer lift + INNER light wash behind the whole text column so
+     dark ink body copy holds ≥4.5:1 no matter the photo behind it */
+  box-shadow:
+    0 30px 80px rgba(4, 22, 36, 0.45),
+    inset 0 0 0 9999px rgba(249, 246, 238, 0.28);
+}
+
+/* solid fallback — no backdrop-filter support OR reduce-transparency:
+   a near-solid light sand-cream panel, same layout, no blur (RESEARCH §1.6). */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .landing-v2.mode-azure .book-form,
+  .landing-v2.mode-azure .village-page {
+    background: rgba(247, 242, 232, 0.96);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .landing-v2.mode-azure .book-form,
+  .landing-v2.mode-azure .village-page {
+    background: rgba(247, 242, 232, 0.97);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* the hub / cs tiles inside the glass — cool, light, in the same
+   azure world (appearance only) */
+.landing-v2.mode-azure .hub-tile__ic {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.42),
+    rgba(87, 196, 212, 0.16)
+  );
+  border-color: rgba(255, 255, 255, 0.60);
+}
+.landing-v2.mode-azure .cs-opt {
+  background: rgba(255, 255, 255, 0.30);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+.landing-v2.mode-azure .cs-opt:hover {
+  background: rgba(255, 255, 255, 0.42);
+}
+
+/* ---------- 4 · CONTRAST SAFEGUARDS ----------
+   Two worlds to keep legible: cream HERO text over the photo (with
+   the §2 scrim) and DARK ink text inside the light glass. */
+
+/* (a) Gold CTA keeps the global law: gold fill + ink LABEL + ink
+   border. Label is --plum (#06283d) on bright gold ≈ 11.6:1 — well
+   past 4.5:1. The ticket frame uses our deep sea-ink so the gold
+   shape edge holds ≥3:1 over the bright photo (WCAG 1.4.11). */
+.landing-v2.mode-azure .cta {
+  background: linear-gradient(180deg, #f0d27e 0%, #e6c156 100%);
+}
+.landing-v2.mode-azure .cta::before {
+  border-color: rgba(6, 40, 61, 0.78);   /* deep sea-ink inner frame */
+}
+.landing-v2.mode-azure .book-form .pay,
+.landing-v2.mode-azure .vp-cta {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.12) 30%, rgba(255, 255, 255, 0) 50%),
+    linear-gradient(178deg, #f4dd8a 0%, #eccd6a 42%, #e0b94c 68%, #cea336 100%);
+  border-color: #b78f33;                 /* warm gold rim */
+}
+
+/* (b) Inside the LIGHT azure glass the text must flip to DARK ink
+   for ≥4.5:1 (the base / sunset rules paint it cream — override).
+   Over the ~26% light inset wash:
+   · ink --plum (#06283d) on the light glass ≈ 12:1  (titles/body)
+   · gold --gold (#e8c25c) is reserved as the accent for eyebrows;
+     to stay ≥4.5:1 on the LIGHT glass the eyebrow/label uses the
+     darker terracotta-gold ink tone instead of pale gold. */
+.landing-v2.mode-azure .section-title,
+.landing-v2.mode-azure .vp-title {
+  color: var(--plum);
+}
+.landing-v2.mode-azure .vp-lede,
+.landing-v2.mode-azure .vp-body,
+.landing-v2.mode-azure .confirm-lead {
+  color: rgba(6, 40, 61, 0.86);          /* dark sea-ink @86% on light glass ≈ 9:1 */
+}
+/* eyebrows/labels: pale gold fails on light glass (≈1.6:1), so use a
+   deep warm-gold ink that reads ≥4.5:1 while staying the gold family */
+.landing-v2.mode-azure .section-label,
+.landing-v2.mode-azure .vp-eyebrow {
+  color: #8a5a14;                        /* deep antique-gold ink ≈ 5.3:1 on light glass */
+  opacity: 1;
+}
+
+/* quiet labels, facts, summaries inside the glass → dark ink tints
+   (the base file sets these to cream @ ~0.6 with !important, which
+   would be invisible on light glass — re-point to ink) */
+.landing-v2.mode-azure .reassure,
+.landing-v2.mode-azure .box-count,
+.landing-v2.mode-azure .send-summary,
+.landing-v2.mode-azure .send-via,
+.landing-v2.mode-azure .cal-label,
+.landing-v2.mode-azure .confirm__back,
+.landing-v2.mode-azure .vp-link {
+  color: rgba(6, 40, 61, 0.62) !important;
+}
+.landing-v2.mode-azure .field-head.step-q {
+  color: rgba(6, 40, 61, 0.92);
+}
+.landing-v2.mode-azure .field-head {
+  color: rgba(6, 40, 61, 0.74);
+}
+.landing-v2.mode-azure .vp-fact dt {
+  color: rgba(6, 40, 61, 0.58);
+}
+.landing-v2.mode-azure .vp-fact dd {
+  color: var(--plum);
+}
+.landing-v2.mode-azure .conf-row span {
+  color: rgba(6, 40, 61, 0.6);
+}
+.landing-v2.mode-azure .conf-row strong {
+  color: var(--plum);
+}
+.landing-v2.mode-azure .send-summary,
+.landing-v2.mode-azure .book-form .meta {
+  color: rgba(6, 40, 61, 0.82) !important;
+}
+.landing-v2.mode-azure .book-form .meta .meta-dot {
+  color: #8a5a14;
+}
+
+/* glass inputs flip to a light scheme with dark ink text */
+.landing-v2.mode-azure .book-form input,
+.landing-v2.mode-azure .contact-field input,
+.landing-v2.mode-azure .book-form select,
+.landing-v2.mode-azure .book-form textarea {
+  background: rgba(255, 255, 255, 0.62);
+  color: var(--plum);
+  border-color: rgba(6, 40, 61, 0.30);
+  color-scheme: light;
+}
+.landing-v2.mode-azure .contact-field input::placeholder {
+  color: rgba(6, 40, 61, 0.45);
+}
+
+/* close button → light cool glass with dark ink glyph (base is dark glass) */
+.landing-v2.mode-azure .book-close {
+  background: rgba(255, 255, 255, 0.40);
+  color: var(--plum);
+  border-color: rgba(6, 40, 61, 0.30);
+}
+
+/* (c) HERO text over the bare photo stays CREAM and is carried by
+   the §2 top-weighted scrim. Reinforce a soft local text-shadow so
+   the cream title/tagline hold over the busy upper village even at
+   the worst pixel (RESEARCH §3.4 "measure the worst pixel"). */
+.landing-v2.mode-azure .hero h1,
+.landing-v2.mode-azure .hero .tagline,
+.landing-v2.mode-azure .hero .eyebrow {
+  color: var(--cream);
+  text-shadow: 0 2px 14px rgba(4, 22, 36, 0.65),
+    0 1px 3px rgba(4, 22, 36, 0.5);
+}

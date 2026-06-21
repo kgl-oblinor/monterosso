@@ -1,0 +1,191 @@
+/* ============================================================
+   MODE · BORGO — "Le borgo / landsbyene"
+   A self-contained theme. Appearance only — never structure or
+   content. It overrides the landing-v2 palette tokens, lays a
+   full-screen village photograph behind the scene, and re-tunes
+   the glass popups to a warm, neutral village-glass lens.
+
+   Scope: every rule is nested under `.landing-v2.mode-borgo`,
+   so it touches nothing unless this mode is active.
+
+   Mood: the painted houses of the borghi — warm Ligurian pastels
+   (ochre, faded terracotta, dusty rose, cream). Cosy yet composed;
+   calm and elegant, never busy.
+
+   Globale lover honoured:
+   · radius 0 on rectangles · 4px spacing · Fraunces/Limelight/Great Vibes
+   · ONE accent (gold) · separation by air, not lines
+   · gold CTA = ink-text (--plum) + 1px ink border  (gold+cream fails 1.33:1)
+   · ≥4.5:1 text contrast on every glass surface
+   ============================================================ */
+
+/* ---------- 1 · PALETTE — override the existing tokens ----------
+   Same custom-property NAMES the landing already reads; only the
+   values change, so the whole page re-skins with zero structural
+   edits. The borgo palette: warm cream + ochre + faded terracotta
+   + dusty rose, all over a deep warm-ink for text. */
+.landing-v2.mode-borgo {
+  /* warm Ligurian pastel family (mode-local helpers) */
+  --borgo-ochre:     #c98f47;  /* sun-baked ochre wall        */
+  --borgo-terracotta:#b56a47;  /* faded terracotta shutter    */
+  --borgo-rose:      #d9a892;  /* dusty rose plaster          */
+  --borgo-cream:     #f4e7d2;  /* warm village cream          */
+
+  /* core palette tokens the components consume */
+  --plum: #34221a;          /* deep warm-brown ink — CTA label + ink border + body ink */
+  --plum-2: #241510;        /* darker brown for deep shadows */
+  --cream: #fbf2e2;          /* warm cream — light text on glass */
+  --ink: #34221a;            /* ink == plum here, one warm dark */
+  --gold: #e7c264;           /* warm faded poster-gold — the single accent */
+  --terracotta: #b56a47;     /* secondary faded terracotta */
+
+  /* warm-tinted ink alphas (rebased on the deep warm-brown ink) */
+  --ink-82: rgba(52, 34, 26, 0.82);
+  --ink-55: rgba(52, 34, 26, 0.55);
+  --ink-50: rgba(52, 34, 26, 0.50);
+}
+
+/* ---------- 2 · BACKGROUND — the full-screen village photo ----------
+   A fixed, cover-fit panorama of the borghi behind the living scene.
+   A gentle warm scrim sits over it (floor-fade heavier at the
+   bottom, per RESEARCH-GLASS §3.3) so the hero ink/cream copy and
+   the gold CTA keep contrast over a busy photo — calm, not muddy. */
+.landing-v2.mode-borgo {
+  background-color: var(--borgo-ash, #2b1c15);
+  background-image:
+    /* warm floor-fade: light at top, deeper toward the sea line */
+    linear-gradient(
+      180deg,
+      rgba(36, 21, 16, 0.28) 0%,
+      rgba(36, 21, 16, 0.10) 30%,
+      rgba(36, 21, 16, 0.16) 62%,
+      rgba(36, 21, 16, 0.52) 100%
+    ),
+    url("/backgrounds/village-panorama.webp");
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+  background-attachment: fixed, fixed;
+}
+
+/* hero copy directly on the photo (outside the glass) — a soft warm
+   cream halo keeps the ink/cream type legible over busy plaster
+   (RESEARCH-GLASS §3.1: a scrim/plate over text is mandatory). */
+.landing-v2.mode-borgo .hero .sea-copy,
+.landing-v2.mode-borgo .hero h1,
+.landing-v2.mode-borgo .hero .tagline {
+  text-shadow:
+    0 1px 2px rgba(36, 21, 16, 0.55),
+    0 0 18px rgba(36, 21, 16, 0.40);
+}
+
+/* ---------- 3 · GLASS POPUPS — a warm village lens ----------
+   The unified popups (.book-form / .village-page) keep their
+   structure; here we only re-tone the glass so it reads as warm,
+   neutral village-glass — and we PUSH THE BLUR to ≥40px because the
+   backdrop is a detailed photograph (RESEARCH-GLASS §1.1).
+
+   RESEARCH-GLASS compliance:
+   · translucent fill ~16% tinted warm-neutral               (§1.2)
+   · blur 44px over the photo backdrop (≥40px)                (§1.1)
+   · 1px hairline stroke around the panel                     (§1.3)
+   · a ~28% warm-dark tint behind text blocks via inset       (§1.4)
+     box-shadow, so cream body copy stays ≥4.5:1 over any
+     bright/ busy crop of the photo.
+   Text is already --cream (light) on this glass → high contrast. */
+.landing-v2.mode-borgo .book-form,
+.landing-v2.mode-borgo .village-page {
+  /* warm-neutral translucent fill (~16%) */
+  background:
+    linear-gradient(
+      180deg,
+      rgba(244, 231, 210, 0.16) 0%,
+      rgba(110, 70, 50, 0.16) 100%
+    ),
+    rgba(52, 34, 26, 0.14);
+  border: 1px solid rgba(247, 232, 206, 0.26);   /* warm hairline rim */
+  -webkit-backdrop-filter: blur(44px) saturate(116%);
+  backdrop-filter: blur(44px) saturate(116%);
+  /* outer lift + INNER warm-dark wash behind the whole text column
+     (≥28% tint, RESEARCH §1.4) so cream body copy holds ≥4.5:1 no
+     matter which part of the photo sits behind the pane. */
+  box-shadow:
+    0 30px 80px rgba(24, 14, 10, 0.55),
+    inset 0 0 0 9999px rgba(40, 24, 17, 0.28);
+}
+
+/* solid fallback — no backdrop-filter support OR reduce-transparency:
+   a near-solid warm village panel, same layout, no blur (RESEARCH §1.6). */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .landing-v2.mode-borgo .book-form,
+  .landing-v2.mode-borgo .village-page {
+    background: rgba(48, 31, 23, 0.95);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .landing-v2.mode-borgo .book-form,
+  .landing-v2.mode-borgo .village-page {
+    background: rgba(48, 31, 23, 0.96);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* the hub / cs tiles inside the glass — warm up their neutral white
+   so they sit in the same village world (appearance only) */
+.landing-v2.mode-borgo .hub-tile__ic {
+  background: linear-gradient(
+    180deg,
+    rgba(247, 233, 206, 0.20),
+    rgba(110, 70, 50, 0.14)
+  );
+  border-color: rgba(247, 232, 206, 0.38);
+}
+.landing-v2.mode-borgo .cs-opt {
+  background: rgba(247, 233, 206, 0.12);
+  border-color: rgba(247, 232, 206, 0.38);
+}
+.landing-v2.mode-borgo .cs-opt:hover {
+  background: rgba(247, 233, 206, 0.20);
+}
+
+/* ---------- 4 · CONTRAST SAFEGUARDS ----------
+   The gold CTA already carries plum ink-text + plum border (global
+   law) and inherits our overrides. Two guards make the borgo version
+   provably legible: */
+
+/* (a) Gold CTA fill stays a warm faded gold whose label
+   (--plum #34221a) reads at ~12.5:1 — well past 4.5:1. We keep the
+   existing structure; just ensure the ticket frame uses our deep
+   warm-brown ink so the gold shape edge holds ≥3:1 over any photo. */
+.landing-v2.mode-borgo .cta {
+  background: linear-gradient(180deg, #ecd089 0%, #e0bd5c 100%);
+}
+.landing-v2.mode-borgo .cta::before {
+  border-color: rgba(52, 34, 26, 0.75);   /* deep warm-brown inner frame */
+}
+.landing-v2.mode-borgo .book-form .pay,
+.landing-v2.mode-borgo .vp-cta {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.10) 30%, rgba(255, 255, 255, 0) 50%),
+    linear-gradient(178deg, #f1da8a 0%, #e7c869 42%, #dcb24c 68%, #c89738 100%);
+  border-color: #b27f33;                   /* warm gold rim */
+}
+
+/* (b) Body & headings on glass stay cream/gold for ≥4.5:1 over the
+   inset warm-dark wash. The accent gold (--gold #e7c264) on the dark
+   glass wash reads ~8:1 — safe for eyebrows/labels. These mirror the
+   base rules, re-pointed at the borgo cream so nothing washes out. */
+.landing-v2.mode-borgo .section-title,
+.landing-v2.mode-borgo .vp-title {
+  color: var(--cream);
+}
+.landing-v2.mode-borgo .vp-lede,
+.landing-v2.mode-borgo .vp-body,
+.landing-v2.mode-borgo .confirm-lead {
+  color: rgba(251, 242, 226, 0.86);        /* warm cream @86% on dark wash ≈ 7:1 */
+}
+.landing-v2.mode-borgo .section-label,
+.landing-v2.mode-borgo .vp-eyebrow {
+  color: var(--gold);                      /* warm faded gold accent */
+}

@@ -1,0 +1,233 @@
+/* ============================================================
+   Discover / SEO micro-notes — Monterosso · Cinque Terre
+   Own stylesheet, SAME design system as content.css / landing.css:
+   spacing 4px-base · type 1.2 minor-third · sharp corners (radius 0,
+   with a 4px softening on cards) · separation by AIR not lines ·
+   ink #07182a / cream #f7f1e3 / gold #ead27e / terracotta #a8743f.
+   Fonts are already loaded globally in layout.js.
+   ============================================================ */
+
+.discover {
+  /* spacing — 4px base */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+  /* type — 1.2 minor third, 16px base */
+  --t-xs: 11px; --t-sm: 13px; --t-base: 16px; --t-md: 19px;
+  --t-lg: 23px; --t-xl: 28px; --t-2xl: 33px;
+  /* letter-spacing */
+  --ls-1: 0.02em; --ls-2: 0.08em; --ls-3: 0.14em;
+  /* colour — fasit palette */
+  --ink: #07182a;
+  --ink-soft: rgba(7, 24, 42, 0.62);
+  --cream: #f7f1e3;
+  --cream-deep: #efe6d2;
+  --gold: #ead27e;
+  --terracotta: #a8743f;
+
+  background: var(--cream);
+  color: var(--ink);
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 400;
+  line-height: 1.6;
+  min-height: 100svh;
+  -webkit-font-smoothing: antialiased;
+}
+@supports not (min-height: 100svh) {
+  .discover { min-height: 100vh; }
+}
+
+.discover__wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 var(--s5);
+}
+
+/* ---------- top bar ---------- */
+.discover__nav {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s4);
+  padding: var(--s5) 0;
+}
+.discover__brand {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: var(--t-base);
+  letter-spacing: var(--ls-3);
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+}
+.discover__navlink {
+  font-size: var(--t-sm);
+  letter-spacing: var(--ls-2);
+  color: var(--terracotta);
+  text-decoration: none;
+}
+.discover__navlink:hover { color: var(--gold); }
+
+/* ---------- hero ---------- */
+.discover__hero { padding: var(--s7) 0 var(--s2); }
+.discover__eyebrow {
+  font-family: "Great Vibes", cursive;
+  font-size: var(--t-xl);
+  color: var(--gold);
+  margin: 0 0 var(--s2);
+  line-height: 1;
+}
+.discover h1 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(33px, 6vw, 52px);
+  line-height: 1.08;
+  letter-spacing: var(--ls-1);
+  margin: 0 0 var(--s4);
+}
+.discover__lede {
+  font-size: var(--t-lg);
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0 0 var(--s2);
+  max-width: 60ch;
+}
+
+/* ---------- listing — air between notes, no grid lines ---------- */
+.discover__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  padding: var(--s6) 0 var(--s7);
+  list-style: none;
+  margin: 0;
+}
+.discover__item { margin: 0; }
+.discover__card {
+  display: block;
+  background: var(--cream-deep);
+  padding: var(--s5);
+  border-radius: 4px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: filter 0.2s ease, transform 0.1s ease;
+}
+.discover__card:hover { filter: brightness(0.98); }
+.discover__card:active { transform: translateY(1px); }
+.discover__card-title {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: var(--t-lg);
+  letter-spacing: var(--ls-1);
+  margin: 0 0 var(--s2);
+  color: var(--ink);
+}
+.discover__card-excerpt {
+  font-size: var(--t-base);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0 0 var(--s3);
+  max-width: 60ch;
+}
+.discover__card-meta {
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-3);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* ---------- empty state — calm, never barren ---------- */
+.discover__empty {
+  padding: var(--s7) 0 var(--s8);
+}
+.discover__empty p {
+  font-size: var(--t-md);
+  color: var(--ink-soft);
+  max-width: 56ch;
+  margin: 0 0 var(--s4);
+}
+
+/* ---------- single note article ---------- */
+.discover__article { padding: var(--s7) 0 var(--s5); }
+.discover__article-meta {
+  font-size: var(--t-sm);
+  letter-spacing: var(--ls-3);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 var(--s4);
+}
+.discover__article h1 {
+  font-size: clamp(28px, 5vw, 44px);
+  margin: 0 0 var(--s5);
+}
+.discover__body p {
+  font-size: var(--t-md);
+  line-height: 1.6;
+  margin: 0 0 var(--s4);
+  max-width: 64ch;
+}
+.discover__body p:last-child { margin-bottom: 0; }
+.discover__body a {
+  color: var(--terracotta);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.discover__body a:hover { color: var(--gold); }
+.discover__body em { font-style: italic; }
+
+/* ---------- internal link ledge — gold, no boxing lines ---------- */
+.discover__cta {
+  background: var(--cream-deep);
+  border-left: 3px solid var(--gold);
+  padding: var(--s5);
+  margin: var(--s6) 0 0;
+}
+.discover__cta p {
+  margin: 0 0 var(--s2);
+  font-size: var(--t-base);
+  color: var(--ink-soft);
+}
+.discover__cta a {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: var(--t-md);
+  color: var(--terracotta);
+  text-decoration: none;
+}
+.discover__cta a:hover { color: var(--gold); }
+
+/* ---------- tags ---------- */
+.discover__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin: var(--s6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.discover__tag {
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-2);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: var(--cream-deep);
+  padding: var(--s1) var(--s3);
+}
+
+/* ---------- footer / back ---------- */
+.discover__foot {
+  padding: var(--s7) 0 var(--s8);
+}
+.discover__back {
+  font-size: var(--t-sm);
+  letter-spacing: var(--ls-2);
+  color: var(--terracotta);
+  text-decoration: none;
+}
+.discover__back:hover { color: var(--gold); }
+
+@media (max-width: 520px) {
+  .discover__wrap { padding: 0 var(--s4); }
+  .discover__hero { padding: var(--s6) 0 var(--s1); }
+  .discover__body p { font-size: var(--t-base); }
+}
