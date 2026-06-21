@@ -12,7 +12,7 @@
 
 ## Bank
 
-- [ ] cinque-terre-from-milan | Cinque Terre from Milan: the easy day trip | "cinque terre from milan", "milan to cinque terre train" | Direct trains Milano Centrale → Monterosso take ~3 timer; tog går ca hver 1–2 time (touristitaly.com, rome2rio.com) | /guide | milan, daytrip, train, planning
+- [x] cinque-terre-from-milan | Cinque Terre from Milan: the easy day trip | "cinque terre from milan", "milan to cinque terre train" | Direct trains Milano Centrale → Monterosso take ~3 timer; tog går ca hver 1–2 time (touristitaly.com, rome2rio.com) | /guide | milan, daytrip, train, planning
 - [ ] best-boat-tour-cinque-terre | The best way to see Cinque Terre is from the water | "best boat tour cinque terre", "cinque terre boat tour" | Båttur viser alle fem landsbyene fra sjøen — den UNESCO-listede kysten — med stopp i skjulte viker man bare når med båt (untolditaly.com, viator.com) | /cinque-terre-by-boat | boat, tour, booking, unesco
 - [ ] most-beautiful-village-italy | Why Cinque Terre is one of the most beautiful places in Europe | "most beautiful village italy", "most beautiful place europe" | Cinque Terre er UNESCO World Heritage Site kjent for fargerike hus, terrasserte vingårder og dramatiske klipper (ourescapeclause.com, machupicchu.org) | /guide | unesco, beautiful, europe, inspiration
 - [ ] monterosso-fegina-beach | Monterosso's Fegina: the biggest beach in Cinque Terre | "best beach cinque terre", "monterosso beach" | Spiaggia Fegina er den største og mest sandholdige stranden i hele Cinque Terre, få skritt fra togstasjonen (lecinqueterre.org, exquisitecoasts.com) | /monterosso/beaches | beach, monterosso, summer, swimming
