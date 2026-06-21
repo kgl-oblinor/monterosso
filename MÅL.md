@@ -17,6 +17,8 @@ Eldre person bestiller fra mobil på **~3 tap**, og chatter etterpå **direkte m
 - **Booking:** kvittering-først (gjett 2 gjester, neste avgang) → Continue → kontakt → bekreftelse (~3 tap). Avslutning via WhatsApp/e-post.
 - **Kontakt:** +47 93 00 86 00 · kgl@oblinor.no · møtepunkt Molo dei Pescatori, Monterosso.
 - **Ny funksjon:** kunde↔skipper-**chat** + lett onboarding (kun **e-post ELLER telefon** — ingen kode/passord). **Gjenbruk fra `oblinor-borrower-chat`** (kun kopiere, aldri endre originalen), **egen D1**. **Rolle-mapping:** Oblinor **låntaker → båteier/skipper**, **långiver → kunde/reisende**, **admin → Kristian**.
+  - **Gjenbruk KUN mekanikken:** chat (1-til-1, polling, meldings-UI), lett onboarding, admin-innboks/oversikt, struktur.
+  - **IKKE gjenbruk:** låne-/utlåns-domenet (lån, ordrer, investor/loaner-sync fra oblinor.no, matrikkel/eiendom, mislighold) eller noe hardkodet til Oblinor. **Kontakter/tråder kommer fra bestilling (reservasjonskode), ikke lån.**
 
 ## Tilstand nå
 - ✅ Båt-landingsside ferdig-polert (scene, popups, booking-flyt, hub, copy)
