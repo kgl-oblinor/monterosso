@@ -1614,23 +1614,30 @@ body {
   max-width: 220px;
 }
 
-/* Monterosso — a post down to the ground + a "you are here" marker */
-.landing-v2 .vs-below {
-  position: absolute;
-  top: calc(100% - 6px);
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* the posts live in their own layer BEHIND the shore (skyline z2) but in
+   front of the sky — so the sand covers each post's foot, the board (z11)
+   covers its top, and only the middle shows. */
+.landing-v2 .village-posts {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
   pointer-events: none;
 }
-.landing-v2 .vs-post {
+.landing-v2 .village-posts .vs-post {
+  position: absolute;
+  bottom: 46%;
+  height: 11%;
   width: 6px;
-  height: clamp(34px, 5vh, 64px);
+  transform: translateX(-50%);
   background: linear-gradient(90deg, #7a5230, #4a3018 55%, #3a2412);
   border-radius: 0 0 2px 2px;
-  box-shadow: 0 4px 6px rgba(2, 10, 20, 0.4);
+  box-shadow: 0 3px 5px rgba(2, 10, 20, 0.35);
+}
+@media (max-width: 640px) {
+  .landing-v2 .village-posts .vs-post {
+    width: 4px;
+    height: 12%;
+  }
 }
 /* "you are here" pin, stuck into the top of the Monterosso sign */
 .landing-v2 .vs-pin {

@@ -16,30 +16,43 @@ const VILLAGES = [
 
 export default function Signpost({ onSelect }) {
   return (
-    <div className="village-signs">
-      {VILLAGES.map((v, i) => (
-        <button
-          key={v.name}
-          className={"village-sign" + (v.here ? " village-sign--here" : "")}
-          style={{
-            left: `${v.x}%`,
-            ...(v.dy ? { bottom: `calc(55% - ${v.dy}px)` } : {}),
-          }}
-          onClick={() => onSelect(i)}
-          aria-label={`${v.name} — read about the village`}
-        >
-          <WoodSign
-            name={v.name}
-            board={v.board}
-            hi={v.hi}
-            lo={v.lo}
-            here={v.here}
+    <>
+      {/* posts — behind the shore, so the sand covers their feet */}
+      <div className="village-posts" aria-hidden="true">
+        {VILLAGES.map((v) => (
+          <span
+            key={v.name}
+            className="vs-post"
+            style={{
+              left: `${v.x}%`,
+              ...(v.dy ? { bottom: `calc(46% - ${v.dy}px)` } : {}),
+            }}
           />
-          <span className="vs-below" aria-hidden="true">
-            <span className="vs-post" />
-          </span>
-        </button>
-      ))}
-    </div>
+        ))}
+      </div>
+      {/* boards — in front, clickable */}
+      <div className="village-signs">
+        {VILLAGES.map((v, i) => (
+          <button
+            key={v.name}
+            className={"village-sign" + (v.here ? " village-sign--here" : "")}
+            style={{
+              left: `${v.x}%`,
+              ...(v.dy ? { bottom: `calc(55% - ${v.dy}px)` } : {}),
+            }}
+            onClick={() => onSelect(i)}
+            aria-label={`${v.name} — read about the village`}
+          >
+            <WoodSign
+              name={v.name}
+              board={v.board}
+              hi={v.hi}
+              lo={v.lo}
+              here={v.here}
+            />
+          </button>
+        ))}
+      </div>
+    </>
   );
 }
