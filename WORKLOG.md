@@ -3,3 +3,9 @@
 Format: `[YYYY-MM-DD HH:MM] [agent] hva — filer`. Aldri slett andres linjer.
 
 - [2026-06-21 10:25] [Krin] La koordinering i båt-prosjektet: MÅL.md, COORDINATION.md, WORKLOG.md. Eier lane F (app/landing/** + integrasjon). Båt-landingen er ferdig-polert; chat/onboarding/admin er ledige lanes (A–E) for claudesquad, design gjenbrukes fra Oblinor.
+- [2026-06-21 10:55] [Krin-team/Lane D] Data/DB: db/schema.sql (users, messages), lib/db.js (helpers), db/PLAN.md. Funn: D1 env.DB=monterosso-events; kode MT-DDMMYY-gjester er trådnøkkel; ingen bookings-tabell (Stripe+events). Åpne: id=randomUUID? validere kode mot events? hvor lagres verifiseringskoder?
+- [2026-06-21 11:00] [Krin-team/Lane G] Design: components/dashboard/ (DashboardShell, DashboardSidebar lukket m/ chat øverst+profil nederst, Icons, dashboard.css scoped .dash, DESIGN.md).
+- [2026-06-21 11:00] [Krin-team/Lane A] Chat: components/chat/ (MessageBubble/List/Composer + chat.css scoped .krin-chat), app/chat/[code]/page.js, app/api/messages/route.js (in-memory stub, TODO Lane D), PLAN.md.
+- [2026-06-21 11:05] [Krin-team/Lane B] Onboarding: lib/auth.js, app/api/auth/route.js (request/verify-code stub, devCode i dev), app/(auth)/join+verify+auth.css, PLAN.md. Anbefaler Twilio Verify (SMS) + Resend (e-post); kode-lagring → Lane D før prod.
+- [2026-06-21 11:12] [Krin-team/Lane C] Admin: app/admin/inbox/page.js + app/admin/[code]/page.js, components/admin/ (ThreadList, ThreadView, admin-inbox.css), PLAN.md. Rørte IKKE eksisterende app/admin/page.js (analyse) — la inboks på /admin/inbox. Rettet feltnavn til Lane D (body/created).
+- [2026-06-21 11:13] [Krin/Lane F] Integrasjon: alle 5 lanes committet som WIP (ikke deployet). Ingen eksisterende filer rørt. Neste: wire /api/messages→D1, samkjør feltnavn, velg providers (Twilio Verify + Resend), kjør D1-migrasjon, koble dashboard-skall inn.
