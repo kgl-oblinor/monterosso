@@ -3,7 +3,8 @@ import { cors } from "hono/cors";
 import { registerStart, registerComplete, passwordLogin, userFromToken, adminLogin, adminRecoveryStart, adminRecoveryVerify, getAccountState } from "./auth";
 import type { SessionUser } from "./auth";
 import { listContacts, listThreads, openThread, getMessages, postMessage, markRead, contactReservations } from "./chat";
-import { listAccounts, approveAccount, revokeAccount, setEmailVerified, setSkipperEmail, setCustomerEmail, listSkipperDirectory, listCustomerDirectory, listAllThreads, adminThreadMessages } from "./admin";
+import { listAccounts, approveAccount, revokeAccount, setEmailVerified, setSkipperEmail, setCustomerEmail, listSkipperDirectory, listCustomerDirectory, listAllThreads, adminThreadMessages, listSkippers, getSkipper, createSkipper, updateSkipper, validateSkipperInput, listCustomers, listReservations } from "./admin";
+import type { SkipperInput } from "./admin";
 
 export interface Env {
   DB: D1Database;
@@ -299,6 +300,35 @@ admin.post("/customers/:id/email", async (c) => {
   const ok = await setCustomerEmail(c.env, Number(c.req.param("id")), e);
   return ok ? c.json({ ok: true, email: e }) : c.json({ ok: false, error: "Ikke funnet" }, 404);
 });
+
+// --- skipper listing CRUD (Kristian adds/edits a listing, e.g. Andrea/Paolona) ---
+// Shared contract: GET /admin/skippers -> { skippers }, POST -> { skipper },
+// PUT /admin/skippers/:id -> { skipper }.
+admin.get("/skippers", async (c) => c.json({ ok: true, skippers: await listSkippers(c.env) }));
+
+admin.post("/skippers", async (c) => {
+  const input = await c.req.json<SkipperInput>().catch(() => ({} as SkipperInput));
+  const v = validateSkipperInput(input, true);
+  if (!v.ok) return c.json({ ok: false, error: v.error }, 400);
+  const skipper = await createSkipper(c.env, input);
+  if (!skipper) return c.json({ ok: false, error: "Kunne ikke opprette skipper" }, 500);
+  return c.json({ ok: true, skipper }, 201);
+});
+
+admin.put("/skippers/:id", async (c) => {
+  const id = Number(c.req.param("id"));
+  if (!(await getSkipper(c.env, id))) return c.json({ ok: false, error: "Ikke funnet" }, 404);
+  const input = await c.req.json<SkipperInput>().catch(() => ({} as SkipperInput));
+  const v = validateSkipperInput(input, false);
+  if (!v.ok) return c.json({ ok: false, error: v.error }, 400);
+  const skipper = await updateSkipper(c.env, id, input);
+  if (!skipper) return c.json({ ok: false, error: "Ikke funnet" }, 404);
+  return c.json({ ok: true, skipper });
+});
+
+// Customers + reservations (admin overview per the shared contract).
+admin.get("/customers", async (c) => c.json({ ok: true, customers: await listCustomers(c.env) }));
+admin.get("/reservations", async (c) => c.json({ ok: true, reservations: await listReservations(c.env) }));
 
 app.route("/admin", admin);
 

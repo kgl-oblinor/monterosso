@@ -11,13 +11,19 @@ CREATE TABLE IF NOT EXISTS skippers (
     skipper_id    INTEGER PRIMARY KEY AUTOINCREMENT,
     name          TEXT,                  -- skipper / contact person
     boat_name     TEXT,                  -- e.g. "Paolona"
-    listing_title TEXT,                  -- public listing name
+    listing_title TEXT,                  -- public listing name (optional override of boat_name)
     service_type  TEXT NOT NULL DEFAULT 'charter', -- 'charter' | 'taxi' | 'freight' | ...
+    address       TEXT,                  -- skipper / meeting-point address
     location      TEXT,                  -- e.g. "Monterosso"
     country       TEXT,                  -- e.g. "IT"
     code_prefix   TEXT NOT NULL DEFAULT 'MT', -- reservation-code prefix for this listing
     email         TEXT,
     phone         TEXT,
+    slots         TEXT,                  -- JSON array of departure times, e.g. ["09:00","14:00"]
+    base_price    INTEGER,               -- price in minor units (cents)
+    currency      TEXT NOT NULL DEFAULT 'EUR',
+    payment_ref   TEXT,                  -- Stripe Connect account/payout id (filled later)
+    active        INTEGER NOT NULL DEFAULT 1, -- listing visible/bookable
     created_at    TEXT NOT NULL DEFAULT (datetime('now'))
 );
 

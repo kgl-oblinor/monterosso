@@ -256,3 +256,229 @@ export async function setEmailVerified(env: Env, id: number, verified: boolean):
     .run();
   return (r.meta?.changes ?? 0) > 0;
 }
+
+// --- skipper listing CRUD (the form Kristian uses to add/edit a listing) -----
+// A full skipper record (the editable listing fields). `slots` is a JSON array of
+// departure times; `base_price` is in minor units (cents); `active` is 0/1.
+
+export interface Skipper {
+  id: number;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  address: string | null;
+  location: string | null;
+  country: string | null;
+  boat_name: string | null;
+  service_type: string;
+  slots: string[];
+  base_price: number | null;
+  currency: string;
+  payment_ref: string | null;
+  active: boolean;
+  created: string;
+}
+
+// Editable fields accepted from the admin form. All optional on PUT; create requires name.
+export interface SkipperInput {
+  name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  location?: string | null;
+  country?: string | null;
+  boat_name?: string | null;
+  service_type?: string;
+  slots?: unknown; // array of strings, or a JSON/CSV string — normalized below
+  base_price?: number | null;
+  currency?: string;
+  payment_ref?: string | null;
+  active?: boolean;
+}
+
+const SERVICE_TYPES = ["charter", "taxi", "freight"] as const;
+
+// Normalize slots into a JSON-array string of trimmed time strings (or null).
+function normalizeSlots(raw: unknown): string | null {
+  let arr: string[] | null = null;
+  if (Array.isArray(raw)) arr = raw.map((s) => String(s).trim()).filter(Boolean);
+  else if (typeof raw === "string") {
+    const t = raw.trim();
+    if (!t) arr = [];
+    else if (t.startsWith("[")) {
+      try {
+        const parsed = JSON.parse(t);
+        if (Array.isArray(parsed)) arr = parsed.map((s) => String(s).trim()).filter(Boolean);
+      } catch {
+        arr = null;
+      }
+    } else {
+      arr = t.split(",").map((s) => s.trim()).filter(Boolean);
+    }
+  }
+  return arr ? JSON.stringify(arr) : null;
+}
+
+function parseSlots(stored: string | null): string[] {
+  if (!stored) return [];
+  try {
+    const parsed = JSON.parse(stored);
+    return Array.isArray(parsed) ? parsed.map((s) => String(s)) : [];
+  } catch {
+    return [];
+  }
+}
+
+function mapSkipper(r: any): Skipper {
+  return {
+    id: r.id,
+    name: r.name ?? null,
+    email: r.email ?? null,
+    phone: r.phone ?? null,
+    address: r.address ?? null,
+    location: r.location ?? null,
+    country: r.country ?? null,
+    boat_name: r.boat_name ?? null,
+    service_type: r.service_type ?? "charter",
+    slots: parseSlots(r.slots ?? null),
+    base_price: r.base_price ?? null,
+    currency: r.currency ?? "EUR",
+    payment_ref: r.payment_ref ?? null,
+    active: !!r.active,
+    created: r.created,
+  };
+}
+
+const SKIPPER_SELECT = `SELECT skipper_id AS id, name, email, phone, address, location, country,
+            boat_name, service_type, slots, base_price, currency, payment_ref, active,
+            created_at AS created FROM skippers`;
+
+export async function listSkippers(env: Env): Promise<Skipper[]> {
+  const { results } = await env.DB.prepare(
+    `${SKIPPER_SELECT} ORDER BY COALESCE(listing_title, boat_name, name)`
+  ).all<any>();
+  return (results ?? []).map(mapSkipper);
+}
+
+export async function getSkipper(env: Env, id: number): Promise<Skipper | null> {
+  const row = await env.DB.prepare(`${SKIPPER_SELECT} WHERE skipper_id = ?`).bind(id).first<any>();
+  return row ? mapSkipper(row) : null;
+}
+
+// Validate + normalize the form payload. Returns the cleaned input or an error message.
+export function validateSkipperInput(
+  input: SkipperInput,
+  requireName: boolean
+): { ok: true } | { ok: false; error: string } {
+  if (requireName && !String(input.name ?? "").trim()) {
+    return { ok: false, error: "Navn er påkrevd" };
+  }
+  if (input.service_type !== undefined && !SERVICE_TYPES.includes(input.service_type as any)) {
+    return { ok: false, error: `service_type må være en av: ${SERVICE_TYPES.join(", ")}` };
+  }
+  if (input.email != null && input.email !== "" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
+    return { ok: false, error: "Oppgi en gyldig e-postadresse" };
+  }
+  if (input.base_price != null && (!Number.isInteger(input.base_price) || input.base_price < 0)) {
+    return { ok: false, error: "base_price må være et ikke-negativt heltall (cents)" };
+  }
+  return { ok: true };
+}
+
+export async function createSkipper(env: Env, input: SkipperInput): Promise<Skipper | null> {
+  const row = await env.DB.prepare(
+    `INSERT INTO skippers
+       (name, email, phone, address, location, country, boat_name, service_type,
+        slots, base_price, currency, payment_ref, active)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     RETURNING skipper_id`
+  )
+    .bind(
+      String(input.name ?? "").trim() || null,
+      (input.email ?? "").trim().toLowerCase() || null,
+      (input.phone ?? "")?.toString().trim() || null,
+      (input.address ?? "")?.toString().trim() || null,
+      (input.location ?? "")?.toString().trim() || null,
+      (input.country ?? "")?.toString().trim() || null,
+      (input.boat_name ?? "")?.toString().trim() || null,
+      input.service_type ?? "charter",
+      normalizeSlots(input.slots),
+      input.base_price ?? null,
+      (input.currency ?? "EUR").toString().trim().toUpperCase() || "EUR",
+      (input.payment_ref ?? "")?.toString().trim() || null,
+      input.active === false ? 0 : 1
+    )
+    .first<{ skipper_id: number }>();
+  return row ? getSkipper(env, row.skipper_id) : null;
+}
+
+// Partial update — only the provided keys are written (COALESCE keeps the rest).
+export async function updateSkipper(env: Env, id: number, input: SkipperInput): Promise<Skipper | null> {
+  const sets: string[] = [];
+  const binds: unknown[] = [];
+  const put = (col: string, val: unknown) => {
+    sets.push(`${col} = ?`);
+    binds.push(val);
+  };
+
+  if (input.name !== undefined) put("name", String(input.name ?? "").trim() || null);
+  if (input.email !== undefined) put("email", (input.email ?? "").trim().toLowerCase() || null);
+  if (input.phone !== undefined) put("phone", (input.phone ?? "")?.toString().trim() || null);
+  if (input.address !== undefined) put("address", (input.address ?? "")?.toString().trim() || null);
+  if (input.location !== undefined) put("location", (input.location ?? "")?.toString().trim() || null);
+  if (input.country !== undefined) put("country", (input.country ?? "")?.toString().trim() || null);
+  if (input.boat_name !== undefined) put("boat_name", (input.boat_name ?? "")?.toString().trim() || null);
+  if (input.service_type !== undefined) put("service_type", input.service_type);
+  if (input.slots !== undefined) put("slots", normalizeSlots(input.slots));
+  if (input.base_price !== undefined) put("base_price", input.base_price ?? null);
+  if (input.currency !== undefined) put("currency", (input.currency ?? "EUR").toString().trim().toUpperCase() || "EUR");
+  if (input.payment_ref !== undefined) put("payment_ref", (input.payment_ref ?? "")?.toString().trim() || null);
+  if (input.active !== undefined) put("active", input.active ? 1 : 0);
+
+  if (sets.length === 0) return getSkipper(env, id); // nothing to change
+
+  binds.push(id);
+  const r = await env.DB.prepare(`UPDATE skippers SET ${sets.join(", ")} WHERE skipper_id = ?`)
+    .bind(...binds)
+    .run();
+  if ((r.meta?.changes ?? 0) === 0) return null;
+  return getSkipper(env, id);
+}
+
+// --- customers + reservations (admin list views per the shared contract) -----
+
+export interface AdminCustomer {
+  id: number;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  created: string;
+}
+
+export async function listCustomers(env: Env): Promise<AdminCustomer[]> {
+  const { results } = await env.DB.prepare(
+    `SELECT customer_id AS id, name, email, phone, created_at AS created
+       FROM customers ORDER BY name`
+  ).all<AdminCustomer>();
+  return results ?? [];
+}
+
+export interface AdminReservation {
+  id: number;
+  code: string;
+  skipper_id: number;
+  customer_id: number | null;
+  trip_date: string | null;
+  guests: number | null;
+  status: string;
+  created: string;
+}
+
+export async function listReservations(env: Env): Promise<AdminReservation[]> {
+  const { results } = await env.DB.prepare(
+    `SELECT reservation_id AS id, reservation_code AS code, skipper_id, customer_id,
+            trip_date, guests, status, created_at AS created
+       FROM reservations ORDER BY trip_date DESC, reservation_id DESC`
+  ).all<AdminReservation>();
+  return results ?? [];
+}

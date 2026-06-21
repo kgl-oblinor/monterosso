@@ -102,3 +102,9 @@ Fersk D1 (egen database) — vi skriver om kildeskjemaet i stedet for å bære l
 
 ## Logg
 - 2026-06-21: Inventar fullført. Startet strip av worker-lån-domene.
+- 2026-06-21: Backend fullført. To rene migrasjoner (0001 boat-domene + 0002 chat rebrandet),
+  worker rebrand verifisert (ingen lån-/sync-/wp-/kartverket-/broadcast-rester). La til
+  `skippers`-kolonner per delt kontrakt (address, slots, base_price, currency, payment_ref,
+  active). Nye admin-endepunkter: GET/POST/PUT /admin/skippers (skipper-CRUD for Kristian),
+  GET /admin/customers, GET /admin/reservations. tsc --noEmit grønt. Migrasjoner kjørt mot
+  throwaway sqlite (alle tabeller/kolonner OK, CRUD-SQL verifisert).
