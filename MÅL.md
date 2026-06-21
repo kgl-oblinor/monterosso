@@ -2,18 +2,21 @@
 
 > **Øverst = fasiten: sannheten om produktet NÅ.** Aldri «nylig rettet» her. Endrede/forkastede sannheter flyttes ned til 🗑️ Skraphaugen (med kategori + dato/tid). Endres bare av Kristian (eller Krin på hans ordre). Alle agenter leser dette før de gjør noe.
 
-## Hovedprodukt
-**Monterosso · Cinque Terre** — rolig, vakker privat båttur-opplevelse. Live: `~/monterosso/cinque-terre` (Cloudflare). https://monterosso-cinque-terre.kgl-56a.workers.dev · Kristian = **admin**.
+## Visjon
+**«Uber for båtturer» i Italia** — en markedsplass som kobler reisende med lokale båteiere/skippere langs hele kysten. **Monterosso · Cinque Terre er piloten** (live i dag). Skipperen = «føreren», kunden bestiller + chatter, **Kristian = plattform-admin**.
+
+## Hovedprodukt (pilot)
+**Monterosso · Cinque Terre** — rolig, vakker privat båttur-opplevelse. Live: `~/monterosso/cinque-terre` (Cloudflare). https://monterosso-cinque-terre.kgl-56a.workers.dev
 
 ## Nordstjerne
-Eldre person bestiller fra mobil på **~3 tap**, og chatter etterpå **direkte med skipperen**. Varm men stram. Aldri «BESTILL NÅ!» — rolig guiding («Continue»).
+Eldre person bestiller fra mobil på **~3 tap**, og chatter etterpå **direkte med skipperen** — og det **skalerer til mange båter/skippere** over hele Italia. Varm men stram. Aldri «BESTILL NÅ!» — rolig guiding («Continue»).
 
 ## Sanne fakta (fasit)
 - **Design:** strengt system — 4px-spacing, 1.2 type-skala, skarpe kanter (radius 0), **solide cream-popups (#f7f1e3) av lik størrelse** (720px bred, 860px høy desktop). Fonter: Fraunces (tekst), Limelight (gull-CTA), Great Vibes («Read more»/CS).
 - **Stemme:** varm/stram; rolige fremover-verb; ingen falske fakta. Kaptein-whimsy («søker rik dame over 70») **beholdes** bevisst.
 - **Booking:** kvittering-først (gjett 2 gjester, neste avgang) → Continue → kontakt → bekreftelse (~3 tap). Avslutning via WhatsApp/e-post.
 - **Kontakt:** +47 93 00 86 00 · kgl@oblinor.no · møtepunkt Molo dei Pescatori, Monterosso.
-- **Ny funksjon (under arbeid):** kunde↔skipper-**chat** + lett onboarding (e-post + SMS-verifisering), **design gjenbrukes fra Oblinor** (långiver↔låntaker↔admin → kunde↔skipper).
+- **Ny funksjon:** kunde↔skipper-**chat** + lett onboarding (kun **e-post ELLER telefon** — ingen kode/passord). **Gjenbruk fra `oblinor-borrower-chat`** (kun kopiere, aldri endre originalen), **egen D1**. **Rolle-mapping:** Oblinor **låntaker → båteier/skipper**, **långiver → kunde/reisende**, **admin → Kristian**.
 
 ## Tilstand nå
 - ✅ Båt-landingsside ferdig-polert (scene, popups, booking-flyt, hub, copy)
