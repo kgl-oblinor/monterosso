@@ -319,10 +319,10 @@ export default function Landing() {
               A family boat — and a captain who is the real Italy.
             </p>
             <p className="vp-body">
-              The Paolona is a Ligurian gozzo: varnished wood, blue topsides,
-              an awning against the sun. She has carried this family along the
-              coast for years, and there is no finer way to see the five
-              villages than from her deck.
+              The Paolona is a traditional Ligurian gozzo — some seven metres of
+              varnished wood, blue topsides and an awning against the sun:
+              stable, comfortable, and built for this coast. There is no finer
+              way to see the five villages than from her deck.
             </p>
             <p className="vp-body">
               Her captain was born and raised on this shore — an unhurried,
@@ -336,10 +336,17 @@ export default function Landing() {
               and he will gladly tell you which one looks out on the sea you
               sailed.
             </p>
+            <p className="vp-subhead">Included</p>
+            <ul className="vp-incl">
+              <li>Aperitivo &amp; cold drinks aboard</li>
+              <li>A swim &amp; snorkel in a hidden cove</li>
+              <li>All five villages, from the water</li>
+              <li>Stories from a local skipper</li>
+            </ul>
             <dl className="vp-facts">
               <div className="vp-fact">
                 <dt>Boat</dt>
-                <dd>Ligurian gozzo</dd>
+                <dd>Ligurian gozzo · ~7 m</dd>
               </div>
               <div className="vp-fact">
                 <dt>Guests</dt>

@@ -1279,7 +1279,7 @@ body {
 @media (min-width: 760px) {
   .landing-v2 .book-form,
   .landing-v2 .village-page {
-    min-height: 800px;
+    min-height: 860px;
     overflow: visible;
     padding: var(--s7) var(--s7);
   }
@@ -1720,4 +1720,40 @@ body {
 /* let the sandy shore dip a touch lower so it meets the sea seam-free */
 .landing-v2 .skyline {
   bottom: calc(50% - 7px);
+}
+
+/* "Included" list on the boat page */
+.landing-v2 .vp-subhead {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: var(--ls-2);
+  text-transform: uppercase;
+  color: var(--terracotta);
+  margin: var(--s5) 0 var(--s3);
+}
+.landing-v2 .vp-incl {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s2) var(--s5);
+}
+.landing-v2 .vp-incl li {
+  position: relative;
+  padding-left: var(--s4);
+  font-size: var(--t-sm);
+  line-height: 1.4;
+  color: var(--ink-82);
+}
+.landing-v2 .vp-incl li::before {
+  content: "\00b7";
+  position: absolute;
+  left: 4px;
+  color: var(--terracotta);
+  font-weight: 700;
+}
+@media (max-width: 759px) {
+  .landing-v2 .vp-incl { grid-template-columns: 1fr; }
 }
