@@ -130,8 +130,8 @@ const FIELD = Array.from({ length: 150 }, () => {
   return {
     x: rand() * 1000,
     y: rand() * 500,
-    r: big ? 1.1 + rand() * 0.8 : 0.3 + rand() * 0.7,
-    o: (big ? 0.6 : 0.3) + rand() * 0.35,
+    r: big ? 0.8 + rand() * 0.45 : 0.25 + rand() * 0.4,
+    o: (big ? 0.46 : 0.24) + rand() * 0.28,
   };
 });
 
@@ -161,7 +161,7 @@ export default function Constellations() {
           transform={`translate(${(c.x / 100) * 1000} ${(c.y / 100) * 500}) scale(${c.sc})`}
         >
           {c.s.map(([x, y], i) => (
-            <circle key={i} cx={x} cy={y} r={i === 0 ? 1.5 : 1.1} className="cn-star" />
+            <circle key={i} cx={x} cy={y} r={i === 0 ? 1.0 : 0.8} className="cn-star" />
           ))}
         </g>
       ))}
