@@ -42,7 +42,7 @@ Eldre person bestiller fra mobil på **~3 tap**, og chatter etterpå **direkte m
 - *Lukke-knapp ✕* · 2026-06-21 · fjernet (stygg) → lukk via klikk-utenfor/Esc.
 
 ### Arkitektur
-- *oblinorchat* · 2026-06-21 ~10:15 · trodde det skulle bygges som eget nytt prosjekt → **feil**; vi bygger i båt-prosjektet og gjenbruker design fra Oblinor.
+- *chat-prosjektet* · 2026-06-21 ~10:15 · trodde det skulle bygges som eget nytt prosjekt → **feil**; vi bygger i båt-prosjektet og gjenbrukte chat-design fra en referanse-app.
 
 ### Innhold/stemme
 - *Knappetekst* · 2026-06-21 · «Send →»/«Another time»/«Read more»/«N/8» → «Continue»/«Change the time»/«Explore», teller fjernet.
