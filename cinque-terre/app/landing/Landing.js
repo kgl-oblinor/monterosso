@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { tour } from "../../lib/tour";
+import { tour, WHATSAPP_NUMBER } from "../../lib/tour";
 
 // 🤍 Built with love on this coast — for vakreste Mandy, always remembered here.
 import Skyline from "./Skyline";
@@ -14,6 +14,12 @@ import VillagePage from "./VillagePage";
 import { VILLAGES } from "./villageData";
 
 const firstName = (n) => n.split(" ")[0]; // "Monterosso al Mare" → "Monterosso"
+
+// Ready-made WhatsApp openers the customer can pick instead of booking outright.
+const WA_ALTS = [
+  "Hi! Which times do you have available this week?",
+  "Hi! We're a group of 4 — what's the price for a private tour?",
+];
 
 // slim arrow that breathes with the loop script (stroke = currentColor)
 function Arrow() {
@@ -701,12 +707,8 @@ function BookingForm({ active }) {
   const [step, setStep] = useState("receipt"); // receipt-first; "Change the time" → time → guests → date → receipt
   const [done, setDone] = useState(false);
   const [sent, setSent] = useState(false);
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
   const [slot, setSlot] = useState("sunset");
   const [boarding, setBoarding] = useState("no");
-  const [wantWa, setWantWa] = useState(true);
-  const [wantMail, setWantMail] = useState(true);
   const [dateMore, setDateMore] = useState(false);
   const [pickup, setPickup] = useState("Monterosso");
 
@@ -785,6 +787,8 @@ function BookingForm({ active }) {
   const when = sel ? `${sel.label} · ${sel.small}` : date;
   const total = totalFor(guests, slot);
   const slotLabel = tour.slots[slot]?.label || "Sunset";
+  // priority-1 booking link: WhatsApp, prefilled from the customer's choices
+  const bookingWa = waLink(bookingMessage({ iso: date, slot, guests }));
   // working aid: which glass box are we on (of 8)
   const boxNum = sent
     ? 7
@@ -806,9 +810,8 @@ function BookingForm({ active }) {
       <div className="book-form confirm-sent">
         
         <p className="confirm-lead">
-          Thank you — we'll be in touch at{" "}
-          <strong>{phone || email || "your contact"}</strong> to confirm your
-          place.
+          Thank you — send the message we opened for you, and we'll confirm your
+          place right there.
         </p>
         <div className="conf-summary">
           <div className="conf-row">
@@ -895,16 +898,8 @@ function BookingForm({ active }) {
   }
 
   if (done) {
-    const bizDigits = tour.phone.replace(/[^\d]/g, ""); // business WhatsApp
-    const submit = () => {
-      setError("");
-      const ph = phone.trim();
-      const em = email.trim();
-      if (!ph && !em) {
-        setError("Please add a phone number or email so we can reach you.");
-        return;
-      }
-      // 1) save the lead to our backend (D1)
+    // Save the lead to our backend (D1), then hand off to WhatsApp.
+    const saveLead = () => {
       try {
         navigator.sendBeacon?.(
           "/api/track",
@@ -915,8 +910,6 @@ function BookingForm({ active }) {
                 code,
                 dato: date,
                 guests,
-                phone: ph,
-                email: em,
                 slot,
                 boarding,
                 pickup,
@@ -926,106 +919,64 @@ function BookingForm({ active }) {
           )
         );
       } catch {}
-      // 2) fire the enabled channels — WhatsApp first, then email
+    };
+    // Priority 1: open WhatsApp with the message built from the choices,
+    // then advance to the confirmation screen.
+    const bookOnWhatsApp = () => {
+      saveLead();
+      try {
+        window.open(bookingWa, "_blank", "noopener");
+      } catch {}
+      setSent(true);
+    };
+    // Email fallback — same booking details, our inbox.
+    const bookByEmail = () => {
+      saveLead();
       const details = `Monterosso sea tour\nCode: ${code}\n${when} · ${slotLabel} · ${guests} ${
         guests === 1 ? "guest" : "guests"
       } · $${total}${
         boarding === "yes" ? "\nNeeds a hand coming aboard" : ""
-      }\nMeeting point: ${pickup}\nContact: ${ph || "—"}${em ? " · " + em : ""}`;
-      if (wantWa) {
-        try {
-          // wa.me is the universal link — opens the app on iOS/Android and
-          // WhatsApp Web on desktop, so it works on every device
-          window.open(
-            `https://wa.me/${bizDigits}?text=${encodeURIComponent(
-              "New booking enquiry — " + details
-            )}`,
-            "_blank",
-            "noopener"
-          );
-        } catch {}
-      }
-      if (wantMail) {
-        const mailto = `mailto:${tour.email}?subject=${encodeURIComponent(
-          `Booking enquiry — Monterosso sea tour (${code})`
-        )}&body=${encodeURIComponent(details)}`;
-        try {
-          // let WhatsApp open first, then hand off to the mail client
-          if (wantWa) setTimeout(() => (window.location.href = mailto), 600);
-          else window.location.href = mailto;
-        } catch {}
-      }
+      }\nMeeting point: ${pickup}`;
+      const mailto = `mailto:${tour.email}?subject=${encodeURIComponent(
+        `Booking enquiry — Monterosso sea tour (${code})`
+      )}&body=${encodeURIComponent(details)}`;
+      try {
+        window.location.href = mailto;
+      } catch {}
       setSent(true);
     };
     return (
       <div className="book-form">
-        
         <p className="confirm-lead">
-          Leave your details and we'll confirm your place.
+          One tap and we'll pick it up on WhatsApp — your message is ready.
         </p>
-        <form
-          className="contact-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            submit();
-          }}
-        >
-          <label className="field contact-field">
-            <span className="field-head">Phone / WhatsApp</span>
-            <input
-              type="tel"
-              name="tel"
-              autoComplete="tel"
-              inputMode="tel"
-              placeholder="+39 …"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-          </label>
-          <label className="field contact-field">
-            <span className="field-head">Email</span>
-            <input
-              type="email"
-              name="email"
-              autoComplete="email"
-              inputMode="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </label>
-          <span className="field-head send-via">Send via</span>
-          <div className="send-toggles">
-            <button
-              type="button"
-              role="switch"
-              aria-checked={wantWa}
-              className={"toggle-row" + (wantWa ? " is-on" : "")}
-              onClick={() => setWantWa((v) => !v)}
+        <p className="send-summary">
+          {when} · {slotLabel} · {guests}{" "}
+          {guests === 1 ? "guest" : "guests"} · ${total}
+        </p>
+        <button type="button" className="pay" onClick={bookOnWhatsApp}>
+          Book on WhatsApp
+        </button>
+        <button type="button" className="pay pay--ghost" onClick={bookByEmail}>
+          Or send by email
+        </button>
+        <p className="field-head wa-alt-head">Or ask us something first</p>
+        <div className="wa-alts">
+          {WA_ALTS.map((m) => (
+            <a
+              key={m}
+              className="cs-opt wa-alt"
+              href={waLink(m)}
+              target="_blank"
+              rel="noopener"
+              onClick={saveLead}
             >
-              <span className="toggle-label">WhatsApp</span>
-              <span className="switch" aria-hidden="true"></span>
-            </button>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={wantMail}
-              className={"toggle-row" + (wantMail ? " is-on" : "")}
-              onClick={() => setWantMail((v) => !v)}
-            >
-              <span className="toggle-label">Email</span>
-              <span className="switch" aria-hidden="true"></span>
-            </button>
-          </div>
-          <p className="send-summary">
-            {when} · {slotLabel} · {guests}{" "}
-            {guests === 1 ? "guest" : "guests"} · ${total}
-          </p>
-          <button type="submit" className="pay">
-            Send my request
-          </button>
-        </form>
-        <p className="err">{error}</p>
+              <span>
+                <b>{m}</b>
+              </span>
+            </a>
+          ))}
+        </div>
         <button
           type="button"
           className="confirm__back"
@@ -1454,6 +1405,36 @@ async function shareTrip({ when, guests }) {
       "_blank"
     );
   }
+}
+
+/* ---------- WhatsApp (priority-1 booking channel) ----------
+   wa.me opens the app on iOS/Android and WhatsApp Web on desktop. */
+function waLink(text) {
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+}
+
+/* Natural English day phrase from an ISO date, relative to today:
+   "today" / "tomorrow" / "on Friday 27 June". */
+function dayPhrase(iso) {
+  if (!iso) return "soon";
+  const d = new Date(iso + "T00:00:00");
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const diff = Math.round((d - today) / 86400000);
+  if (diff <= 0) return "today";
+  if (diff === 1) return "tomorrow";
+  const weekday = d.toLocaleDateString("en-GB", { weekday: "long" });
+  const date = d.toLocaleDateString("en-GB", { day: "numeric", month: "long" });
+  return `on ${weekday} ${date}`;
+}
+
+/* The prefilled booking message, built from the customer's own choices.
+   Neutral skipper name (Kristian confirms the name later). */
+function bookingMessage({ iso, slot, guests }) {
+  const label = (tour.slots[slot]?.label || "Sunset").toLowerCase();
+  const people = `${guests} ${guests === 1 ? "person" : "people"}`;
+  const emoji = slot === "sunset" ? " 🌅" : slot === "sunrise" ? " 🌄" : " ⛵";
+  return `Hi! I'd like to book the ${label} tour ${dayPhrase(iso)} for ${people}${emoji}`;
 }
 
 function CalGlyph() {

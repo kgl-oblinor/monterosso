@@ -1541,6 +1541,24 @@ body {
   font-style: italic;
 }
 
+/* WhatsApp ready-made alternative messages (booking step) */
+.landing-v2 .wa-alt-head {
+  display: block;
+  margin: var(--s5) 0 var(--s2);
+}
+.landing-v2 .wa-alts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+.landing-v2 .cs-opt.wa-alt {
+  padding: var(--s3) var(--s4);
+}
+.landing-v2 .cs-opt.wa-alt b {
+  font-weight: 500;
+  font-size: var(--t-sm);
+}
+
 /* RULE: action buttons hold a FIXED footprint — every booking step's button
    is the same width and sits in the same place, never resizing per label. */
 .landing-v2 .book-form .pay {

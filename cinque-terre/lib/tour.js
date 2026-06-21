@@ -18,3 +18,7 @@ export const tour = {
   // inbox used by the "Email" send option
   email: "kgl@oblinor.no",
 };
+
+// WhatsApp is the primary booking channel (wa.me/<number>). Digits only, no "+".
+// TODO: Andre/Andrea (Paolona) sitt ekte WhatsApp-nummer — bytt ut plassholderen.
+export const WHATSAPP_NUMBER = "4793008600";
