@@ -162,7 +162,7 @@
 /* Vernazza clock tower — a live clock standing on the horizon */
 .landing-v2 .clocktower {
   position: fixed;
-  bottom: 50%;
+  bottom: calc(50% - 7px);
   left: 24%;
   width: clamp(56px, 7vw, 100px);
   margin: 0;
@@ -1708,4 +1708,9 @@ body {
 [data-theme="dark"] .landing-v2 .clouds,
 [data-theme="dark"] .clouds {
   display: none;
+}
+
+/* let the sandy shore dip a touch lower so it meets the sea seam-free */
+.landing-v2 .skyline {
+  bottom: calc(50% - 7px);
 }
