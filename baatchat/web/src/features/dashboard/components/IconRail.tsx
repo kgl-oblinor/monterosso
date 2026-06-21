@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuthStore } from "@/features/auth/store";
-import logoUrl from "@/oblinor-logo.svg";
+import logoUrl from "@/monterosso-mark.svg";
 
 // Only Chat exists today. Overview/Documents/Notifications placeholders were removed
 // until those features are built — re-add NAV entries here when they are.
@@ -31,7 +31,7 @@ export function IconRail() {
 
   return (
     <nav className="flex w-16 shrink-0 flex-col items-center gap-1 border-r border-white/5 py-4">
-      <img src={logoUrl} alt="Oblinor" className="mb-3 size-9 rounded-xl" />
+      <img src={logoUrl} alt="Monterosso" className="mb-3 size-9 rounded-xl" />
 
       {NAV.map(({ icon: Icon, label, active }) => (
         <button

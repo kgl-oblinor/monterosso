@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import type { AccountStatus } from "../api/types";
 import { useApprove, useRevoke } from "../api/hooks";
 
-// --- inline email editor (shared by the loaner + investor directory tables) -
+// --- inline email editor (shared by the skipper + customer directory tables) -
 // Presentational: shows the on-file email with an edit pencil, or a "Legg til e-post"
 // prompt when missing. `onSave` returns a promise; the editor closes on success.
 export function EditableEmail({

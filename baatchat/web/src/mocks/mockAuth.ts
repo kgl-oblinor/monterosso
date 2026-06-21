@@ -7,7 +7,7 @@ import { delay, MOCK_OTP_CODE } from "./fixtures";
 
 function maskEmail(email: string): string {
   const [local, domain] = email.split("@");
-  return `${local.slice(0, 1)}***@${domain ?? "oblinor.no"}`;
+  return `${local.slice(0, 1)}***@${domain ?? "example.com"}`;
 }
 
 export const mockAuthApi: AuthApi = {
@@ -29,7 +29,7 @@ export const mockAuthApi: AuthApi = {
 
   async registerStart(input) {
     await delay();
-    const where = input.email ? input.email : "post@firma.no";
+    const where = input.email ? input.email : "skipper@example.com";
     return { sentTo: maskEmail(where) };
   },
 
@@ -53,12 +53,12 @@ export const mockAuthApi: AuthApi = {
     if (input.code !== MOCK_OTP_CODE) throw new ApiError(400, "Ugyldig eller utløpt kode.");
     if (!input.password || input.password.length < 8)
       throw new ApiError(400, "Passord må være minst 8 tegn.");
-    const email = input.email ?? "post@firma.no";
+    const email = input.email ?? "skipper@example.com";
     return { token: `mock.${btoa(email)}.jwt`, user: { email }, status: "pending" };
   },
 
   async me(): Promise<MeResult> {
     await delay(200);
-    return { user: { email: "demo@oblinor.no" }, status: "active", emailVerified: true };
+    return { user: { email: "demo@example.com" }, status: "active", emailVerified: true };
   },
 };

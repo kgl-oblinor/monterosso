@@ -72,4 +72,6 @@ export const apiClient = {
     request<T>(path, { ...options, method: "GET" }),
   post: <T>(path: string, json?: unknown, options?: RequestOptions) =>
     request<T>(path, { ...options, method: "POST", json }),
+  put: <T>(path: string, json?: unknown, options?: RequestOptions) =>
+    request<T>(path, { ...options, method: "PUT", json }),
 };

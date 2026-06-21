@@ -7,6 +7,8 @@ import type {
   AdminThread,
   DirectoryCustomer,
   DirectorySkipper,
+  Skipper,
+  SkipperInput,
 } from "./types";
 
 const USERS_KEY = ["admin", "users"] as const;
@@ -42,6 +44,43 @@ export function useCustomerDirectory(params: { search: string; page: number; pag
       );
       return { customers: r.customers, total: r.total };
     },
+  });
+}
+
+// --- skipper management (add / edit listings) -------------------------------
+
+const SKIPPERS_KEY = ["admin", "skippers"] as const;
+
+/** Every skipper/listing (full records) — backs the management list + edit form. */
+export function useSkippers() {
+  return useQuery({
+    queryKey: SKIPPERS_KEY,
+    queryFn: async () => {
+      const r = await apiClient.get<{ ok?: boolean; skippers: Skipper[] }>("/admin/skippers");
+      return r.skippers;
+    },
+  });
+}
+
+export function useCreateSkipper() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: SkipperInput) => {
+      const r = await apiClient.post<{ skipper: Skipper }>("/admin/skippers", input);
+      return r.skipper;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin"] }),
+  });
+}
+
+export function useUpdateSkipper() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, input }: { id: number; input: SkipperInput }) => {
+      const r = await apiClient.put<{ skipper: Skipper }>(`/admin/skippers/${id}`, input);
+      return r.skipper;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin"] }),
   });
 }
 

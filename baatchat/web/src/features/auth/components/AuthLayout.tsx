@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import logoUrl from "@/oblinor-logo.svg";
+import logoUrl from "@/monterosso-mark.svg";
 
 /** Branded glassmorphism shell for the auth screens. Teal gradient backdrop, app brand
  *  on top, and a translucent card holding the active form (which renders its own heading). */

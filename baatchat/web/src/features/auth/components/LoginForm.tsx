@@ -49,7 +49,7 @@ export function LoginForm() {
   return (
     <Form {...form}>
       <form onSubmit={onSubmit} className="space-y-5" noValidate>
-        <AuthHeading title="Logg inn" subtitle="Oblinor Chat for låntakere og långivere" />
+        <AuthHeading title="Logg inn" subtitle="Chat mellom kunder og skippere" />
 
         {login.isError && <AuthError message={login.error.message} />}
 

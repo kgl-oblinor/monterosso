@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Loader2, Search } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ChevronLeft, ChevronRight, Loader2, Pencil, Plus, Search } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { useSkipperDirectory, useSetSkipperEmail } from "../api/hooks";
-import { EditableEmail, Initials, RowActions, statusRank, StatusBadge } from "./AdminUI";
-
-const PAGE_SIZE = 50;
+import { useSkippers } from "../api/hooks";
+import type { Skipper } from "../api/types";
+import { Initials } from "./AdminUI";
+import { SkipperForm } from "./SkipperForm";
 
 const SERVICE_LABEL: Record<string, string> = {
   charter: "Charter",
@@ -13,12 +13,15 @@ const SERVICE_LABEL: Record<string, string> = {
   freight: "Frakt",
 };
 
-/** Full skipper directory — all skippers/listings, onboarded or not. Paginated
- *  client-side (the list is small) so it matches the customer table exactly. */
+type View = { mode: "list" } | { mode: "new" } | { mode: "edit"; skipper: Skipper };
+
+/** Skipper management: the list of listings, plus the add/edit form. This is where
+ *  Kristian creates a skipper (name, contact, boat, service type, departure times,
+ *  price, payment ref). Backed by GET/POST/PUT /admin/skippers. */
 export function SkippersTab() {
-  const { data: skippers, isLoading, isError } = useSkipperDirectory();
+  const { data: skippers, isLoading, isError } = useSkippers();
+  const [view, setView] = useState<View>({ mode: "list" });
   const [query, setQuery] = useState("");
-  const [page, setPage] = useState(0);
 
   const q = query.trim().toLowerCase();
   const filtered = useMemo(
@@ -28,30 +31,36 @@ export function SkippersTab() {
           (s) =>
             !q ||
             s.name?.toLowerCase().includes(q) ||
-            s.boatName?.toLowerCase().includes(q) ||
+            s.boat_name?.toLowerCase().includes(q) ||
             s.location?.toLowerCase().includes(q) ||
             s.email?.toLowerCase().includes(q)
         )
-        .sort(
-          (a, b) =>
-            statusRank(a.status) - statusRank(b.status) ||
-            (a.name ?? "").localeCompare(b.name ?? "", "nb-NO")
-        ),
+        .sort((a, b) => (a.name ?? "").localeCompare(b.name ?? "", "nb-NO")),
     [skippers, q]
   );
 
-  // Reset to the first page whenever the search narrows the list.
-  useEffect(() => setPage(0), [q]);
-
-  const total = filtered.length;
-  const start = page * PAGE_SIZE;
-  const pageRows = filtered.slice(start, start + PAGE_SIZE);
-  const from = total === 0 ? 0 : start + 1;
-  const to = Math.min(start + PAGE_SIZE, total);
+  if (view.mode !== "list") {
+    return (
+      <SkipperForm
+        skipper={view.mode === "edit" ? view.skipper : undefined}
+        onDone={() => setView({ mode: "list" })}
+        onCancel={() => setView({ mode: "list" })}
+      />
+    );
+  }
 
   return (
     <div>
-      <SearchBox value={query} onChange={setQuery} placeholder="Søk på navn, båt, sted eller e-post" />
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <SearchBox value={query} onChange={setQuery} placeholder="Søk på navn, båt, sted eller e-post" />
+        <button
+          type="button"
+          onClick={() => setView({ mode: "new" })}
+          className="inline-flex h-10 shrink-0 items-center gap-2 rounded-lg bg-teal-400 px-4 text-sm font-semibold text-[#04231d] transition-opacity hover:bg-teal-300"
+        >
+          <Plus className="size-4" /> Legg til skipper
+        </button>
+      </div>
 
       {isLoading ? (
         <Centered>
@@ -62,65 +71,68 @@ export function SkippersTab() {
       ) : (
         <div className="overflow-x-auto rounded-xl border border-white/10">
           <table className="w-full min-w-[760px] text-left text-sm">
-            <Thead cols={["#", "Skipper / båt", "Tjeneste", "Kontakt / e-post", "Turer", "Status", "Handling"]} />
+            <Thead cols={["#", "Skipper / båt", "Tjeneste", "Kontakt", "Pris", "Status", "Handling"]} />
             <tbody className="divide-y divide-white/5">
-              {pageRows.map((s, i) => (
+              {filtered.map((s, i) => (
                 <tr key={s.id} className="transition-colors hover:bg-white/[0.04]">
-                  <RowNum n={start + i + 1} />
+                  <RowNum n={i + 1} />
                   <td className="px-4 py-2.5">
                     <div className="flex items-center gap-3">
-                      <Initials name={s.name ?? s.boatName} fallback={s.boatName ?? "?"} />
+                      <Initials name={s.name ?? s.boat_name} fallback={s.boat_name ?? "?"} />
                       <div className="min-w-0">
-                        <div className="font-medium text-white">{s.name ?? "—"}</div>
-                        {s.boatName && <div className="text-xs text-white/45">{s.boatName}</div>}
+                        <div className="font-medium text-white">{s.name || "—"}</div>
+                        {s.boat_name && <div className="text-xs text-white/45">{s.boat_name}</div>}
                       </div>
                     </div>
                   </td>
                   <td className="px-4 py-2.5 text-white/70">
-                    {SERVICE_LABEL[s.serviceType] ?? s.serviceType}
+                    {SERVICE_LABEL[s.service_type] ?? s.service_type}
                     {s.location && <span className="text-white/40"> · {s.location}</span>}
                   </td>
                   <td className="px-4 py-2.5 text-white/70">
-                    <SkipperEmail id={s.id} email={s.email} />
+                    {s.email || s.phone || <span className="text-white/30">—</span>}
                   </td>
-                  <td className="px-4 py-2.5 text-white/70">{s.reservationCount}</td>
+                  <td className="px-4 py-2.5 text-white/70">{formatPrice(s)}</td>
                   <td className="px-4 py-2.5">
-                    <StatusBadge status={s.status} />
+                    <span
+                      className={cn(
+                        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset",
+                        s.active
+                          ? "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30"
+                          : "bg-white/5 text-white/40 ring-white/10"
+                      )}
+                    >
+                      {s.active ? "Aktiv" : "Skjult"}
+                    </span>
                   </td>
                   <td className="px-4 py-2.5">
-                    <RowActions accountId={s.accountId} status={s.status} />
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setView({ mode: "edit", skipper: s })}
+                        className="inline-flex h-8 items-center gap-1 rounded-lg border border-white/15 px-3 text-xs font-medium text-white/70 transition-colors hover:bg-white/5"
+                      >
+                        <Pencil className="size-3.5" /> Rediger
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
-              {pageRows.length === 0 && <EmptyRow cols={7} label="Ingen skippere funnet." />}
+              {filtered.length === 0 && (
+                <EmptyRow cols={7} label="Ingen skippere ennå. Trykk «Legg til skipper»." />
+              )}
             </tbody>
           </table>
         </div>
       )}
-
-      <Pager
-        from={from}
-        to={to}
-        total={total}
-        hasPrev={page > 0}
-        hasNext={to < total}
-        onPrev={() => setPage((p) => Math.max(0, p - 1))}
-        onNext={() => setPage((p) => p + 1)}
-      />
     </div>
   );
 }
 
-/** A skipper's editable on-file email (admin override). */
-function SkipperEmail({ id, email }: { id: number; email: string | null }) {
-  const setEmail = useSetSkipperEmail();
-  return (
-    <EditableEmail
-      email={email}
-      saving={setEmail.isPending}
-      onSave={(e) => setEmail.mutateAsync({ id, email: e })}
-    />
-  );
+/** Price label, e.g. "150 EUR". Empty when no price is set. */
+function formatPrice(s: Skipper): string {
+  if (s.base_price == null) return "—";
+  return `${(s.base_price / 100).toLocaleString("nb-NO")} ${s.currency ?? ""}`.trim();
 }
 
 // --- shared table chrome (used by both directory tables + the others) --------

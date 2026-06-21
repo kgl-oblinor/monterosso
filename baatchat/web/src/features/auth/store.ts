@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 import { setAuthToken } from "@/lib/apiClient";
 import type { AuthUser } from "./api/types";
 
-/** Account approval state (investors/loaners). Admins are always treated as active. */
+/** Account approval state (customers/skippers). Admins are always treated as active. */
 export type AccountStatus = "pending" | "active" | "suspended";
 
 interface AuthState {
@@ -37,7 +37,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: "oblinor.auth",
+      name: "monterosso.auth",
       partialize: (s) => ({ token: s.token, user: s.user, status: s.status }),
       // Re-prime the apiClient with the rehydrated token on page load.
       onRehydrateStorage: () => (state) => {

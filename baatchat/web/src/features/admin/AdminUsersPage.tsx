@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Clock, LogOut, Menu, MessageSquare, Ship, Users, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import logoUrl from "@/oblinor-logo.svg";
+import logoUrl from "@/monterosso-mark.svg";
 import { useAuthStore } from "@/features/auth/store";
 import { useCustomerDirectory, useSkipperDirectory, useUsers } from "./api/hooks";
 import { StatCard, StatGroup } from "./components/AdminUI";

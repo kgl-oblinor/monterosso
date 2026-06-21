@@ -43,6 +43,46 @@ export interface DirectoryCustomer {
   lastLoginAt: string | null;
 }
 
+// --- skipper management (add / edit a listing) ------------------------------
+// Mirrors the shared /admin/skippers contract (snake_case from the Worker).
+
+export type ServiceType = "charter" | "taxi" | "freight";
+
+/** A skipper/listing as returned by GET/POST/PUT /admin/skippers. */
+export interface Skipper {
+  id: number;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  address: string | null;
+  location: string | null;
+  country: string | null;
+  boat_name: string | null;
+  service_type: ServiceType;
+  slots: string | null; // JSON array of departure times, e.g. ["10:00","14:00"]
+  base_price: number | null; // cents
+  currency: string | null;
+  payment_ref: string | null; // Stripe reference (may be empty for now)
+  active: boolean;
+  created: string;
+}
+
+/** Body for POST/PUT /admin/skippers (no id/active/created — server-managed). */
+export interface SkipperInput {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  location: string;
+  country: string;
+  boat_name: string;
+  service_type: ServiceType;
+  slots: string; // JSON array string
+  base_price: number; // cents
+  currency: string;
+  payment_ref: string;
+}
+
 // Admin read-only conversation oversight.
 export interface AdminThread {
   id: number;

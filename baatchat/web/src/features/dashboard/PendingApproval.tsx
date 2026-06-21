@@ -6,7 +6,7 @@ import { AuthButton } from "@/features/auth/components/AuthButton";
 import { useRefreshStatus } from "@/features/auth/api/hooks";
 import { useAuthStore } from "@/features/auth/store";
 
-/** Shown to a logged-in investor/loaner whose account an admin hasn't approved yet. */
+/** Shown to a logged-in customer/skipper whose account an admin hasn't approved yet. */
 export function PendingApproval() {
   const navigate = useNavigate();
   const setStatus = useAuthStore((s) => s.setStatus);
