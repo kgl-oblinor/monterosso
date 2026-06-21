@@ -159,6 +159,39 @@
 }
 .content__links a { font-size: 16px; }
 
+/* ---------- hub card grid ---------- */
+.content__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--c-line);
+  border: 1px solid var(--c-line);
+  margin: 8px 0 0;
+}
+.content__card {
+  background: var(--c-cream);
+  padding: 24px;
+  text-decoration: none;
+  color: var(--c-ink);
+  display: block;
+  transition: background 0.2s ease;
+}
+.content__card:hover { background: var(--c-cream-deep); }
+.content__card h3 {
+  margin: 0 0 6px;
+  font-size: 19px;
+  color: var(--c-ink);
+}
+.content__card p {
+  margin: 0;
+  font-size: 15px;
+  color: var(--c-ink-soft);
+  line-height: 1.45;
+}
+@media (max-width: 520px) {
+  .content__grid { grid-template-columns: 1fr; }
+}
+
 /* ---------- footer / sources ---------- */
 .content__foot {
   padding: 40px 0 64px;

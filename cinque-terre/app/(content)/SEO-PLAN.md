@@ -53,6 +53,20 @@ segment, so pages live at clean paths like `/monterosso`, not `/content/monteros
 Build order (priority by search value): `/monterosso` (done) → `/cinque-terre-by-boat`
 → `/guide` hub → village pages → `/monterosso/restaurants` + `/beaches` → wire up `/news`.
 
+**Build status (SEO-2 agent, June 2026):** All content pages above are now built and
+live in-repo except the reserved `/news` track:
+- ✅ `/monterosso` (pilot, prior agent)
+- ✅ `/cinque-terre-by-boat`
+- ✅ `/guide` (hub, links to every page via card grid)
+- ✅ `/cinque-terre/vernazza`, `/corniglia`, `/manarola`, `/riomaggiore`
+- ✅ `/monterosso/restaurants`, `/monterosso/beaches`
+- ✅ `app/sitemap.js` + `app/robots.js` (Next 15 convention; sitemap lists all the
+  above + `/`, omits `/news` until those pages exist so we never list 404s)
+- ✅ Per-page `openGraph` + `alternates.canonical` added on every new page
+  (canonical base = `https://monterosso-cinque-terre.kgl-56a.workers.dev`, the live
+  workers.dev URL from MÅL.md — swap to a custom domain here + in sitemap/robots once one exists)
+- ⏳ `/news` + `/news/[slug]` — still reserved, NOT built (separate daily-news agent)
+
 ### URL conventions
 - All lowercase, hyphenated, no trailing segment from the route group.
 - Village pages nested under `/cinque-terre/<village>` so the five form a clear cluster.
@@ -114,12 +128,12 @@ This plan only **reserves the slot and structure**; the news pages and agent are
 
 ## 7. Technical SEO checklist (cluster-wide TODO)
 
-- [ ] `sitemap.xml` via `app/sitemap.js` listing all content + news routes (separate lane task / confirm with F).
-- [ ] `robots.txt` via `app/robots.js` allowing crawl, pointing to sitemap.
-- [ ] Per-page `alternates.canonical` + `openGraph` once the production domain is final.
-- [ ] JSON-LD: `TouristAttraction` / `TouristDestination` on place pages; `Article` on news posts.
-- [ ] One `<h1>` per page, descriptive `<h2>`/`<h3>`, real `<article>`/`<section>`/`<nav>` semantics.
-- [ ] Descriptive `alt` text on every image once imagery is added.
+- [x] `sitemap.xml` via `app/sitemap.js` listing all content routes + `/` (news routes omitted until built).
+- [x] `robots.txt` via `app/robots.js` allowing crawl, pointing to sitemap.
+- [x] Per-page `alternates.canonical` + `openGraph` (using the live workers.dev domain; revisit if a custom domain is added).
+- [x] JSON-LD: `TouristDestination` on the village/place pages; `Article` on by-boat/restaurants/beaches; `CollectionPage` on `/guide`. (`Article` on news posts still pending the news agent.)
+- [x] One `<h1>` per page, descriptive `<h2>`/`<h3>`, real `<section>`/`<nav>`/`<header>`/`<footer>` semantics.
+- [ ] Descriptive `alt` text on every image once imagery is added (no imagery on these pages yet).
 - Note: `app/sitemap.js` / `app/robots.js` sit at the app root (shared) — coordinate before adding
   so this lane doesn't collide with LAND/DASH. Until then, per-page `metadata` is fully in-lane.
 
@@ -160,3 +174,49 @@ All facts on the pilot page trace to these sources (researched June 2026). No fa
 Facts deliberately NOT used (unverifiable / would be invention): specific restaurant names,
 exact current ferry prices on the pilot page (prices change yearly — kept vague), and any claim
 about our own tour's schedule beyond what the landing page states.
+
+### 8b. Sources for the new pages (SEO-2 agent, researched June 2026)
+
+All facts researched via web search; nothing invented. Per-village pages each repeat their
+own sources in-page (footer).
+
+- **Vernazza — only natural harbour of the five; Piazza Marconi; Castello Doria built to defend
+  against pirate raids on a rocky spur (steep staircase access); church of Santa Margherita
+  d'Antiochia on the harbour (early 14th c.); passed to Genoa in the 13th c.; Blue Trail to
+  Monterosso.** — lecinqueterre.org. https://www.lecinqueterre.org/eng/arte/vernazzacastello.php ;
+  Emilia Delizia. https://www.emiliadelizia.com/vernazza-cinque-terre-guide/ ;
+  cinqueterre-travel.com. https://cinqueterre-travel.com/destination/vernazza/
+- **Corniglia — only village not on the sea, ~100 m up on a rocky promontory ringed by vineyards;
+  no harbour, no ferry stop; smallest/quietest; name from Roman Gens Cornelia; to Genoa 1276;
+  the Lardarina staircase = 382 zigzag brick steps from the station (shuttle alternative).**
+  — cinqueterre-travel.com. https://cinqueterre-travel.com/destination/corniglia/ ;
+  kevmrc.com. https://www.kevmrc.com/corniglia-cinque-terre-italy
+- **Manarola — perhaps the oldest of the five; San Lorenzo church cornerstone 1338; present
+  settlement from late 12th c. (people came down from Volastra); tiny rocky harbour squeezed
+  between cliffs, protected by a breakwater (most-photographed spot); terraced "heroic"
+  viticulture and Sciacchetrà (appassimento, Bosco grape); Via dell'Amore to Riomaggiore.**
+  — Wikipedia, *Manarola*. https://en.wikipedia.org/wiki/Manarola ;
+  Cinque Terre Riviera. https://cinqueterreriviera.com/sciacchetra-wine-cinque-terre/
+- **Riomaggiore — southernmost ("southern jewel"); early-13th-c. origins, allegiance to Genoa
+  1251; V-shaped working harbour; Castello di Riomaggiore begun 1260 (Turcotti), completed under
+  Genoa, square plan with round towers; Via dell'Amore (Path of Love) to Manarola, part of the
+  Sentiero Azzurro.** — Wikipedia, *Riomaggiore*. https://en.wikipedia.org/wiki/Riomaggiore ;
+  Trainline guide. https://www.thetrainline.com/en-us/via/europe/italy/your-guide-to-riomaggiore-the-southernmost-village-of-cinque-terre ;
+  viadellamore.info. https://www.viadellamore.info/en/castello-di-riomaggiore ;
+  thatsliguria.com. https://thatsliguria.com/en/riomaggiore-where-starts-the-lovers-line/
+- **Cinque Terre by boat — seasonal ferry ~28 March–1 November 2026; stops at Monterosso,
+  Vernazza, Manarola, Riomaggiore (NOT Corniglia, no harbour); connects La Spezia / Portovenere
+  / Levanto; ~09:00–18:00; day passes available, prices/times change yearly.**
+  — Arbaspaa 2026 timetable. https://www.arbaspaa.com/blog/cinque-terre-boat-timetable ;
+  cinqueterre-travel.com (boat). https://cinqueterre-travel.com/getting_there/boat/
+- **Monterosso beaches — only village with substantial sandy beaches; Fegina = largest in the
+  Cinque Terre, in front of the station, with paid lidos plus free stretches (Fegina free beach,
+  Stazione free beach); Spiaggia del Gigante = larger/quieter free beach toward Levanto beneath
+  Il Gigante; small old-town cove by the ferry dock.** — lecinqueterre.org.
+  https://www.lecinqueterre.org/eng/beaches/beachesmonterosso.php ;
+  La Spezia Guide. https://laspeziaguide.com/insider-guide/everything-cinque-terre/cinque-terre-experiences/cinque-terre-beaches-top-spots-for-sunbathing-and-swimming/
+- **Food — pesto (basil, pine nuts, garlic, Parmigiano + Pecorino, sea salt, Ligurian olive oil)
+  on trofie, often with potatoes and green beans; focaccia; farinata (chickpea flatbread);
+  anchovies called "pan do ma" (bread of the sea), fresh/marinated/fried/salted in arbanelle;
+  Cinque Terre DOC white; Sciacchetrà passito.** — The Mediterranean Traveller.
+  https://www.themediterraneantraveller.com/cinque-terre-food/ ; Emilia Delizia (above).
