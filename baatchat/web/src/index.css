@@ -9,88 +9,91 @@
  * Components use semantic Tailwind classes (bg-background, text-muted-foreground, …)
  * or the mapped CSS variables — never raw hex.
  */
+/* Boat palette — matches the landing: cream surfaces, ink text, gold accent/CTA,
+   terracotta + olive for status, deep-ink sidebar with gold active state.
+   Tokens are the single source of truth; components use semantic classes. */
 :root {
-  --background: #f8fafc;
-  --foreground: #020617;
-  --card: #ffffff;
-  --card-foreground: #020617;
-  --popover: #ffffff;
-  --popover-foreground: #020617;
-  --primary: #0f172a;
-  --primary-foreground: #f8fafc;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #e2e8f0;
-  --accent-foreground: #0f172a;
-  --destructive: #b45253;
-  --destructive-foreground: #f8fafc;
-  --success: #15803d;
-  --success-foreground: #f8fafc;
-  --border: #e2e8f0;
-  --input: #f1f5f9;
-  --ring: #94a3b8;
-  --chart-1: #64748b;
-  --chart-2: #94a3b8;
-  --chart-3: #cbd5e1;
-  --chart-4: #475569;
-  --chart-5: #334155;
-  --sidebar: #f8fafc;
-  --sidebar-foreground: #0f172a;
-  --sidebar-primary: #0f172a;
-  --sidebar-primary-foreground: #f8fafc;
-  --sidebar-accent: #f1f5f9;
-  --sidebar-accent-foreground: #0f172a;
-  --sidebar-border: #e2e8f0;
-  --sidebar-ring: #94a3b8;
+  --background: #efe7d4;
+  --foreground: #07182a;
+  --card: #f7f1e3;
+  --card-foreground: #07182a;
+  --popover: #f7f1e3;
+  --popover-foreground: #07182a;
+  --primary: #07182a;
+  --primary-foreground: #f7f1e3;
+  --secondary: #e7dcc2;
+  --secondary-foreground: #07182a;
+  --muted: #e7dcc2;
+  --muted-foreground: #6f6450;
+  --accent: #ead27e;
+  --accent-foreground: #07182a;
+  --destructive: #b04a3a;
+  --destructive-foreground: #f7f1e3;
+  --success: #5f7a43;
+  --success-foreground: #f7f1e3;
+  --border: #ddd0b0;
+  --input: #e7dcc2;
+  --ring: #ead27e;
+  --chart-1: #ead27e;
+  --chart-2: #a8743f;
+  --chart-3: #07182a;
+  --chart-4: #5f7a43;
+  --chart-5: #c9b78a;
+  --sidebar: #07182a;
+  --sidebar-foreground: #f7f1e3;
+  --sidebar-primary: #ead27e;
+  --sidebar-primary-foreground: #07182a;
+  --sidebar-accent: #0f2740;
+  --sidebar-accent-foreground: #f7f1e3;
+  --sidebar-border: #14304a;
+  --sidebar-ring: #ead27e;
   --font-sans: Geist, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Geist Mono, monospace;
-  --radius: 1.825rem;
+  --radius: 0rem;
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 }
 
 .dark {
-  --background: #020617;
-  --foreground: #f8fafc;
-  --card: #0f172a;
-  --card-foreground: #f8fafc;
-  --popover: #0f172a;
-  --popover-foreground: #f8fafc;
-  --primary: #f8fafc;
-  --primary-foreground: #0f172a;
-  --secondary: #1e293b;
-  --secondary-foreground: #f8fafc;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --accent: #334155;
-  --accent-foreground: #f8fafc;
-  --destructive: #b45253;
-  --destructive-foreground: #f8fafc;
-  --success: #22c55e;
-  --success-foreground: #052e16;
-  --border: #1d232c;
-  --input: #1e293b;
-  --ring: #475569;
-  --chart-1: #64748b;
-  --chart-2: #94a3b8;
-  --chart-3: #cbd5e1;
-  --chart-4: #475569;
-  --chart-5: #334155;
-  --sidebar: #020617;
-  --sidebar-foreground: #f8fafc;
-  --sidebar-primary: #f8fafc;
-  --sidebar-primary-foreground: #0f172a;
-  --sidebar-accent: #1e293b;
-  --sidebar-accent-foreground: #f8fafc;
-  --sidebar-border: #1d232c;
-  --sidebar-ring: #475569;
+  --background: #07182a;
+  --foreground: #f7f1e3;
+  --card: #0f2740;
+  --card-foreground: #f7f1e3;
+  --popover: #0f2740;
+  --popover-foreground: #f7f1e3;
+  --primary: #ead27e;
+  --primary-foreground: #07182a;
+  --secondary: #14304a;
+  --secondary-foreground: #f7f1e3;
+  --muted: #14304a;
+  --muted-foreground: #b6a98c;
+  --accent: #ead27e;
+  --accent-foreground: #07182a;
+  --destructive: #c75a48;
+  --destructive-foreground: #f7f1e3;
+  --success: #7da352;
+  --success-foreground: #07182a;
+  --border: #1c3a55;
+  --input: #14304a;
+  --ring: #ead27e;
+  --chart-1: #ead27e;
+  --chart-2: #a8743f;
+  --chart-3: #f7f1e3;
+  --chart-4: #7da352;
+  --chart-5: #c9b78a;
+  --sidebar: #07182a;
+  --sidebar-foreground: #f7f1e3;
+  --sidebar-primary: #ead27e;
+  --sidebar-primary-foreground: #07182a;
+  --sidebar-accent: #0f2740;
+  --sidebar-accent-foreground: #f7f1e3;
+  --sidebar-border: #1c3a55;
+  --sidebar-ring: #ead27e;
   --font-sans: Geist, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Geist Mono, monospace;
-  --radius: 1.825rem;
+  --radius: 0rem;
 }
 
 @theme inline {
@@ -133,10 +136,14 @@
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  /* Sharp corners globally — all rectangles square. rounded-full (avatars,
+     toggles) is intrinsic and stays round; only the rectangle scale is zeroed. */
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-3xl: 0;
 }
 
 @layer base {

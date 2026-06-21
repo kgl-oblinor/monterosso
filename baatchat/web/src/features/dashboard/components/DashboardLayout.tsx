@@ -37,7 +37,7 @@ export function DashboardLayout() {
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[radial-gradient(120%_120%_at_50%_0%,#134e4a_0%,#0a2a2e_42%,#020617_100%)] text-white">
+    <div className="flex h-screen w-full overflow-hidden bg-[radial-gradient(120%_120%_at_50%_0%,#0f2740_0%,#0a1f33_42%,#07182a_100%)] text-white">
       <IconRail />
 
       {isLoading ? (

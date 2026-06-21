@@ -71,7 +71,7 @@ export function AdminUsersPage() {
   );
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[radial-gradient(120%_120%_at_50%_0%,#134e4a_0%,#0a2a2e_42%,#020617_100%)] text-white">
+    <div className="flex h-screen w-full overflow-hidden bg-[radial-gradient(120%_120%_at_50%_0%,#0f2740_0%,#0a1f33_42%,#07182a_100%)] text-white">
       {/* Desktop sidebar */}
       <aside className="hidden w-64 shrink-0 flex-col border-r border-white/10 md:flex">{sidebar}</aside>
 
@@ -79,7 +79,7 @@ export function AdminUsersPage() {
       {drawerOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
           <div className="absolute inset-0 bg-black/60" onClick={() => setDrawerOpen(false)} />
-          <aside className="absolute left-0 top-0 flex h-full w-64 flex-col border-r border-white/10 bg-[#0a242b]">
+          <aside className="absolute left-0 top-0 flex h-full w-64 flex-col border-r border-white/10 bg-[#07182a]">
             <button
               type="button"
               aria-label="Lukk meny"
@@ -156,7 +156,7 @@ export function AdminUsersPage() {
 function Hint({ n, suffix }: { n: number; suffix: string }) {
   return (
     <>
-      <span className="font-semibold text-teal-300">{n.toLocaleString("nb-NO")}</span> {suffix}
+      <span className="font-semibold text-[#ead27e]">{n.toLocaleString("nb-NO")}</span> {suffix}
     </>
   );
 }
@@ -197,7 +197,7 @@ function SidebarContent({
               className={cn(
                 "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                 activeTab
-                  ? "bg-teal-400/15 text-teal-200"
+                  ? "bg-[#ead27e]/15 text-[#ead27e]"
                   : "text-white/60 hover:bg-white/5 hover:text-white"
               )}
             >

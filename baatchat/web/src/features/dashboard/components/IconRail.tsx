@@ -43,7 +43,7 @@ export function IconRail() {
           className={cn(
             "flex size-10 items-center justify-center rounded-xl transition-colors",
             active
-              ? "bg-teal-400/15 text-teal-300"
+              ? "bg-[#ead27e]/15 text-[#ead27e]"
               : "text-white/45 hover:bg-white/5 hover:text-white"
           )}
         >
@@ -54,12 +54,12 @@ export function IconRail() {
       <div className="mt-auto">
         <DropdownMenu>
           <DropdownMenuTrigger
-            className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
+            className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#ead27e]"
             aria-label="Konto"
           >
             <Avatar
               initials={initialsOf(user?.name ?? user?.email)}
-              className="bg-teal-500/30 text-teal-100"
+              className="bg-[#ead27e]/30 text-[#ead27e]"
             />
           </DropdownMenuTrigger>
           <DropdownMenuContent side="right" align="end">

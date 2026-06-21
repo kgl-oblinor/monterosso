@@ -95,7 +95,7 @@ export function ConversationsTab() {
                     }}
                     className={cn(
                       "flex w-full items-center gap-3 px-3 py-3 text-left transition-colors hover:bg-white/[0.03]",
-                      t.id === selectedId && "bg-teal-500/10"
+                      t.id === selectedId && "bg-[#ead27e]/10"
                     )}
                   >
                     <Initials name={t.skipperName} fallback="?" />
@@ -233,7 +233,7 @@ function MessagePanel({ threadId, onBack }: { threadId: number | null; onBack: (
                     className={cn(
                       "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm md:max-w-[72%]",
                       fromCustomer
-                        ? "rounded-br-md bg-teal-600/70 text-white"
+                        ? "rounded-br-md bg-[#ead27e]/70 text-white"
                         : "rounded-bl-md bg-white/[0.07] text-white/90"
                     )}
                   >

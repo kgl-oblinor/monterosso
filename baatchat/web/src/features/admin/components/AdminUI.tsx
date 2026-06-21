@@ -44,14 +44,14 @@ export function EditableEmail({
             if (ev.key === "Escape") setEditing(false);
           }}
           placeholder="navn@eksempel.no"
-          className="h-7 w-48 rounded-md border border-white/15 bg-white/5 px-2 text-xs text-white placeholder:text-white/30 focus:border-teal-400/50 focus:outline-none"
+          className="h-7 w-48 rounded-md border border-white/15 bg-white/5 px-2 text-xs text-white placeholder:text-white/30 focus:border-[#ead27e]/50 focus:outline-none"
         />
         <button
           type="button"
           onClick={save}
           disabled={saving || !value.trim()}
           aria-label="Lagre"
-          className="flex size-7 items-center justify-center rounded-md bg-teal-400 text-[#04231d] disabled:opacity-40"
+          className="flex size-7 items-center justify-center rounded-md bg-[#ead27e] text-[#07182a] disabled:opacity-40"
         >
           {saving ? <Loader2 className="size-3.5 animate-spin" /> : <Check className="size-3.5" />}
         </button>
@@ -120,7 +120,7 @@ export function StatCard({
   loading?: boolean;
 }) {
   return (
-    <div className="relative border-white/10 px-4 py-2.5 [&:nth-child(2)]:border-l [&:nth-child(3)]:border-t [&:nth-child(4)]:border-l [&:nth-child(4)]:border-t sm:border-t-0 sm:[&:not(:first-child)]:border-l before:absolute before:inset-y-2 before:left-0 before:w-[3px] before:rounded-full before:bg-teal-400/80">
+    <div className="relative border-white/10 px-4 py-2.5 [&:nth-child(2)]:border-l [&:nth-child(3)]:border-t [&:nth-child(4)]:border-l [&:nth-child(4)]:border-t sm:border-t-0 sm:[&:not(:first-child)]:border-l before:absolute before:inset-y-2 before:left-0 before:w-[3px] before:rounded-full before:bg-[#ead27e]/80">
       <div className="pl-3">
         <div className="text-[11px] font-medium uppercase tracking-wider text-white/40">{label}</div>
         <div className="mt-0.5 text-xl font-semibold leading-tight text-white">
@@ -210,7 +210,7 @@ export function RowActions({
           type="button"
           disabled={busy}
           onClick={() => approve.mutate(accountId)}
-          className="inline-flex h-8 items-center gap-1 rounded-lg bg-teal-400 px-3 text-xs font-semibold text-[#04231d] transition-opacity hover:bg-teal-300 disabled:opacity-40"
+          className="inline-flex h-8 items-center gap-1 rounded-lg bg-[#ead27e] px-3 text-xs font-semibold text-[#07182a] transition-opacity hover:bg-[#f0dd9a] disabled:opacity-40"
         >
           <Check className="size-3.5" /> Godkjenn
         </button>
@@ -234,7 +234,7 @@ export function Initials({ name, fallback }: { name: string | null; fallback: st
   const src = name?.trim() || fallback;
   const text = src.slice(0, 2).toUpperCase();
   return (
-    <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-teal-500/20 text-xs font-semibold text-teal-200">
+    <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#ead27e]/20 text-xs font-semibold text-[#ead27e]">
       {text}
     </span>
   );

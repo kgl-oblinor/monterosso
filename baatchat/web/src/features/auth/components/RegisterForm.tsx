@@ -95,7 +95,7 @@ export function RegisterForm() {
             </p>
             {sentTo && (
               <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-white">
-                <Mail className="size-4 shrink-0 text-teal-300" />
+                <Mail className="size-4 shrink-0 text-[#ead27e]" />
                 Sjekk innboksen til <span className="font-semibold">{sentTo}</span>
               </div>
             )}

@@ -59,8 +59,8 @@ export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
   if (view === "done") {
     return (
       <div className="space-y-6 text-center">
-        <div className="mx-auto flex size-11 items-center justify-center rounded-full bg-teal-400/20">
-          <CheckCircle className="size-6 text-teal-400" />
+        <div className="mx-auto flex size-11 items-center justify-center rounded-full bg-[#ead27e]/20">
+          <CheckCircle className="size-6 text-[#ead27e]" />
         </div>
         <div className="space-y-1">
           <h2 className="text-xl font-semibold">Passordet er oppdatert</h2>

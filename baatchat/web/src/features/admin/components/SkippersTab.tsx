@@ -56,7 +56,7 @@ export function SkippersTab() {
         <button
           type="button"
           onClick={() => setView({ mode: "new" })}
-          className="inline-flex h-10 shrink-0 items-center gap-2 rounded-lg bg-teal-400 px-4 text-sm font-semibold text-[#04231d] transition-opacity hover:bg-teal-300"
+          className="inline-flex h-10 shrink-0 items-center gap-2 rounded-lg bg-[#ead27e] px-4 text-sm font-semibold text-[#07182a] transition-opacity hover:bg-[#f0dd9a]"
         >
           <Plus className="size-4" /> Legg til skipper
         </button>
@@ -153,7 +153,7 @@ export function SearchBox({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-10 w-full rounded-xl border border-white/10 bg-white/[0.04] pl-10 pr-3 text-sm text-white placeholder:text-white/40 focus:border-teal-400/50 focus:outline-none"
+        className="h-10 w-full rounded-xl border border-white/10 bg-white/[0.04] pl-10 pr-3 text-sm text-white placeholder:text-white/40 focus:border-[#ead27e]/50 focus:outline-none"
       />
     </div>
   );

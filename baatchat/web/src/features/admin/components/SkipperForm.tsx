@@ -211,7 +211,7 @@ export function SkipperForm({
             onChange={(e) => set("slots", e.target.value)}
             rows={4}
             placeholder={"10:00\n14:00\n17:30"}
-            className="w-full resize-none rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-teal-400/50 focus:outline-none"
+            className="w-full resize-none rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#ead27e]/50 focus:outline-none"
           />
         </Field>
       </Section>
@@ -248,7 +248,7 @@ export function SkipperForm({
         <button
           type="submit"
           disabled={!canSave || saving}
-          className="inline-flex h-10 items-center gap-2 rounded-lg bg-teal-400 px-5 text-sm font-semibold text-[#04231d] transition-opacity hover:bg-teal-300 disabled:opacity-40"
+          className="inline-flex h-10 items-center gap-2 rounded-lg bg-[#ead27e] px-5 text-sm font-semibold text-[#07182a] transition-opacity hover:bg-[#f0dd9a] disabled:opacity-40"
         >
           {saving && <Loader2 className="size-4 animate-spin" />}
           {editing ? "Lagre endringer" : "Legg til skipper"}
@@ -295,7 +295,7 @@ function Field({
     <label className="block">
       <span className="mb-1.5 block text-sm font-medium text-white/80">
         {label}
-        {required && <span className="ml-1 text-teal-300">*</span>}
+        {required && <span className="ml-1 text-[#ead27e]">*</span>}
       </span>
       {children}
       {hint && <span className="mt-1 block text-xs text-white/40">{hint}</span>}
@@ -315,7 +315,7 @@ function TextInput({
     <input
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="h-10 w-full rounded-md border border-white/10 bg-white/[0.04] px-3 text-sm text-white placeholder:text-white/30 focus:border-teal-400/50 focus:outline-none"
+      className="h-10 w-full rounded-md border border-white/10 bg-white/[0.04] px-3 text-sm text-white placeholder:text-white/30 focus:border-[#ead27e]/50 focus:outline-none"
       {...rest}
     />
   );
@@ -341,7 +341,7 @@ function Segmented<T extends string>({
           className={cn(
             "flex-1 rounded text-sm font-medium transition-colors",
             value === o.value
-              ? "bg-teal-400/20 text-teal-200"
+              ? "bg-[#ead27e]/20 text-[#ead27e]"
               : "text-white/55 hover:text-white"
           )}
         >

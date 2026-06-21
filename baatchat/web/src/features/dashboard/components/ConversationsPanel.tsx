@@ -46,7 +46,7 @@ export function ConversationsPanel({
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Søk i samtaler"
             aria-label="Søk i samtaler"
-            className="h-11 w-full rounded-xl border border-white/10 bg-white/[0.04] pl-10 pr-3 text-sm text-white placeholder:text-white/40 focus:border-teal-400/50 focus:outline-none"
+            className="h-11 w-full rounded-xl border border-white/10 bg-white/[0.04] pl-10 pr-3 text-sm text-white placeholder:text-white/40 focus:border-[#ead27e]/50 focus:outline-none"
           />
         </div>
       </div>
@@ -123,7 +123,7 @@ function ConversationRow({
       className={cn(
         "flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-colors hover:bg-white/[0.04]",
         selected &&
-          "bg-teal-500/10 ring-1 ring-inset ring-teal-500/20 hover:bg-teal-500/10"
+          "bg-[#ead27e]/10 ring-1 ring-inset ring-[#ead27e]/20 hover:bg-[#ead27e]/10"
       )}
     >
       <Avatar initials={conversation.initials} className="size-12 text-base" />
@@ -148,7 +148,7 @@ function ConversationRow({
             {conversation.preview || "Ingen meldinger ennå"}
           </span>
           {conversation.unread > 0 && (
-            <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-teal-400 text-[11px] font-semibold text-[#04231d]">
+            <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#ead27e] text-[11px] font-semibold text-[#07182a]">
               {conversation.unread}
             </span>
           )}

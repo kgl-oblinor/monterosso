@@ -172,13 +172,13 @@ export function ChatThread({
               rows={1}
               placeholder="Skriv en melding …"
               aria-label="Skriv en melding"
-              className="max-h-40 min-h-[44px] flex-1 resize-none rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm leading-relaxed text-white placeholder:text-white/40 focus:border-teal-400/50 focus:outline-none"
+              className="max-h-40 min-h-[44px] flex-1 resize-none rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm leading-relaxed text-white placeholder:text-white/40 focus:border-[#ead27e]/50 focus:outline-none"
             />
             <button
               type="submit"
               aria-label="Send melding"
               disabled={!draft.trim() || sending || tooLong}
-              className="flex size-11 shrink-0 items-center justify-center rounded-full bg-teal-400 text-[#04231d] transition-opacity hover:bg-teal-300 disabled:opacity-40"
+              className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#ead27e] text-[#07182a] transition-opacity hover:bg-[#f0dd9a] disabled:opacity-40"
             >
               {sending ? (
                 <Loader2 className="size-5 animate-spin" />
@@ -221,7 +221,7 @@ function ReservationContext({ contactId }: { contactId: number }) {
         aria-expanded={open}
         className="flex w-full items-center gap-2 px-4 py-2 text-left transition-colors hover:bg-white/[0.03] md:px-6"
       >
-        <Ship className="size-3.5 shrink-0 text-teal-300/70" />
+        <Ship className="size-3.5 shrink-0 text-[#ead27e]/70" />
         <span className="text-xs font-medium text-white/50">Gjelder</span>
         <span className="truncate text-xs text-white/75">
           {reservations.length === 1
@@ -288,7 +288,7 @@ function MessageBubble({ message, mine }: { message: ChatMessage; mine: boolean 
         className={cn(
           "max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-4 py-2.5 text-sm shadow-sm md:max-w-[72%]",
           mine
-            ? "rounded-br-md bg-teal-500 text-[#04231d]"
+            ? "rounded-br-md bg-[#ead27e] text-[#07182a]"
             : "rounded-bl-md bg-white/[0.14] text-white ring-1 ring-inset ring-white/10"
         )}
       >

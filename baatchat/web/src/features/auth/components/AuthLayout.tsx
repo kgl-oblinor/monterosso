@@ -17,7 +17,7 @@ export function AuthLayout({
       {/* Dark teal gradient backdrop. */}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-[radial-gradient(120%_120%_at_50%_0%,#134e4a_0%,#0a2a2e_42%,#020617_100%)]"
+        className="absolute inset-0 -z-10 bg-[radial-gradient(120%_120%_at_50%_0%,#0f2740_0%,#0a1f33_42%,#07182a_100%)]"
       />
 
       <div className="w-full max-w-md text-white">
