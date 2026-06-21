@@ -15,7 +15,7 @@
 Eldre person bestiller fra mobil på **~3 tap**, og chatter etterpå **direkte med skipperen** — og det **skalerer til mange båter/skippere** over hele Italia. Varm men stram. Aldri «BESTILL NÅ!» — rolig guiding («Continue»).
 
 ## Sanne fakta (fasit)
-- **Første kunde (pilot-skipper):** Andrea (Monterosso), båt «Paolona» — landingssiden er hennes tur.
+- **Første kunde (pilot-skipper):** **mann** (Monterosso), båt «Paolona» — landingssiden er hans tur. Navn låses senere via admin (**aldri «Kristian Løkken»** — Kristian = plattform-admin). Kaptein-whimsy «søker rik dame over 70» beholdes (mannlig kaptein, He/his).
 - **Design:** strengt system — 4px-spacing, 1.2 type-skala, skarpe kanter (radius 0), **solide cream-popups (#f7f1e3) av lik størrelse** (720px bred, 860px høy desktop). Fonter: Fraunces (tekst), Limelight (gull-CTA), Great Vibes («Read more»/CS).
 - **Stemme:** varm/stram; rolige fremover-verb; ingen falske fakta. Kaptein-whimsy («søker rik dame over 70») **beholdes** bevisst.
 - **Booking:** kvittering-først (gjett 2 gjester, neste avgang) → Continue → kontakt → bekreftelse (~3 tap). Avslutning via WhatsApp/e-post.
