@@ -3,6 +3,7 @@ import { ArrowLeft, ChevronDown, Loader2, SendHorizontal, Ship, Users } from "lu
 
 import { cn } from "@/lib/utils";
 import { ApiError } from "@/lib/apiClient";
+import { useAuthStore } from "@/features/auth/store";
 import { Avatar } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -30,6 +31,9 @@ export function ChatThread({
   onBack?: () => void;
   className?: string;
 }) {
+  // Sender identity is (role, party_id): party ids are unique only *within* a role, so
+  // skipper #1 and customer #1 collide. Pair the id with the role to tell sides apart.
+  const myRole = useAuthStore((s) => s.user?.role ?? null);
   const [threadId, setThreadId] = useState<number | null>(conversation.threadId);
   const [draft, setDraft] = useState("");
   const [sendError, setSendError] = useState(false);
@@ -143,7 +147,11 @@ export function ChatThread({
               </span>
             </div>
             {messages.map((m) => (
-              <MessageBubble key={m.id} message={m} mine={m.senderId === myId} />
+              <MessageBubble
+                key={m.id}
+                message={m}
+                mine={m.senderId === myId && m.senderRole === myRole}
+              />
             ))}
           </>
         )}
