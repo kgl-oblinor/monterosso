@@ -15,6 +15,12 @@ export const reservationCodeSchema = z
   .min(1, "Reservasjonskode er påkrevd")
   .regex(/^[A-Za-z]{2,}-\d{6}-\d+$/, "Ugyldig reservasjonskode (f.eks. MT-210625-2)");
 
+// Phone / WhatsApp. Loose: a leading + and 6–20 digits (spaces/dashes/parens allowed).
+export const phoneSchema = z
+  .string()
+  .min(1, "Telefonnummer er påkrevd")
+  .regex(/^[+\d][\d\s().-]{5,19}$/, "Oppgi et gyldig telefonnummer");
+
 export const passwordSchema = z.string().min(8, "Minst 8 tegn");
 
 export const loginForm = z.object({
@@ -23,13 +29,14 @@ export const loginForm = z.object({
 });
 export type LoginForm = z.infer<typeof loginForm>;
 
-// Onboarding step 1 — identify the account. A customer can use their email OR their
-// reservation code; a skipper uses their on-file email. The right field is validated
-// based on the chosen identifier mode.
+// Onboarding step 1 — identify the account. Three frictionless ways in: a customer can
+// use their email, their phone/WhatsApp, OR their reservation code; a skipper uses their
+// on-file email. The right field is validated based on the chosen identifier mode.
 export const claimStartForm = z
   .object({
-    mode: z.enum(["email", "reservation"], { required_error: "Velg en metode" }),
+    mode: z.enum(["email", "phone", "reservation"], { required_error: "Velg en metode" }),
     email: z.string().optional(),
+    phone: z.string().optional(),
     reservationCode: z.string().optional(),
   })
   .superRefine((val, ctx) => {
@@ -37,6 +44,10 @@ export const claimStartForm = z
       const r = emailSchema.safeParse(val.email);
       if (!r.success)
         ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["email"], message: r.error.issues[0].message });
+    } else if (val.mode === "phone") {
+      const r = phoneSchema.safeParse(val.phone);
+      if (!r.success)
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["phone"], message: r.error.issues[0].message });
     } else if (val.mode === "reservation") {
       const r = reservationCodeSchema.safeParse(val.reservationCode);
       if (!r.success)

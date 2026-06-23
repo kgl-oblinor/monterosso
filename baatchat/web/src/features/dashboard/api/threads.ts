@@ -219,6 +219,46 @@ export function useMyReservations() {
   });
 }
 
+// --- profile (the logged-in user's own contact details) --------------------
+
+/** The user's own editable contact details. */
+export interface MyProfile {
+  name: string | null;
+  email: string;
+  phone: string | null;
+}
+
+/** The fields a profile update may change (any subset). */
+export interface ProfileUpdate {
+  name?: string;
+  email?: string;
+  phone?: string;
+}
+
+export function useMyProfile() {
+  return useQuery({
+    queryKey: ["myProfile"],
+    queryFn: async () => {
+      const r = await apiClient.get<{ ok: true; profile: MyProfile }>("/chat/me/profile");
+      return r.profile;
+    },
+    staleTime: 60_000,
+  });
+}
+
+export function useUpdateProfile() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: ProfileUpdate) => {
+      const r = await apiClient.put<{ ok: true; profile: MyProfile }>("/chat/me/profile", input);
+      return r.profile;
+    },
+    onSuccess: (profile) => {
+      qc.setQueryData(["myProfile"], profile);
+    },
+  });
+}
+
 export function useMessages(threadId: number | null) {
   return useQuery({
     queryKey: ["messages", threadId],

@@ -1,17 +1,8 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { LogOut, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 
 import { cn, initialsOf } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useAuthStore } from "@/features/auth/store";
 import logoUrl from "@/monterosso-mark.svg";
 import { navForRole, type SectionKey } from "../sections";
@@ -43,16 +34,9 @@ interface IconRailProps {
  *  Mobile: collapsed it's a slim icon strip; expanded it overlays the content as a
  *  drawer (with a scrim) so the narrow viewport isn't squeezed. */
 export function IconRail({ active, onSelect }: IconRailProps) {
-  const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
-  const logout = useAuthStore((s) => s.logout);
   const nav = navForRole(user?.role);
   const [expanded, setExpanded] = useRailExpanded();
-
-  const onLogout = () => {
-    logout();
-    navigate("/login", { replace: true });
-  };
 
   // On mobile, selecting a section collapses the overlay so the content is visible.
   const handleSelect = (key: SectionKey) => {
@@ -133,41 +117,33 @@ export function IconRail({ active, onSelect }: IconRailProps) {
           })}
         </div>
 
+        {/* Profile: the avatar at the bottom opens the user's own profile section. */}
         <div className={cn("mt-auto flex", expanded ? "px-3" : "justify-center")}>
-          <DropdownMenu>
-            <DropdownMenuTrigger
+          <button
+            type="button"
+            onClick={() => handleSelect("profile")}
+            aria-label="Profil"
+            aria-current={active === "profile"}
+            title={expanded ? undefined : "Profil"}
+            className={cn(
+              "flex items-center gap-3 outline-none focus-visible:ring-2 focus-visible:ring-[#ead27e]",
+              expanded ? "w-full rounded-none px-1 py-1 hover:bg-white/5" : "rounded-full",
+              active === "profile" && expanded && "bg-[#ead27e]/15"
+            )}
+          >
+            <Avatar
+              initials={initialsOf(user?.name ?? user?.email)}
               className={cn(
-                "flex items-center gap-3 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#ead27e]",
-                expanded && "w-full rounded-none px-1 hover:bg-white/5"
+                "bg-[#ead27e]/30 text-[#ead27e]",
+                active === "profile" && "ring-2 ring-[#ead27e]"
               )}
-              aria-label="Konto"
-            >
-              <Avatar
-                initials={initialsOf(user?.name ?? user?.email)}
-                className="bg-[#ead27e]/30 text-[#ead27e]"
-              />
-              {expanded && (
-                <span className="min-w-0 flex-1 truncate text-left text-sm text-white/70">
-                  {user?.name ?? "Innlogget"}
-                </span>
-              )}
-            </DropdownMenuTrigger>
-            <DropdownMenuContent side="right" align="end">
-              <DropdownMenuLabel>
-                <div className="truncate">{user?.name ?? "Innlogget"}</div>
-                {user?.email && (
-                  <div className="truncate text-xs font-normal text-muted-foreground">
-                    {user.email}
-                  </div>
-                )}
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={onLogout}>
-                <LogOut className="size-4" />
-                Logg ut
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            />
+            {expanded && (
+              <span className="min-w-0 flex-1 truncate text-left text-sm text-white/70">
+                {user?.name ?? "Profil"}
+              </span>
+            )}
+          </button>
         </div>
       </nav>
     </>

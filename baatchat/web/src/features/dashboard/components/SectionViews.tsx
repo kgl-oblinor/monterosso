@@ -1,11 +1,19 @@
 // The non-chat sections of the web-app shell. "Turer" renders real reservation data
 // (role-filtered by the Worker); the rest are calm "coming soon" / empty states — never
 // dead ends, never invented data.
-import { Compass, Globe, Receipt, Ship, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Compass, Globe, LogOut, Mail, Phone, Receipt, Ship, User, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import { useAuthStore } from "@/features/auth/store";
-import { formatTripDate, useMyReservations, type MyReservation } from "../api/threads";
+import {
+  formatTripDate,
+  useMyProfile,
+  useMyReservations,
+  useUpdateProfile,
+  type MyReservation,
+} from "../api/threads";
 import { shortcutsForRole, type SectionKey } from "../sections";
 
 /** Shared frame: a scrollable column with a title, matching the chat shell's tone. */
@@ -210,6 +218,170 @@ function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) 
   );
 }
 
+/** A single labelled, icon-prefixed field in the profile form. Sharp edges, calm tone. */
+function ProfileField({
+  icon: Icon,
+  label,
+  type = "text",
+  inputMode,
+  autoComplete,
+  placeholder,
+  value,
+  onChange,
+}: {
+  icon: LucideIcon;
+  label: string;
+  type?: string;
+  inputMode?: "text" | "email" | "tel";
+  autoComplete?: string;
+  placeholder?: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <label className="block">
+      <span className="text-xs font-semibold uppercase tracking-wider text-white/40">{label}</span>
+      <div className="mt-2 flex items-center gap-3 border border-white/10 bg-white/[0.03] px-4 py-3 transition-colors focus-within:border-[#ead27e]/40">
+        <Icon className="size-4 shrink-0 text-[#ead27e]/70" />
+        <input
+          type={type}
+          inputMode={inputMode}
+          autoComplete={autoComplete}
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="min-w-0 flex-1 bg-transparent text-sm text-white placeholder:text-white/30 focus:outline-none"
+        />
+      </div>
+    </label>
+  );
+}
+
+/** "Profil": the logged-in user's own contact details — name, email, phone/WhatsApp —
+ *  editable and saved to their account. Logout lives here too. Reached via the avatar
+ *  at the bottom of the rail. Same component for customer and skipper; the Worker reads
+ *  and writes the right tables by role. */
+function ProfileSection() {
+  const navigate = useNavigate();
+  const logout = useAuthStore((s) => s.logout);
+  const updateUser = useAuthStore((s) => s.updateUser);
+  const { data, isLoading, isError } = useMyProfile();
+  const save = useUpdateProfile();
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [saved, setSaved] = useState(false);
+
+  // Prime the fields once the server profile loads.
+  useEffect(() => {
+    if (data) {
+      setName(data.name ?? "");
+      setEmail(data.email ?? "");
+      setPhone(data.phone ?? "");
+    }
+  }, [data]);
+
+  const onLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
+
+  const onSave = () => {
+    setSaved(false);
+    save.mutate(
+      { name: name.trim(), email: email.trim(), phone: phone.trim() },
+      {
+        onSuccess: (profile) => {
+          updateUser({ name: profile.name, email: profile.email });
+          setSaved(true);
+        },
+      }
+    );
+  };
+
+  return (
+    <SectionFrame title="Profil">
+      {isLoading ? (
+        <p className="px-1 py-8 text-sm text-white/40">Laster …</p>
+      ) : isError ? (
+        <p className="px-1 py-8 text-sm text-red-300">Kunne ikke laste profilen.</p>
+      ) : (
+        <div className="mx-auto w-full max-w-md">
+          <p className="text-sm leading-relaxed text-white/55">
+            Detaljene dine. Legg til eller endre, og lagre — så når skipperen deg lett.
+          </p>
+
+          <div className="mt-8 space-y-5">
+            <ProfileField
+              icon={User}
+              label="Navn"
+              autoComplete="name"
+              placeholder="Navnet ditt"
+              value={name}
+              onChange={(v) => {
+                setName(v);
+                setSaved(false);
+              }}
+            />
+            <ProfileField
+              icon={Mail}
+              label="E-post"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              placeholder="navn@eksempel.no"
+              value={email}
+              onChange={(v) => {
+                setEmail(v);
+                setSaved(false);
+              }}
+            />
+            <ProfileField
+              icon={Phone}
+              label="Telefon / WhatsApp"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              placeholder="+47 …"
+              value={phone}
+              onChange={(v) => {
+                setPhone(v);
+                setSaved(false);
+              }}
+            />
+          </div>
+
+          {save.isError && (
+            <p className="mt-4 text-sm text-red-300">{(save.error as Error).message}</p>
+          )}
+          {saved && !save.isPending && (
+            <p className="mt-4 text-sm text-[#ead27e]">Lagret.</p>
+          )}
+
+          <button
+            type="button"
+            onClick={onSave}
+            disabled={save.isPending}
+            className="mt-6 w-full border border-[#ead27e]/40 bg-[#ead27e]/15 px-5 py-3 text-sm font-semibold text-[#ead27e] transition-colors hover:bg-[#ead27e]/25 disabled:opacity-50"
+          >
+            {save.isPending ? "Lagrer …" : "Lagre endringer"}
+          </button>
+
+          <button
+            type="button"
+            onClick={onLogout}
+            className="mt-8 flex w-full items-center justify-center gap-2 border border-white/10 px-5 py-3 text-sm text-white/55 transition-colors hover:border-white/20 hover:text-white"
+          >
+            <LogOut className="size-4" />
+            Logg ut
+          </button>
+        </div>
+      )}
+    </SectionFrame>
+  );
+}
+
 /** Renders the active non-chat section. Chat is handled by DashboardLayout itself. */
 export function SectionView({
   section,
@@ -221,6 +393,8 @@ export function SectionView({
   switch (section) {
     case "home":
       return <HomeSection onNavigate={onNavigate} />;
+    case "profile":
+      return <ProfileSection />;
     case "trips":
       return <TripsSection />;
     case "receipts":

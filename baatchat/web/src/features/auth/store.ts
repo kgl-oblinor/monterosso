@@ -13,6 +13,8 @@ interface AuthState {
   status: AccountStatus | null;
   isAuthenticated: boolean;
   setSession: (token: string, user: AuthUser, status?: AccountStatus) => void;
+  /** Merge fresh fields into the current user (e.g. after a profile edit). */
+  updateUser: (patch: Partial<AuthUser>) => void;
   setStatus: (status: AccountStatus) => void;
   logout: () => void;
 }
@@ -30,6 +32,8 @@ export const useAuthStore = create<AuthState>()(
         setAuthToken(token);
         set({ token, user, status: status ?? null, isAuthenticated: true });
       },
+      updateUser: (patch) =>
+        set((s) => (s.user ? { user: { ...s.user, ...patch } } : {})),
       setStatus: (status) => set({ status }),
       logout: () => {
         setAuthToken(null);

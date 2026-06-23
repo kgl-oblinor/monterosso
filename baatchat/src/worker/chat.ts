@@ -240,6 +240,124 @@ export async function myReservations(env: Env, user: SessionUser): Promise<MyRes
   return [];
 }
 
+// --- profile (the logged-in user's own contact details) --------------------
+// Read from chat_accounts (the auth row) joined with the role's source table
+// (customers or skippers) for the on-file phone. name/email live on both — we
+// prefer the account's display_name/email (what the user controls) over the
+// source row, falling back to the source row when the account field is blank.
+
+export interface MyProfile {
+  name: string | null;
+  email: string;
+  phone: string | null;
+}
+
+export async function getMyProfile(env: Env, user: SessionUser): Promise<MyProfile> {
+  if (user.role === "customer") {
+    const row = await env.DB.prepare(
+      `SELECT COALESCE(ca.display_name, c.name) AS name,
+              COALESCE(ca.email, c.email) AS email,
+              c.phone AS phone
+         FROM customers c
+         LEFT JOIN chat_accounts ca ON ca.party_id = c.customer_id AND ca.role = 'customer'
+        WHERE c.customer_id = ?`
+    )
+      .bind(user.id)
+      .first<{ name: string | null; email: string | null; phone: string | null }>();
+    return { name: row?.name ?? user.name, email: row?.email ?? user.email, phone: row?.phone ?? null };
+  }
+  if (user.role === "skipper") {
+    const row = await env.DB.prepare(
+      `SELECT COALESCE(ca.display_name, s.name) AS name,
+              COALESCE(ca.email, s.email) AS email,
+              s.phone AS phone
+         FROM skippers s
+         LEFT JOIN chat_accounts ca ON ca.party_id = s.skipper_id AND ca.role = 'skipper'
+        WHERE s.skipper_id = ?`
+    )
+      .bind(user.id)
+      .first<{ name: string | null; email: string | null; phone: string | null }>();
+    return { name: row?.name ?? user.name, email: row?.email ?? user.email, phone: row?.phone ?? null };
+  }
+  return { name: user.name, email: user.email, phone: null };
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Loose phone check: allows +, spaces, dashes, parens; needs 6–20 digits.
+const PHONE_RE = /^[+\d][\d\s().-]{5,19}$/;
+
+export interface ProfileUpdate {
+  name?: string;
+  email?: string;
+  phone?: string;
+}
+
+// Update the user's name/email/phone. Writes name+email to the role's source table
+// (customers/skippers) and mirrors display_name+email onto chat_accounts (the auth row),
+// so the next login/token carries the new values. Phone lives only on the source table.
+// Returns the refreshed profile, or { error } on validation failure.
+export async function updateMyProfile(
+  env: Env,
+  user: SessionUser,
+  input: ProfileUpdate
+): Promise<MyProfile | { error: string }> {
+  if (user.role !== "customer" && user.role !== "skipper") {
+    return { error: "Profil er kun for kunder og skippere" };
+  }
+
+  const name = input.name?.trim();
+  const email = input.email?.trim().toLowerCase();
+  const phone = input.phone?.trim();
+
+  if (email !== undefined && email !== "" && !EMAIL_RE.test(email)) {
+    return { error: "Oppgi en gyldig e-postadresse" };
+  }
+  if (phone !== undefined && phone !== "" && !PHONE_RE.test(phone)) {
+    return { error: "Oppgi et gyldig telefonnummer" };
+  }
+  // At least one contact channel must remain — don't let the user erase both.
+  const current = await getMyProfile(env, user);
+  const nextEmail = email !== undefined ? email : current.email;
+  const nextPhone = phone !== undefined ? phone : current.phone;
+  if (!nextEmail && !nextPhone) {
+    return { error: "Behold minst én kontaktmåte — e-post eller telefon" };
+  }
+
+  if (user.role === "customer") {
+    await env.DB.prepare(
+      `UPDATE customers SET
+         name  = COALESCE(?, name),
+         email = COALESCE(?, email),
+         phone = COALESCE(?, phone)
+       WHERE customer_id = ?`
+    )
+      .bind(name ?? null, email ?? null, phone ?? null, user.id)
+      .run();
+  } else {
+    await env.DB.prepare(
+      `UPDATE skippers SET
+         name  = COALESCE(?, name),
+         email = COALESCE(?, email),
+         phone = COALESCE(?, phone)
+       WHERE skipper_id = ?`
+    )
+      .bind(name ?? null, email ?? null, phone ?? null, user.id)
+      .run();
+  }
+
+  // Mirror name/email onto the auth row (matched by party_id + role) so login stays in sync.
+  await env.DB.prepare(
+    `UPDATE chat_accounts SET
+       display_name = COALESCE(?, display_name),
+       email        = COALESCE(?, email)
+     WHERE party_id = ? AND role = ?`
+  )
+    .bind(name ?? null, email ?? null, user.id, user.role)
+    .run();
+
+  return getMyProfile(env, user);
+}
+
 export async function markRead(
   env: Env,
   user: SessionUser,

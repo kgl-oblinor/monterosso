@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, ShieldCheck, Ticket } from "lucide-react";
+import { Mail, Phone, ShieldCheck, Ticket } from "lucide-react";
 
 import {
   Form,
@@ -49,7 +49,7 @@ export function RegisterForm() {
 
   const idForm = useForm<ClaimStartForm>({
     resolver: zodResolver(claimStartForm),
-    defaultValues: { mode: "email", email: "", reservationCode: "" },
+    defaultValues: { mode: "email", email: "", phone: "", reservationCode: "" },
   });
   const mode = idForm.watch("mode");
 
@@ -62,7 +62,9 @@ export function RegisterForm() {
     const id: RegisterStartInput =
       values.mode === "email"
         ? { email: values.email }
-        : { reservationCode: values.reservationCode };
+        : values.mode === "phone"
+          ? { phone: values.phone }
+          : { reservationCode: values.reservationCode };
     start.mutate(id, {
       onSuccess: ({ sentTo }) => {
         setIdentifier(id);
@@ -195,6 +197,7 @@ export function RegisterForm() {
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="email">Med e-post</SelectItem>
+                  <SelectItem value="phone">Med telefon / WhatsApp</SelectItem>
                   <SelectItem value="reservation">Med reservasjonskode</SelectItem>
                 </SelectContent>
               </Select>
@@ -213,6 +216,27 @@ export function RegisterForm() {
                   <IconInput
                     icon={<Ticket className="h-5 w-5" />}
                     placeholder="Reservasjonskode (f.eks. MT-210625-2)"
+                    autoFocus
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="ml-4 text-red-400" />
+              </FormItem>
+            )}
+          />
+        ) : mode === "phone" ? (
+          <FormField
+            control={idForm.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <IconInput
+                    icon={<Phone className="h-5 w-5" />}
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    placeholder="Telefon / WhatsApp (f.eks. +47 …)"
                     autoFocus
                     {...field}
                   />

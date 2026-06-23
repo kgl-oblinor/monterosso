@@ -16,7 +16,8 @@ export type SectionKey =
   | "receipts"
   | "otherTrips"
   | "otherCountries"
-  | "customers";
+  | "customers"
+  | "profile"; // reached via the avatar at the bottom of the rail, not a nav item
 
 /** Where every role lands on sign-in: the calm home overview. */
 export const DEFAULT_SECTION: SectionKey = "home";

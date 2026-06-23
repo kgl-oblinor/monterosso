@@ -34,10 +34,13 @@ export interface SessionUser {
 
 export interface RegisterId {
   email?: string;
+  phone?: string;
   reservationCode?: string;
 }
 
 const normEmail = (e: string) => e.trim().toLowerCase();
+// Normalize a phone for matching: keep a leading +, drop all other non-digits.
+const normPhone = (p: string) => p.trim().replace(/(?!^\+)[^\d]/g, "");
 
 function sixDigitCode(): string {
   const n = crypto.getRandomValues(new Uint32Array(1))[0] % 1_000_000;
@@ -119,6 +122,21 @@ async function resolveForRegistration(
         WHERE rv.reservation_code = ? LIMIT 1`
     )
       .bind(code)
+      .first<{ partyId: number; email: string | null; name: string | null }>();
+    if (r?.email) return { partyId: r.partyId, role: "customer", email: normEmail(r.email), name: r.name };
+    return null;
+  }
+  if (id.phone) {
+    // Match a customer by phone (digits-only), then send the proof code to their on-file
+    // email. (No SMS/WhatsApp delivery yet — a phone-only customer must have an email on
+    // file to receive the code; the admin can add one. WhatsApp OTP is a later step.)
+    const p = normPhone(id.phone);
+    const r = await env.DB.prepare(
+      `SELECT customer_id AS partyId, email, name FROM customers
+        WHERE replace(replace(replace(replace(replace(phone,' ',''),'-',''),'(',''),')',''),'.','') = ?
+        LIMIT 1`
+    )
+      .bind(p)
       .first<{ partyId: number; email: string | null; name: string | null }>();
     if (r?.email) return { partyId: r.partyId, role: "customer", email: normEmail(r.email), name: r.name };
     return null;

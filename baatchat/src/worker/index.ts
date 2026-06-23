@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { registerStart, registerComplete, passwordLogin, userFromToken, adminLogin, adminRecoveryStart, adminRecoveryVerify, getAccountState } from "./auth";
 import type { SessionUser } from "./auth";
-import { listContacts, listThreads, openThread, getMessages, postMessage, markRead, contactReservations, myReservations } from "./chat";
+import { listContacts, listThreads, openThread, getMessages, postMessage, markRead, contactReservations, myReservations, getMyProfile, updateMyProfile } from "./chat";
 import { listAccounts, approveAccount, revokeAccount, setEmailVerified, setSkipperEmail, setCustomerEmail, listSkipperDirectory, listCustomerDirectory, listAllThreads, adminThreadMessages, listSkippers, getSkipper, createSkipper, updateSkipper, validateSkipperInput, listCustomers, listReservations } from "./admin";
 import type { SkipperInput } from "./admin";
 
@@ -72,23 +72,24 @@ const auth = new Hono<{ Bindings: Env }>();
 // Claim step 1: send a verification code to the on-file email of a customer/skipper
 // (by email) or a customer (by reservation code). Generic response — `sentTo` is masked or null.
 auth.post("/register/start", async (c) => {
-  const { email, reservationCode } = await c.req
-    .json<{ email?: string; reservationCode?: string }>()
-    .catch(() => ({ email: undefined, reservationCode: undefined }));
-  if (!email && !reservationCode) return c.json({ ok: false, error: "E-post eller reservasjonskode er påkrevd" }, 400);
-  const { sentTo } = await registerStart(c.env, { email, reservationCode });
+  const { email, phone, reservationCode } = await c.req
+    .json<{ email?: string; phone?: string; reservationCode?: string }>()
+    .catch(() => ({ email: undefined, phone: undefined, reservationCode: undefined }));
+  if (!email && !phone && !reservationCode)
+    return c.json({ ok: false, error: "E-post, telefon eller reservasjonskode er påkrevd" }, 400);
+  const { sentTo } = await registerStart(c.env, { email, phone, reservationCode });
   return c.json({ ok: true, sentTo });
 });
 
 // Claim step 2: verify the code + set a password → creates the account, returns a JWT.
 auth.post("/register/complete", async (c) => {
-  const { email, reservationCode, code, password } = await c.req
-    .json<{ email?: string; reservationCode?: string; code?: string; password?: string }>()
-    .catch(() => ({ email: undefined, reservationCode: undefined, code: undefined, password: undefined }));
-  if ((!email && !reservationCode) || !code || !password) {
+  const { email, phone, reservationCode, code, password } = await c.req
+    .json<{ email?: string; phone?: string; reservationCode?: string; code?: string; password?: string }>()
+    .catch(() => ({ email: undefined, phone: undefined, reservationCode: undefined, code: undefined, password: undefined }));
+  if ((!email && !phone && !reservationCode) || !code || !password) {
     return c.json({ ok: false, error: "Identifikator, kode og passord er påkrevd" }, 400);
   }
-  const r = await registerComplete(c.env, { email, reservationCode }, code, password);
+  const r = await registerComplete(c.env, { email, phone, reservationCode }, code, password);
   if (!r.ok) return c.json(r, 400);
   return c.json({ ok: true, token: r.token, user: r.user });
 });
@@ -177,6 +178,29 @@ chat.get("/threads", async (c) => c.json({ ok: true, threads: await listThreads(
 chat.get("/me/reservations", async (c) =>
   c.json({ ok: true, reservations: await myReservations(c.env, c.get("user")) })
 );
+
+// My profile — the logged-in user's own contact details (name, email, phone).
+chat.get("/me/profile", async (c) =>
+  c.json({ ok: true, profile: await getMyProfile(c.env, c.get("user")) })
+);
+
+// Update my profile (name/email/phone). Writes to the role's source table + the auth row.
+chat.put("/me/profile", async (c) => {
+  const body = await c.req
+    .json<{ name?: string; email?: string; phone?: string }>()
+    .catch(() => ({}));
+  try {
+    const result = await updateMyProfile(c.env, c.get("user"), body);
+    if ("error" in result) return c.json({ ok: false, error: result.error }, 400);
+    return c.json({ ok: true, profile: result });
+  } catch (err) {
+    // The chat_accounts.email UNIQUE constraint can trip if the new email is taken.
+    if (String((err as Error).message).includes("UNIQUE")) {
+      return c.json({ ok: false, error: "E-postadressen er allerede i bruk" }, 409);
+    }
+    throw err;
+  }
+});
 
 // Open (or fetch) a thread with a contact.
 chat.post("/threads", async (c) => {

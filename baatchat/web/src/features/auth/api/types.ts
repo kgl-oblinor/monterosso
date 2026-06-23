@@ -18,9 +18,11 @@ export interface LoginInput {
   password: string;
 }
 
-/** Identifier for the onboarding flow: by email, or by reservation code (customers). */
+/** Identifier for the onboarding flow: by email, by phone/WhatsApp, or by reservation
+ *  code (customers). One of them is enough — no friction. */
 export interface RegisterStartInput {
   email?: string;
+  phone?: string;
   reservationCode?: string;
 }
 
