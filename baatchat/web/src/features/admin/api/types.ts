@@ -59,7 +59,7 @@ export interface Skipper {
   country: string | null;
   boat_name: string | null;
   service_type: ServiceType;
-  slots: string | null; // JSON array of departure times, e.g. ["10:00","14:00"]
+  slots: string[]; // departure times, e.g. ["10:00","14:00"]
   base_price: number | null; // cents
   currency: string | null;
   payment_ref: string | null; // Stripe reference (may be empty for now)
@@ -78,7 +78,7 @@ export interface SkipperInput {
   boat_name: string;
   service_type: ServiceType;
   slots: string; // JSON array string
-  base_price: number; // cents
+  base_price: number | null; // cents; null = no price set (server keeps existing/default)
   currency: string;
   payment_ref: string;
 }

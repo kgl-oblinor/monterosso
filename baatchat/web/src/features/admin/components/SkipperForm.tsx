@@ -28,15 +28,8 @@ interface FormState {
 }
 
 function toFormState(s?: Skipper): FormState {
-  let slots = "";
-  if (s?.slots) {
-    try {
-      const arr = JSON.parse(s.slots);
-      if (Array.isArray(arr)) slots = arr.join("\n");
-    } catch {
-      slots = s.slots;
-    }
-  }
+  // The worker returns slots already as a string[]; just join for the textarea.
+  const slots = Array.isArray(s?.slots) ? s!.slots.join("\n") : "";
   return {
     name: s?.name ?? "",
     email: s?.email ?? "",
@@ -59,7 +52,8 @@ function toInput(f: FormState): SkipperInput {
     .split("\n")
     .map((s) => s.trim())
     .filter(Boolean);
-  const price = Number(f.basePrice.replace(",", "."));
+  const priceRaw = f.basePrice.trim();
+  const price = Number(priceRaw.replace(",", "."));
   return {
     name: f.name.trim(),
     email: f.email.trim(),
@@ -70,7 +64,8 @@ function toInput(f: FormState): SkipperInput {
     boat_name: f.boatName.trim(),
     service_type: f.serviceType,
     slots: JSON.stringify(slots),
-    base_price: Number.isFinite(price) ? Math.round(price * 100) : 0,
+    // Empty field → null (server keeps the existing/default price), never 0.
+    base_price: priceRaw !== "" && Number.isFinite(price) ? Math.round(price * 100) : null,
     currency: f.currency.trim() || "EUR",
     payment_ref: f.paymentRef.trim(),
   };

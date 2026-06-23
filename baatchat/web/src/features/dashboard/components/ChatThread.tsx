@@ -32,6 +32,7 @@ export function ChatThread({
 }) {
   const [threadId, setThreadId] = useState<number | null>(conversation.threadId);
   const [draft, setDraft] = useState("");
+  const [sendError, setSendError] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const taRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -44,6 +45,7 @@ export function ChatThread({
   useEffect(() => {
     setThreadId(conversation.threadId);
     setDraft("");
+    setSendError(false);
   }, [conversation.contactId, conversation.threadId]);
 
   // Self-heal: if the thread no longer exists (404 — e.g. deleted server-side), drop the
@@ -75,6 +77,7 @@ export function ChatThread({
     e.preventDefault();
     const body = draft.trim();
     if (!body || sending || tooLong) return;
+    setSendError(false);
     try {
       let tid = threadId;
       if (tid == null) {
@@ -95,7 +98,8 @@ export function ChatThread({
       }
       setDraft("");
     } catch {
-      // Keep the draft so the user can retry; a toast layer can surface this later.
+      // Keep the draft so the user can retry, and surface a calm inline notice.
+      setSendError(true);
     }
   };
 
@@ -187,6 +191,11 @@ export function ChatThread({
               )}
             </button>
           </div>
+          {sendError && (
+            <p role="alert" className="mt-1.5 px-1 text-xs text-red-300">
+              Meldingen ble ikke sendt. Sjekk nettforbindelsen og prøv igjen.
+            </p>
+          )}
           {wordCount >= WORD_LIMIT * 0.8 && (
             <p
               className={cn(

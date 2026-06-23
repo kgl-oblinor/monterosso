@@ -34,6 +34,8 @@ app.use("*", (c, next) => {
     if (allowed.includes(origin)) return origin;
     // Accept any Cloudflare Pages deployment of this project (canonical + preview hashes).
     if (/^https:\/\/([a-z0-9-]+\.)?monterosso-chat-web\.pages\.dev$/.test(origin)) return origin;
+    // Accept the deployed Worker-served frontend (canonical + preview hashes).
+    if (/^https:\/\/([a-z0-9-]+\.)?monterosso-app\.kgl-56a\.workers\.dev$/.test(origin)) return origin;
     return null;
   };
   return cors({ origin: originFn, credentials: true })(c, next);
