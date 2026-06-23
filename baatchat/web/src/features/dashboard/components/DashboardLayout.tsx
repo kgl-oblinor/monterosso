@@ -6,6 +6,7 @@ import { DEFAULT_SECTION, type SectionKey } from "../sections";
 import { IconRail } from "./IconRail";
 import { ConversationsPanel } from "./ConversationsPanel";
 import { ChatThread } from "./ChatThread";
+import { GroupThread } from "./GroupThread";
 import { ChatThreadSkeleton, ConversationsPanelSkeleton } from "./ChatSkeletons";
 import { SectionView } from "./SectionViews";
 
@@ -24,19 +25,19 @@ export function DashboardLayout() {
   const { conversations, isLoading, isError } = useConversations();
   // Which top-level section is shown. On sign-in everyone lands on the calm Hjem overview.
   const [section, setSection] = useState<SectionKey>(DEFAULT_SECTION);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
   // Mobile-only: which pane is visible. Ignored at md+ (both always show).
   const [mobileView, setMobileView] = useState<"list" | "thread">("list");
 
   // Select the first conversation once data loads (for the md+ side-by-side view).
   useEffect(() => {
-    if (selectedId == null && conversations.length) setSelectedId(conversations[0].contactId);
-  }, [conversations, selectedId]);
+    if (selectedKey == null && conversations.length) setSelectedKey(conversations[0].key);
+  }, [conversations, selectedKey]);
 
-  const selected = conversations.find((c) => c.contactId === selectedId) ?? null;
+  const selected = conversations.find((c) => c.key === selectedKey) ?? null;
 
-  const openConversation = (contactId: number) => {
-    setSelectedId(contactId);
+  const openConversation = (key: string) => {
+    setSelectedKey(key);
     setMobileView("thread");
   };
 
@@ -59,19 +60,29 @@ export function DashboardLayout() {
         <>
           <ConversationsPanel
             conversations={conversations}
-            selectedId={selectedId}
+            selectedKey={selectedKey}
             onSelect={openConversation}
             label={contactsLabel}
             className={mobileView === "thread" ? "hidden md:flex" : "flex"}
           />
           {selected ? (
-            <ChatThread
-              key={selected.contactId}
-              conversation={selected}
-              myId={myId}
-              onBack={() => setMobileView("list")}
-              className={mobileView === "list" ? "hidden md:flex" : "flex"}
-            />
+            selected.kind === "group" ? (
+              <GroupThread
+                key={selected.key}
+                conversation={selected}
+                myId={myId}
+                onBack={() => setMobileView("list")}
+                className={mobileView === "list" ? "hidden md:flex" : "flex"}
+              />
+            ) : (
+              <ChatThread
+                key={selected.key}
+                conversation={selected}
+                myId={myId}
+                onBack={() => setMobileView("list")}
+                className={mobileView === "list" ? "hidden md:flex" : "flex"}
+              />
+            )
           ) : (
             <div className="hidden flex-1 items-center justify-center text-sm text-white/40 md:flex">
               {conversations.length

@@ -52,6 +52,26 @@ export interface MeResult {
   emailVerified: boolean;
 }
 
+/** A read-only look at an invite, for the /join landing. */
+export interface InvitePreview {
+  reservationCode: string;
+  tripDate: string | null;
+  invitedEmail: string | null;
+  invitedPhone: string | null;
+  used: boolean;
+}
+
+/** Joining via an invite: passwordless entry + group membership. */
+export interface JoinInput {
+  invite: string;
+  email?: string;
+  phone?: string;
+}
+
+export interface JoinResult extends AuthResult {
+  reservationCode: string;
+}
+
 export interface StartResult {
   /** Masked on-file email the code was sent to, or null (generic — no account match). */
   sentTo: string | null;

@@ -8,6 +8,9 @@ import type {
   AccountStatus,
   AuthResult,
   AuthUser,
+  InvitePreview,
+  JoinInput,
+  JoinResult,
   LoginInput,
   MeResult,
   PasswordlessInput,
@@ -35,6 +38,8 @@ interface OkMe {
 
 export interface AuthApi {
   passwordless(input: PasswordlessInput): Promise<AuthResult>;
+  joinPreview(token: string): Promise<InvitePreview>;
+  join(input: JoinInput): Promise<JoinResult>;
   login(input: LoginInput): Promise<AuthResult>;
   adminLogin(input: LoginInput): Promise<AuthResult>;
   adminResetStart(email: string): Promise<StartResult>;
@@ -48,6 +53,23 @@ const realAuthApi: AuthApi = {
   async passwordless(input) {
     const r = await apiClient.post<OkAuth>("/auth/passwordless", input, { anonymous: true });
     return { token: r.token, user: r.user, status: r.status };
+  },
+
+  async joinPreview(token) {
+    const r = await apiClient.get<{ ok: true; invite: InvitePreview }>(
+      `/auth/join/preview?invite=${encodeURIComponent(token)}`,
+      { anonymous: true }
+    );
+    return r.invite;
+  },
+
+  async join(input) {
+    const r = await apiClient.post<OkAuth & { reservationCode: string }>(
+      "/auth/join",
+      input,
+      { anonymous: true }
+    );
+    return { token: r.token, user: r.user, status: r.status, reservationCode: r.reservationCode };
   },
 
   async login(input) {

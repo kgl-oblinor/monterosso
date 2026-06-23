@@ -1,7 +1,7 @@
 // Mock implementation of the auth API (account-claim flow). Same shape as the real
 // authApi so callers don't care which is active. The claim code is always MOCK_OTP_CODE.
 import type { AuthApi } from "@/features/auth/api/authApi";
-import type { AuthResult, MeResult } from "@/features/auth/api/types";
+import type { AuthResult, InvitePreview, JoinResult, MeResult } from "@/features/auth/api/types";
 import { ApiError } from "@/lib/apiClient";
 import { delay, MOCK_OTP_CODE } from "./fixtures";
 
@@ -22,6 +22,31 @@ export const mockAuthApi: AuthApi = {
       });
     const identity = input.email ?? `phone+${(input.phone ?? "").replace(/\D/g, "")}@phone.local`;
     return { token: `mock.${btoa(identity)}.jwt`, user: { email: identity }, status: "active" };
+  },
+
+  // Invite preview → a demo trip the link points at.
+  async joinPreview(token): Promise<InvitePreview> {
+    await delay(150);
+    if (!token) throw new ApiError(404, "Ugyldig invitasjon");
+    return {
+      reservationCode: "MT-210625-2",
+      tripDate: "2025-06-21",
+      invitedEmail: null,
+      invitedPhone: null,
+      used: false,
+    };
+  },
+
+  // Join via invite → passwordless, straight into the group, active.
+  async join(input): Promise<JoinResult> {
+    await delay();
+    const identity = input.email ?? `phone+${(input.phone ?? "").replace(/\D/g, "")}@phone.local`;
+    return {
+      token: `mock.${btoa(identity)}.jwt`,
+      user: { email: identity },
+      status: "active",
+      reservationCode: "MT-210625-2",
+    };
   },
 
   // Returning login → active (so the chat demo works).

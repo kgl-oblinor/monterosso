@@ -34,7 +34,9 @@ export function ChatThread({
   // Sender identity is (role, party_id): party ids are unique only *within* a role, so
   // skipper #1 and customer #1 collide. Pair the id with the role to tell sides apart.
   const myRole = useAuthStore((s) => s.user?.role ?? null);
-  const [threadId, setThreadId] = useState<number | null>(conversation.threadId);
+  // Direct conversations always carry these; coalesce for the shared optional type.
+  const contactId = conversation.contactId as number;
+  const [threadId, setThreadId] = useState<number | null>(conversation.threadId ?? null);
   const [draft, setDraft] = useState("");
   const [sendError, setSendError] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
@@ -47,7 +49,7 @@ export function ChatThread({
 
   // Reset thread id when the selected conversation changes (parent re-keys, but be safe).
   useEffect(() => {
-    setThreadId(conversation.threadId);
+    setThreadId(conversation.threadId ?? null);
     setDraft("");
     setSendError(false);
   }, [conversation.contactId, conversation.threadId]);
@@ -85,7 +87,7 @@ export function ChatThread({
     try {
       let tid = threadId;
       if (tid == null) {
-        tid = await ensureThread.mutateAsync(conversation.contactId);
+        tid = await ensureThread.mutateAsync(contactId);
         setThreadId(tid);
       }
       try {
@@ -93,7 +95,7 @@ export function ChatThread({
       } catch (err) {
         // Stale/deleted thread → open a fresh one for this contact and retry once.
         if (err instanceof ApiError && err.status === 404) {
-          const fresh = await ensureThread.mutateAsync(conversation.contactId);
+          const fresh = await ensureThread.mutateAsync(contactId);
           setThreadId(fresh);
           await sendMessage.mutateAsync({ threadId: fresh, body });
         } else {
@@ -129,7 +131,7 @@ export function ChatThread({
       </header>
 
       {/* Which reservation(s)/trip this conversation is about */}
-      <ReservationContext contactId={conversation.contactId} />
+      <ReservationContext contactId={contactId} />
 
       {/* Messages */}
       <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4 md:px-6">
@@ -277,7 +279,7 @@ function ReservationContext({ contactId }: { contactId: number }) {
   );
 }
 
-function MessagesSkeleton() {
+export function MessagesSkeleton() {
   const rows = [
     { mine: false, w: "w-48" },
     { mine: true, w: "w-32" },
@@ -298,9 +300,21 @@ function MessagesSkeleton() {
   );
 }
 
-function MessageBubble({ message, mine }: { message: ChatMessage; mine: boolean }) {
+export function MessageBubble({
+  message,
+  mine,
+  senderLabel,
+}: {
+  message: ChatMessage;
+  mine: boolean;
+  senderLabel?: string | null;
+}) {
   return (
     <div className={cn("flex flex-col", mine ? "items-end" : "items-start")}>
+      {/* In a group thread, label other people's bubbles with who sent them. */}
+      {!mine && senderLabel && (
+        <span className="mb-0.5 px-1 text-[11px] font-medium text-[#ead27e]/80">{senderLabel}</span>
+      )}
       <div
         className={cn(
           "max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-4 py-2.5 text-sm shadow-sm md:max-w-[72%]",

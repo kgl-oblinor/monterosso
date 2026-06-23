@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 import { LoginPage } from "@/features/auth/LoginPage";
 import { RegisterPage } from "@/features/auth/RegisterPage";
+import { JoinPage } from "@/features/auth/JoinPage";
 import { DashboardPage } from "@/features/dashboard/DashboardPage";
 import { AdminLoginPage } from "@/features/admin/AdminLoginPage";
 import { AdminUsersPage } from "@/features/admin/AdminUsersPage";
@@ -12,6 +13,7 @@ export function AppRoutes() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/join" element={<JoinPage />} />
       <Route path="/admin/login" element={<AdminLoginPage />} />
       <Route
         path="/admin"

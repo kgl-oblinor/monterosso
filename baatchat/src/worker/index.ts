@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import { registerStart, registerComplete, passwordLogin, passwordlessEntry, userFromToken, adminLogin, adminRecoveryStart, adminRecoveryVerify, getAccountState } from "./auth";
 import type { SessionUser } from "./auth";
 import { listContacts, listThreads, openThread, getMessages, postMessage, markRead, contactReservations, myReservations, getMyProfile, updateMyProfile } from "./chat";
+import { createInvite, joinByInvite, invitepreview, invitableTrips, listTripConversations, openTripThread, getTripMessages, postTripMessage, markTripRead } from "./group";
 import { listAccounts, approveAccount, revokeAccount, setEmailVerified, setSkipperEmail, setCustomerEmail, listSkipperDirectory, listCustomerDirectory, listAllThreads, adminThreadMessages, listSkippers, getSkipper, createSkipper, updateSkipper, validateSkipperInput, listCustomers, listReservations } from "./admin";
 import type { SkipperInput } from "./admin";
 
@@ -14,6 +15,8 @@ export interface Env {
   PLATFORM_NAME: string; // e.g. "Monterosso"
   EMAIL_FROM: string; // verified SendGrid sender address
   SUPPORT_EMAIL: string;
+  // Public base URL of the frontend app (used to build shareable /join invite links).
+  APP_BASE_URL: string; // e.g. "https://monterosso-app.kgl-56a.workers.dev"
   // Admin login. Allowed staff emails (var, comma-separated); password a secret.
   ADMIN_EMAILS: string;
   ADMIN_PASSWORD?: string;
@@ -108,6 +111,36 @@ auth.post("/passwordless", async (c) => {
     return c.json({ ok: false, needsPassword: true, error: "Denne kontoen er sikret med passord — logg inn med passord" }, 409);
   if (!r.ok) return c.json({ ok: false, error: "Oppgi en gyldig e-post eller telefon" }, 400);
   return c.json({ ok: true, token: r.token, user: r.user, status: r.status });
+});
+
+// Invite preview (public): a read-only look at a /join link before the visitor identifies —
+// which trip it's for, and whether it's already been used. Generic null if the token is bad.
+auth.get("/join/preview", async (c) => {
+  const tok = c.req.query("invite") || "";
+  if (!tok) return c.json({ ok: false, error: "Mangler invitasjon" }, 400);
+  const preview = await invitepreview(c.env, tok);
+  if (!preview) return c.json({ ok: false, error: "Ugyldig invitasjon" }, 404);
+  return c.json({ ok: true, invite: preview });
+});
+
+// Join via invite (public, passwordless): consume the token, link/create the visitor's
+// customer account, add them to the reservation's group, and return a session JWT — exactly
+// like /auth/passwordless, but it also joins the group ("turfølget"). One identifier is enough.
+auth.post("/join", async (c) => {
+  const { invite, email, phone } = await c.req
+    .json<{ invite?: string; email?: string; phone?: string }>()
+    .catch(() => ({ invite: undefined, email: undefined, phone: undefined }));
+  if (!invite) return c.json({ ok: false, error: "Mangler invitasjon" }, 400);
+  if (!email && !phone) return c.json({ ok: false, error: "E-post eller telefon er påkrevd" }, 400);
+  const r = await joinByInvite(c.env, invite, { email, phone });
+  if (!r.ok && r.reason === "needs_password")
+    return c.json({ ok: false, needsPassword: true, error: "Denne kontoen er sikret med passord — logg inn med passord" }, 409);
+  if (!r.ok && r.reason === "used")
+    return c.json({ ok: false, error: "Denne invitasjonen er allerede brukt" }, 409);
+  if (!r.ok && r.reason === "invalid_invite")
+    return c.json({ ok: false, error: "Ugyldig invitasjon" }, 404);
+  if (!r.ok) return c.json({ ok: false, error: "Oppgi en gyldig e-post eller telefon" }, 400);
+  return c.json({ ok: true, token: r.token, user: r.user, status: r.status, reservationCode: r.reservationCode });
 });
 
 // Returning login: email + password.
@@ -216,6 +249,73 @@ chat.put("/me/profile", async (c) => {
     }
     throw err;
   }
+});
+
+// --- group chat ("turfølget") ----------------------------------------------
+// Trips the user can invite their party into (one of their reservations).
+chat.get("/invite/trips", async (c) =>
+  c.json({ ok: true, trips: await invitableTrips(c.env, c.get("user")) })
+);
+
+// Create a single-use invite for one of the user's reservations → a shareable /join link.
+// email/phone are optional (recorded for display only); NO auto-send — the caller shares the link.
+chat.post("/invite", async (c) => {
+  const { reservationCode, email, phone } = await c.req
+    .json<{ reservationCode?: string; email?: string; phone?: string }>()
+    .catch(() => ({ reservationCode: undefined, email: undefined, phone: undefined }));
+  if (!reservationCode) return c.json({ ok: false, error: "Reservasjonskode er påkrevd" }, 400);
+  const r = await createInvite(c.env, c.get("user"), reservationCode, { email, phone });
+  if ("error" in r) return c.json({ ok: false, error: r.error }, 400);
+  return c.json({ ok: true, invite: r });
+});
+
+// My group/trip conversations (the shared "turfølget" threads I belong to).
+chat.get("/trip-threads", async (c) =>
+  c.json({ ok: true, trips: await listTripConversations(c.env, c.get("user")) })
+);
+
+// Open (or lazily create) the group thread for a reservation I belong to.
+chat.post("/trip-threads", async (c) => {
+  const { reservationId } = await c.req
+    .json<{ reservationId?: number }>()
+    .catch(() => ({ reservationId: undefined }));
+  if (!reservationId) return c.json({ ok: false, error: "Reservasjons-ID er påkrevd" }, 400);
+  const thread = await openTripThread(c.env, c.get("user"), Number(reservationId));
+  if (!thread) return c.json({ ok: false, error: "Du er ikke med på denne turen" }, 403);
+  return c.json({ ok: true, thread });
+});
+
+// Poll group-thread messages (?since=<lastId> for deltas).
+chat.get("/trip-threads/:id/messages", async (c) => {
+  const tripThreadId = Number(c.req.param("id"));
+  const since = Number(c.req.query("since")) || 0;
+  const messages = await getTripMessages(c.env, c.get("user"), tripThreadId, since);
+  if (messages === null) return c.json({ ok: false, error: "Ikke funnet" }, 404);
+  return c.json({ ok: true, messages });
+});
+
+// Send a group message.
+chat.post("/trip-threads/:id/messages", async (c) => {
+  const tripThreadId = Number(c.req.param("id"));
+  const { body } = await c.req.json<{ body?: string }>().catch(() => ({ body: undefined }));
+  if (!body) return c.json({ ok: false, error: "Melding er påkrevd" }, 400);
+  if (body.trim().split(/\s+/).filter(Boolean).length > 500) {
+    return c.json({ ok: false, error: "Meldingen kan ha maks 500 ord" }, 400);
+  }
+  const result = await postTripMessage(c.env, c.get("user"), tripThreadId, body);
+  if (result === null) return c.json({ ok: false, error: "Ikke funnet" }, 404);
+  if (result === "locked") return c.json({ ok: false, error: "Samtalen er låst" }, 409);
+  return c.json({ ok: true, message: result });
+});
+
+// Mark a group thread read up to a message id.
+chat.post("/trip-threads/:id/read", async (c) => {
+  const tripThreadId = Number(c.req.param("id"));
+  const { lastMessageId } = await c.req
+    .json<{ lastMessageId?: number }>()
+    .catch(() => ({ lastMessageId: undefined }));
+  await markTripRead(c.env, c.get("user"), tripThreadId, Number(lastMessageId) || 0);
+  return c.json({ ok: true });
 });
 
 // Open (or fetch) a thread with a contact.

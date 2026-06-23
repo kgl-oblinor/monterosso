@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { Search, Users } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
@@ -7,15 +7,15 @@ import type { Conversation } from "../api/threads";
 
 interface ConversationsPanelProps {
   conversations: Conversation[];
-  selectedId: number | null;
-  onSelect: (contactId: number) => void;
+  selectedKey: string | null;
+  onSelect: (key: string) => void;
   label: string;
   className?: string;
 }
 
 export function ConversationsPanel({
   conversations,
-  selectedId,
+  selectedKey,
   onSelect,
   label,
   className,
@@ -73,11 +73,11 @@ export function ConversationsPanel({
             <SectionLabel>Samtaler</SectionLabel>
             <ul className="space-y-0.5">
               {active.map((c) => (
-                <li key={c.contactId}>
+                <li key={c.key}>
                   <ConversationRow
                     conversation={c}
-                    selected={c.contactId === selectedId}
-                    onClick={() => onSelect(c.contactId)}
+                    selected={c.key === selectedKey}
+                    onClick={() => onSelect(c.key)}
                   />
                 </li>
               ))}
@@ -91,11 +91,11 @@ export function ConversationsPanel({
             <SectionLabel>{label}</SectionLabel>
             <ul className="space-y-0.5">
               {rest.map((c) => (
-                <li key={c.contactId}>
+                <li key={c.key}>
                   <ConversationRow
                     conversation={c}
-                    selected={c.contactId === selectedId}
-                    onClick={() => onSelect(c.contactId)}
+                    selected={c.key === selectedKey}
+                    onClick={() => onSelect(c.key)}
                   />
                 </li>
               ))}
@@ -138,8 +138,13 @@ function ConversationRow({
       <Avatar initials={conversation.initials} className="size-12 text-base" />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline justify-between gap-2">
-          <span className="truncate text-[15px] font-semibold text-white">
-            {conversation.name}
+          <span className="flex min-w-0 items-center gap-1.5">
+            {conversation.kind === "group" && (
+              <Users className="size-3.5 shrink-0 text-[#ead27e]/70" />
+            )}
+            <span className="truncate text-[15px] font-semibold text-white">
+              {conversation.name}
+            </span>
           </span>
           <span className="shrink-0 text-xs text-white/40">{conversation.timeLabel}</span>
         </div>
@@ -154,7 +159,8 @@ function ConversationRow({
                   : "italic text-white/30"
             )}
           >
-            {conversation.preview || "Ingen meldinger ennå"}
+            {conversation.preview ||
+              (conversation.kind === "group" ? conversation.subtitle : "Ingen meldinger ennå")}
           </span>
           {conversation.unread > 0 && (
             <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#ead27e] text-[11px] font-semibold text-[#07182a]">

@@ -15,6 +15,8 @@ PLATFORM_NAME = "Monterosso"
 # Verified SendGrid sender for onboarding one-time-code emails.
 EMAIL_FROM = "post@monterosso.example"
 SUPPORT_EMAIL = "kgl@oblinor.no"
+# Public base URL of the frontend app — used to build shareable /join invite links.
+APP_BASE_URL = "https://monterosso-app.kgl-56a.workers.dev"
 # Admin (Kristian) emails allowed to use password login (/auth/admin-login). Password is
 # the ADMIN_PASSWORD secret (set via `wrangler secret put`), never stored here.
 ADMIN_EMAILS = "kgl@oblinor.no"

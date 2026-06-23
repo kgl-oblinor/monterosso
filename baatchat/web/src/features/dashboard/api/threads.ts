@@ -11,6 +11,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { apiClient } from "@/lib/apiClient";
+import { useTripConversations, type TripConversation } from "./group";
 
 // --- backend shapes ---------------------------------------------------------
 
@@ -42,19 +43,32 @@ export interface ChatMessage {
   editedAt: string | null;
 }
 
-/** Merged view model the UI renders: every contact, enriched with thread metadata. */
+/** Merged view model the UI renders. A conversation is EITHER a 1-1 "direct" chat (customer↔
+ *  skipper) or a "group" trip chat ("turfølget" — all reservation members + the skipper). The
+ *  UI keys rows by `key` so the two kinds can live in one list without id collisions. */
 export interface Conversation {
-  contactId: number;
-  threadId: number | null;
+  key: string; // stable list key: "d:<contactId>" or "g:<reservationId>"
+  kind: "direct" | "group";
   name: string;
   initials: string;
-  subtitle: string; // role label ("Skipper" / "Kunde")
-  role: "skipper" | "customer";
+  subtitle: string; // role label ("Skipper" / "Kunde") or participant summary for groups
   preview: string;
   timeLabel: string;
   unread: number;
   status: string | null;
   lastMessageAt: string | null;
+
+  // direct only
+  contactId?: number;
+  threadId?: number | null;
+  role?: "skipper" | "customer";
+
+  // group only
+  reservationId?: number;
+  reservationCode?: string;
+  tripThreadId?: number | null;
+  participantCount?: number;
+  participantNames?: string[];
 }
 
 // --- formatting helpers -----------------------------------------------------
@@ -124,18 +138,35 @@ export function useThreadSummaries() {
   });
 }
 
-/** Merge contacts + thread summaries into the conversation list the UI renders.
+/** A group trip's display name: the trip code + a short participant summary. */
+function groupName(t: TripConversation): string {
+  return t.reservationCode;
+}
+
+/** "Anna, Per + skipper" style summary line for a group thread. */
+function groupSubtitle(t: TripConversation): string {
+  const n = t.participantCount;
+  const names = t.participantNames.filter(Boolean);
+  if (names.length === 0) return `${n} deltakere`;
+  if (names.length <= 3) return names.join(", ");
+  return `${names.slice(0, 2).join(", ")} +${names.length - 2}`;
+}
+
+/** Merge direct contacts + thread summaries AND group trip threads into one conversation list.
  *  Conversations with recent activity sort to the top; the rest go alphabetically. */
 export function useConversations() {
   const contacts = useContacts();
   const summaries = useThreadSummaries();
+  const trips = useTripConversations();
 
   const byContact = new Map<number, ThreadSummary>();
   for (const s of summaries.data ?? []) byContact.set(s.contactId, s);
 
-  const conversations: Conversation[] = (contacts.data ?? []).map((c) => {
+  const direct: Conversation[] = (contacts.data ?? []).map((c) => {
     const s = byContact.get(c.id);
     return {
+      key: `d:${c.id}`,
+      kind: "direct" as const,
       contactId: c.id,
       threadId: c.threadId ?? s?.id ?? null,
       name: fallbackName(c),
@@ -150,6 +181,25 @@ export function useConversations() {
     };
   });
 
+  const group: Conversation[] = (trips.data ?? []).map((t) => ({
+    key: `g:${t.reservationId}`,
+    kind: "group" as const,
+    reservationId: t.reservationId,
+    reservationCode: t.reservationCode,
+    tripThreadId: t.tripThreadId,
+    participantCount: t.participantCount,
+    participantNames: t.participantNames,
+    name: groupName(t),
+    initials: initialsOf(t.reservationCode),
+    subtitle: groupSubtitle(t),
+    preview: t.preview ?? "",
+    timeLabel: relativeLabel(t.lastMessageAt),
+    unread: t.unread,
+    status: t.status,
+    lastMessageAt: t.lastMessageAt,
+  }));
+
+  const conversations = [...group, ...direct];
   conversations.sort((a, b) => {
     if (a.lastMessageAt && b.lastMessageAt) return a.lastMessageAt < b.lastMessageAt ? 1 : -1;
     if (a.lastMessageAt) return -1;

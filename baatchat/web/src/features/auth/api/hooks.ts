@@ -1,11 +1,25 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { authApi } from "./authApi";
-import type { LoginInput, PasswordlessInput, RegisterCompleteInput, RegisterStartInput } from "./types";
+import type { JoinInput, LoginInput, PasswordlessInput, RegisterCompleteInput, RegisterStartInput } from "./types";
 
 // Passwordless entry — the main way in. One identifier (email OR phone), straight to a session.
 export function usePasswordless() {
   return useMutation({ mutationFn: (input: PasswordlessInput) => authApi.passwordless(input) });
+}
+
+// Invite landing (/join): preview which trip the link points at, then join passwordlessly.
+export function useInvitePreview(token: string | null) {
+  return useQuery({
+    queryKey: ["invitePreview", token],
+    enabled: !!token,
+    retry: false,
+    queryFn: () => authApi.joinPreview(token as string),
+  });
+}
+
+export function useJoin() {
+  return useMutation({ mutationFn: (input: JoinInput) => authApi.join(input) });
 }
 
 export function useLogin() {

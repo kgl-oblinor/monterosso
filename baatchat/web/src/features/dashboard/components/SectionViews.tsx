@@ -3,7 +3,7 @@
 // dead ends, never invented data.
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Compass, Globe, LogOut, Mail, Phone, Receipt, Ship, User, Users } from "lucide-react";
+import { Compass, Globe, LogOut, Mail, Phone, Receipt, Ship, User, UserPlus, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import { useAuthStore } from "@/features/auth/store";
@@ -14,6 +14,7 @@ import {
   useUpdateProfile,
   type MyReservation,
 } from "../api/threads";
+import { InviteDialog } from "./InviteDialog";
 import { shortcutsForRole, type SectionKey } from "../sections";
 
 /** Shared frame: a scrollable column with a title, matching the chat shell's tone. */
@@ -52,6 +53,8 @@ function statusLabel(status: string): string {
 }
 
 function TripRow({ trip, contactLabel }: { trip: MyReservation; contactLabel: string }) {
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const canInvite = trip.status !== "cancelled";
   return (
     <li className="flex items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3">
       <div className="min-w-0">
@@ -65,9 +68,24 @@ function TripRow({ trip, contactLabel }: { trip: MyReservation; contactLabel: st
           {trip.guests != null && <span className="text-white/40"> · {trip.guests} gjester</span>}
         </div>
       </div>
-      <span className="shrink-0 rounded-full bg-white/[0.06] px-3 py-1 text-xs font-medium text-white/70">
-        {statusLabel(trip.status)}
-      </span>
+      <div className="flex shrink-0 items-center gap-2">
+        {canInvite && (
+          <button
+            type="button"
+            onClick={() => setInviteOpen(true)}
+            className="flex items-center gap-1.5 border border-white/10 px-3 py-1.5 text-xs font-medium text-white/65 transition-colors hover:border-[#ead27e]/40 hover:text-[#ead27e]"
+          >
+            <UserPlus className="size-3.5" />
+            <span className="hidden sm:inline">Inviter reisefølget</span>
+          </button>
+        )}
+        <span className="rounded-full bg-white/[0.06] px-3 py-1 text-xs font-medium text-white/70">
+          {statusLabel(trip.status)}
+        </span>
+      </div>
+      {inviteOpen && (
+        <InviteDialog reservationCode={trip.code} onClose={() => setInviteOpen(false)} />
+      )}
     </li>
   );
 }
