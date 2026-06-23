@@ -1259,10 +1259,24 @@ function BookingForm({ active }) {
   );
 }
 
-/* Reservation code the owner can read back: MT-DDMMYY-<guests>. */
+/* Reservation code — a memorable Italian word-pair the guest & skipper read back,
+   e.g. "AMORE-ROSSO-07". Deterministic from date+guests so it stays stable across renders. */
+const CODE_WORDS_A = [
+  "AMORE", "CUORE", "BACIO", "TESORO", "DOLCE", "SOLE", "LUNA", "STELLA",
+  "SIRENA", "VELA", "ONDA", "FARO", "GABBIANO", "ORO",
+];
+const CODE_WORDS_B = [
+  "ROSSO", "AZZURRO", "TERRE", "MARE", "VENTO", "GOLFO", "RIVA", "SCOGLIO",
+  "LIMONE", "BASILICO", "BARCA", "RIVIERA", "CORALLO", "MONTEROSSO",
+];
 function makeCode(iso, guests) {
-  const [y, m, d] = iso.split("-");
-  return `MT-${d}${m}${y.slice(2)}-${guests}`;
+  let h = 0;
+  const seed = `${iso}-${guests}`;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  const a = CODE_WORDS_A[h % CODE_WORDS_A.length];
+  const b = CODE_WORDS_B[Math.floor(h / CODE_WORDS_A.length) % CODE_WORDS_B.length];
+  const n = String((h % 90) + 10); // 10–99, keeps codes unique-looking
+  return `${a}-${b}-${n}`;
 }
 /* Group discount: 2+ guests 10% off, 4+ guests 12% off; 1 = full premium price. */
 function discountFor(g) {
