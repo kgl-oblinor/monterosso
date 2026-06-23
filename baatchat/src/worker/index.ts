@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { registerStart, registerComplete, passwordLogin, userFromToken, adminLogin, adminRecoveryStart, adminRecoveryVerify, getAccountState } from "./auth";
+import { registerStart, registerComplete, passwordLogin, passwordlessEntry, userFromToken, adminLogin, adminRecoveryStart, adminRecoveryVerify, getAccountState } from "./auth";
 import type { SessionUser } from "./auth";
 import { listContacts, listThreads, openThread, getMessages, postMessage, markRead, contactReservations, myReservations, getMyProfile, updateMyProfile } from "./chat";
 import { listAccounts, approveAccount, revokeAccount, setEmailVerified, setSkipperEmail, setCustomerEmail, listSkipperDirectory, listCustomerDirectory, listAllThreads, adminThreadMessages, listSkippers, getSkipper, createSkipper, updateSkipper, validateSkipperInput, listCustomers, listReservations } from "./admin";
@@ -92,6 +92,22 @@ auth.post("/register/complete", async (c) => {
   const r = await registerComplete(c.env, { email, phone, reservationCode }, code, password);
   if (!r.ok) return c.json(r, 400);
   return c.json({ ok: true, token: r.token, user: r.user });
+});
+
+// Passwordless entry (the main way in): one identifier — email OR phone — is enough.
+// Finds or creates a light customer account and logs straight in. An account that already
+// has a password (or an admin email) is NOT bypassed: we answer needsPassword so the
+// caller can switch to the password login.
+auth.post("/passwordless", async (c) => {
+  const { email, phone } = await c.req
+    .json<{ email?: string; phone?: string }>()
+    .catch(() => ({ email: undefined, phone: undefined }));
+  if (!email && !phone) return c.json({ ok: false, error: "E-post eller telefon er påkrevd" }, 400);
+  const r = await passwordlessEntry(c.env, { email, phone });
+  if (!r.ok && r.reason === "needs_password")
+    return c.json({ ok: false, needsPassword: true, error: "Denne kontoen er sikret med passord — logg inn med passord" }, 409);
+  if (!r.ok) return c.json({ ok: false, error: "Oppgi en gyldig e-post eller telefon" }, 400);
+  return c.json({ ok: true, token: r.token, user: r.user, status: r.status });
 });
 
 // Returning login: email + password.

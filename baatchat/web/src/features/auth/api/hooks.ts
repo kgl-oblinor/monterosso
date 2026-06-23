@@ -1,7 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { authApi } from "./authApi";
-import type { LoginInput, RegisterCompleteInput, RegisterStartInput } from "./types";
+import type { LoginInput, PasswordlessInput, RegisterCompleteInput, RegisterStartInput } from "./types";
+
+// Passwordless entry — the main way in. One identifier (email OR phone), straight to a session.
+export function usePasswordless() {
+  return useMutation({ mutationFn: (input: PasswordlessInput) => authApi.passwordless(input) });
+}
 
 export function useLogin() {
   return useMutation({ mutationFn: (input: LoginInput) => authApi.login(input) });

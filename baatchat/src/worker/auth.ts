@@ -237,6 +237,113 @@ export async function registerComplete(
   return { ok: true, token: await issueToken(env, user), user };
 }
 
+// --- passwordless entry (the main way in) -----------------------------------
+// One identifier (email OR phone) is enough — no password, no code. We find or create a
+// lightweight customer account (role `customer`, status `active`) and log them straight in.
+//
+// The ONE guard: an account that already has a password (or an admin email) is NOT
+// bypassable here — we tell the caller to use the password login instead. This keeps
+// seeded/password-protected accounts and admins safe.
+
+export type PasswordlessResult =
+  | { ok: true; token: string; user: SessionUser; status: string }
+  | { ok: false; reason: "needs_password" | "invalid" };
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export async function passwordlessEntry(
+  env: Env,
+  raw: { email?: string; phone?: string }
+): Promise<PasswordlessResult> {
+  const email = raw.email ? normEmail(raw.email) : "";
+  const phone = raw.phone ? normPhone(raw.phone) : "";
+  if (email && !EMAIL_RE.test(email)) return { ok: false, reason: "invalid" };
+  if (!email && phone.replace(/\D/g, "").length < 6) return { ok: false, reason: "invalid" };
+  if (!email && !phone) return { ok: false, reason: "invalid" };
+
+  // Admins never enter passwordlessly — they have a dedicated login.
+  if (email && isAdminEmail(env, email)) return { ok: false, reason: "needs_password" };
+
+  // 1) Find (or create) the customer record this contact maps to.
+  let customer = await findCustomer(env, { email, phone });
+  if (!customer) {
+    const res = await env.DB.prepare(
+      `INSERT INTO customers (email, phone) VALUES (?, ?)`
+    )
+      .bind(email || null, phone || null)
+      .run();
+    const id = Number(res.meta.last_row_id);
+    customer = { customer_id: id, email: email || null, phone: phone || null, name: null };
+  }
+
+  // The login identity is an email. Phone-only contacts get a synthetic local identity so
+  // they still get a JWT + chat account (no real address required to come straight in).
+  const loginEmail = customer.email
+    ? normEmail(customer.email)
+    : `phone+${phone.replace(/\D/g, "")}@phone.local`;
+
+  // 2) Is there already a chat account for this identity?
+  const existing = await env.DB.prepare(
+    `SELECT party_id AS id, role, display_name AS name, email, password_hash, status
+       FROM chat_accounts WHERE email = ? LIMIT 1`
+  )
+    .bind(loginEmail)
+    .first<{
+      id: number; role: SessionUser["role"]; name: string | null; email: string;
+      password_hash: string | null; status: string;
+    }>();
+
+  if (existing) {
+    // Password-protected (or admin) account: do NOT bypass — they must use the password.
+    if (existing.password_hash || existing.role === "admin") {
+      return { ok: false, reason: "needs_password" };
+    }
+    await env.DB.prepare(`UPDATE chat_accounts SET last_login_at = datetime('now') WHERE email = ?`)
+      .bind(loginEmail)
+      .run();
+    const user: SessionUser = { id: existing.id, role: existing.role, name: existing.name, email: existing.email };
+    return { ok: true, token: await issueToken(env, user), user, status: existing.status };
+  }
+
+  // 3) No account yet → create a light, passwordless customer account, active straight away.
+  await env.DB.prepare(
+    `INSERT INTO chat_accounts (party_id, email, role, display_name, password_hash, status, email_verified, last_login_at)
+     VALUES (?, ?, 'customer', ?, NULL, 'active', 0, datetime('now'))`
+  )
+    .bind(customer.customer_id, loginEmail, customer.name)
+    .run();
+
+  const user: SessionUser = { id: customer.customer_id, role: "customer", name: customer.name, email: loginEmail };
+  return { ok: true, token: await issueToken(env, user), user, status: "active" };
+}
+
+// Find a customer by email (preferred) or phone (digits-only match). Returns null if none.
+async function findCustomer(
+  env: Env,
+  id: { email: string; phone: string }
+): Promise<{ customer_id: number; email: string | null; phone: string | null; name: string | null } | null> {
+  if (id.email) {
+    const r = await env.DB.prepare(
+      `SELECT customer_id, email, phone, name FROM customers WHERE lower(email) = ? LIMIT 1`
+    )
+      .bind(id.email)
+      .first<{ customer_id: number; email: string | null; phone: string | null; name: string | null }>();
+    if (r) return r;
+  }
+  if (id.phone) {
+    const digits = id.phone.replace(/\D/g, "");
+    const r = await env.DB.prepare(
+      `SELECT customer_id, email, phone, name FROM customers
+        WHERE replace(replace(replace(replace(replace(replace(phone,' ',''),'-',''),'(',''),')',''),'.',''),'+','') = ?
+        LIMIT 1`
+    )
+      .bind(digits)
+      .first<{ customer_id: number; email: string | null; phone: string | null; name: string | null }>();
+    if (r) return r;
+  }
+  return null;
+}
+
 // --- password login ---------------------------------------------------------
 
 export type LoginResult =

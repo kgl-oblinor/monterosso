@@ -18,6 +18,12 @@ export interface LoginInput {
   password: string;
 }
 
+/** Passwordless entry — one identifier (email OR phone) is enough. The main way in. */
+export interface PasswordlessInput {
+  email?: string;
+  phone?: string;
+}
+
 /** Identifier for the onboarding flow: by email, by phone/WhatsApp, or by reservation
  *  code (customers). One of them is enough — no friction. */
 export interface RegisterStartInput {

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router-dom";
-import { Mail } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { AtSign, Mail } from "lucide-react";
 
+import { ApiError } from "@/lib/apiClient";
 import {
   Form,
   FormControl,
@@ -11,8 +12,14 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { loginForm, type LoginForm as LoginValues } from "../schemas";
-import { useLogin } from "../api/hooks";
+import {
+  loginForm,
+  passwordlessForm,
+  toPasswordlessInput,
+  type LoginForm as LoginValues,
+  type PasswordlessForm,
+} from "../schemas";
+import { useLogin, usePasswordless } from "../api/hooks";
 import { useAuthStore } from "../store";
 import { IconInput } from "./IconInput";
 import { PasswordInput } from "./PasswordInput";
@@ -21,19 +28,49 @@ import { AuthError } from "./AuthError";
 import { AuthHeading } from "./AuthLayout";
 import { ForgotPasswordFlow } from "./ForgotPasswordFlow";
 
+/** True when an error is the backend's "this account is secured with a password" signal. */
+function isNeedsPassword(err: unknown): boolean {
+  return err instanceof ApiError && (err.body as { needsPassword?: boolean })?.needsPassword === true;
+}
+
 export function LoginForm() {
   const navigate = useNavigate();
   const setSession = useAuthStore((s) => s.setSession);
+  // "passwordless" is the main way in; "password" and "forgot" are quiet, optional detours.
+  const [mode, setMode] = useState<"passwordless" | "password">("passwordless");
   const [forgot, setForgot] = useState(false);
 
+  const passwordless = usePasswordless();
   const login = useLogin();
 
-  const form = useForm<LoginValues>({
+  const entryForm = useForm<PasswordlessForm>({
+    resolver: zodResolver(passwordlessForm),
+    defaultValues: { contact: "" },
+  });
+
+  const pwForm = useForm<LoginValues>({
     resolver: zodResolver(loginForm),
     defaultValues: { email: "", password: "" },
   });
 
-  const onSubmit = form.handleSubmit((values) => {
+  const onEnter = entryForm.handleSubmit(({ contact }) => {
+    passwordless.mutate(toPasswordlessInput(contact), {
+      onSuccess: ({ token, user, status }) => {
+        setSession(token, user, status);
+        navigate("/dashboard", { replace: true });
+      },
+      onError: (err) => {
+        // Account secured with a password → switch them to the password login, prefilled.
+        if (isNeedsPassword(err)) {
+          const v = toPasswordlessInput(contact);
+          if (v.email) pwForm.setValue("email", v.email);
+          setMode("password");
+        }
+      },
+    });
+  });
+
+  const onPassword = pwForm.handleSubmit((values) => {
     login.mutate(values, {
       onSuccess: ({ token, user, status }) => {
         setSession(token, user, status);
@@ -42,29 +79,110 @@ export function LoginForm() {
     });
   });
 
+  const needsPasswordHint = passwordless.isError && isNeedsPassword(passwordless.error);
+
   if (forgot) {
     return <ForgotPasswordFlow onBack={() => setForgot(false)} />;
   }
 
-  return (
-    <Form {...form}>
-      <form onSubmit={onSubmit} className="space-y-5" noValidate>
-        <AuthHeading title="Logg inn" subtitle="Chat mellom kunder og skippere" />
+  // --- password login (for accounts that have one) ---
+  if (mode === "password") {
+    return (
+      <Form key="login-password" {...pwForm}>
+        <form onSubmit={onPassword} className="space-y-5" noValidate>
+          <AuthHeading title="Logg inn med passord" subtitle="For kontoer som er sikret med passord" />
 
-        {login.isError && <AuthError message={login.error.message} />}
+          {needsPasswordHint && (
+            <p className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-center text-sm text-white/80">
+              Denne kontoen er sikret med passord. Skriv passordet ditt for å logge inn.
+            </p>
+          )}
+
+          {login.isError && <AuthError message={login.error.message} />}
+
+          <FormField
+            control={pwForm.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <IconInput
+                    icon={<Mail className="h-5 w-5" />}
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    placeholder="E-postadresse"
+                    autoFocus
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="ml-4 text-red-400" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={pwForm.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <PasswordInput placeholder="Passord" autoComplete="current-password" {...field} />
+                </FormControl>
+                <FormMessage className="ml-4 text-red-400" />
+              </FormItem>
+            )}
+          />
+
+          <div className="text-right">
+            <button
+              type="button"
+              onClick={() => setForgot(true)}
+              className="text-sm text-white/70 underline transition-colors hover:text-white"
+            >
+              Glemt passord?
+            </button>
+          </div>
+
+          <AuthButton type="submit" loading={login.isPending}>
+            Logg inn
+          </AuthButton>
+
+          <p className="text-center text-sm text-white/70">
+            <button
+              type="button"
+              onClick={() => setMode("passwordless")}
+              className="text-white underline transition-colors hover:text-white/80"
+            >
+              Tilbake — logg inn uten passord
+            </button>
+          </p>
+        </form>
+      </Form>
+    );
+  }
+
+  // --- passwordless entry (the main path) ---
+  return (
+    <Form key="login-passwordless" {...entryForm}>
+      <form onSubmit={onEnter} className="space-y-5" noValidate>
+        <AuthHeading title="Velkommen" subtitle="Skriv e-post eller telefon, så er du inne" />
+
+        {passwordless.isError && !needsPasswordHint && (
+          <AuthError message={passwordless.error.message} />
+        )}
 
         <FormField
-          control={form.control}
-          name="email"
+          control={entryForm.control}
+          name="contact"
           render={({ field }) => (
             <FormItem>
               <FormControl>
                 <IconInput
-                  icon={<Mail className="h-5 w-5" />}
-                  type="email"
+                  icon={<AtSign className="h-5 w-5" />}
                   inputMode="email"
                   autoComplete="email"
-                  placeholder="E-postadresse"
+                  placeholder="E-post eller telefon"
                   autoFocus
                   {...field}
                 />
@@ -74,45 +192,19 @@ export function LoginForm() {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <PasswordInput
-                  placeholder="Passord"
-                  autoComplete="current-password"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage className="ml-4 text-red-400" />
-            </FormItem>
-          )}
-        />
-
-        <div className="text-right">
-          <button
-            type="button"
-            onClick={() => setForgot(true)}
-            className="text-sm text-white/70 underline transition-colors hover:text-white"
-          >
-            Glemt passord?
-          </button>
-        </div>
-
-        <AuthButton type="submit" loading={login.isPending}>
-          Logg inn
+        <AuthButton type="submit" loading={passwordless.isPending}>
+          Continue
         </AuthButton>
 
         <p className="text-center text-sm text-white/70">
-          Har du ikke konto?{" "}
-          <Link
-            to="/register"
+          Har du et passord?{" "}
+          <button
+            type="button"
+            onClick={() => setMode("password")}
             className="text-white underline transition-colors hover:text-white/80"
           >
-            Opprett konto
-          </Link>
+            Logg inn med passord
+          </button>
         </p>
       </form>
     </Form>

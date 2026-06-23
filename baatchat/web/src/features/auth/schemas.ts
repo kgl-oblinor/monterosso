@@ -29,6 +29,26 @@ export const loginForm = z.object({
 });
 export type LoginForm = z.infer<typeof loginForm>;
 
+// Passwordless entry — the main way in. ONE field that accepts either an email OR a
+// phone/WhatsApp number. We sniff which one it is; the backend is the source of truth.
+const looksLikeEmail = (v: string) => v.includes("@");
+export const passwordlessForm = z.object({
+  contact: z
+    .string()
+    .min(1, "Skriv e-post eller telefon")
+    .refine(
+      (v) => (looksLikeEmail(v) ? emailSchema.safeParse(v).success : phoneSchema.safeParse(v).success),
+      "Skriv en gyldig e-post eller telefon"
+    ),
+});
+export type PasswordlessForm = z.infer<typeof passwordlessForm>;
+
+/** Split the single contact field into an {email} or {phone} payload for the API. */
+export function toPasswordlessInput(contact: string): { email?: string; phone?: string } {
+  const v = contact.trim();
+  return looksLikeEmail(v) ? { email: v } : { phone: v };
+}
+
 // Onboarding step 1 — identify the account. Three frictionless ways in: a customer can
 // use their email, their phone/WhatsApp, OR their reservation code; a skipper uses their
 // on-file email. The right field is validated based on the chosen identifier mode.

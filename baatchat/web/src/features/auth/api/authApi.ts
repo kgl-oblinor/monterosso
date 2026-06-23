@@ -10,6 +10,7 @@ import type {
   AuthUser,
   LoginInput,
   MeResult,
+  PasswordlessInput,
   RegisterCompleteInput,
   RegisterStartInput,
   StartResult,
@@ -33,6 +34,7 @@ interface OkMe {
 }
 
 export interface AuthApi {
+  passwordless(input: PasswordlessInput): Promise<AuthResult>;
   login(input: LoginInput): Promise<AuthResult>;
   adminLogin(input: LoginInput): Promise<AuthResult>;
   adminResetStart(email: string): Promise<StartResult>;
@@ -43,6 +45,11 @@ export interface AuthApi {
 }
 
 const realAuthApi: AuthApi = {
+  async passwordless(input) {
+    const r = await apiClient.post<OkAuth>("/auth/passwordless", input, { anonymous: true });
+    return { token: r.token, user: r.user, status: r.status };
+  },
+
   async login(input) {
     const r = await apiClient.post<OkAuth>("/auth/login", input, { anonymous: true });
     return { token: r.token, user: r.user, status: r.status };

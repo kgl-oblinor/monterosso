@@ -11,6 +11,19 @@ function maskEmail(email: string): string {
 }
 
 export const mockAuthApi: AuthApi = {
+  // Passwordless entry → straight in, active. A "needs password" demo: any email starting
+  // with "skipper" or "guest" is treated as password-protected (mirrors seeded accounts).
+  async passwordless(input): Promise<AuthResult> {
+    await delay();
+    const email = input.email?.toLowerCase() ?? "";
+    if (/^(skipper|guest)/.test(email))
+      throw new ApiError(409, "Denne kontoen er sikret med passord — logg inn med passord", {
+        needsPassword: true,
+      });
+    const identity = input.email ?? `phone+${(input.phone ?? "").replace(/\D/g, "")}@phone.local`;
+    return { token: `mock.${btoa(identity)}.jwt`, user: { email: identity }, status: "active" };
+  },
+
   // Returning login → active (so the chat demo works).
   async login(input): Promise<AuthResult> {
     await delay();
