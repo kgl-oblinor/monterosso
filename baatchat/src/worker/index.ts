@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { registerStart, registerComplete, passwordLogin, userFromToken, adminLogin, adminRecoveryStart, adminRecoveryVerify, getAccountState } from "./auth";
 import type { SessionUser } from "./auth";
-import { listContacts, listThreads, openThread, getMessages, postMessage, markRead, contactReservations } from "./chat";
+import { listContacts, listThreads, openThread, getMessages, postMessage, markRead, contactReservations, myReservations } from "./chat";
 import { listAccounts, approveAccount, revokeAccount, setEmailVerified, setSkipperEmail, setCustomerEmail, listSkipperDirectory, listCustomerDirectory, listAllThreads, adminThreadMessages, listSkippers, getSkipper, createSkipper, updateSkipper, validateSkipperInput, listCustomers, listReservations } from "./admin";
 import type { SkipperInput } from "./admin";
 
@@ -171,6 +171,12 @@ chat.get("/contacts", async (c) => c.json({ ok: true, contacts: await listContac
 
 // My conversations.
 chat.get("/threads", async (c) => c.json({ ok: true, threads: await listThreads(c.env, c.get("user")) }));
+
+// My trips ("Turer"). Role decides the filter: a customer sees their own reservations (with
+// skipper/boat name); a skipper sees the reservations on their listings (with customer name).
+chat.get("/me/reservations", async (c) =>
+  c.json({ ok: true, reservations: await myReservations(c.env, c.get("user")) })
+);
 
 // Open (or fetch) a thread with a contact.
 chat.post("/threads", async (c) => {

@@ -195,6 +195,30 @@ export function formatTripDate(s: string | null): string {
   return d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
+/** A trip in the "Turer" section. For a customer `contactName` is the skipper/boat;
+ *  for a skipper it's the customer ("who's aboard"). */
+export interface MyReservation {
+  code: string;
+  tripDate: string | null;
+  guests: number | null;
+  status: string;
+  contactName: string | null;
+}
+
+/** All of the logged-in user's reservations. The Worker filters by role (customer vs
+ *  skipper) using the session — same endpoint, different data. */
+export function useMyReservations() {
+  return useQuery({
+    queryKey: ["myReservations"],
+    queryFn: async () => {
+      const r = await apiClient.get<{ ok: true; reservations: MyReservation[] }>(
+        "/chat/me/reservations"
+      );
+      return r.reservations;
+    },
+  });
+}
+
 export function useMessages(threadId: number | null) {
   return useQuery({
     queryKey: ["messages", threadId],

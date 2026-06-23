@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { LogOut, MessageSquare } from "lucide-react";
+import { LogOut } from "lucide-react";
 
 import { cn, initialsOf } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
@@ -13,16 +13,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuthStore } from "@/features/auth/store";
 import logoUrl from "@/monterosso-mark.svg";
+import { navForRole, type SectionKey } from "../sections";
 
-// Only Chat exists today. Overview/Documents/Notifications placeholders were removed
-// until those features are built — re-add NAV entries here when they are.
-const NAV = [{ icon: MessageSquare, label: "Chat", active: true }];
+interface IconRailProps {
+  active: SectionKey;
+  onSelect: (key: SectionKey) => void;
+}
 
-/** Far-left vertical nav rail. The avatar at the bottom holds the logout menu. */
-export function IconRail() {
+/** Far-left vertical nav rail. Chat is on top, the profile avatar (with logout) at the
+ *  bottom. The items in between are role-differentiated (see sections.ts). */
+export function IconRail({ active, onSelect }: IconRailProps) {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
+  const nav = navForRole(user?.role);
 
   const onLogout = () => {
     logout();
@@ -33,23 +37,27 @@ export function IconRail() {
     <nav className="flex w-16 shrink-0 flex-col items-center gap-1 border-r border-white/5 py-4">
       <img src={logoUrl} alt="Monterosso" className="mb-3 size-9 rounded-xl" />
 
-      {NAV.map(({ icon: Icon, label, active }) => (
-        <button
-          key={label}
-          type="button"
-          title={label}
-          aria-label={label}
-          aria-current={active}
-          className={cn(
-            "flex size-10 items-center justify-center rounded-xl transition-colors",
-            active
-              ? "bg-[#ead27e]/15 text-[#ead27e]"
-              : "text-white/45 hover:bg-white/5 hover:text-white"
-          )}
-        >
-          <Icon className="size-5" />
-        </button>
-      ))}
+      {nav.map(({ key, icon: Icon, label }) => {
+        const isActive = key === active;
+        return (
+          <button
+            key={key}
+            type="button"
+            title={label}
+            aria-label={label}
+            aria-current={isActive}
+            onClick={() => onSelect(key)}
+            className={cn(
+              "flex size-10 items-center justify-center rounded-xl transition-colors",
+              isActive
+                ? "bg-[#ead27e]/15 text-[#ead27e]"
+                : "text-white/45 hover:bg-white/5 hover:text-white"
+            )}
+          >
+            <Icon className="size-5" />
+          </button>
+        );
+      })}
 
       <div className="mt-auto">
         <DropdownMenu>

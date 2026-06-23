@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 
 import { useAuthStore } from "@/features/auth/store";
 import { useConversations } from "../api/threads";
+import type { SectionKey } from "../sections";
 import { IconRail } from "./IconRail";
 import { ConversationsPanel } from "./ConversationsPanel";
 import { ChatThread } from "./ChatThread";
 import { ChatThreadSkeleton, ConversationsPanelSkeleton } from "./ChatSkeletons";
+import { SectionView } from "./SectionViews";
 
 /** Authenticated chat shell: icon rail · conversations · active thread.
  *  Same UI for skipper and customer — only the data (who you can chat with) differs.
@@ -20,6 +22,8 @@ export function DashboardLayout() {
   const contactsLabel =
     myRole === "customer" ? "Skippere" : myRole === "skipper" ? "Kunder" : "Kontakter";
   const { conversations, isLoading, isError } = useConversations();
+  // Which top-level section is shown. Default is Chat (unchanged on sign-in).
+  const [section, setSection] = useState<SectionKey>("chat");
   const [selectedId, setSelectedId] = useState<number | null>(null);
   // Mobile-only: which pane is visible. Ignored at md+ (both always show).
   const [mobileView, setMobileView] = useState<"list" | "thread">("list");
@@ -38,9 +42,11 @@ export function DashboardLayout() {
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-[radial-gradient(120%_120%_at_50%_0%,#0f2740_0%,#0a1f33_42%,#07182a_100%)] text-white">
-      <IconRail />
+      <IconRail active={section} onSelect={setSection} />
 
-      {isLoading ? (
+      {section !== "chat" ? (
+        <SectionView section={section} />
+      ) : isLoading ? (
         <>
           <ConversationsPanelSkeleton className="flex" />
           <ChatThreadSkeleton className="hidden md:flex" />

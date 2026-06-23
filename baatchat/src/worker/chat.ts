@@ -199,6 +199,47 @@ export async function contactReservations(
   return results ?? [];
 }
 
+// All of the logged-in user's reservations (their "Turer"). Role decides the filter and
+// which counterpart name to join: a customer sees their skipper/boat, a skipper sees the
+// customer ("who's aboard"). Newest trip first.
+export interface MyReservation {
+  code: string;
+  tripDate: string | null;
+  guests: number | null;
+  status: string;
+  contactName: string | null; // skipper/boat name (customer view) or customer name (skipper view)
+}
+
+export async function myReservations(env: Env, user: SessionUser): Promise<MyReservation[]> {
+  if (user.role === "customer") {
+    const { results } = await env.DB.prepare(
+      `SELECT r.reservation_code AS code, r.trip_date AS tripDate, r.guests, r.status,
+              COALESCE(s.listing_title, s.boat_name, s.name) AS contactName
+         FROM reservations r
+         JOIN skippers s ON r.skipper_id = s.skipper_id
+        WHERE r.customer_id = ?
+        ORDER BY r.trip_date DESC, r.reservation_id DESC`
+    )
+      .bind(user.id)
+      .all<MyReservation>();
+    return results ?? [];
+  }
+  if (user.role === "skipper") {
+    const { results } = await env.DB.prepare(
+      `SELECT r.reservation_code AS code, r.trip_date AS tripDate, r.guests, r.status,
+              c.name AS contactName
+         FROM reservations r
+         LEFT JOIN customers c ON r.customer_id = c.customer_id
+        WHERE r.skipper_id = ?
+        ORDER BY r.trip_date DESC, r.reservation_id DESC`
+    )
+      .bind(user.id)
+      .all<MyReservation>();
+    return results ?? [];
+  }
+  return [];
+}
+
 export async function markRead(
   env: Env,
   user: SessionUser,
