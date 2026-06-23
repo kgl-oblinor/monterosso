@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useAuthStore } from "@/features/auth/store";
 import { useConversations } from "../api/threads";
-import type { SectionKey } from "../sections";
+import { DEFAULT_SECTION, type SectionKey } from "../sections";
 import { IconRail } from "./IconRail";
 import { ConversationsPanel } from "./ConversationsPanel";
 import { ChatThread } from "./ChatThread";
@@ -22,8 +22,8 @@ export function DashboardLayout() {
   const contactsLabel =
     myRole === "customer" ? "Skippere" : myRole === "skipper" ? "Kunder" : "Kontakter";
   const { conversations, isLoading, isError } = useConversations();
-  // Which top-level section is shown. Default is Chat (unchanged on sign-in).
-  const [section, setSection] = useState<SectionKey>("chat");
+  // Which top-level section is shown. On sign-in everyone lands on the calm Hjem overview.
+  const [section, setSection] = useState<SectionKey>(DEFAULT_SECTION);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   // Mobile-only: which pane is visible. Ignored at md+ (both always show).
   const [mobileView, setMobileView] = useState<"list" | "thread">("list");
@@ -45,7 +45,7 @@ export function DashboardLayout() {
       <IconRail active={section} onSelect={setSection} />
 
       {section !== "chat" ? (
-        <SectionView section={section} />
+        <SectionView section={section} onNavigate={setSection} />
       ) : isLoading ? (
         <>
           <ConversationsPanelSkeleton className="flex" />

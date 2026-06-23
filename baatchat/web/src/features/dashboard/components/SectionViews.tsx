@@ -6,7 +6,7 @@ import type { LucideIcon } from "lucide-react";
 
 import { useAuthStore } from "@/features/auth/store";
 import { formatTripDate, useMyReservations, type MyReservation } from "../api/threads";
-import type { SectionKey } from "../sections";
+import { shortcutsForRole, type SectionKey } from "../sections";
 
 /** Shared frame: a scrollable column with a title, matching the chat shell's tone. */
 function SectionFrame({ title, children }: { title: string; children: React.ReactNode }) {
@@ -100,9 +100,127 @@ function TripsSection() {
   );
 }
 
+/** First name only, for a warm greeting. Falls back to the email handle, then a soft default. */
+function firstNameOf(name?: string | null, email?: string | null): string {
+  const n = name?.trim().split(/\s+/)[0];
+  if (n) return n;
+  const handle = email?.split("@")[0];
+  if (handle) return handle;
+  return "venn";
+}
+
+/** The soonest upcoming, non-cancelled reservation — the "next trip" on the home screen. */
+function nextTripOf(trips: MyReservation[] | undefined): MyReservation | null {
+  if (!trips?.length) return null;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const upcoming = trips
+    .filter((t) => t.status !== "cancelled" && t.tripDate)
+    .filter((t) => new Date(t.tripDate as string).getTime() >= today.getTime())
+    .sort((a, b) => (a.tripDate as string).localeCompare(b.tripDate as string));
+  return upcoming[0] ?? null;
+}
+
+/** "Hjem": a calm overview shown on sign-in for both roles — a warm greeting, the next
+ *  trip (if any), and discreet shortcuts into the role's sections. Minimal, on-theme. */
+function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) {
+  const user = useAuthStore((s) => s.user);
+  const role = user?.role;
+  const isSkipper = role === "skipper";
+  const { data, isLoading } = useMyReservations();
+  const next = nextTripOf(data);
+  const shortcuts = shortcutsForRole(role);
+  const contactLabel = isSkipper ? "Gjest" : "Skipper";
+
+  return (
+    <section className="flex min-w-0 flex-1 flex-col overflow-y-auto">
+      <div className="mx-auto w-full max-w-2xl px-6 py-12 md:py-16">
+        <p className="font-serif text-sm uppercase tracking-[0.2em] text-[#ead27e]/80">
+          Velkommen ombord
+        </p>
+        <h1 className="mt-3 text-3xl font-bold leading-tight md:text-4xl">
+          God dag, {firstNameOf(user?.name, user?.email)}.
+        </h1>
+        <p className="mt-3 max-w-md text-sm leading-relaxed text-white/55">
+          {isSkipper
+            ? "Rolig oversikt over avgangene og samtalene dine. Sjøen venter."
+            : "Et stille øyeblikk før turen. Her finner du det viktigste samlet."}
+        </p>
+
+        {/* Next trip */}
+        <div className="mt-10">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-white/40">
+            {isSkipper ? "Neste avgang" : "Neste tur"}
+          </h2>
+          {isLoading ? (
+            <p className="mt-3 text-sm text-white/40">Laster …</p>
+          ) : next ? (
+            <button
+              type="button"
+              onClick={() => onNavigate("trips")}
+              className="mt-3 flex w-full items-center justify-between gap-4 border border-white/10 bg-white/[0.03] px-5 py-4 text-left transition-colors hover:border-[#ead27e]/30 hover:bg-white/[0.05]"
+            >
+              <div className="min-w-0">
+                <div className="flex items-baseline gap-2">
+                  <span className="font-mono text-sm font-semibold text-white">{next.code}</span>
+                  <span className="text-xs text-white/45">{formatTripDate(next.tripDate)}</span>
+                </div>
+                <div className="mt-1 truncate text-sm text-white/55">
+                  <span className="text-white/40">{contactLabel}: </span>
+                  {next.contactName ?? "—"}
+                  {next.guests != null && (
+                    <span className="text-white/40"> · {next.guests} gjester</span>
+                  )}
+                </div>
+              </div>
+              <span className="shrink-0 text-[#ead27e]">
+                <Compass className="size-5" />
+              </span>
+            </button>
+          ) : (
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-white/40">
+              {isSkipper
+                ? "Ingen kommende avganger ennå. Når noen bestiller, dukker den opp her."
+                : "Ingen kommende turer ennå. Når en reservasjon kobles til kontoen din, ser du den her."}
+            </p>
+          )}
+        </div>
+
+        {/* Discreet shortcuts */}
+        <div className="mt-10">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-white/40">
+            Snarveier
+          </h2>
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {shortcuts.map(({ key, icon: Icon, label }) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => onNavigate(key)}
+                className="flex items-center gap-3 border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-left text-sm text-white/65 transition-colors hover:border-white/15 hover:bg-white/[0.05] hover:text-white"
+              >
+                <Icon className="size-4 shrink-0 text-[#ead27e]/70" />
+                <span className="truncate">{label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /** Renders the active non-chat section. Chat is handled by DashboardLayout itself. */
-export function SectionView({ section }: { section: SectionKey }) {
+export function SectionView({
+  section,
+  onNavigate,
+}: {
+  section: SectionKey;
+  onNavigate: (key: SectionKey) => void;
+}) {
   switch (section) {
+    case "home":
+      return <HomeSection onNavigate={onNavigate} />;
     case "trips":
       return <TripsSection />;
     case "receipts":
