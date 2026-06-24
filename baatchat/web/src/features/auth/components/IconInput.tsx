@@ -17,7 +17,7 @@ export const IconInput = React.forwardRef<HTMLInputElement, IconInputProps>(
       <input
         ref={ref}
         className={cn(
-          "auth-field h-12 w-full rounded-full border-2 border-white bg-white pl-14 pr-4 text-base text-black shadow-lg transition-all placeholder:text-black/60 focus:border-white focus:outline-none focus:ring-0",
+          "auth-field h-12 w-full rounded-full border-2 border-white bg-white pl-14 pr-4 text-base text-black shadow-widget transition-all placeholder:text-black/60 focus:border-white focus:outline-none focus:ring-0",
           className
         )}
         {...props}

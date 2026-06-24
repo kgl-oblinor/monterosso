@@ -47,10 +47,13 @@
   --sidebar-accent-foreground: #f7f1e3;
   --sidebar-border: #14304a;
   --sidebar-ring: #ead27e;
-  --font-sans: Geist, sans-serif;
-  --font-serif: Georgia, serif;
-  --font-mono: Geist Mono, monospace;
-  --radius: 0rem;
+  /* SwiftUI / SF system typography — the signed-in app reads like a native Apple surface. */
+  --font-sans: -apple-system, "SF Pro Text", "SF Pro Display", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-serif: -apple-system, "SF Pro Display", Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", "Geist Mono", monospace;
+  /* Apple-widget squircle radius — generous, continuous corners (this is the logged-in app,
+     the deliberate opposite of the landing's radius-0). */
+  --radius: 1.25rem;
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 }
@@ -90,10 +93,10 @@
   --sidebar-accent-foreground: #f7f1e3;
   --sidebar-border: #1c3a55;
   --sidebar-ring: #ead27e;
-  --font-sans: Geist, sans-serif;
-  --font-serif: Georgia, serif;
-  --font-mono: Geist Mono, monospace;
-  --radius: 0rem;
+  --font-sans: -apple-system, "SF Pro Text", "SF Pro Display", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-serif: -apple-system, "SF Pro Display", Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", "Geist Mono", monospace;
+  --radius: 1.25rem;
 }
 
 @theme inline {
@@ -136,14 +139,15 @@
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
 
-  /* Sharp corners globally — all rectangles square. rounded-full (avatars,
-     toggles) is intrinsic and stays round; only the rectangle scale is zeroed. */
-  --radius-sm: 0;
-  --radius-md: 0;
-  --radius-lg: 0;
-  --radius-xl: 0;
-  --radius-2xl: 0;
-  --radius-3xl: 0;
+  /* Apple-widget squircle scale — continuous, generous corners on every rectangle. Nested
+     elements and buttons get the smaller end (~12px), cards/sheets the larger end (~18–22px).
+     rounded-full (avatars, toggles) stays intrinsically round. */
+  --radius-sm: 0.625rem; /* 10px — chips, tiny controls */
+  --radius-md: 0.75rem;  /* 12px — buttons, nested rows, inputs */
+  --radius-lg: 1rem;     /* 16px */
+  --radius-xl: 1.25rem;  /* 20px — cards, widgets */
+  --radius-2xl: 1.375rem;/* 22px — sheets, modals */
+  --radius-3xl: 1.75rem; /* 28px — hero widgets */
 }
 
 @layer base {
@@ -182,6 +186,34 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+  }
+
+  /* Apple-widget soft, layered shadows — low + diffuse, never a hard line.
+     `.shadow-widget` for resting cards; `.shadow-widget-lg` for raised sheets/modals. */
+  .shadow-widget {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  .shadow-widget-lg {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1), 0 24px 60px rgba(0, 0, 0, 0.28);
+  }
+
+  /* Material / vibrancy — a translucent surface slightly lighter than the ink backdrop,
+     with a soft blur so it reads like an iOS material card floating over the gradient. */
+  .material-card {
+    background-color: rgba(255, 255, 255, 0.06);
+    backdrop-filter: saturate(140%) blur(20px);
+    -webkit-backdrop-filter: saturate(140%) blur(20px);
+  }
+  /* Grouped inset list — the iOS Settings look: one rounded container, hairline dividers
+     between rows, rows themselves square so only the outer corners curve. */
+  .inset-list {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+  }
+  .inset-list > * + * {
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
   }
 }
 

@@ -291,7 +291,7 @@ export function MessagesSkeleton() {
       {rows.map((r, i) => (
         <div key={i} className={cn("flex flex-col", r.mine ? "items-end" : "items-start")}>
           <Skeleton
-            className={cn("h-10 rounded-2xl", r.w, r.mine ? "rounded-br-md" : "rounded-bl-md")}
+            className={cn("h-10 rounded-3xl", r.w, r.mine ? "rounded-br-lg" : "rounded-bl-lg")}
           />
           <Skeleton className="mt-1 h-2.5 w-8" />
         </div>
@@ -317,10 +317,10 @@ export function MessageBubble({
       )}
       <div
         className={cn(
-          "max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-4 py-2.5 text-sm shadow-sm md:max-w-[72%]",
+          "max-w-[85%] whitespace-pre-wrap break-words rounded-3xl px-4 py-2.5 text-sm shadow-[0_1px_2px_rgba(0,0,0,0.12)] md:max-w-[72%]",
           mine
-            ? "rounded-br-md bg-[#ead27e] text-[#07182a]"
-            : "rounded-bl-md bg-white/[0.14] text-white ring-1 ring-inset ring-white/10"
+            ? "rounded-br-lg bg-[#ead27e] text-[#07182a]"
+            : "rounded-bl-lg bg-white/[0.14] text-white ring-1 ring-inset ring-white/10"
         )}
       >
         {message.body}

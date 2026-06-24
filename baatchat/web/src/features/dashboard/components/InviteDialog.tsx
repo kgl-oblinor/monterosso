@@ -55,7 +55,7 @@ export function InviteDialog({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md border border-white/10 bg-[#0a1f33] p-6 shadow-2xl"
+        className="w-full max-w-md rounded-3xl border border-white/10 bg-[#0a1f33] p-6 shadow-widget-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4">
@@ -86,7 +86,7 @@ export function InviteDialog({
                 onChange={(e) => setContact(e.target.value)}
                 placeholder="navn@eksempel.no eller +47 …"
                 inputMode="email"
-                className="mt-2 w-full border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-[#ead27e]/40 focus:outline-none"
+                className="mt-2 w-full rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-[#ead27e]/40 focus:outline-none"
               />
             </label>
             <p className="text-xs leading-relaxed text-white/40">
@@ -101,7 +101,7 @@ export function InviteDialog({
               type="button"
               onClick={onCreate}
               disabled={create.isPending}
-              className="flex w-full items-center justify-center gap-2 border border-[#ead27e]/40 bg-[#ead27e]/15 px-5 py-3 text-sm font-semibold text-[#ead27e] transition-colors hover:bg-[#ead27e]/25 disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#ead27e] px-5 py-3 text-sm font-semibold text-[#07182a] shadow-widget transition-[transform,background-color] hover:bg-[#f0dd9a] active:scale-[0.98] disabled:opacity-50"
             >
               {create.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
@@ -113,14 +113,14 @@ export function InviteDialog({
           </div>
         ) : (
           <div className="mt-6 space-y-4">
-            <div className="flex items-center gap-2 border border-white/10 bg-white/[0.03] px-3 py-2.5">
+            <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2.5">
               <Link2 className="size-4 shrink-0 text-[#ead27e]/70" />
               <span className="min-w-0 flex-1 truncate text-sm text-white/75">{invite.link}</span>
               <button
                 type="button"
                 onClick={onCopy}
                 aria-label="Kopier lenke"
-                className="flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
+                className="flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
               >
                 {copied ? (
                   <>
@@ -138,7 +138,7 @@ export function InviteDialog({
               href={waHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex w-full items-center justify-center gap-2 border border-[#25D366]/40 bg-[#25D366]/15 px-5 py-3 text-sm font-semibold text-[#25D366] transition-colors hover:bg-[#25D366]/25"
+              className="flex w-full items-center justify-center gap-2 rounded-full border border-[#25D366]/40 bg-[#25D366]/15 px-5 py-3 text-sm font-semibold text-[#25D366] transition-[transform,background-color] hover:bg-[#25D366]/25 active:scale-[0.98]"
             >
               Del på WhatsApp
             </a>
@@ -153,7 +153,7 @@ export function InviteDialog({
                 setInvite(null);
                 setContact("");
               }}
-              className="w-full border border-white/10 px-5 py-2.5 text-sm text-white/60 transition-colors hover:border-white/20 hover:text-white"
+              className="w-full rounded-full border border-white/10 px-5 py-2.5 text-sm text-white/60 transition-colors hover:border-white/20 hover:bg-white/[0.04] hover:text-white active:scale-[0.98]"
             >
               Inviter en til
             </button>

@@ -98,7 +98,7 @@ export function JoinPage() {
 
       {/* Which trip this invite is for */}
       {preview.data && (
-        <div className="mb-6 flex items-center gap-3 border border-white/10 bg-white/[0.04] px-4 py-3">
+        <div className="mb-6 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 shadow-widget">
           <Ship className="size-4 shrink-0 text-[#ead27e]/80" />
           <div className="min-w-0">
             <div className="font-mono text-sm font-semibold text-white">

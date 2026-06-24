@@ -37,8 +37,8 @@ export function ConversationsPanel({
         className
       )}
     >
-      <div className="px-4 pb-3 pt-5">
-        <h1 className="mb-4 text-xl font-bold">Chat</h1>
+      <div className="px-4 pb-3 pt-6">
+        <h1 className="mb-4 text-2xl font-bold tracking-tight">Chat</h1>
         <div className="relative">
           <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-white/40" />
           <input
@@ -46,7 +46,7 @@ export function ConversationsPanel({
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Søk i samtaler"
             aria-label="Søk i samtaler"
-            className="h-11 w-full rounded-xl border border-white/10 bg-white/[0.04] pl-10 pr-3 text-sm text-white placeholder:text-white/40 focus:border-[#ead27e]/50 focus:outline-none"
+            className="h-11 w-full rounded-full border border-white/10 bg-white/[0.06] pl-11 pr-4 text-sm text-white placeholder:text-white/40 focus:border-[#ead27e]/50 focus:outline-none"
           />
         </div>
       </div>

@@ -21,9 +21,9 @@ export function AuthLayout({
       />
 
       <div className="w-full max-w-md text-white">
-        <div className="rounded-2xl border border-white/10 bg-black/30 p-6 shadow-2xl backdrop-blur-md sm:p-8">
+        <div className="rounded-3xl border border-white/10 bg-black/30 p-6 shadow-widget-lg backdrop-blur-xl sm:p-8">
           <div className="mb-6 flex flex-col items-center space-y-2 text-center">
-            <img src={logoUrl} alt="" className="size-16 rounded-xl shadow-lg" />
+            <img src={logoUrl} alt="" className="size-16 rounded-2xl shadow-widget" />
             {subtitle && <p className="text-sm text-white/70">{subtitle}</p>}
           </div>
           {children}

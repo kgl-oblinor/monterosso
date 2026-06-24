@@ -79,8 +79,8 @@ export function IconRail({ active, onSelect }: IconRailProps) {
           aria-label={expanded ? "Lukk sidemeny" : "Åpne sidemeny"}
           aria-expanded={expanded}
           className={cn(
-            "mt-3 flex h-10 items-center gap-3 rounded-none text-white/45 transition-colors hover:bg-white/5 hover:text-white",
-            expanded ? "px-4" : "justify-center px-0"
+            "mx-2 mt-3 flex h-10 items-center gap-3 rounded-xl text-white/45 transition-colors hover:bg-white/5 hover:text-white",
+            expanded ? "px-3" : "justify-center px-0"
           )}
         >
           {expanded ? (
@@ -91,7 +91,7 @@ export function IconRail({ active, onSelect }: IconRailProps) {
           {expanded && <span className="truncate text-sm">Skjul meny</span>}
         </button>
 
-        <div className="mt-2 flex flex-col gap-1">
+        <div className="mt-2 flex flex-col gap-1 px-2">
           {nav.map(({ key, icon: Icon, label }) => {
             const isActive = key === active;
             return (
@@ -103,10 +103,10 @@ export function IconRail({ active, onSelect }: IconRailProps) {
                 aria-current={isActive}
                 onClick={() => handleSelect(key)}
                 className={cn(
-                  "flex h-10 items-center gap-3 rounded-none transition-colors",
-                  expanded ? "px-4" : "justify-center px-0",
+                  "flex h-11 items-center gap-3 rounded-xl transition-colors",
+                  expanded ? "px-3" : "justify-center px-0",
                   isActive
-                    ? "bg-[#ead27e]/15 text-[#ead27e]"
+                    ? "bg-[#ead27e]/15 text-[#ead27e] shadow-[inset_0_0_0_1px_rgba(234,210,126,0.25)]"
                     : "text-white/55 hover:bg-white/5 hover:text-white"
                 )}
               >
@@ -127,7 +127,7 @@ export function IconRail({ active, onSelect }: IconRailProps) {
             title={expanded ? undefined : "Profil"}
             className={cn(
               "flex items-center gap-3 outline-none focus-visible:ring-2 focus-visible:ring-[#ead27e]",
-              expanded ? "w-full rounded-none px-1 py-1 hover:bg-white/5" : "rounded-full",
+              expanded ? "w-full rounded-xl px-2 py-1.5 hover:bg-white/5" : "rounded-full",
               active === "profile" && expanded && "bg-[#ead27e]/15"
             )}
           >

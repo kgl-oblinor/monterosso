@@ -129,7 +129,7 @@ export function GroupThread({
         <button
           type="button"
           onClick={() => setInviteOpen(true)}
-          className="flex shrink-0 items-center gap-1.5 border border-white/10 px-3 py-1.5 text-xs font-medium text-white/70 transition-colors hover:border-[#ead27e]/40 hover:text-[#ead27e]"
+          className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/10 px-3.5 py-2 text-xs font-semibold text-white/70 transition-colors hover:border-[#ead27e]/40 hover:bg-[#ead27e]/10 hover:text-[#ead27e] active:scale-[0.98]"
         >
           <UserPlus className="size-3.5" />
           <span className="hidden sm:inline">Inviter</span>

@@ -65,9 +65,9 @@ export function ChatThreadSkeleton({ className }: { className?: string }) {
           <div key={i} className={cn("flex flex-col", r.mine ? "items-end" : "items-start")}>
             <Skeleton
               className={cn(
-                "h-10 rounded-2xl",
+                "h-10 rounded-3xl",
                 r.w,
-                r.mine ? "rounded-br-md" : "rounded-bl-md"
+                r.mine ? "rounded-br-lg" : "rounded-bl-lg"
               )}
             />
             <Skeleton className="mt-1 h-2.5 w-8" />
