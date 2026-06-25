@@ -2,6 +2,19 @@
 
 Mål: alle agenter jobber samtidig **uten å krasje** (aldri to i samme fil), og alle ser hva som skjer. Les `MÅL.md` (fasiten) FØRST. tmux klart.
 
+## 🧭 Retning (lead · Krin · 2026-06-25): Git er ryggraden
+Vi koordinerer på **git/GitHub** — ikke på æres-låser alene. Markdown-laget (CLAIMS + WORKLOG) er det *levende* signalet «hvem gjør hva nå»; git er kilden til sannhet (historikk, rollback, ekte merge, diff-review).
+- **Repo:** `github.com/kgl-oblinor/monterosso`. Alt kode-arbeid går gjennom git.
+- **Worktree/branch per agent:** jobb på `agent/<navn>/<oppgave>`, aldri direkte på `main`. Worktree = fysisk isolasjon (umulig å kollidere — bedre enn ære).
+- **Små, hyppige commits.** **Lead** (Krin) reviewer diff, merger til `main`, kjører D1-migrasjoner og deployer. Ingen agent pusher til `main` eller deployer selv.
+- **Kommuniser i SAMME fil:** før du starter → CLAIMS-rad (hva + filer); underveis/ferdig → `WORKLOG.md` append-only (`[tid] [Krin/oppgave] hva du endret/la til — filer`, slett aldri andres linjer).
+- **Final report når ferdig → Obsidian** (kategorisert), ikke i repoet.
+
+### Standarder lead håndhever (sikkert · best practice · ryddig)
+- **Sikkert:** ingen hemmeligheter i kode; ingen ekte kort/PII/selfie-lagring (Stripe Connect/Identity/Billing når ekte — «fake it» som mock nå); preview-auth-bypass KUN gated på `env.useMocks` (aldri svekk ekte auth); CORS eksplisitt.
+- **Best practice:** esbuild/tsc parse-sjekk FØR build; grønt bygg FØR deploy; ren mock↔ekte-grense (`x = env.useMocks ? mockX : realX`); migrasjoner/deploy kun lead.
+- **Ryddig:** kirurgiske endringer (hver linje sporbar til oppgaven); match eksisterende stil; ikke refaktorer det som funker; fjern kun egne orphans; én agent per fil.
+
 ## Reglene (kort)
 1. **Les `MÅL.md`** (fasiten) først. Alt tjener målet.
 2. **Velg ÉN lane.** Jobb kun i din lane sine filer (overlapper ikke). Lag **bare nye filer** i din mappe — rør aldri andres.
@@ -47,6 +60,7 @@ Prinsipp (Kristian): **velg alltid det som ser best ut, men gjør det til én gl
 |---|---|---|---|
 | `cinque-terre/app/landing/**`, `landing.css` | LAND | LÅST | 2026-06-21 11:35 |
 | `baatchat/**` | DASH | LÅST | 2026-06-21 11:35 |
+| `cinque-terre/app/(content)/**`, `app/news/**`, `app/discover/**`, sitemap/robots/metadata, `SEO-QUEUE.md` | SEO (krin:2.2) | LÅST | 2026-06-25 20:19 |
 | `cinque-terre/` chat-stillas (app/chat, app/(auth), app/admin/inbox, components/chat|admin|dashboard, lib/db|auth, db) | _superseded av baatchat_ | FRYST | 2026-06-21 11:35 |
 
 ## Slik unngår agentene hverandre
