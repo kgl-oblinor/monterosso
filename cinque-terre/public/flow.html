@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Monterosso — alle skjermer på én side</title>
+  <style>
+    :root {
+      --scale: 0.42;        /* phone 390×844 → thumb ~164×354 */
+      --phone-w: 390px;
+      --phone-h: 844px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #0b1622;
+      color: #e9e1cf;
+      font: 14px/1.4 -apple-system, "SF Pro Text", system-ui, sans-serif;
+      padding: 28px 24px 64px;
+    }
+    header { margin: 0 0 6px; }
+    h1 { font-size: 20px; font-weight: 600; margin: 0; letter-spacing: .2px; }
+    .sub { color: #8aa0b4; font-size: 13px; margin: 4px 0 26px; }
+    h2.group {
+      font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+      color: #ead27e; margin: 30px 0 14px; padding-bottom: 7px;
+      border-bottom: 1px solid #1d3346;
+    }
+    h2.group .note { color: #6f8498; font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 12px; margin-left: 8px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(calc(var(--phone-w) * var(--scale)), 1fr));
+      gap: 26px 22px;
+      align-items: start;
+    }
+    .card { display: flex; flex-direction: column; gap: 8px; }
+    .label { display: flex; align-items: baseline; gap: 8px; font-size: 13px; font-weight: 600; color: #e9e1cf; }
+    .open { margin-left: auto; color: #6f8498; text-decoration: none; font-weight: 400; font-size: 11px; }
+    .open:hover { color: #ead27e; }
+    .thumb {
+      width: calc(var(--phone-w) * var(--scale));
+      height: calc(var(--phone-h) * var(--scale));
+      overflow: hidden; border-radius: 14px; border: 1px solid #1d3346;
+      background: #07182a; box-shadow: 0 8px 26px rgba(0,0,0,.4); position: relative;
+    }
+    .thumb iframe {
+      width: var(--phone-w); height: var(--phone-h); border: 0;
+      transform: scale(var(--scale)); transform-origin: top left;
+    }
+    .thumb a.hit { position: absolute; inset: 0; z-index: 2; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Monterosso — alle skjermer på én side</h1>
+    <p class="sub">Levende miniatyrer (mobil 390×844, skalert). Klikk en skjerm for å åpne den i full størrelse.</p>
+  </header>
+  <div id="board"></div>
+
+  <script>
+    const DASH = "https://monterosso-app.kgl-56a.workers.dev";
+    const PREV = "https://monterosso-app-preview.kgl-56a.workers.dev";
+
+    // Each screen = a live iframe. Landing screens are same-origin (relative);
+    // dashboard screens are absolute (other worker). Deep-linked via ?screen= / routes.
+    const GROUPS = [
+      {
+        title: "Landing",
+        screens: [
+          { url: "/",                          label: "Hero (forsiden)" },
+          { url: "/?scene",                    label: "Animert scene" },
+          { url: "/?screen=book",              label: "Bestilling · kvittering" },
+          { url: "/?screen=book&step=date",    label: "Bestilling · dato" },
+          { url: "/?screen=book&step=time",    label: "Bestilling · tid" },
+          { url: "/?screen=book&step=guests",  label: "Bestilling · gjester" },
+          { url: "/?screen=book&step=done",    label: "Bestilling · send" },
+          { url: "/?screen=book&step=sent",    label: "Bestilling · bekreftelse" },
+          { url: "/?screen=boat",              label: "Båten & kapteinen" },
+          { url: "/?screen=hub",               label: "Explore (hub)" },
+          { url: "/?screen=captain",           label: "Kapteinen" },
+          { url: "/?screen=news",              label: "Nyheter / fra kysten" },
+          { url: "/?screen=service",           label: "Kundeservice" },
+          { url: "/?screen=village0",          label: "Monterosso" },
+          { url: "/?screen=village1",          label: "Vernazza" },
+          { url: "/?screen=village2",          label: "Corniglia" },
+          { url: "/?screen=village3",          label: "Manarola" },
+          { url: "/?screen=village4",          label: "Riomaggiore" },
+        ],
+      },
+      {
+        title: "Dashboard · innlogging",
+        note: "(levende — ingen innlogging trengs)",
+        screens: [
+          { url: DASH + "/login",        label: "Login (gjest)" },
+          { url: DASH + "/register",     label: "Registrer" },
+          { url: DASH + "/join",         label: "Join (invitasjon)" },
+          { url: DASH + "/admin/login",  label: "Admin login" },
+        ],
+      },
+      {
+        title: "Dashboard · innlogget — kunde",
+        note: "(levende preview, mock-sesjon)",
+        screens: [
+          { url: PREV + "/dashboard?preview=customer&section=home",          label: "Hjem" },
+          { url: PREV + "/dashboard?preview=customer&section=chat",          label: "Chat" },
+          { url: PREV + "/dashboard?preview=customer&section=trips",         label: "Turer" },
+          { url: PREV + "/dashboard?preview=customer&section=receipts",      label: "Kvitteringer" },
+          { url: PREV + "/dashboard?preview=customer&section=otherTrips",    label: "Andre reiser" },
+          { url: PREV + "/dashboard?preview=customer&section=otherCountries",label: "Andre land" },
+          { url: PREV + "/dashboard?preview=customer&section=profile",       label: "Profil" },
+        ],
+      },
+      {
+        title: "Dashboard · innlogget — skipper & admin",
+        note: "(levende preview, mock-sesjon)",
+        screens: [
+          { url: PREV + "/dashboard?preview=skipper&section=home",      label: "Hjem (skipper)" },
+          { url: PREV + "/dashboard?preview=skipper&section=trips",     label: "Mine avganger" },
+          { url: PREV + "/dashboard?preview=skipper&section=customers", label: "Kunder" },
+          { url: PREV + "/admin?preview=admin",                         label: "Admin · brukere" },
+        ],
+      },
+    ];
+
+    const board = document.getElementById("board");
+    for (const g of GROUPS) {
+      const h = document.createElement("h2");
+      h.className = "group";
+      h.innerHTML = g.title + (g.note ? '<span class="note">' + g.note + '</span>' : "");
+      board.appendChild(h);
+
+      const grid = document.createElement("div");
+      grid.className = "grid";
+      if (!g.screens.length) {
+        const p = document.createElement("p");
+        p.className = "sub";
+        p.textContent = "Hjem · Chat · Turer · Kvitteringer · Andre reiser · Andre land · Kunder · Profil · Admin";
+        grid.appendChild(p);
+      }
+      for (const s of g.screens) {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML =
+          '<div class="label">' + s.label +
+            '<a class="open" href="' + s.url + '" target="_blank" rel="noopener">åpne ↗</a>' +
+          '</div>' +
+          '<div class="thumb">' +
+            '<a class="hit" href="' + s.url + '" target="_blank" rel="noopener" aria-label="Åpne ' + s.label + '"></a>' +
+            '<iframe loading="lazy" src="' + s.url + '" title="' + s.label + '" scrolling="no"></iframe>' +
+          '</div>';
+        grid.appendChild(card);
+      }
+      board.appendChild(grid);
+    }
+  </script>
+</body>
+</html>

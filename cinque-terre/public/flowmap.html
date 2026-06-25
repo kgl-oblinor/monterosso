@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Monterosso — flyt på tvers av de fire flatene</title>
+  <style>
+    body {
+      margin: 0;
+      background: radial-gradient(120% 80% at 50% 0%, #143a52 0%, #0b1f30 55%, #07151f 100%);
+      color: #eaf2f6;
+      font: 14px/1.5 -apple-system, "SF Pro Text", system-ui, sans-serif;
+      padding: 28px 24px 80px;
+    }
+    h1 { font-size: 20px; font-weight: 600; margin: 0 0 4px; }
+    .sub { color: #9fc0d4; font-size: 13px; margin: 0 0 6px; }
+    .north { color: #cfe6f2; font-size: 13px; margin: 0 0 22px; }
+    .north b { color: #ead27e; }
+    .mermaid { background: transparent; }
+    a.board { color: #7fc7e7; }
+  </style>
+</head>
+<body>
+  <h1>Monterosso — flyt på tvers av de fire flatene</h1>
+  <p class="sub">Skipper · Landingsside · Bruker · Admin. <a class="board" href="/flow.html">Se de levende skjermene →</a></p>
+  <p class="north">🌊 Design-nordstjerne: <b>skinnende vann som bølger</b> i bakgrunnen på alle flater + <b>Apple-widget-stil</b> (squircle · SF · material/blur · myke skygger), strenge regler — ett språk overalt.</p>
+
+  <pre class="mermaid">
+flowchart TD
+  subgraph LAND["🌊 LANDINGSSIDE (offentlig)"]
+    direction TB
+    A1["Ankomst<br/>Google / SEO / lenke"]
+    A2["Om: turer · sted · båt · kaptein"]
+    A3["Bestilling<br/>dato · avgang · gjester"]
+    A1 --> A2 --> A3
+  end
+
+  subgraph USER["👤 BRUKER (kunde-dashboard)"]
+    direction TB
+    U1["Min tur (reservasjon)"]
+    U2["Chat — tur-tråd"]
+    U3["Profil → verifiser e-post + telefon<br/>🏅 Verifisert-merke"]
+    U1 --> U2
+    U1 --> U3
+  end
+
+  subgraph SKIP["⚓ SKIPPER (dashboard)"]
+    direction TB
+    S1["Min side<br/>tilbud · pris · tider · utseende · blogg"]
+    S2["Mine avganger"]
+    S3["Kunder"]
+    S4["Chat"]
+    S2 --> S3
+    S2 --> S4
+  end
+
+  subgraph ADM["🛡️ ADMIN (dashboard)"]
+    direction TB
+    D1["Ny reservasjon → tildel skipper"]
+    D2["Brukeroversikt"]
+  end
+
+  S1 ==>|"styrer / genererer"| A2
+  S1 ==> A3
+  A3 -->|"oppretter konto + reservasjon"| U1
+  A3 --> D1
+  D1 -->|"tildeler skipper"| S2
+  U2 <-->|"samme tur-tråd"| S4
+
+  classDef land fill:#0f3147,stroke:#3f9ec9,color:#eaf2f6;
+  classDef user fill:#143a2e,stroke:#3f9e4d,color:#eaf2f6;
+  classDef skip fill:#11304a,stroke:#7fc7e7,color:#eaf2f6;
+  classDef adm fill:#3a2a1c,stroke:#caa15a,color:#eaf2f6;
+  class A1,A2,A3 land;
+  class U1,U2,U3 user;
+  class S1,S2,S3,S4 skip;
+  class D1,D2 adm;
+  </pre>
+
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({ startOnLoad: true, theme: "dark", flowchart: { curve: "basis" } });
+  </script>
+</body>
+</html>
