@@ -25,6 +25,22 @@ export default function Vernazza() {
             <rect x="206" y="112" width="5" height="8" fill="var(--win)" />
             <rect x="206" y="132" width="5" height="8" fill="var(--win)" />
 
+            {/* ===== NAME PENNANT crowning the round tower ===== */}
+            {/* thin flagpole rising from the tower top */}
+            <rect x="208.4" y="64" width="1.6" height="24" fill="#5a5246" />
+            <circle cx="209.2" cy="64" r="1.5" fill="#ecc15a" />
+            {/* triangular azure pennant with Vernazza arms: gold crescent + three gold bars */}
+            <path d="M210,66 L231,70 L210,74 Z" fill="#1c5fa8" />
+            <path d="M210,66 L231,70 L210,74 Z" fill="none" stroke="#13447c" strokeWidth="0.6" />
+            {/* gold crescent (capo) */}
+            <path d="M213,68.2 a1.5,1.5 0 1 0 1.6,1.1 a1.15,1.15 0 1 1 -1.6,-1.1 Z" fill="#ecc15a" />
+            {/* three gold bars (fasce) */}
+            <rect x="212.4" y="70.4" width="13" height="0.7" fill="#ecc15a" />
+            <rect x="212" y="71.5" width="11.4" height="0.7" fill="#ecc15a" />
+            <rect x="211.6" y="72.6" width="9.6" height="0.7" fill="#ecc15a" />
+            {/* VERNAZZA name in tiny paper-cut capitals under the pennant */}
+            <text x="209" y="82" textAnchor="middle" fontFamily="Georgia, serif" fontSize="5.2" fontWeight="700" letterSpacing="0.4" fill="#13447c">VERNAZZA</text>
+
             {/* small octagonal bell tower — Santa Margherita, on the left */}
             <rect x="30" y="172" width="14" height="88" fill="#d9c59b" />
             <rect x="30" y="186" width="14" height="3" fill="#b7a079" />

@@ -46,6 +46,19 @@ export default function Monterosso() {
             <rect x="126" y="242" width="18" height="7" fill="#27483c" />
             <rect x="131" y="156" width="8" height="9" fill="#2b3a40" />
             <path d="M124,152 L135,134 L146,152 Z" fill="#9c4128" />
+            {/* Name pennant atop San Giovanni's peak — Monterosso arms: terracotta mountain + blue/white waves */}
+            <g>
+              {/* thin flagpole rising from the roof apex */}
+              <rect x="134.4" y="108" width="1.2" height="26" fill="#6b5a42" />
+              <circle cx="135" cy="108" r="1.4" fill="#ecc15a" />
+              {/* triangular pennant — top band terracotta, bottom band blue */}
+              <path d="M135.6,110 L156,113.5 L135.6,117 Z" fill="#c0492f" />
+              <path d="M135.6,117 L156,113.5 L135.6,121 Z" fill="#2f5a86" />
+              {/* tiny silver-white wave crests on the blue band */}
+              <path d="M138,119 q1.4,-1.4 2.8,0 q1.4,1.4 2.8,0" fill="none" stroke="#f1e7d2" strokeWidth="0.5" />
+              {/* town name in tiny uppercase, paper-cut readable, below the pennant */}
+              <text x="135" y="129" textAnchor="middle" fontSize="5" fontWeight="700" letterSpacing="0.3" fontFamily="Helvetica, Arial, sans-serif" fill="#6b3a26">MONTEROSSO</text>
+            </g>
             {/* a few more houses */}
             <rect x="-14" y="238" width="15" height="22" fill="#eaa345" />
             <rect x="-14" y="235" width="15" height="3.4" fill="#a9482f" />

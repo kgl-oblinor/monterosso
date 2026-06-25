@@ -107,6 +107,22 @@ export default function Riomaggiore() {
             <ellipse cx="116" cy="259.4" rx="8" ry="1.8" fill="#b83729" />
             <ellipse cx="146" cy="260" rx="10" ry="2.7" fill="#e9e4d6" />
             <ellipse cx="146" cy="259.4" rx="6.5" ry="1.6" fill="#cfc9ba" />
+
+            {/* ============ NAME PENNANT — a tiny triangular flag on a thin pole atop
+                 the RED tower-house (the eye-catch). Riomaggiore's coat of arms:
+                 green mountains rising from a blue sea, with a radiant gold sun.
+                 RIOMAGGIORE in tiny caps under the pennant. ============ */}
+            {/* thin pole rising from the red tower roof */}
+            <rect x="116.4" y="138" width="1.2" height="22" fill="#5b4636" />
+            <circle cx="117" cy="138" r="1.4" fill="#ecc164" />
+            {/* triangular pennant: blue sea band at base, green peaks, gold sun */}
+            <path d="M117,140 L141,144.5 L117,149 Z" fill="#2f7fb0" />
+            <path d="M117,145.6 L141,147 L141,144.5 L117,140 Z" fill="#3f9e4d" />
+            <path d="M119,144.4 L123,146.3 L127,144.6 L131,146.1 L135,144.8 L117,144 Z" fill="#2f8a3e" opacity="0.9" />
+            <circle cx="125" cy="143" r="2" fill="#ecc164" />
+            <path d="M125,140.4 L125.5,142.4 M127.6,141 L126.6,142.6 M129,143 L126.9,143.4 M127.6,145 L126.6,143.7 M122.4,141 L123.4,142.6 M120.8,143 L122.9,143.4 M122.4,145 L123.4,143.7" stroke="#ecc164" strokeWidth="0.5" strokeLinecap="round" />
+            {/* RIOMAGGIORE in bittesmå versaler under the pennant */}
+            <text x="117" y="156.4" fontSize="4" fontFamily="Arial, sans-serif" fontWeight="700" letterSpacing="0.1" textAnchor="middle" fill="#2f4150">RIOMAGGIORE</text>
           </g>
     </>
   );

@@ -121,6 +121,17 @@ export default function Manarola() {
             <rect x="156" y="124" width="13" height="3" fill="#4f5a55" />
             <rect x="156" y="134" width="13" height="3" fill="#4f5a55" />
 
+            {/* ===== name pennant — atop San Lorenzo's roof peak ===== */}
+            {/* thin pole rising from the church apex */}
+            <rect x="134.4" y="54" width="1.3" height="22" fill="#5f5a44" />
+            <circle cx="135.05" cy="54" r="1.5" fill="#ecc15a" />
+            {/* little triangular pennant: grape-green hoist, wine-red fly, blue tip */}
+            <path d="M135.7,55.5 L153,60 L135.7,64.5 Z" fill="#4e7d3a" />
+            <path d="M147,57.7 L153,60 L147,62.3 Z" fill="#7a2238" />
+            <path d="M150.6,59.1 L153,60 L150.6,60.9 Z" fill="#2f5d7a" />
+            {/* MANAROLA in tiny paper-cut caps under the pennant */}
+            <text x="135.7" y="71.5" fontFamily="Arial, sans-serif" fontSize="5.4" fontWeight="700" letterSpacing="0.3" fill="#5f4636">MANAROLA</text>
+
             <rect x="20" y="232" width="236" height="28" fill="url(#mtnGreen)" />
             <path d="M28,260 L120,260 Q80,253 32,256 Z" fill="#e6d4a4" />
           </g>

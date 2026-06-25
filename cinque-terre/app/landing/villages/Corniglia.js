@@ -75,6 +75,25 @@ export default function Corniglia() {
             <rect x="153" y="34" width="3" height="4" fill="var(--win)" />
             <path d="M149,30 L155.5,19 L162,30 Z" fill="#9c4128" />
 
+            {/* ===== name pennant — thin pole on the San Pietro bell tower,
+                tiny triangular flag in oker/terracotta + gold with a faint
+                antler hint (Gens Cornelia, the deer). Small & elegant. ===== */}
+            {/* thin pole rising from the tower roof peak */}
+            <rect x="155" y="4" width="1" height="16" fill="#7a5a3a" />
+            <circle cx="155.5" cy="4" r="1" fill="#ecc15a" />
+            {/* triangular pennant (terracotta/oker) flying right from the pole */}
+            <path d="M156,5.5 L170,9 L156,12.5 Z" fill="#e3a35c" />
+            {/* gold band along the hoist + a thin gold tip line */}
+            <path d="M156,5.5 L158.5,6.1 L158.5,11.9 L156,12.5 Z" fill="#ecc15a" />
+            {/* faint gold antler hint on the pennant field */}
+            <path d="M161.5,9.2 L162.6,7.6 M162.6,7.6 L161.9,7.2 M162.6,7.6 L163.6,7.4
+                     M163.8,9.4 L165,7.9 M165,7.9 L164.4,7.4 M165,7.9 L166,7.7"
+                  stroke="#ecc15a" strokeWidth="0.4" fill="none" opacity="0.85" strokeLinecap="round" />
+            {/* CORNIGLIA in tiny caps under the pennant, paper-cut legible */}
+            <text x="155.5" y="17" fontSize="4" fontWeight="700" letterSpacing="0.3"
+                  textAnchor="middle" fill="#8c3b2a"
+                  fontFamily="ui-sans-serif, system-ui, sans-serif">CORNIGLIA</text>
+
             {/* a few more houses cascading just below the crown */}
             <rect x="86" y="80" width="14" height="22" fill="#e8b06a" />
             <rect x="86" y="77" width="14" height="3.2" fill="#a9482f" />
