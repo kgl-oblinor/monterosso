@@ -3,7 +3,20 @@
 // dead ends, never invented data.
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Compass, Globe, LogOut, Mail, Phone, Receipt, Ship, User, UserPlus, Users } from "lucide-react";
+import {
+  Compass,
+  Globe,
+  LogOut,
+  Mail,
+  Phone,
+  Plus,
+  Receipt,
+  Ship,
+  Trash2,
+  User,
+  UserPlus,
+  Users,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import { useAuthStore } from "@/features/auth/store";
@@ -14,6 +27,15 @@ import {
   useUpdateProfile,
   type MyReservation,
 } from "../api/threads";
+import {
+  useAddBlogPost,
+  useDeleteBlogPost,
+  useSiteSettings,
+  useUpdateSiteSettings,
+  type Departure,
+  type SiteSettings,
+  type ThemeBackground,
+} from "../api/site";
 import { InviteDialog } from "./InviteDialog";
 import { shortcutsForRole, type SectionKey } from "../sections";
 
@@ -404,6 +426,400 @@ function ProfileSection() {
   );
 }
 
+// --- "Min side": the skipper's landing-page control panel -------------------
+
+/** A grouped inset-list card with an uppercase heading, matching the iOS Settings look. */
+function SettingsGroup({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="mt-8 first:mt-6">
+      <h2 className="px-1 text-xs font-semibold uppercase tracking-wider text-white/40">{title}</h2>
+      <div className="inset-list shadow-widget mt-3">{children}</div>
+    </div>
+  );
+}
+
+/** A single labelled row holding an arbitrary control (input/select/etc.), right-aligned. */
+function SettingRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="flex items-center gap-3 px-4 py-3.5 transition-colors focus-within:bg-white/[0.03]">
+      <span className="w-32 shrink-0 text-sm text-white/55">{label}</span>
+      <div className="flex min-w-0 flex-1 items-center justify-end gap-2">{children}</div>
+    </label>
+  );
+}
+
+const FIELD_CLASS =
+  "min-w-0 flex-1 bg-transparent text-right text-sm text-white placeholder:text-white/30 focus:outline-none";
+
+const BACKGROUNDS: { key: ThemeBackground; label: string }[] = [
+  { key: "bay", label: "Bukt" },
+  { key: "deepblue", label: "Dyp blå" },
+  { key: "villages", label: "Landsbyer" },
+  { key: "scene", label: "Scene" },
+];
+
+const BACKGROUND_SWATCH: Record<ThemeBackground, string> = {
+  bay: "linear-gradient(135deg,#2a7d8c,#0f2740)",
+  deepblue: "linear-gradient(135deg,#0f2740,#07182a)",
+  villages: "linear-gradient(135deg,#c46b3f,#7a3b2a)",
+  scene: "linear-gradient(135deg,#5f7a43,#2a3b1f)",
+};
+
+const ACCENT_PRESETS = ["#ead27e", "#c46b3f", "#5f7a43", "#2a7d8c", "#b04a3a"];
+
+/** "Min side": the editor where a skipper shapes their public landing. Grouped inset cards
+ *  (Tilbud · Pris & gjester · Tider · Utseende · Blogg). Persists via siteApi (mock → localStorage
+ *  in the demo). Save-on-explicit-button, mirroring the profile section. */
+function SiteSection() {
+  const { data, isLoading, isError } = useSiteSettings();
+  const save = useUpdateSiteSettings();
+  const addPost = useAddBlogPost();
+  const deletePost = useDeleteBlogPost();
+
+  const [listingTitle, setListingTitle] = useState("");
+  const [tagline, setTagline] = useState("");
+  const [pricePerGuest, setPricePerGuest] = useState(0);
+  const [maxGuests, setMaxGuests] = useState(0);
+  const [departures, setDepartures] = useState<Departure[]>([]);
+  const [background, setBackground] = useState<ThemeBackground>("deepblue");
+  const [accent, setAccent] = useState("#ead27e");
+  const [saved, setSaved] = useState(false);
+
+  const [newTitle, setNewTitle] = useState("");
+  const [newBody, setNewBody] = useState("");
+
+  // Prime the editor once the settings load.
+  useEffect(() => {
+    if (data) {
+      setListingTitle(data.listingTitle);
+      setTagline(data.tagline);
+      setPricePerGuest(data.pricePerGuest);
+      setMaxGuests(data.maxGuests);
+      setDepartures(data.departures);
+      setBackground(data.theme.background);
+      setAccent(data.theme.accent);
+    }
+  }, [data]);
+
+  const dirtied = () => setSaved(false);
+
+  const onSave = () => {
+    setSaved(false);
+    save.mutate(
+      {
+        listingTitle: listingTitle.trim(),
+        tagline: tagline.trim(),
+        pricePerGuest,
+        maxGuests,
+        departures,
+        theme: { background, accent },
+      },
+      { onSuccess: () => setSaved(true) }
+    );
+  };
+
+  const setDeparture = (i: number, patch: Partial<Departure>) => {
+    setDepartures((d) => d.map((dep, idx) => (idx === i ? { ...dep, ...patch } : dep)));
+    dirtied();
+  };
+
+  const addDeparture = () => {
+    setDepartures((d) => [...d, { key: `dep${Date.now()}`, label: "Ny avgang", time: "12:00" }]);
+    dirtied();
+  };
+
+  const removeDeparture = (i: number) => {
+    setDepartures((d) => d.filter((_, idx) => idx !== i));
+    dirtied();
+  };
+
+  const onAddPost = () => {
+    if (!newTitle.trim()) return;
+    addPost.mutate(
+      { title: newTitle.trim(), body: newBody.trim(), published: false },
+      {
+        onSuccess: () => {
+          setNewTitle("");
+          setNewBody("");
+        },
+      }
+    );
+  };
+
+  return (
+    <SectionFrame title="Min side">
+      {isLoading ? (
+        <p className="px-1 py-8 text-sm text-white/40">Laster …</p>
+      ) : isError || !data ? (
+        <p className="px-1 py-8 text-sm text-red-300">Kunne ikke laste innstillingene.</p>
+      ) : (
+        <div className="mx-auto w-full max-w-md pb-4">
+          <p className="text-sm leading-relaxed text-white/55">
+            Dette er kontrollpanelet ditt. Det du endrer her, styrer den offentlige landingssiden.
+          </p>
+
+          {/* Tilbud */}
+          <SettingsGroup title="Tilbud">
+            <SettingRow label="Tittel">
+              <input
+                className={FIELD_CLASS}
+                placeholder="Båt · sted"
+                value={listingTitle}
+                onChange={(e) => {
+                  setListingTitle(e.target.value);
+                  dirtied();
+                }}
+              />
+            </SettingRow>
+            <SettingRow label="Undertittel">
+              <input
+                className={FIELD_CLASS}
+                placeholder="En kort, varm linje"
+                value={tagline}
+                onChange={(e) => {
+                  setTagline(e.target.value);
+                  dirtied();
+                }}
+              />
+            </SettingRow>
+          </SettingsGroup>
+
+          {/* Pris & gjester */}
+          <SettingsGroup title="Pris & gjester">
+            <SettingRow label="Pris per gjest">
+              <input
+                type="number"
+                inputMode="numeric"
+                min={0}
+                className={FIELD_CLASS}
+                value={pricePerGuest}
+                onChange={(e) => {
+                  setPricePerGuest(Number(e.target.value));
+                  dirtied();
+                }}
+              />
+              <span className="shrink-0 text-sm text-white/40">€</span>
+            </SettingRow>
+            <SettingRow label="Maks gjester">
+              <input
+                type="number"
+                inputMode="numeric"
+                min={1}
+                className={FIELD_CLASS}
+                value={maxGuests}
+                onChange={(e) => {
+                  setMaxGuests(Number(e.target.value));
+                  dirtied();
+                }}
+              />
+            </SettingRow>
+          </SettingsGroup>
+
+          {/* Tider */}
+          <SettingsGroup title="Tider">
+            {departures.map((dep, i) => (
+              <div key={dep.key} className="flex items-center gap-2 px-4 py-3">
+                <input
+                  className="min-w-0 flex-1 bg-transparent text-sm text-white placeholder:text-white/30 focus:outline-none"
+                  placeholder="Navn"
+                  value={dep.label}
+                  onChange={(e) => setDeparture(i, { label: e.target.value })}
+                />
+                <input
+                  type="time"
+                  className="shrink-0 bg-transparent text-sm text-white/85 [color-scheme:dark] focus:outline-none"
+                  value={dep.time}
+                  onChange={(e) => setDeparture(i, { time: e.target.value })}
+                />
+                <button
+                  type="button"
+                  onClick={() => removeDeparture(i)}
+                  aria-label="Fjern avgang"
+                  className="flex size-7 shrink-0 items-center justify-center rounded-full text-white/35 transition-colors hover:bg-white/[0.06] hover:text-red-300"
+                >
+                  <Trash2 className="size-3.5" />
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addDeparture}
+              className="flex w-full items-center gap-2 px-4 py-3 text-sm text-[#ead27e]/90 transition-colors hover:bg-white/[0.03]"
+            >
+              <Plus className="size-4" />
+              Legg til avgang
+            </button>
+          </SettingsGroup>
+
+          {/* Utseende */}
+          <SettingsGroup title="Utseende">
+            <div className="px-4 py-4">
+              <p className="text-sm text-white/55">Bakgrunn</p>
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                {BACKGROUNDS.map((bg) => (
+                  <button
+                    key={bg.key}
+                    type="button"
+                    onClick={() => {
+                      setBackground(bg.key);
+                      dirtied();
+                    }}
+                    className={`flex items-center gap-2.5 rounded-xl border p-2 text-left text-sm transition-colors ${
+                      background === bg.key
+                        ? "border-[#ead27e]/60 bg-[#ead27e]/10 text-white"
+                        : "border-white/10 text-white/70 hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    <span
+                      className="size-7 shrink-0 rounded-lg shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
+                      style={{ background: BACKGROUND_SWATCH[bg.key] }}
+                    />
+                    <span className="truncate">{bg.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="px-4 py-4">
+              <p className="text-sm text-white/55">Farge</p>
+              <div className="mt-3 flex items-center gap-2.5">
+                {ACCENT_PRESETS.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => {
+                      setAccent(c);
+                      dirtied();
+                    }}
+                    aria-label={`Velg farge ${c}`}
+                    className={`size-8 rounded-full transition-transform active:scale-90 ${
+                      accent.toLowerCase() === c.toLowerCase()
+                        ? "ring-2 ring-white/80 ring-offset-2 ring-offset-[#0a1f33]"
+                        : ""
+                    }`}
+                    style={{ backgroundColor: c }}
+                  />
+                ))}
+                <label className="ml-1 flex size-8 cursor-pointer items-center justify-center rounded-full border border-white/15 text-white/50 hover:bg-white/[0.06]">
+                  <input
+                    type="color"
+                    value={accent}
+                    onChange={(e) => {
+                      setAccent(e.target.value);
+                      dirtied();
+                    }}
+                    className="size-0 opacity-0"
+                  />
+                  <Plus className="size-4" />
+                </label>
+              </div>
+            </div>
+          </SettingsGroup>
+
+          {save.isError && (
+            <p className="mt-4 text-sm text-red-300">{(save.error as Error).message}</p>
+          )}
+          {saved && !save.isPending && <p className="mt-4 text-sm text-[#ead27e]">Lagret.</p>}
+
+          <button
+            type="button"
+            onClick={onSave}
+            disabled={save.isPending}
+            className="mt-6 w-full rounded-full bg-[#ead27e] px-5 py-3 text-sm font-semibold text-[#07182a] shadow-widget transition-[transform,background-color] hover:bg-[#f0dd9a] active:scale-[0.98] disabled:opacity-50"
+          >
+            {save.isPending ? "Lagrer …" : "Lagre endringer"}
+          </button>
+
+          {/* Blogg */}
+          <SettingsGroup title="Blogg">
+            {data.blogPosts.length === 0 ? (
+              <p className="px-4 py-4 text-sm text-white/40">Ingen innlegg ennå.</p>
+            ) : (
+              data.blogPosts.map((post) => (
+                <div key={post.id} className="flex items-start gap-3 px-4 py-3.5">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-white/85">{post.title}</p>
+                    {post.body && (
+                      <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-white/45">
+                        {post.body}
+                      </p>
+                    )}
+                  </div>
+                  <PublishToggle post={post} />
+                  <button
+                    type="button"
+                    onClick={() => deletePost.mutate(post.id)}
+                    aria-label="Slett innlegg"
+                    className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full text-white/35 transition-colors hover:bg-white/[0.06] hover:text-red-300"
+                  >
+                    <Trash2 className="size-3.5" />
+                  </button>
+                </div>
+              ))
+            )}
+          </SettingsGroup>
+
+          <div className="mt-3">
+            <div className="inset-list shadow-widget">
+              <div className="px-4 py-3">
+                <input
+                  className="w-full bg-transparent text-sm text-white placeholder:text-white/30 focus:outline-none"
+                  placeholder="Tittel på nytt innlegg"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                />
+              </div>
+              <div className="px-4 py-3">
+                <textarea
+                  rows={3}
+                  className="w-full resize-none bg-transparent text-sm leading-relaxed text-white placeholder:text-white/30 focus:outline-none"
+                  placeholder="Skriv litt …"
+                  value={newBody}
+                  onChange={(e) => setNewBody(e.target.value)}
+                />
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={onAddPost}
+              disabled={!newTitle.trim() || addPost.isPending}
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-white/10 px-5 py-3 text-sm font-semibold text-white/70 transition-colors hover:border-[#ead27e]/40 hover:bg-[#ead27e]/10 hover:text-[#ead27e] active:scale-[0.98] disabled:opacity-50"
+            >
+              <Plus className="size-4" />
+              {addPost.isPending ? "Legger til …" : "Nytt innlegg"}
+            </button>
+          </div>
+        </div>
+      )}
+    </SectionFrame>
+  );
+}
+
+/** Publish toggle for a blog post. Persists by re-saving the full posts array through the
+ *  settings update so a real backend can mirror it without a dedicated endpoint. */
+function PublishToggle({ post }: { post: SiteSettings["blogPosts"][number] }) {
+  const { data } = useSiteSettings();
+  const save = useUpdateSiteSettings();
+  const toggle = () => {
+    const blogPosts = (data?.blogPosts ?? []).map((p) =>
+      p.id === post.id ? { ...p, published: !p.published } : p
+    );
+    save.mutate({ blogPosts });
+  };
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      className={`mt-0.5 shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+        post.published
+          ? "bg-[#ead27e]/15 text-[#ead27e]"
+          : "bg-white/[0.06] text-white/55 hover:bg-white/[0.1]"
+      }`}
+    >
+      {post.published ? "Publisert" : "Skjult"}
+    </button>
+  );
+}
+
 /** Renders the active non-chat section. Chat is handled by DashboardLayout itself. */
 export function SectionView({
   section,
@@ -419,6 +835,8 @@ export function SectionView({
       return <ProfileSection />;
     case "trips":
       return <TripsSection />;
+    case "site":
+      return <SiteSection />;
     case "receipts":
       return (
         <SectionFrame title="Kvitteringer">

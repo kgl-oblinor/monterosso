@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "@/features/auth/store";
 import { useConversations } from "../api/threads";
 import { DEFAULT_SECTION, type SectionKey } from "../sections";
+import { previewSection } from "@/app/preview";
 import { IconRail } from "./IconRail";
 import { ConversationsPanel } from "./ConversationsPanel";
 import { ChatThread } from "./ChatThread";
@@ -23,8 +24,9 @@ export function DashboardLayout() {
   const contactsLabel =
     myRole === "customer" ? "Skippere" : myRole === "skipper" ? "Kunder" : "Kontakter";
   const { conversations, isLoading, isError } = useConversations();
-  // Which top-level section is shown. On sign-in everyone lands on the calm Hjem overview.
-  const [section, setSection] = useState<SectionKey>(DEFAULT_SECTION);
+  // Which top-level section is shown. On sign-in everyone lands on the calm Hjem overview
+  // (unless the flow-overview board deep-links a section via ?section=).
+  const [section, setSection] = useState<SectionKey>(() => previewSection() ?? DEFAULT_SECTION);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   // Mobile-only: which pane is visible. Ignored at md+ (both always show).
   const [mobileView, setMobileView] = useState<"list" | "thread">("list");

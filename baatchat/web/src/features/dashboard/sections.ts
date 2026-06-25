@@ -4,7 +4,7 @@
 // MÅL menu order (customer-facing): Chat · Turer · Kvitteringer · Andre reiser · Andre land.
 // On sign-in we land on a calm "Hjem" overview (not straight into chat) — Hjem sits at the
 // top of the rail, with Chat right below it. The profile avatar lives at the bottom (IconRail).
-import { Anchor, Compass, Globe, MessageSquare, Receipt, Ship, Users } from "lucide-react";
+import { Anchor, Compass, Globe, LayoutPanelLeft, MessageSquare, Receipt, Ship, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import type { UserRole } from "@/features/auth/api/types";
@@ -17,6 +17,7 @@ export type SectionKey =
   | "otherTrips"
   | "otherCountries"
   | "customers"
+  | "site"
   | "profile"; // reached via the avatar at the bottom of the rail, not a nav item
 
 /** Where every role lands on sign-in: the calm home overview. */
@@ -45,6 +46,7 @@ const SKIPPER_NAV: NavItem[] = [
   CHAT,
   { key: "trips", icon: Compass, label: "Mine avganger" },
   { key: "customers", icon: Users, label: "Kunder" },
+  { key: "site", icon: LayoutPanelLeft, label: "Min side" },
 ];
 
 /** The nav items for a role. Unknown/admin roles fall back to Hjem + Chat. */
