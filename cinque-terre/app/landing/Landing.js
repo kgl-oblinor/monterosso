@@ -333,7 +333,7 @@ export default function Landing() {
       <Skyline />
 
       {/* Vernazza's clock tower — a live clock; click opens Vernazza's page */}
-      <ClockTower onOpen={() => setVillageIdx(1)} />
+      <ClockTower onOpen={() => setVillageIdx(0)} />
 
       {/* trail signpost — the five villages; each board opens its page */}
       <Signpost onSelect={(i) => setVillageIdx(i)} />

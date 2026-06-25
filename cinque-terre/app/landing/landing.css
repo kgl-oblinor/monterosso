@@ -163,7 +163,7 @@
 .landing-v2 .clocktower {
   position: fixed;
   bottom: calc(50% - 7px);
-  left: 28%;
+  left: 12%; /* moved over Monterosso — its own campanile */
   width: clamp(56px, 7vw, 100px);
   margin: 0;
   padding: 0;

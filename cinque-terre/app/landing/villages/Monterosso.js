@@ -12,14 +12,14 @@ export default function Monterosso() {
             <use href="#bush" transform="translate(60,214) scale(1.1)" />
             <use href="#bush" transform="translate(96,210)" />
             <use href="#cypress" transform="translate(30,212)" />
-            <rect x="6" y="228" width="20" height="32" fill="#e3a35c" />
+            <rect x="6" y="228" width="20" height="32" fill="#f0a83e" />
             <rect x="6" y="225" width="20" height="4" fill="#a9482f" />
-            <rect x="27" y="220" width="18" height="40" fill="#dd6f5a" />
+            <rect x="27" y="220" width="18" height="40" fill="#e35a3f" />
             <rect x="27" y="217" width="18" height="4" fill="#8c3b2a" />
-            <rect x="46" y="230" width="20" height="30" fill="#ecc164" />
+            <rect x="46" y="230" width="20" height="30" fill="#f4c63e" />
             <rect x="46" y="227" width="20" height="4" fill="#a9482f" />
-            <rect x="156" y="232" width="18" height="28" fill="#e58a6e" />
-            <rect x="174" y="236" width="16" height="24" fill="#e3a35c" />
+            <rect x="156" y="232" width="18" height="28" fill="#ef7a52" />
+            <rect x="174" y="236" width="16" height="24" fill="#f0a83e" />
             <rect x="40" y="220" width="5" height="40" fill="#000000" opacity="0.12" />
             <rect x="61" y="230" width="5" height="30" fill="#000000" opacity="0.12" />
             <rect x="13" y="234" width="3" height="4" fill="var(--win)" />
@@ -46,16 +46,41 @@ export default function Monterosso() {
             <rect x="131" y="156" width="8" height="9" fill="#2b3a40" />
             <path d="M124,152 L135,134 L146,152 Z" fill="#9c4128" />
             {/* a few more houses */}
-            <rect x="-14" y="238" width="15" height="22" fill="#e0a060" />
+            <rect x="-14" y="238" width="15" height="22" fill="#eaa345" />
             <rect x="-14" y="235" width="15" height="3.4" fill="#a9482f" />
             <rect x="-8" y="244" width="3" height="4" fill="var(--win)" />
-            <rect x="68" y="232" width="17" height="28" fill="#d98a6e" />
+            <rect x="68" y="232" width="17" height="28" fill="#e07a55" />
             <rect x="68" y="229" width="17" height="3.4" fill="#8c3b2a" />
             <rect x="74" y="240" width="3" height="4" fill="var(--win)" />
-            <rect x="196" y="242" width="16" height="18" fill="#ecc97a" />
+            <rect x="196" y="242" width="16" height="18" fill="#f4cf52" />
             <rect x="196" y="239" width="16" height="3.2" fill="#a9482f" />
             <rect x="201" y="247" width="3" height="4" fill="var(--win)" />
             <rect x="-25" y="222" width="305" height="38" fill="url(#mtnGreen)" />
+            {/* Fegina beach — warm sand strip in front of the cliff */}
+            <path d="M150,260 L150,253 Q200,248 248,256 L248,260 Z" fill="#f0dca0" />
+            {/* row of colored parasols on the beach */}
+            <g>
+              <path d="M158,253 a6,4 0 0 1 12,0 Z" fill="#e3493a" />
+              <rect x="163.4" y="253" width="1.2" height="7" fill="#7a5a3a" />
+              <path d="M172,254 a6,4 0 0 1 12,0 Z" fill="#f0a83e" />
+              <rect x="177.4" y="254" width="1.2" height="6" fill="#7a5a3a" />
+              <path d="M186,253 a6,4 0 0 1 12,0 Z" fill="#f4c63e" />
+              <rect x="191.4" y="253" width="1.2" height="7" fill="#7a5a3a" />
+              <path d="M200,254 a6,4 0 0 1 12,0 Z" fill="#dd6f8a" />
+              <rect x="205.4" y="254" width="1.2" height="6" fill="#7a5a3a" />
+              <path d="M214,253 a6,4 0 0 1 12,0 Z" fill="#e3493a" />
+              <rect x="219.4" y="253" width="1.2" height="7" fill="#7a5a3a" />
+            </g>
+            {/* Il Gigante — the 14m armless concrete Neptune growing from the cliff */}
+            <g>
+              <rect x="226" y="218" width="18" height="42" fill="#9a948a" />
+              <rect x="225" y="224" width="20" height="9" fill="#8a8478" />
+              <path d="M226,260 L226,238 L218,260 Z" fill="#a39c90" />
+              <path d="M244,260 L244,238 L252,260 Z" fill="#8a8478" />
+              <rect x="231" y="206" width="8" height="13" fill="#a39c90" />
+              <path d="M229,207 Q235,198 241,207 Z" fill="#9a948a" />
+              <rect x="244" y="220" width="4" height="40" fill="#000000" opacity="0.14" />
+            </g>
             <path d="M-20,259 L150,259 Q60,252 -20,256 Z" fill="#ead9b0" />
           </g>
     </>
