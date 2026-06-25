@@ -126,7 +126,10 @@ export default function Landing() {
   // Scene-only sandbox: ?scene in the URL hides all text/UI, leaving just the living scene.
   const [sceneOnly, setSceneOnly] = useState(false);
   useEffect(() => {
-    setSceneOnly(new URLSearchParams(window.location.search).has("scene"));
+    if (new URLSearchParams(window.location.search).has("scene")) {
+      setSceneOnly(true);
+      setBg("scene"); // force the living animated scene, not a photo backdrop
+    }
   }, []);
   useEffect(() => {
     const saved = localStorage.getItem("theme");
