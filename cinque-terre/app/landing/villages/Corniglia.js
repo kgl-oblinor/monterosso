@@ -11,8 +11,17 @@ export default function Corniglia() {
     <>
           {/* ===================== CORNIGLIA (hilltop) ===================== */}
           <g transform="translate(600,0)">
-            {/* tall, steep cliff peak rising to the summit */}
-            <path d="M-40,260 Q40,120 110,46 Q150,18 190,48 Q262,124 300,260 Z" fill="url(#hillGrad)" />
+            {/* soft cliff/beach foot UNDER the scene — a rocky shelf that eases
+                the hill into the real sea below (no blue water of our own; this
+                just rounds off the base so the cliff doesn't plunge abruptly).
+                Drawn first so it sits beneath hill, rock band and houses. */}
+            <path d="M-44,260 Q-10,251 32,253 Q90,257 150,255 Q216,257 270,253 Q300,251 304,260 Z"
+                  fill="url(#rockGrad)" opacity="0.55" />
+            <path d="M-28,260 Q40,252 110,256 Q180,259 248,255 Q288,252 296,260 Z"
+                  fill="url(#hillGrad)" opacity="0.45" />
+            {/* tall, steep cliff peak rising to the summit — base eased into soft
+                curves at both flanks so it meets the sea gently, not vertically */}
+            <path d="M-50,260 Q-12,250 28,244 Q70,182 110,46 Q150,18 190,48 Q232,184 274,244 Q314,250 312,260 Z" fill="url(#hillGrad)" />
             {/* terraced-vineyard lines (fasce) sweeping down both flanks — exaggerated */}
             <path d="M22,232 Q150,196 278,234" stroke="var(--terrace2)" strokeWidth="3.4" fill="none" opacity="0.95" />
             <path d="M14,216 Q150,176 286,218" stroke="var(--terrace)" strokeWidth="3.2" fill="none" opacity="0.95" />
@@ -21,8 +30,9 @@ export default function Corniglia() {
             <path d="M52,160 Q150,114 244,162" stroke="var(--terrace2)" strokeWidth="2.6" fill="none" opacity="0.85" />
             <path d="M66,140 Q150,98 230,142" stroke="var(--terrace)" strokeWidth="2.4" fill="none" opacity="0.85" />
             <path d="M82,120 Q150,86 214,122" stroke="var(--terrace2)" strokeWidth="2.2" fill="none" opacity="0.8" />
-            {/* bare rock band along the base of the cliff */}
-            <path d="M-40,260 L300,260 L300,236 Q130,228 -40,240 Z" fill="url(#rockGrad)" />
+            {/* bare rock band along the base of the cliff — soft curved top edge,
+                rounded ends so it eases into the foot instead of cutting straight */}
+            <path d="M-46,260 Q126,256 308,260 L308,238 Q220,230 150,234 Q60,232 -46,242 Z" fill="url(#rockGrad)" />
             {/* cypress + bushes terracing the slope */}
             <use href="#cypress" transform="translate(50,216) scale(1.1)" />
             <use href="#cypress" transform="translate(240,216) scale(1.05)" />
@@ -31,6 +41,11 @@ export default function Corniglia() {
             <use href="#bush" transform="translate(92,228)" />
             <use href="#bush" transform="translate(214,230) scale(1.15)" />
             <use href="#bush" transform="translate(60,236) scale(0.9)" />
+
+            {/* summit foundation ledge — a solid rock shelf the cluster sits ON,
+                so the houses are grounded on the ridge, not floating on the peak */}
+            <path d="M88,98 Q150,90 208,98 L208,96 Q150,86 88,96 Z" fill="url(#rockGrad)" />
+            <path d="M90,96 Q150,88 206,96 L206,94 Q150,85 90,94 Z" fill="url(#hillGrad)" opacity="0.85" />
 
             {/* ===== house cluster perched ON THE SUMMIT (warm pastels) ===== */}
             <rect x="116" y="60" width="16" height="36" fill="#e89a4e" />

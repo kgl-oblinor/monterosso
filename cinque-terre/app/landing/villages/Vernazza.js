@@ -7,8 +7,8 @@ export default function Vernazza() {
           {/* ===================== VERNAZZA ===================== */}
           <g transform="translate(330,0)">
             {/* hills + the dramatic cliff headland the tower sits on */}
-            <path d="M-30,260 Q20,212 82,216 Q120,219 140,260 Z" fill="url(#hillGrad)" />
-            <path d="M150,260 Q196,120 226,124 Q244,128 256,260 Z" fill="url(#rockGrad)" />
+            <path d="M-30,260 Q20,212 82,216 Q124,221 150,260 Z" fill="url(#hillGrad)" />
+            <path d="M148,260 Q172,200 196,124 Q214,128 230,168 Q246,210 258,260 Z" fill="url(#rockGrad)" />
             <use href="#bush" transform="translate(40,214)" />
             <use href="#cypress" transform="translate(20,216) scale(0.9)" />
 
@@ -89,10 +89,6 @@ export default function Vernazza() {
 
             {/* green veil */}
             <rect x="-30" y="222" width="286" height="38" fill="url(#mtnGreen)" />
-            {/* suggest the little harbor inlet at the very bottom, in front */}
-            <path d="M100,260 Q123,252 146,260 Z" fill="#1f6b78" opacity="0.85" />
-            <path d="M96,260 Q103,257 110,259 Z" fill="#ead9b0" />
-            <path d="M138,260 Q145,257 150,259 Z" fill="#ead9b0" />
           </g>
     </>
   );

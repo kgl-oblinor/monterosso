@@ -10,23 +10,17 @@ export default function Manarola() {
               pink/yellow/coral/orange houses climbing the rock; deep-blue cove with
               boats below; San Lorenzo church with rose window crowns the ridge. */}
           <g transform="translate(880,0)">
-            {/* steep cliff the town climbs */}
-            <path d="M20,260 L20,150 Q60,96 130,108 Q190,120 210,210 L214,260 Z" fill="url(#rockGrad)" />
-            <path d="M150,260 Q190,150 236,180 Q252,190 252,260 Z" fill="#4f5a55" />
+            {/* steep cliff the town climbs — natural curved silhouette, no vertical wall */}
+            <path d="M20,260 Q24,200 40,160 Q66,104 130,108 Q186,116 206,178 Q220,224 218,260 Z" fill="url(#rockGrad)" />
+            <path d="M150,260 Q180,184 214,176 Q240,172 248,210 Q254,238 252,260 Z" fill="#4f5a55" />
 
-            {/* deep-blue cove + harbour at the foot of the cliff */}
-            <rect x="20" y="248" width="236" height="12" fill="#1f4f6b" />
-            <rect x="20" y="252" width="236" height="8" fill="#173f57" />
-            <path d="M28,260 Q70,242 116,246 L128,260 Z" fill="#2a5e7d" />
-            {/* little boats in the harbour */}
-            <ellipse cx="48" cy="255" rx="8" ry="2.4" fill="#d8443a" />
-            <rect x="47" y="249" width="1.5" height="6" fill="#7a2f20" />
-            <ellipse cx="70" cy="257" rx="8" ry="2.4" fill="#ecc15a" />
-            <rect x="69" y="251" width="1.5" height="6" fill="#8c6a22" />
-            <ellipse cx="92" cy="255" rx="7" ry="2.2" fill="#e9e4d6" />
-            <ellipse cx="112" cy="257" rx="7" ry="2.2" fill="#e3793a" />
+            {/* one discreet boat resting at the waterline against the cliff foot */}
+            <ellipse cx="50" cy="259" rx="8" ry="2.2" fill="#d8443a" />
+            <rect x="49" y="253.5" width="1.5" height="5" fill="#7a2f20" />
 
             {/* ===== STACKED CLIFF HOUSES — the hero: a vertical column rising ===== */}
+            {/* terrace ledge under bottom row — anchors houses to the cliff foot */}
+            <path d="M36,251 Q66,246 98,249 L98,254 Q66,251 36,256 Z" fill="#76705f" />
             {/* bottom row at the water */}
             <rect x="40" y="226" width="18" height="24" fill="#dd7a86" />
             <rect x="40" y="223" width="18" height="4" fill="#a9482f" />
@@ -43,6 +37,8 @@ export default function Manarola() {
             <rect x="89" y="224" width="4" height="26" fill="#000000" opacity="0.12" />
             <rect x="81" y="231" width="3.5" height="5" fill="var(--win)" />
 
+            {/* terrace ledge under second row */}
+            <path d="M46,229 Q78,224 110,227 L110,232 Q78,229 46,234 Z" fill="#8a8478" />
             {/* second row, stepped higher */}
             <rect x="50" y="196" width="18" height="32" fill="#e89a4e" />
             <rect x="50" y="193" width="18" height="4" fill="#a9482f" />
@@ -61,6 +57,8 @@ export default function Manarola() {
             <rect x="92" y="202" width="3.5" height="5" fill="var(--win)" />
             <rect x="92" y="214" width="3.5" height="5" fill="var(--win)" />
 
+            {/* terrace ledge under third row */}
+            <path d="M56,199 Q86,194 116,197 L116,202 Q86,199 56,204 Z" fill="#76705f" />
             {/* third row, higher still — pinks + coral */}
             <rect x="60" y="166" width="18" height="32" fill="#dd7a86" />
             <rect x="60" y="163" width="18" height="4" fill="#a9482f" />
@@ -77,6 +75,8 @@ export default function Manarola() {
             <rect x="110" y="170" width="4" height="28" fill="#000000" opacity="0.12" />
             <rect x="102" y="178" width="3.5" height="5" fill="var(--win)" />
 
+            {/* terrace ledge under top cluster */}
+            <path d="M96,173 Q116,169 138,172 L138,177 Q116,174 96,178 Z" fill="#8a8478" />
             {/* top cluster near the ridge */}
             <rect x="100" y="138" width="18" height="34" fill="#e58a6e" />
             <rect x="100" y="135" width="18" height="4" fill="#8c3b2a" />
@@ -88,6 +88,8 @@ export default function Manarola() {
             <rect x="130" y="148" width="4" height="24" fill="#000000" opacity="0.12" />
             <rect x="123" y="156" width="3.5" height="5" fill="var(--win)" />
 
+            {/* stepped ledge under the right flank — each house sits on the rock below it */}
+            <path d="M132,231 L151,231 L151,235 L168,235 Q186,237 200,245 L200,249 Q186,241 168,239 L151,239 L151,235 L132,235 Z" fill="#76705f" />
             {/* right flank houses tumbling down toward the sea */}
             <rect x="134" y="186" width="17" height="44" fill="#d98a86" />
             <rect x="134" y="183" width="17" height="4" fill="#8c3b2a" />

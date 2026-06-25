@@ -9,14 +9,19 @@ export default function Riomaggiore() {
               tiny harbor. The RED tower-house is tallest and stands out as the eye-catch.
               Overdriven peach / coral / saffron / pink / ochre. */}
           <g transform="translate(1150,0)">
-            {/* ---- the gorge: two rocky flanks plunging to a narrow notch ---- */}
-            <path d="M-10,260 Q26,150 70,150 L92,260 Z" fill="url(#rockGrad)" />
-            <path d="M214,260 Q256,150 292,162 L292,260 Z" fill="url(#rockGrad)" />
-            <path d="M-10,260 Q26,150 46,150 Q38,200 24,260 Z" fill="#565a52" />
+            {/* ---- the gorge: two rocky flanks curving down to a narrow notch ---- */}
+            <path d="M-10,260 Q22,154 70,150 Q88,162 92,200 Q94,232 90,260 Z" fill="url(#rockGrad)" />
+            <path d="M214,260 Q230,202 232,166 Q252,150 292,162 Q294,206 292,260 Z" fill="url(#rockGrad)" />
+            <path d="M-10,260 Q22,158 46,150 Q40,204 24,260 Z" fill="#565a52" />
             <path d="M36,158 Q54,148 72,152 Q58,168 42,166 Z" fill="url(#hillGrad)" />
             <path d="M236,168 Q262,156 292,164 Q268,178 244,176 Z" fill="url(#hillGrad)" />
             <use href="#bush" transform="translate(54,156) scale(0.85)" />
             <use href="#cypress" transform="translate(262,168) scale(0.85)" />
+
+            {/* ---- cliff terrace the cascade sits on: a stepped rock shelf under the
+                 stacked houses so each row rests on ground, not mid-air ---- */}
+            <path d="M52,260 Q56,210 76,196 Q100,180 116,170 Q150,182 178,206 Q198,224 206,260 Z" fill="url(#rockGrad)" />
+            <path d="M64,260 Q70,222 92,208 Q120,192 140,210 Q166,230 176,260 Z" fill="#5e6258" opacity="0.55" />
 
             {/* ============ CASCADE — left flank tumbling down the gorge ============ */}
             {/* high & tall up the flank, getting lower toward the central notch */}
@@ -76,15 +81,8 @@ export default function Riomaggiore() {
             <rect x="131" y="248" width="5" height="12" fill="#3a2418" />
             <rect x="95" y="248" width="5" height="12" fill="#3a2418" />
 
-            {/* ============ tiny harbor at the bottom — boats hinted ============ */}
-            <ellipse cx="118" cy="255" rx="13" ry="3.2" fill="#d8443a" />
-            <ellipse cx="118" cy="254" rx="9" ry="2" fill="#b83729" />
-            <ellipse cx="146" cy="258" rx="11" ry="3" fill="#e9e4d6" />
-            <ellipse cx="146" cy="257" rx="7" ry="1.8" fill="#cfc9ba" />
-            <ellipse cx="100" cy="259" rx="8" ry="2.4" fill="#3f6f86" />
-
             {/* rocky outcrop so the watchtower stands on the cliff, not mid-air */}
-            <path d="M216,260 L222,186 Q243,168 264,186 L270,260 Z" fill="url(#rockGrad)" />
+            <path d="M214,260 Q220,224 224,190 Q243,168 262,188 Q268,224 272,260 Z" fill="url(#rockGrad)" />
             {/* castle watchtower on the cliff (kept) */}
             <rect x="232" y="150" width="22" height="34" fill="#8a8478" />
             <rect x="230" y="144" width="26" height="7" fill="#76705f" />
@@ -97,8 +95,18 @@ export default function Riomaggiore() {
             <rect x="208" y="229" width="14" height="3.4" fill="#a9482f" />
             <rect x="213" y="239" width="3" height="4" fill="var(--win)" />
 
-            <rect x="-14" y="222" width="314" height="38" fill="url(#mtnGreen)" />
-            <path d="M96,260 L172,260 Q134,254 102,257 Z" fill="#ead9b0" />
+            {/* green vegetation veil hugging the village base, lifting away from the
+                central harbor notch so the waterline (y=260) stays open sea there */}
+            <path d="M-14,222 L300,222 L300,260 L168,260 Q156,250 130,250 Q104,250 92,260 L-14,260 Z" fill="url(#mtnGreen)" />
+            {/* narrow quay/jetty the boats moor against, at the waterline */}
+            <path d="M98,260 L166,260 Q134,256 102,258 Z" fill="#ead9b0" />
+            {/* ============ boats resting at the waterline (y=260) where the town
+                 meets the real sea below — hulls sit half-cut by the bottom edge so
+                 they float on water, not on the green/land ============ */}
+            <ellipse cx="116" cy="260" rx="12" ry="3" fill="#d8443a" />
+            <ellipse cx="116" cy="259.4" rx="8" ry="1.8" fill="#b83729" />
+            <ellipse cx="146" cy="260" rx="10" ry="2.7" fill="#e9e4d6" />
+            <ellipse cx="146" cy="259.4" rx="6.5" ry="1.6" fill="#cfc9ba" />
           </g>
     </>
   );
