@@ -17,6 +17,14 @@ export default function Skyline() {
             <stop offset="0" stopColor="var(--veg-green)" stopOpacity="0" />
             <stop offset="1" stopColor="var(--veg-green)" stopOpacity="0.42" />
           </linearGradient>
+          <linearGradient id="farHills" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#b8c9af" />
+            <stop offset="1" stopColor="#94ac8c" />
+          </linearGradient>
+          <linearGradient id="farHillsNear" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#a3bb98" />
+            <stop offset="1" stopColor="#7e9a75" />
+          </linearGradient>
           <linearGradient id="hillGrad" x1="0.2" y1="0" x2="0.7" y2="1">
             <stop offset="0" stopColor="var(--hill-top)" />
             <stop offset="1" stopColor="var(--hill-bot)" />
@@ -37,6 +45,16 @@ export default function Skyline() {
         </defs>
 
         <g transform="translate(0,416) scale(1,1.6) translate(0,-260)">
+          {/* Distant green hills / meadows on the horizon — two hazy rolling
+              ridges behind every village, no houses, just soft silhouettes. */}
+          <path
+            d="M-60,260 L-60,222 Q90,206 240,216 Q400,228 560,212 Q720,200 880,214 Q1040,226 1200,210 Q1360,200 1500,214 L1500,260 Z"
+            fill="url(#farHills)"
+          />
+          <path
+            d="M-60,260 L-60,234 Q120,220 300,228 Q470,236 650,222 Q820,210 1000,224 Q1180,236 1360,222 Q1440,216 1500,224 L1500,260 Z"
+            fill="url(#farHillsNear)"
+          />
           <Monterosso />
           <Vernazza />
           <Corniglia />

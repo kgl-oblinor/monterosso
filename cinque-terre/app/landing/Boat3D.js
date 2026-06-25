@@ -76,7 +76,15 @@ export default function Boat3D({ theme }) {
     camera.position.set(0, 1.5, 3.6);
     camera.lookAt(0, -0.1, -7);
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    // If the browser can't give us a WebGL context (GPU disabled, blocklisted,
+    // headless, old device), bail out gracefully — the boat just won't render,
+    // but the rest of the landing page stays fully alive.
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    } catch (err) {
+      return;
+    }
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     renderer.setSize(w, h);
     renderer.setClearColor(0x000000, 0);

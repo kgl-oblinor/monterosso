@@ -156,7 +156,7 @@ export default function Landing() {
   // Scroll / swipe / button all bring the booking card in as an overlay —
   // same screen, no navigation.
   const [showBook, setShowBook] = useState(false);
-  const [bg, setBg] = useState("bay"); // "scene" | photo key — land on the aerial bay photo by default
+  const [bg, setBg] = useState("deepblue"); // "scene" | photo key — land on the open-sea aerial photo by default
   const bgSrc = BGS.find((b) => b.key === bg)?.src;
   const [villageIdx, setVillageIdx] = useState(null); // open village page (0–4) or null
   const [showBoat, setShowBoat] = useState(false); // "the boat & her captain" page
@@ -164,6 +164,22 @@ export default function Landing() {
   const [showCaptain, setShowCaptain] = useState(false); // the captain's own page
   const [showNews, setShowNews] = useState(false); // news / from the coast
   const [showService, setShowService] = useState(false); // customer service / help
+  // Deep-link a single screen for the flow-overview board (public/flow.html):
+  // ?screen=book|boat|hub|captain|news|service|village0..village4 opens it on load.
+  useEffect(() => {
+    const s = new URLSearchParams(window.location.search).get("screen");
+    if (!s) return;
+    if (s === "book") setShowBook(true);
+    else if (s === "boat") setShowBoat(true);
+    else if (s === "hub") setShowHub(true);
+    else if (s === "captain") setShowCaptain(true);
+    else if (s === "news") setShowNews(true);
+    else if (s === "service") setShowService(true);
+    else if (s.startsWith("village")) {
+      const i = parseInt(s.slice(7), 10);
+      if (i >= 0 && i <= 4) setVillageIdx(i);
+    }
+  }, []);
   // any popup open → hide everything "alive" (boat, hero, animations); only the
   // still backdrop (sky or photo) stays behind the glass popup
   const anyOpen =
@@ -846,6 +862,17 @@ function BookingForm({ active }) {
     const { slot: guessSlot, iso: guessIso } = nextDeparture();
     setSlot(guessSlot);
     setDate((d) => d || guessIso);
+  }, []);
+
+  // Deep-link a single booking step for the flow-overview board (public/flow.html):
+  // ?screen=book&step=receipt|date|time|guests|done|sent jumps straight to it.
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search);
+    if (sp.get("screen") !== "book") return;
+    const st = sp.get("step");
+    if (st === "sent") setSent(true);
+    else if (st === "done") setDone(true);
+    else if (st === "date" || st === "time" || st === "guests") setStep(st);
   }, []);
 
   // pick a date tile → set it and return to the receipt

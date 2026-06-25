@@ -14,17 +14,12 @@ export default function Manarola() {
             <path d="M20,260 Q24,200 40,160 Q66,104 130,108 Q186,116 206,178 Q220,224 218,260 Z" fill="url(#rockGrad)" />
             <path d="M150,260 Q180,184 214,176 Q240,172 248,210 Q254,238 252,260 Z" fill="#4f5a55" />
 
-            {/* one discreet boat resting at the waterline against the cliff foot */}
-            <ellipse cx="50" cy="259" rx="8" ry="2.2" fill="#d8443a" />
-            <rect x="49" y="253.5" width="1.5" height="5" fill="#7a2f20" />
-
             {/* ===== STACKED CLIFF HOUSES — the hero: a vertical column rising ===== */}
             {/* terrace ledge under bottom row — anchors houses to the cliff foot */}
             <path d="M36,251 Q66,246 98,249 L98,254 Q66,251 36,256 Z" fill="#76705f" />
             {/* bottom row at the water */}
             <rect x="40" y="226" width="18" height="24" fill="#dd7a86" />
             <rect x="40" y="223" width="18" height="4" fill="#a9482f" />
-            <rect x="40" y="226" width="18" height="24" fill="#dd7a86" />
             <rect x="54" y="226" width="4" height="24" fill="#000000" opacity="0.12" />
             <rect x="46" y="233" width="3.5" height="5" fill="var(--win)" />
             <rect x="58" y="220" width="18" height="30" fill="#ecc15a" />

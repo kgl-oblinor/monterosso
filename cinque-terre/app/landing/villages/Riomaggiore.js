@@ -98,15 +98,6 @@ export default function Riomaggiore() {
             {/* green vegetation veil hugging the village base, lifting away from the
                 central harbor notch so the waterline (y=260) stays open sea there */}
             <path d="M-14,222 L300,222 L300,260 L168,260 Q156,250 130,250 Q104,250 92,260 L-14,260 Z" fill="url(#mtnGreen)" />
-            {/* narrow quay/jetty the boats moor against, at the waterline */}
-            <path d="M98,260 L166,260 Q134,256 102,258 Z" fill="#ead9b0" />
-            {/* ============ boats resting at the waterline (y=260) where the town
-                 meets the real sea below — hulls sit half-cut by the bottom edge so
-                 they float on water, not on the green/land ============ */}
-            <ellipse cx="116" cy="260" rx="12" ry="3" fill="#d8443a" />
-            <ellipse cx="116" cy="259.4" rx="8" ry="1.8" fill="#b83729" />
-            <ellipse cx="146" cy="260" rx="10" ry="2.7" fill="#e9e4d6" />
-            <ellipse cx="146" cy="259.4" rx="6.5" ry="1.6" fill="#cfc9ba" />
 
             {/* ============ NAME PENNANT — a tiny triangular flag on a thin pole atop
                  the RED tower-house (the eye-catch). Riomaggiore's coat of arms:
