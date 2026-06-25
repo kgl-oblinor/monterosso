@@ -2010,3 +2010,15 @@ body {
   }
   .landing-v2 .style-chip { font-size: 10px; padding: 3px 7px; }
 }
+
+/* ── Scene-only sandbox (?scene in URL) — just the living background, no text/UI ── */
+.landing-v2.scene-only .hero,
+.landing-v2.scene-only .sea-clock,
+.landing-v2.scene-only .bg-switch,
+.landing-v2.scene-only .style-switch,
+.landing-v2.scene-only .village-signs,
+.landing-v2.scene-only .village-posts,
+.landing-v2.scene-only .vp-nav,
+.landing-v2.scene-only .grain {
+  display: none !important;
+}

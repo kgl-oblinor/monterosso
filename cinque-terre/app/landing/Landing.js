@@ -123,6 +123,11 @@ export default function Landing() {
       localStorage.setItem("style", styleKey);
     } catch {}
   }, [styleKey]);
+  // Scene-only sandbox: ?scene in the URL hides all text/UI, leaving just the living scene.
+  const [sceneOnly, setSceneOnly] = useState(false);
+  useEffect(() => {
+    setSceneOnly(new URLSearchParams(window.location.search).has("scene"));
+  }, []);
   useEffect(() => {
     const saved = localStorage.getItem("theme");
     if (saved === "dark" || saved === "light") setTheme(saved);
@@ -225,6 +230,7 @@ export default function Landing() {
         "landing-v2" +
         (bg !== "scene" ? " bg-photo-on" : "") +
         (styleKey ? " style-" + styleKey : "") +
+        (sceneOnly ? " scene-only" : "") +
         (anyOpen ? " popup-open" : "")
       }
     >
