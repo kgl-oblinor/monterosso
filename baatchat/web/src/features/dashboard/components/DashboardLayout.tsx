@@ -55,7 +55,7 @@ export function DashboardLayout() {
           <ChatThreadSkeleton className="hidden md:flex" />
         </>
       ) : isError ? (
-        <div className="flex flex-1 items-center justify-center text-sm text-[#b04a3a]">
+        <div className="flex flex-1 items-center justify-center text-sm text-destructive">
           Kunne ikke laste samtaler.
         </div>
       ) : (

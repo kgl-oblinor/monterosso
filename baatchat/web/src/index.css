@@ -13,27 +13,30 @@
    terracotta + olive for status, deep-ink sidebar with gold active state.
    Tokens are the single source of truth; components use semantic classes. */
 :root {
-  --background: #efe7d4;
-  --foreground: #07182a;
-  --card: #f7f1e3;
-  --card-foreground: #07182a;
-  --popover: #f7f1e3;
-  --popover-foreground: #07182a;
-  --primary: #07182a;
-  --primary-foreground: #f7f1e3;
-  --secondary: #e7dcc2;
-  --secondary-foreground: #07182a;
-  --muted: #e7dcc2;
-  --muted-foreground: #6f6450;
-  --accent: #ead27e;
-  --accent-foreground: #07182a;
-  --destructive: #b04a3a;
-  --destructive-foreground: #f7f1e3;
+  /* Legacy shadcn semantic tokens — REMAPPED onto the Apple white system so every
+     primitive that reads bg-card / bg-background / bg-muted / border-input /
+     text-muted-foreground / ring-ring renders Apple-white automatically. */
+  --background: #fffefc;
+  --foreground: #2a1810;
+  --card: #ffffff;
+  --card-foreground: #2a1810;
+  --popover: #ffffff;
+  --popover-foreground: #2a1810;
+  --primary: #2a1810;
+  --primary-foreground: #ffffff;
+  --secondary: #f6f5f3;
+  --secondary-foreground: #2a1810;
+  --muted: #f6f5f3;
+  --muted-foreground: rgba(42, 24, 16, 0.6);
+  --accent: #f6f5f3;
+  --accent-foreground: #2a1810;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
   --success: #5f7a43;
-  --success-foreground: #f7f1e3;
-  --border: #ddd0b0;
-  --input: #e7dcc2;
-  --ring: #ead27e;
+  --success-foreground: #ffffff;
+  --border: rgba(0, 0, 0, 0.08);
+  --input: rgba(0, 0, 0, 0.08);
+  --ring: #c49a34;
   --chart-1: #ead27e;
   --chart-2: #a8743f;
   --chart-3: #07182a;
@@ -79,27 +82,29 @@
 }
 
 .dark {
-  --background: #07182a;
-  --foreground: #f7f1e3;
-  --card: #0f2740;
-  --card-foreground: #f7f1e3;
-  --popover: #0f2740;
-  --popover-foreground: #f7f1e3;
-  --primary: #ead27e;
-  --primary-foreground: #07182a;
-  --secondary: #14304a;
-  --secondary-foreground: #f7f1e3;
-  --muted: #14304a;
-  --muted-foreground: #b6a98c;
-  --accent: #ead27e;
-  --accent-foreground: #07182a;
-  --destructive: #c75a48;
-  --destructive-foreground: #f7f1e3;
-  --success: #7da352;
-  --success-foreground: #07182a;
-  --border: #1c3a55;
-  --input: #14304a;
-  --ring: #ead27e;
+  /* App runs light-only (`.dark` was removed from <html>); mirror the same Apple
+     white values here so nothing regresses if the class ever comes back. */
+  --background: #fffefc;
+  --foreground: #2a1810;
+  --card: #ffffff;
+  --card-foreground: #2a1810;
+  --popover: #ffffff;
+  --popover-foreground: #2a1810;
+  --primary: #2a1810;
+  --primary-foreground: #ffffff;
+  --secondary: #f6f5f3;
+  --secondary-foreground: #2a1810;
+  --muted: #f6f5f3;
+  --muted-foreground: rgba(42, 24, 16, 0.6);
+  --accent: #f6f5f3;
+  --accent-foreground: #2a1810;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --success: #5f7a43;
+  --success-foreground: #ffffff;
+  --border: rgba(0, 0, 0, 0.08);
+  --input: rgba(0, 0, 0, 0.08);
+  --ring: #c49a34;
   --chart-1: #ead27e;
   --chart-2: #a8743f;
   --chart-3: #f7f1e3;
