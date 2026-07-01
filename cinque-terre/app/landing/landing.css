@@ -3002,6 +3002,98 @@ body:has(.landing-v2) {
     min-width: 0;
   }
 }
+
+/* Left sidebar — narrow, elegant, default expanded (toggle collapses it).
+   Minimal line icons + small labels; a quiet frosted Apple box on hover/selected. */
+.landing-v2 .lp-sidebar {
+  display: none;
+} /* mobile: no sidebar (the hamburger menu lives elsewhere) */
+@media (min-width: 900px) {
+  .landing-v2 .lp-sidebar {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    width: 196px;
+    padding: 20px 12px;
+    transition: width 0.24s ease;
+  }
+  .landing-v2 .lp-sidebar--collapsed {
+    width: 62px;
+  }
+}
+.landing-v2 .lp-sb-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: 0 0 14px 3px;
+  border: 0;
+  background: none;
+  color: rgba(42, 24, 16, 0.75);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.landing-v2 .lp-sb-toggle:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+.landing-v2 .lp-sb-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+.landing-v2 .lp-sb-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.landing-v2 .lp-sb-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: none;
+  color: rgba(42, 24, 16, 0.68);
+  font-family: var(--lp-font);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.landing-v2 .lp-sb-ic {
+  width: 19px;
+  height: 19px;
+  flex: none;
+}
+.landing-v2 .lp-sb-item:hover {
+  background: rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  backdrop-filter: blur(12px) saturate(150%);
+  border-color: rgba(0, 0, 0, 0.06);
+  color: #2a1810;
+}
+.landing-v2 .lp-sb-item.sel {
+  background: rgba(255, 255, 255, 0.82);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  backdrop-filter: blur(14px) saturate(160%);
+  border-color: rgba(0, 0, 0, 0.07);
+  color: #2a1810;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.landing-v2 .lp-sidebar--collapsed .lp-sb-lbl {
+  display: none;
+}
+.landing-v2 .lp-sidebar--collapsed .lp-sb-item {
+  justify-content: center;
+  padding: 0;
+}
+
 /* any open overlay popup hides the whole shell (hero + dock), so the
    deep-linked flow-board screenshots stay clean — matches .popup-open .lp */
 .landing-v2.popup-open .lp-shell {

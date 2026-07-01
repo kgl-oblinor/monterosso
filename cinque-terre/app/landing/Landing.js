@@ -95,6 +95,15 @@ const ICON = {
   ),
 };
 
+// Left sidebar — minimal line icons + small labels. Elegant, Apple-quiet.
+const NAV_ITEMS = [
+  { key: "home", label: "Home", d: "M3 10.7 12 3l9 7.7M5.5 9.5V20h13V9.5" },
+  { key: "discover", label: "Discover", d: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm3.5 5.5-2.2 4.8-4.8 2.2 2.2-4.8z" },
+  { key: "tour", label: "The tour", d: "M12 3v18M12 3l7 13H5z" },
+  { key: "reviews", label: "Reviews", d: "M12 4l2.3 4.7 5.2.8-3.8 3.7.9 5.1L12 15.8 7.2 18.3l.9-5.1L4.3 9.5l5.2-.8z" },
+  { key: "help", label: "Help", d: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM9.6 9.2a2.4 2.4 0 1 1 4.7.7c0 1.5-2.3 1.7-2.3 3.4M12 17h.01" },
+];
+
 export default function Landing() {
   const logged = useRef(false);
   useEffect(() => {
@@ -114,6 +123,8 @@ export default function Landing() {
   // The docked booking panel's mode: "express" (default, near-zero friction)
   // ↔ "guided" (the existing 5-step wizard). One toggle flips between them.
   const [bookMode, setBookMode] = useState("express");
+  const [navOpen, setNavOpen] = useState(true); // left sidebar: default expanded, toggles narrow
+  const [navTab, setNavTab] = useState("home");
   const [villageIdx, setVillageIdx] = useState(null); // open village page (0–4) or null
   const [showBoat, setShowBoat] = useState(false); // "the boat & her captain" page
   const [showHub, setShowHub] = useState(false); // "Explore" — the hub of everything
@@ -197,6 +208,45 @@ export default function Landing() {
           and restore their JSX here; no component files were deleted. */}
 
       <div className="lp-shell">
+      <nav
+        className={"lp-sidebar" + (navOpen ? "" : " lp-sidebar--collapsed")}
+        aria-label="Menu"
+      >
+        <button
+          type="button"
+          className="lp-sb-toggle"
+          onClick={() => setNavOpen((o) => !o)}
+          aria-label="Toggle menu"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <div className="lp-sb-nav">
+          {NAV_ITEMS.map((it) => (
+            <button
+              key={it.key}
+              type="button"
+              className={"lp-sb-item" + (navTab === it.key ? " sel" : "")}
+              onClick={() => setNavTab(it.key)}
+            >
+              <svg
+                className="lp-sb-ic"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d={it.d} />
+              </svg>
+              <span className="lp-sb-lbl">{it.label}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
       <main className="lp">
         {/* quiet top-right entry for returning customers — into the separate
             dashboard app's login. Understated, never competes with "Come aboard". */}
