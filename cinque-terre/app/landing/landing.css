@@ -3013,8 +3013,8 @@ body:has(.landing-v2) {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    width: 196px;
-    padding: 20px 12px;
+    width: 90px;
+    padding: 20px 8px;
     transition: width 0.24s ease;
   }
   .landing-v2 .lp-sidebar--collapsed {
@@ -3049,27 +3049,33 @@ body:has(.landing-v2) {
 }
 .landing-v2 .lp-sb-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  min-height: 44px;
-  padding: 0 12px;
+  justify-content: center;
+  gap: 5px;
+  min-height: 58px;
+  padding: 8px 4px;
   border: 1px solid transparent;
   border-radius: 12px;
   background: none;
   color: rgba(42, 24, 16, 0.68);
   font-family: var(--lp-font);
-  font-size: 13.5px;
   font-weight: 500;
-  letter-spacing: 0;
+  text-align: center;
   white-space: nowrap;
   overflow: hidden;
   cursor: pointer;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 .landing-v2 .lp-sb-ic {
-  width: 19px;
-  height: 19px;
+  width: 20px;
+  height: 20px;
   flex: none;
+}
+.landing-v2 .lp-sb-lbl {
+  font-size: 11px;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
 }
 .landing-v2 .lp-sb-item:hover {
   background: rgba(255, 255, 255, 0.7);
