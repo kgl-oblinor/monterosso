@@ -7,6 +7,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { env } from "@/lib/env";
+import { apiClient } from "@/lib/apiClient";
 import type { TranslationKey } from "@/i18n";
 import { mockSiteApi } from "@/mocks/mockSite";
 
@@ -104,21 +105,75 @@ export interface SiteApi {
   deleteBlogPost(id: string): Promise<SiteSettings>;
 }
 
-// Real backend not built yet — the section runs on the mock in the demo. When the
-// endpoints ship, fill these in (e.g. GET/PUT /site, POST/DELETE /site/blog) with zero UI changes.
-const NOT_IMPLEMENTED = "Site settings backend not implemented yet — running on mocks.";
+// --- real backend (D1-persisted) --------------------------------------------
+// The backend stores ONE JSON config per skipper: the FULL public-landing config (the shape
+// cinque-terre/lib/skippers.js renders) plus the editor-only `departures` + `blogPosts`.
+// The editor only knows SiteSettings (a subset), so on every write we merge the editable
+// fields INTO the last-loaded full config and PUT the whole thing back — this preserves the
+// non-editable landing fields (intro, tours, captain, meetingPoint, social, whatsapp, …).
+//
+// Field mapping (SiteSettings ↔ stored config): listingTitle, tagline, pricePerGuest,
+// maxGuests, departures, theme{id,dayNight}, blogPosts round-trip 1:1 (same names/shape).
+// Everything else in the config is carried through untouched.
+type StoredConfig = Record<string, unknown> & Partial<SiteSettings>;
+
+// Last full config loaded/saved for this skipper — the base we merge editable fields into so
+// non-editable fields survive a save. Refreshed by every GET/PUT (which return the full config).
+let cachedConfig: StoredConfig | null = null;
+
+/** Project the stored config down to the editor's SiteSettings, defaulting missing bits. */
+function toSettings(config: StoredConfig): SiteSettings {
+  return {
+    listingTitle: config.listingTitle ?? "",
+    tagline: config.tagline ?? "",
+    pricePerGuest: config.pricePerGuest ?? 0,
+    maxGuests: config.maxGuests ?? 0,
+    departures: config.departures ?? [],
+    theme: config.theme ?? { id: "deepsea", dayNight: "auto" },
+    blogPosts: config.blogPosts ?? [],
+  };
+}
+
+/** Ensure we hold the current full config (fetch once if we don't). */
+async function ensureConfig(): Promise<StoredConfig> {
+  if (cachedConfig) return cachedConfig;
+  const { config } = await apiClient.get<{ config: StoredConfig }>("/chat/me/site");
+  cachedConfig = config;
+  return config;
+}
+
+/** Merge an editable patch into the full config and PUT it; returns the projected settings. */
+async function persist(patch: SiteSettingsPatch): Promise<SiteSettings> {
+  const base = await ensureConfig();
+  const merged: StoredConfig = { ...base, ...patch };
+  const { config } = await apiClient.put<{ config: StoredConfig }>("/chat/me/site", merged);
+  cachedConfig = config;
+  return toSettings(config);
+}
+
 const realSiteApi: SiteApi = {
   async getSiteSettings() {
-    throw new Error(NOT_IMPLEMENTED);
+    const { config } = await apiClient.get<{ config: StoredConfig }>("/chat/me/site");
+    cachedConfig = config;
+    return toSettings(config);
   },
-  async updateSiteSettings() {
-    throw new Error(NOT_IMPLEMENTED);
+  async updateSiteSettings(patch: SiteSettingsPatch) {
+    return persist(patch);
   },
-  async addBlogPost() {
-    throw new Error(NOT_IMPLEMENTED);
+  async addBlogPost(post: NewBlogPost) {
+    const base = await ensureConfig();
+    const created: BlogPost = {
+      id: `b${Date.now()}`,
+      title: post.title,
+      body: post.body,
+      published: post.published,
+      createdAt: new Date().toISOString(),
+    };
+    return persist({ blogPosts: [created, ...(base.blogPosts ?? [])] });
   },
-  async deleteBlogPost() {
-    throw new Error(NOT_IMPLEMENTED);
+  async deleteBlogPost(id: string) {
+    const base = await ensureConfig();
+    return persist({ blogPosts: (base.blogPosts ?? []).filter((p) => p.id !== id) });
   },
 };
 

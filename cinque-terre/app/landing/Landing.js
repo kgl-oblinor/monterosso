@@ -77,8 +77,10 @@ const ICON = {
   ),
   captain: (
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="8" r="3.4" />
-      <path d="M5.5 20.5a6.5 6.5 0 0 1 13 0" />
+      <path d="M5.5 16.5h13l-1 1.6H6.5z" />
+      <path d="M7 13.5h10v3H7z" />
+      <path d="M8 13.5c0-3.2 1.8-5.5 4-5.5s4 2.3 4 5.5" />
+      <path d="M10.5 15h3" />
     </svg>
   ),
   help: (

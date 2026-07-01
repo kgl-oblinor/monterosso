@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { PanelLeftClose, PanelLeftOpen, Smartphone } from "lucide-react";
 
+import { PanelClose, PanelOpen, Phone } from "@/components/icons";
 import { useT } from "@/i18n";
 import { cn, initialsOf } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
@@ -88,9 +88,9 @@ export function IconRail({ active, onSelect }: IconRailProps) {
           )}
         >
           {expanded ? (
-            <PanelLeftClose className="size-5 shrink-0" />
+            <PanelClose className="size-5 shrink-0" />
           ) : (
-            <PanelLeftOpen className="size-5 shrink-0" />
+            <PanelOpen className="size-5 shrink-0" />
           )}
           {expanded && <span className="truncate text-sm">{t("nav.hideMenu")}</span>}
         </button>
@@ -134,7 +134,7 @@ export function IconRail({ active, onSelect }: IconRailProps) {
               expanded ? "w-full px-3" : "size-10 justify-center px-0"
             )}
           >
-            <Smartphone className="size-5 shrink-0" />
+            <Phone className="size-5 shrink-0" />
             {expanded && <span className="truncate text-sm">{t("getapp.link")}</span>}
           </button>
         </div>

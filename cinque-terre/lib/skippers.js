@@ -153,7 +153,39 @@ const SKIPPERS = {
  *       in wrangler.jsonc for the events table.)
  * Until step 1+2 land, this stays a faithful render of the static config — no faking.
  */
-export function getSkipper(slug) {
+// baatchat's public read endpoint. baatchat OWNS the skipper site config (in its own D1,
+// monterosso_chat); this landing FETCHES it over HTTP — the two apps use DIFFERENT D1 dbs.
+// Same base URL the booking flow uses (app/landing/Landing.js CHAT_API_BASE).
+const CHAT_API_BASE = "https://monterosso-chat.kgl-56a.workers.dev";
+
+/**
+ * Load a skipper's config by slug — LIVE from baatchat, with a static fallback.
+ *
+ * The stored config baatchat serves is already the exact shape SkipperLanding.js renders
+ * (see migration 0004 / the "Min side" editor), so the response is used as-is. On any
+ * fetch failure/timeout we fall back to the static SKIPPERS config so the page never breaks;
+ * we only return null (→ notFound()) when the slug is unknown both remotely AND locally.
+ *
+ * This route is force-dynamic (see app/s/[slug]/page.js), so every request reflects the
+ * skipper's latest saved edits.
+ */
+export async function getSkipper(slug) {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2500); // don't let a slow API hang the page
+    const res = await fetch(`${CHAT_API_BASE}/public/sites/${encodeURIComponent(slug)}`, {
+      signal: controller.signal,
+      cache: "no-store",
+    });
+    clearTimeout(timeout);
+    if (res.ok) {
+      const config = await res.json();
+      if (config && config.listingTitle) return config;
+    }
+    // Non-OK (e.g. 404 unknown remotely) → fall through to the static registry below.
+  } catch {
+    // Network error / timeout / abort → fall back to the static config so the page holds.
+  }
   return SKIPPERS[slug] ?? null;
 }
 

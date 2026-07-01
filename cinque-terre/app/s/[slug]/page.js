@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const s = getSkipper(slug);
+  const s = await getSkipper(slug);
   if (!s) return { title: "Not found" };
   return {
     title: `${s.listingTitle} · ${s.location}`,
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }) {
 
 export default async function SkipperPage({ params }) {
   const { slug } = await params;
-  const skipper = getSkipper(slug);
+  const skipper = await getSkipper(slug);
   if (!skipper) notFound();
   return <SkipperLanding config={skipper} />;
 }

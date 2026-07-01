@@ -6,8 +6,8 @@
 // were dead ends that confused older users; the sections stay defined but off the nav.
 // On sign-in we land on a calm "Hjem" overview (not straight into chat) — Hjem sits at the
 // top of the rail, with Chat right below it. The profile avatar lives at the bottom (IconRail).
-import { Anchor, Compass, LayoutPanelLeft, MessageSquare } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { Anchor, Compass, Message, Sail } from "@/components/icons";
+import type { IconComponent } from "@/components/icons";
 
 import type { TranslationKey } from "@/i18n";
 import type { UserRole } from "@/features/auth/api/types";
@@ -24,13 +24,13 @@ export const DEFAULT_SECTION: SectionKey = "home";
 
 export interface NavItem {
   key: SectionKey;
-  icon: LucideIcon;
+  icon: IconComponent;
   /** i18n key — resolved with t() at render (IconRail + the home shortcut grid). */
   labelKey: TranslationKey;
 }
 
 const HOME: NavItem = { key: "home", icon: Anchor, labelKey: "nav.home" };
-const CHAT: NavItem = { key: "chat", icon: MessageSquare, labelKey: "nav.chat" };
+const CHAT: NavItem = { key: "chat", icon: Message, labelKey: "nav.chat" };
 
 const CUSTOMER_NAV: NavItem[] = [
   HOME,
@@ -42,7 +42,7 @@ const SKIPPER_NAV: NavItem[] = [
   HOME,
   CHAT,
   { key: "trips", icon: Compass, labelKey: "nav.departures" },
-  { key: "site", icon: LayoutPanelLeft, labelKey: "nav.site" },
+  { key: "site", icon: Sail, labelKey: "nav.site" },
 ];
 
 /** The nav items for a role. Unknown/admin roles fall back to Hjem + Chat. */

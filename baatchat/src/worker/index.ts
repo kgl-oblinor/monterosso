@@ -7,6 +7,7 @@ import { createInvite, joinByInvite, invitepreview, invitableTrips, listTripConv
 import { listAccounts, approveAccount, revokeAccount, setEmailVerified, setSkipperEmail, setCustomerEmail, listSkipperDirectory, listCustomerDirectory, listAllThreads, adminThreadMessages, listSkippers, getSkipper, createSkipper, updateSkipper, validateSkipperInput, listCustomers, listReservations } from "./admin";
 import type { SkipperInput } from "./admin";
 import { createPublicBooking } from "./public";
+import { getMySite, saveMySite, getPublicSite } from "./site";
 
 export interface Env {
   DB: D1Database;
@@ -83,6 +84,17 @@ app.post("/public/bookings", async (c) => {
   const r = await createPublicBooking(c.env, input);
   if (!r.ok) return c.json({ ok: false, error: r.error }, 400);
   return c.json({ ok: true, code: r.code, reservationId: r.reservationId }, 201);
+});
+
+// --- public skipper site config (landing "/s/<slug>" reads this) ------------
+// UNAUTHENTICATED read of a skipper's published landing config, by slug. The cinque-terre
+// landing fetches this server-side to render /s/<slug>. CORS is handled by the global
+// middleware above (landing origin allow-listed) — same as /public/bookings. Returns the
+// stored config object directly (the shape SkipperLanding.js renders); 404 if unknown.
+app.get("/public/sites/:slug", async (c) => {
+  const config = await getPublicSite(c.env, c.req.param("slug"));
+  if (!config) return c.json({ ok: false, error: "Ikke funnet" }, 404);
+  return c.json(config);
 });
 
 // --- auth: account claim (onboarding) + password login ---------------------
@@ -283,6 +295,24 @@ chat.put("/me/profile", async (c) => {
     }
     throw err;
   }
+});
+
+// --- skipper "Min side" site config ----------------------------------------
+// The authed skipper's landing config, persisted in D1 (skipper_sites). Skipper-only:
+// a customer JWT is rejected. user.id is the skipper_id (party_id) for the skipper role.
+chat.get("/me/site", async (c) => {
+  const user = c.get("user");
+  if (user.role !== "skipper") return c.json({ ok: false, error: "Kun for skippere" }, 403);
+  return c.json({ ok: true, config: await getMySite(c.env, user.id) });
+});
+
+// UPSERT the posted full config (merged client-side to preserve non-editable fields).
+chat.put("/me/site", async (c) => {
+  const user = c.get("user");
+  if (user.role !== "skipper") return c.json({ ok: false, error: "Kun for skippere" }, 403);
+  const config = await c.req.json<Record<string, unknown>>().catch(() => null);
+  if (!config || typeof config !== "object") return c.json({ ok: false, error: "Ugyldig konfigurasjon" }, 400);
+  return c.json({ ok: true, config: await saveMySite(c.env, user.id, config) });
 });
 
 // --- group chat ("turfølget") ----------------------------------------------

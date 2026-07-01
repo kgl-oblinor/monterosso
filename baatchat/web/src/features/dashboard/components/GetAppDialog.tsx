@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { Apple, Download, Play, Share, SquarePlus, X } from "lucide-react";
+import { Apple, Play } from "lucide-react";
 
+import { Close, Download, PlusSquare, Share } from "@/components/icons";
 import { useT } from "@/i18n";
 
 /** The `beforeinstallprompt` event (Chromium-only; not in the standard lib DOM types). */
@@ -111,7 +112,7 @@ export function GetAppDialog({ onClose }: { onClose: () => void }) {
             aria-label={t("getapp.close")}
             className="-mr-1 -mt-1 rounded-full p-1.5 text-ink-muted transition-colors hover:bg-black/[0.04] hover:text-ink"
           >
-            <X className="size-5" />
+            <Close className="size-5" />
           </button>
         </div>
 
@@ -134,7 +135,7 @@ export function GetAppDialog({ onClose }: { onClose: () => void }) {
                   <span>{t("getapp.iosStep1")}</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <SquarePlus className="size-5 shrink-0 text-gold" />
+                  <PlusSquare className="size-5 shrink-0 text-gold" />
                   <span>{t("getapp.iosStep2")}</span>
                 </li>
               </ol>

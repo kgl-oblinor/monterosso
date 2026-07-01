@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Clock, LayoutGrid, LogOut, Menu, MessageSquare, Ship, Users, X } from "lucide-react";
+import { Close, Grid, Hourglass, LogOut, Menu, Message, Ship, Users } from "@/components/icons";
+import type { IconComponent } from "@/components/icons";
 
 import { cn } from "@/lib/utils";
 import logoUrl from "@/monterosso-mark.svg";
@@ -17,7 +18,7 @@ type TabId = "pending" | "skippers" | "customers" | "conversations" | "sidekart"
 interface NavItem {
   id: TabId;
   label: string;
-  icon: typeof Clock;
+  icon: IconComponent;
   badge?: number;
 }
 
@@ -42,11 +43,11 @@ export function AdminUsersPage() {
   const totalCustomers = customerPage?.total;
 
   const nav: NavItem[] = [
-    { id: "pending", label: "Til godkjenning", icon: Clock, badge: pending || undefined },
+    { id: "pending", label: "Til godkjenning", icon: Hourglass, badge: pending || undefined },
     { id: "skippers", label: "Skippere", icon: Ship },
     { id: "customers", label: "Kunder", icon: Users },
-    { id: "conversations", label: "Samtaler", icon: MessageSquare },
-    { id: "sidekart", label: "Sidekart", icon: LayoutGrid },
+    { id: "conversations", label: "Samtaler", icon: Message },
+    { id: "sidekart", label: "Sidekart", icon: Grid },
   ];
 
   const onLogout = () => {
@@ -87,7 +88,7 @@ export function AdminUsersPage() {
               onClick={() => setDrawerOpen(false)}
               className="absolute right-3 top-3 rounded-md p-1 text-ink-muted hover:bg-black/[0.04] hover:text-ink"
             >
-              <X className="size-5" />
+              <Close className="size-5" />
             </button>
             {sidebar}
           </aside>
