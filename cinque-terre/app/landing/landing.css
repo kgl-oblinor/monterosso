@@ -2857,69 +2857,6 @@ body:has(.landing-v2) {
   transform: translateY(0) scale(0.98);
 }
 
-/* section nav — quiet Apple text links (gold underline) to the popups
-   the scene used to gate */
-.landing-v2 .lp-nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--s3) var(--s6);
-  margin: var(--s7) 0 0;
-}
-.landing-v2 .lp-link {
-  background: none;
-  border: 0;
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 0;
-  cursor: pointer;
-  font-family: var(--lp-font);
-  font-weight: 500;
-  font-size: 15px;
-  letter-spacing: 0;
-  color: var(--lp-ink);
-  text-decoration: underline;
-  text-decoration-color: var(--lp-gold);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-  transition: color 0.2s ease;
-}
-.landing-v2 .lp-link:hover {
-  color: var(--lp-gold);
-}
-
-/* the five villages — a restrained hairline-topped link row */
-.landing-v2 .lp-villages {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: var(--s2) var(--s4);
-  margin: var(--s6) 0 0;
-  padding-top: var(--s5);
-  border-top: 1px solid var(--lp-line);
-  max-width: 560px;
-}
-.landing-v2 .lp-village {
-  background: none;
-  border: 0;
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: var(--s1) var(--s2);
-  cursor: pointer;
-  font-family: var(--lp-font);
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: 0.01em;
-  color: var(--lp-muted);
-  transition: color 0.2s ease;
-}
-.landing-v2 .lp-village:hover {
-  color: var(--lp-ink);
-}
-
 /* quiet top-right "Log in" — restrained muted-ink text, gold on hover; a
    returning customer's way into their dashboard (the separate app). Understated:
    never competes with the ink-filled "Come aboard" CTA. */
@@ -3003,9 +2940,6 @@ body:has(.landing-v2) {
   }
   .landing-v2 .lp-title {
     font-size: clamp(2.6rem, 17vw, 4.4rem);
-  }
-  .landing-v2 .lp-nav {
-    gap: var(--s2) var(--s5);
   }
   .landing-v2 .lp-login {
     top: 16px;

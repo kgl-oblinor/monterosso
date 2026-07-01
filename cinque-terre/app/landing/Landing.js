@@ -242,37 +242,9 @@ export default function Landing() {
             </button>
           </div>
 
-          {/* the sections the scene used to gate — kept reachable as quiet
-              Apple links, reusing the existing open handlers */}
-          <nav className="lp-nav" aria-label="Discover the coast">
-            <button type="button" className="lp-link" onClick={openHub}>
-              Explore
-            </button>
-            <button
-              type="button"
-              className="lp-link"
-              onClick={() => setShowCaptain(true)}
-            >
-              The captain
-            </button>
-            <button type="button" className="lp-link" onClick={openService}>
-              Customer service
-            </button>
-          </nav>
-
-          {/* the five villages, each opening its own page */}
-          <nav className="lp-villages" aria-label="The five villages">
-            {VILLAGES.map((v, i) => (
-              <button
-                type="button"
-                key={v.name}
-                className="lp-village"
-                onClick={() => setVillageIdx(i)}
-              >
-                {firstName(v.name)}
-              </button>
-            ))}
-          </nav>
+          {/* Landing intentionally minimal: only Log in + Check availability.
+              The hub / captain / service / village pages stay reachable via
+              ?screen= deep links (and from the web dashboard's SEO), not here. */}
 
           {/* 🤍 for Mandy — the retired scene hid drifting gold hearts that
               secretly spell her name; carried here as a few faint hearts. */}
