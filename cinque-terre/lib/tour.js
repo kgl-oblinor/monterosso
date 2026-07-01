@@ -30,5 +30,6 @@ export const MEETING_POINT = "Molo dei Pescatori, Monterosso";
 export const SKIPPER_NAME = "";
 
 // WhatsApp is the primary booking channel (wa.me/<number>). Digits only, no "+".
-// TODO: skipperens (Paolona) ekte WhatsApp-nummer — bytt ut plassholderen via admin.
-export const WHATSAPP_NUMBER = "4793008600";
+// TEST: Kristians italienske nummer (så han kan teste booking→kontakt på seg selv).
+// TODO: bytt til Andreas ekte WhatsApp-nummer før ekte lansering.
+export const WHATSAPP_NUMBER = "393447058636";

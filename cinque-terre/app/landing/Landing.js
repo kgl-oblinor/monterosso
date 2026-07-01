@@ -111,6 +111,9 @@ export default function Landing() {
   // Scroll / swipe / button all bring the booking card in as an overlay —
   // same screen, no navigation.
   const [showBook, setShowBook] = useState(false);
+  // The docked booking panel's mode: "express" (default, near-zero friction)
+  // ↔ "guided" (the existing 5-step wizard). One toggle flips between them.
+  const [bookMode, setBookMode] = useState("express");
   const [villageIdx, setVillageIdx] = useState(null); // open village page (0–4) or null
   const [showBoat, setShowBoat] = useState(false); // "the boat & her captain" page
   const [showHub, setShowHub] = useState(false); // "Explore" — the hub of everything
@@ -162,17 +165,10 @@ export default function Landing() {
     setShowHub(false);
     setShowService(true);
   };
+  // Esc closes any open popup. (The booking now lives in the docked panel and
+  // scrolls internally, so we no longer auto-open the overlay on wheel/swipe —
+  // that would fight the dock's own scrolling.)
   useEffect(() => {
-    const onWheel = (e) => {
-      if (e.deltaY > 12) setShowBook(true);
-    };
-    let ty = 0;
-    const onTouchStart = (e) => {
-      ty = e.touches[0]?.clientY ?? 0;
-    };
-    const onTouchEnd = (e) => {
-      if (ty - (e.changedTouches[0]?.clientY ?? ty) > 44) setShowBook(true);
-    };
     const onKey = (e) => {
       if (e.key === "Escape") {
         setShowBook(false);
@@ -184,16 +180,8 @@ export default function Landing() {
         setShowService(false);
       }
     };
-    window.addEventListener("wheel", onWheel, { passive: true });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchend", onTouchEnd, { passive: true });
     window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchend", onTouchEnd);
-      window.removeEventListener("keydown", onKey);
-    };
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   return (
@@ -208,6 +196,7 @@ export default function Landing() {
           the living scene back, re-enable the imports at the top of this file
           and restore their JSX here; no component files were deleted. */}
 
+      <div className="lp-shell">
       <main className="lp">
         {/* quiet top-right entry for returning customers — into the separate
             dashboard app's login. Understated, never competes with "Come aboard". */}
@@ -236,7 +225,12 @@ export default function Landing() {
             <button
               type="button"
               className="lp-cta"
-              onClick={() => setShowBook(true)}
+              onClick={() => {
+                const d = document.querySelector(".lp-dock");
+                if (!d) { setShowBook(true); return; }
+                d.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                d.querySelector("button, a, input, [tabindex]")?.focus?.();
+              }}
             >
               Check availability
             </button>
@@ -262,6 +256,32 @@ export default function Landing() {
           </div>
         </header>
       </main>
+
+      {/* DOCKED BOOKING — the default, near-zero-friction Express panel docked
+          right on desktop (a full-width sheet under the hero on mobile). One
+          toggle flips it between Express and the Guided 5-step wizard. */}
+      <aside className="lp-dock">
+        <div className="lp-modebar">
+          <button
+            type="button"
+            className="lp-toggle"
+            onClick={() =>
+              setBookMode((m) => (m === "express" ? "guided" : "express"))
+            }
+          >
+            <span className="lp-toggle__ic" aria-hidden="true">
+              ⇄
+            </span>
+            {bookMode === "express" ? "Guided steps" : "Express"}
+          </button>
+        </div>
+        {bookMode === "express" ? (
+          <ExpressBooking />
+        ) : (
+          <BookingForm onClose={() => setBookMode("express")} />
+        )}
+      </aside>
+      </div>
 
       <div
         className={"book-overlay" + (showBook ? " open" : "")}
@@ -867,92 +887,19 @@ function BookingForm({ onClose }) {
   }
 
   // CONFIRMATION — soft, honest: a request is on its way, the account is ready.
+  // Shared with the Express panel so both booking paths land on the identical
+  // "Request sent" receipt (+ calendar / WhatsApp).
   if (done) {
-    const bookingWa = waLink(bookingMessage({ iso: date, slot, guests }));
     return (
-      <div className="book-form wiz-apple">
-        <h3 className="wiz-done__h">Request sent</h3>
-        <p className="confirm-lead">
-          We&rsquo;re checking availability with the skipper — you&rsquo;ll hear
-          back shortly.{" "}
-          {synced ? "Your account is ready." : "We’ve noted your request."}
-        </p>
-        <div className="conf-summary">
-          <div className="conf-row conf-row--code">
-            <span>Reservation</span>
-            <strong>{resCode}</strong>
-          </div>
-          <div className="conf-row">
-            <span>Tour</span>
-            <strong>{selTour.name}</strong>
-          </div>
-          <div className="conf-row">
-            <span>Date</span>
-            <strong>{when}</strong>
-          </div>
-          <div className="conf-row">
-            <span>Departure</span>
-            <strong>
-              {slotLabel}
-              {slotWindow ? ` · ${slotWindow}` : ""}
-            </strong>
-          </div>
-          <div className="conf-row">
-            <span>Guests</span>
-            <strong>
-              {guests} {guests === 1 ? "guest" : "guests"}
-            </strong>
-          </div>
-          <div className="conf-row">
-            <span>Meeting point</span>
-            <strong>{MEETING_POINT}</strong>
-          </div>
-          <div className="conf-row conf-row--total">
-            <span>Total</span>
-            <strong>${total}</strong>
-          </div>
-        </div>
-        <a
-          className="conf-cta"
-          href="https://monterosso-app.kgl-56a.workers.dev/login"
-        >
-          Open my account
-        </a>
-        <p className="cal-label">Add me to your calendar</p>
-        <div className="cal-row">
-          <a
-            className="cal-btn"
-            href={googleCalUrl({ iso: date, guests, total, code: resCode, slot })}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <CalGlyph />
-            Google
-          </a>
-          <button
-            type="button"
-            className="cal-btn"
-            onClick={() =>
-              downloadIcs({ iso: date, guests, total, code: resCode, slot })
-            }
-          >
-            <CalGlyph />
-            Apple
-          </button>
-          <a
-            className="cal-btn"
-            href={outlookCalUrl({ iso: date, guests, total, code: resCode, slot })}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <CalGlyph />
-            Outlook
-          </a>
-        </div>
-        <a className="wiz-wa" href={bookingWa} target="_blank" rel="noopener">
-          Prefer WhatsApp? Message us
-        </a>
-      </div>
+      <Confirmation
+        tourName={selTour.name}
+        date={date}
+        slot={slot}
+        guests={guests}
+        total={total}
+        resCode={resCode}
+        synced={synced}
+      />
     );
   }
 
@@ -1235,6 +1182,428 @@ function BookingForm({ onClose }) {
   );
 }
 
+// The "Request sent" receipt — shared by the Guided wizard and the Express
+// panel so both paths show the identical confirmation (+ add-to-calendar and
+// the WhatsApp fallback). Values are computed from the booking props.
+function Confirmation({ tourName, date, slot, guests, total, resCode, synced }) {
+  const when = fmtNice(date);
+  const slotLabel = tour.slots[slot]?.label || "—";
+  const slotWindow = tour.slots[slot]?.window || "";
+  const bookingWa = waLink(bookingMessage({ iso: date, slot, guests }));
+  const bookingSms = smsLink(bookingMessage({ iso: date, slot, guests }));
+  return (
+    <div className="book-form wiz-apple">
+      <h3 className="wiz-done__h">Request sent</h3>
+      <p className="confirm-lead">
+        We&rsquo;re checking availability with the skipper — you&rsquo;ll hear
+        back shortly.{" "}
+        {synced ? "Your account is ready." : "We’ve noted your request."}
+      </p>
+      <div className="conf-summary">
+        <div className="conf-row conf-row--code">
+          <span>Reservation</span>
+          <strong>{resCode}</strong>
+        </div>
+        <div className="conf-row">
+          <span>Tour</span>
+          <strong>{tourName}</strong>
+        </div>
+        <div className="conf-row">
+          <span>Date</span>
+          <strong>{when}</strong>
+        </div>
+        <div className="conf-row">
+          <span>Departure</span>
+          <strong>
+            {slotLabel}
+            {slotWindow ? ` · ${slotWindow}` : ""}
+          </strong>
+        </div>
+        <div className="conf-row">
+          <span>Guests</span>
+          <strong>
+            {guests} {guests === 1 ? "guest" : "guests"}
+          </strong>
+        </div>
+        <div className="conf-row">
+          <span>Meeting point</span>
+          <strong>{MEETING_POINT}</strong>
+        </div>
+        <div className="conf-row conf-row--total">
+          <span>Total</span>
+          <strong>${total}</strong>
+        </div>
+      </div>
+      <a
+        className="conf-cta"
+        href="https://monterosso-app.kgl-56a.workers.dev/login"
+      >
+        Open my account
+      </a>
+      <p className="cal-label">Add me to your calendar</p>
+      <div className="cal-row">
+        <a
+          className="cal-btn"
+          href={googleCalUrl({ iso: date, guests, total, code: resCode, slot })}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <CalGlyph />
+          Google
+        </a>
+        <button
+          type="button"
+          className="cal-btn"
+          onClick={() =>
+            downloadIcs({ iso: date, guests, total, code: resCode, slot })
+          }
+        >
+          <CalGlyph />
+          Apple
+        </button>
+        <a
+          className="cal-btn"
+          href={outlookCalUrl({ iso: date, guests, total, code: resCode, slot })}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <CalGlyph />
+          Outlook
+        </a>
+      </div>
+      <a className="wiz-wa" href={bookingWa} target="_blank" rel="noopener">
+        Prefer WhatsApp? Message us
+      </a>
+      <a className="wiz-wa" href={bookingSms}>
+        Or send an SMS
+      </a>
+    </div>
+  );
+}
+
+// The next upcoming departure, in the viewer's local time: the first slot today
+// whose start hasn't passed yet, else the first slot tomorrow. Pre-selecting it
+// is the whole point of Express — near-zero friction.
+const SLOT_ORDER = ["sunrise", "sunshine", "sunset"];
+function nextDeparture() {
+  const now = new Date();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  for (const key of SLOT_ORDER) {
+    const s = tour.slots[key].start; // "HHMMSS"
+    const startMin = parseInt(s.slice(0, 2), 10) * 60 + parseInt(s.slice(2, 4), 10);
+    if (nowMin < startMin) return { date: todayISO(), slot: key };
+  }
+  const t = new Date();
+  t.setDate(t.getDate() + 1);
+  return { date: t.toLocaleDateString("sv-SE"), slot: SLOT_ORDER[0] };
+}
+/* "07:00" from a slot's HHMMSS start. */
+function slotStartHHMM(slot) {
+  const s = tour.slots[slot]?.start || "170000";
+  return `${s.slice(0, 2)}:${s.slice(2, 4)}`;
+}
+/* "Today" / "Tomorrow" / "Fri 3 Jul" for the departure card. */
+function relDayLabel(iso) {
+  if (iso === todayISO()) return "Today";
+  const t = new Date();
+  t.setDate(t.getDate() + 1);
+  if (iso === t.toLocaleDateString("sv-SE")) return "Tomorrow";
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+}
+
+// EXPRESS booking — the default, docked panel. The next departure is
+// pre-selected; the guest picks an experience, party size, and one contact
+// method, then Reserve → the same submitBookingRequest + shared Confirmation.
+function ExpressBooking() {
+  const init = nextDeparture();
+  const now = new Date();
+
+  const [date, setDate] = useState(init.date);
+  const [slot, setSlot] = useState(init.slot);
+  const [guests, setGuests] = useState(2);
+  const [showPicker, setShowPicker] = useState(false);
+  const [calY, setCalY] = useState(now.getFullYear());
+  const [calM, setCalM] = useState(now.getMonth());
+  const [contactMode, setContactMode] = useState(""); // "saved" | "email"
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+  const [resCode, setResCode] = useState("");
+  const [synced, setSynced] = useState(false);
+
+  // Returning visitor → offer saved details first (same marker as the wizard).
+  useEffect(() => {
+    try {
+      if (localStorage.getItem("mtr_returning")) setContactMode("saved");
+    } catch {}
+  }, []);
+
+  const maxGuests = tour.maxGuests;
+  const total = totalFor(guests, slot);
+  const canSubmit =
+    !!date &&
+    !!slot &&
+    guests >= 1 &&
+    (contactMode === "saved" || (contactMode === "email" && validEmail(email)));
+
+  const atCurrentMonth = calY === now.getFullYear() && calM === now.getMonth();
+  function prevMonth() {
+    if (atCurrentMonth) return;
+    let m = calM - 1,
+      y = calY;
+    if (m < 0) {
+      m = 11;
+      y -= 1;
+    }
+    setCalM(m);
+    setCalY(y);
+  }
+  function nextMonth() {
+    let m = calM + 1,
+      y = calY;
+    if (m > 11) {
+      m = 0;
+      y += 1;
+    }
+    setCalM(m);
+    setCalY(y);
+  }
+
+  async function onReserve() {
+    if (!canSubmit || submitting) return;
+    setSubmitting(true);
+    const booking = {
+      tour: tour.name,
+      date,
+      slot,
+      guests,
+      total,
+      email: contactMode === "email" ? email : null,
+      contactMode,
+    };
+    const { code, synced: didSync } = await submitBookingRequest(booking);
+    // Lead capture (best-effort, mirrors the wizard) — never blocks.
+    try {
+      navigator.sendBeacon?.(
+        "/api/track",
+        new Blob(
+          [
+            JSON.stringify({
+              type: "lead",
+              code,
+              dato: date,
+              guests,
+              slot,
+              email: contactMode === "email" ? email : null,
+            }),
+          ],
+          { type: "application/json" }
+        )
+      );
+    } catch {}
+    try {
+      localStorage.setItem("mtr_returning", "1");
+      if (contactMode === "email" && email)
+        localStorage.setItem("mtr_email", email);
+    } catch {}
+    setResCode(code);
+    setSynced(didSync);
+    setSubmitting(false);
+    setDone(true);
+  }
+
+  if (done)
+    return (
+      <Confirmation
+        tourName={tour.name}
+        date={date}
+        slot={slot}
+        guests={guests}
+        total={total}
+        resCode={resCode}
+        synced={synced}
+      />
+    );
+
+  // .wiz-apple scope → the revealed calendar + input inherit the Apple
+  // white-glass styling; .lp-dock flattens this wrapper's own card chrome.
+  return (
+    <div className="lp-express wiz-apple">
+      <div className="lp-eyebrow2">
+        <span className="lp-dot" aria-hidden="true" />
+        Next available departure
+      </div>
+      <div className="lp-dep">
+        <div>
+          <div className="lp-dep__h">
+            {relDayLabel(date)} · {slotStartHHMM(slot)}
+          </div>
+          <div className="lp-dep__sub">{tour.slots[slot].label}</div>
+        </div>
+        <div className="lp-dep__check" aria-hidden="true">
+          ✓
+        </div>
+      </div>
+      <button
+        type="button"
+        className="lp-change"
+        onClick={() => setShowPicker((s) => !s)}
+      >
+        Change date &amp; time
+      </button>
+
+      {showPicker && (
+        <div className="wiz-cal lp-cal">
+          <div className="wiz-cal__head">
+            <button
+              type="button"
+              className="wiz-cal__nav"
+              onClick={prevMonth}
+              disabled={atCurrentMonth}
+              aria-label="Previous month"
+            >
+              ‹
+            </button>
+            <span className="wiz-cal__title">
+              {MONTHS[calM]} {calY}
+            </span>
+            <button
+              type="button"
+              className="wiz-cal__nav"
+              onClick={nextMonth}
+              aria-label="Next month"
+            >
+              ›
+            </button>
+          </div>
+          <div className="wiz-cal__grid">
+            {WEEKDAYS.map((wd) => (
+              <div key={wd} className="wiz-cal__wd">
+                {wd}
+              </div>
+            ))}
+            {monthWeeks(calY, calM).map((cell, idx) => {
+              if (!cell)
+                return (
+                  <span
+                    key={"b" + idx}
+                    className="wiz-cal__day wiz-cal__day--blank"
+                    aria-hidden="true"
+                  />
+                );
+              const past = cell.iso < todayISO();
+              return (
+                <button
+                  type="button"
+                  key={cell.iso}
+                  className={
+                    "wiz-cal__day" + (date === cell.iso ? " is-sel" : "")
+                  }
+                  disabled={past}
+                  onClick={() => {
+                    setDate(cell.iso);
+                    setShowPicker(false);
+                  }}
+                >
+                  {cell.d}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <div className="lp-label">Choose your experience</div>
+      <div className="lp-exps">
+        {SLOT_ORDER.map((v) => (
+          <button
+            type="button"
+            key={v}
+            className={"lp-exp" + (slot === v ? " sel" : "")}
+            onClick={() => setSlot(v)}
+          >
+            <span className="lp-exp__n">{tour.slots[v].label}</span>
+            <span className="lp-exp__p">${slotPriceUsd(v)} / guest</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="lp-grow">
+        <div>
+          <div className="lp-label lp-label--tight">How many guests?</div>
+          <div className="lp-stepper">
+            <button
+              type="button"
+              className="lp-step"
+              onClick={() => setGuests((g) => Math.max(1, g - 1))}
+              disabled={guests <= 1}
+              aria-label="Fewer guests"
+            >
+              −
+            </button>
+            <span className="lp-gcount">{guests}</span>
+            <button
+              type="button"
+              className="lp-step"
+              onClick={() => setGuests((g) => Math.min(maxGuests, g + 1))}
+              disabled={guests >= maxGuests}
+              aria-label="More guests"
+            >
+              +
+            </button>
+          </div>
+        </div>
+        <div className="lp-total">
+          <div className="lp-total__lbl">Total</div>
+          <div className="lp-total__val">${total}</div>
+        </div>
+      </div>
+
+      <hr className="lp-hr" />
+      <div className="lp-contact">
+        <button
+          type="button"
+          className={"lp-cbtn" + (contactMode === "saved" ? " sel" : "")}
+          onClick={() => setContactMode("saved")}
+        >
+          Use my saved details
+        </button>
+        <button
+          type="button"
+          className={"lp-cbtn" + (contactMode === "email" ? " sel" : "")}
+          onClick={() => setContactMode("email")}
+        >
+          Enter email
+        </button>
+      </div>
+      {contactMode === "email" && (
+        <div className="lp-email">
+          <input
+            type="email"
+            inputMode="email"
+            placeholder="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+      )}
+      <button
+        type="button"
+        className={"lp-reserve" + (canSubmit ? " on" : "")}
+        onClick={onReserve}
+        disabled={!canSubmit || submitting}
+      >
+        {submitting ? "Sending…" : "Reserve"}
+      </button>
+    </div>
+  );
+}
+
 /* Lightweight email check for the contact step. */
 function validEmail(s) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s).trim());
@@ -1442,6 +1811,12 @@ function downloadIcs(opts) {
    wa.me opens the app on iOS/Android and WhatsApp Web on desktop. */
 function waLink(text) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+}
+
+/* SMS fallback — works to any number (no WhatsApp needed). Phase-1 the traveler
+   may reach the skipper by WhatsApp OR SMS; later it's in-app chat only. */
+function smsLink(text) {
+  return `sms:+${WHATSAPP_NUMBER}?&body=${encodeURIComponent(text)}`;
 }
 
 /* Natural English day phrase from an ISO date, relative to today:

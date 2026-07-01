@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Booking · Express (docked)</title>
+<style>
+  :root{
+    --page:#fffefc; --ink:#2A1810; --muted:rgba(42,24,16,.6); --gold:#C49A34;
+    --cream:#f2ecdf; --card:#ffffff; --line:rgba(0,0,0,.09); --surf:#f6f5f3;
+    --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);color:var(--ink);background:var(--page);display:flex;min-height:100vh}
+
+  /* LEFT — the landing (3/4) */
+  .stage{flex:1;position:relative;display:flex;flex-direction:column;justify-content:center;padding:8vw 6vw;
+    background:radial-gradient(120% 90% at 25% 20%,#fff,#f5f2ec 75%,#efe9df)}
+  .topbar{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:20px 6vw}
+  .brand{font-size:15px;font-weight:600;letter-spacing:-.01em;line-height:1.15}
+  .brand span{display:block;font-size:11px;color:var(--muted);font-weight:400;letter-spacing:.05em;text-transform:uppercase}
+  .login{font-size:14px;color:var(--ink);text-decoration:none;padding:10px 4px}
+  .login:hover{color:var(--gold)}
+  .stage .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600}
+  .stage h1{font-size:clamp(48px,7vw,104px);font-weight:700;letter-spacing:-.03em;margin:10px 0 14px;line-height:.98}
+  .stage p{font-size:19px;color:var(--muted);max-width:32ch;line-height:1.5}
+  .villages{display:flex;gap:18px;flex-wrap:wrap;margin-top:34px;font-size:14px;color:var(--muted)}
+
+  /* RIGHT — the docked Express booking (~1/4) */
+  .dock{width:clamp(380px,27vw,440px);flex-shrink:0;height:100vh;position:sticky;top:0;overflow-y:auto;
+    background:rgba(255,255,255,.86);backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);
+    border-left:1px solid var(--line);box-shadow:-20px 0 50px rgba(60,40,10,.06);padding:26px 26px 34px}
+
+  /* ONE toggle that ties Express (default) ↔ Guided (the existing wizard) */
+  .modebar{display:flex;justify-content:center;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:22px}
+  .toggle{display:inline-flex;align-items:center;gap:7px;background:var(--surf);border:1px solid var(--line);border-radius:999px;padding:9px 17px;min-height:44px;font:600 13.5px var(--font);color:var(--ink);cursor:pointer}
+  .toggle:hover{border-color:var(--gold);color:var(--gold)}
+  .toggle .tic{color:var(--gold);font-size:15px}
+  .gstep-h{font-size:22px;font-weight:700;letter-spacing:-.01em;margin:6px 0 16px}
+  .gfoot{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+  .gbtn{border-radius:999px;padding:0 20px;min-height:48px;font:600 15px var(--font);cursor:pointer;border:1px solid var(--line);display:inline-flex;align-items:center}
+  .gbtn.ghost{background:none;color:var(--muted)}
+  .gbtn.ink{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .gnote{margin-top:16px;font-size:12px;color:var(--muted);text-align:center;line-height:1.5}
+
+  .eyebrow2{display:flex;align-items:center;gap:8px;font-size:13.5px;margin-bottom:12px}
+  .eyebrow2 .dot{width:10px;height:10px;border-radius:50%;background:var(--gold)}
+
+  .dep{display:flex;align-items:center;justify-content:space-between;background:var(--cream);
+    border:1.5px solid var(--gold);border-radius:15px;padding:18px 20px}
+  .dep-h{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1}
+  .dep-sub{font-size:13.5px;color:var(--muted);margin-top:7px}
+  .dep-check{width:30px;height:30px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+  .change{display:block;margin:13px auto 0;background:none;border:0;color:var(--gold);font-size:13.5px;text-decoration:underline;text-decoration-color:rgba(196,154,52,.5);text-underline-offset:4px;cursor:pointer}
+
+  .label{font-size:12px;letter-spacing:.03em;color:var(--muted);margin:24px 0 10px}
+  .tours{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .tour{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:14px 15px;cursor:pointer;transition:border-color .15s,background .15s}
+  .tour:hover{border-color:rgba(196,154,52,.5)}
+  .tour.sel{background:var(--cream);border:1.5px solid var(--gold)}
+  .tour .n{font-size:15.5px;font-weight:700;letter-spacing:-.01em}
+  .tour .p{font-size:12.5px;color:var(--muted);margin-top:5px}
+
+  .grow{display:flex;align-items:flex-end;justify-content:space-between;margin-top:22px}
+  .stepper{display:flex;align-items:center;gap:13px}
+  .step{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--line);font-size:20px;color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .step:active{transform:scale(.95)}
+  .gcount{font-size:24px;font-weight:700;min-width:22px;text-align:center}
+  .total-lbl{font-size:13px;color:var(--muted);text-align:right}
+  .total-val{font-size:32px;font-weight:700;letter-spacing:-.02em;margin-top:2px;text-align:right}
+
+  hr{border:0;border-top:1px solid var(--line);margin:22px 0}
+  .contact{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:12px}
+  .cbtn{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px 10px;font-size:13.5px;font-weight:600;color:var(--gold);cursor:pointer;transition:border-color .15s,background .15s}
+  .cbtn.sel{border:1.5px solid var(--gold);background:var(--cream)}
+  .reserve{width:100%;border:0;border-radius:12px;padding:17px;font-size:15.5px;font-weight:600;background:var(--surf);color:var(--muted);cursor:not-allowed;transition:background .2s,color .2s}
+  .reserve.on{background:var(--ink);color:#fff;cursor:pointer}
+  .reserve.on:active{transform:scale(.99)}
+
+  /* mobile: dock becomes a full-width sheet under the hero */
+  @media (max-width:860px){
+    body{flex-direction:column}
+    .stage{padding:64px 24px 40px;min-height:52vh}
+    .dock{width:100%;height:auto;position:static;border-left:0;border-top:1px solid var(--line);box-shadow:none}
+  }
+</style>
+</head>
+<body>
+  <!-- LEFT: landing -->
+  <section class="stage">
+    <header class="topbar">
+      <div class="brand">Monterosso<span>Cinque Terre</span></div>
+      <a class="login" href="#">Log in</a>
+    </header>
+    <p class="eyebrow">Monterosso al Mare</p>
+    <h1>Cinque Terre</h1>
+    <p>A private sail on the Mar Ligure, aboard the Paolona — a local skipper who is yours alone.</p>
+    <div class="villages"><span>Monterosso</span><span>Vernazza</span><span>Corniglia</span><span>Manarola</span><span>Riomaggiore</span></div>
+  </section>
+
+  <!-- RIGHT: docked Express booking (~1/4) -->
+  <aside class="dock">
+    <div class="modebar">
+      <button class="toggle" id="toggle"><span class="tic">⇄</span><span id="tlabel">Guided steps</span></button>
+    </div>
+
+    <div id="express">
+    <div class="eyebrow2"><span class="dot"></span>Next available departure</div>
+    <div class="dep">
+      <div>
+        <div class="dep-h">Today · 09:00</div>
+        <div class="dep-sub">Morning</div>
+      </div>
+      <div class="dep-check">✓</div>
+    </div>
+    <button class="change">Change date &amp; time</button>
+
+    <div class="label">Choose your tour</div>
+    <div class="tours" id="tours">
+      <button class="tour sel" data-price="2400"><div class="n">Il Classico</div><div class="p">€2,400 / sailing</div></button>
+      <button class="tour" data-price="1800"><div class="n">L'Ora d'Oro</div><div class="p">€1,800 / sailing</div></button>
+      <button class="tour" data-price="2200"><div class="n">Le Calette Segrete</div><div class="p">€2,200 / sailing</div></button>
+      <button class="tour" data-price=""><div class="n">La Giornata Privata</div><div class="p">On request</div></button>
+    </div>
+
+    <div class="grow">
+      <div>
+        <div class="label" style="margin:0 0 8px">How many guests?</div>
+        <div class="stepper"><button class="step" id="minus">−</button><span class="gcount" id="guests">2</span><button class="step" id="plus">+</button></div>
+      </div>
+      <div><div class="total-lbl">Total</div><div class="total-val" id="total">€2,400</div></div>
+    </div>
+
+    <hr>
+    <div class="contact">
+      <button class="cbtn" data-c="saved">Use my saved details</button>
+      <button class="cbtn" data-c="email">Enter email instead</button>
+    </div>
+    <button class="reserve" id="reserve" disabled>Reserve</button>
+    </div>
+
+    <!-- Guided = the 5-step wizard we already built; one toggle enters it -->
+    <div id="guided" hidden>
+      <div class="eyebrow2"><span class="dot"></span>Guided · step 1 of 5</div>
+      <div class="gstep-h">Choose your tour</div>
+      <div class="tours">
+        <button class="tour sel"><div class="n">Il Classico</div><div class="p">€2,400 / sailing</div></button>
+        <button class="tour"><div class="n">L'Ora d'Oro</div><div class="p">€1,800 / sailing</div></button>
+        <button class="tour"><div class="n">Le Calette Segrete</div><div class="p">€2,200 / sailing</div></button>
+        <button class="tour"><div class="n">La Giornata Privata</div><div class="p">On request</div></button>
+      </div>
+      <div class="gfoot">
+        <button class="gbtn ghost">‹ Back</button>
+        <button class="gbtn ink">Continue ›</button>
+      </div>
+      <p class="gnote">The guided 5-step wizard we already built — same data,<br>one step at a time. One toggle switches back to Express.</p>
+    </div>
+  </aside>
+
+<script>
+  var tours=document.getElementById('tours'), total=document.getElementById('total');
+  var guests=document.getElementById('guests'), reserve=document.getElementById('reserve'), g=2;
+  tours.addEventListener('click',function(e){var b=e.target.closest('.tour');if(!b)return;
+    [].forEach.call(tours.children,function(c){c.classList.toggle('sel',c===b)});
+    var p=b.getAttribute('data-price'); total.textContent=p?'€'+Number(p).toLocaleString('en-US'):'On request';});
+  document.getElementById('minus').onclick=function(){if(g>1){g--;guests.textContent=g;}};
+  document.getElementById('plus').onclick=function(){if(g<12){g++;guests.textContent=g;}};
+  document.querySelector('.contact').addEventListener('click',function(e){var b=e.target.closest('.cbtn');if(!b)return;
+    [].forEach.call(this.children,function(c){c.classList.toggle('sel',c===b)});
+    reserve.classList.add('on'); reserve.disabled=false;});
+
+  // ONE toggle: same booking, two display modes (Express ↔ Guided)
+  var toggle=document.getElementById('toggle'), tlabel=document.getElementById('tlabel');
+  var exp=document.getElementById('express'), gui=document.getElementById('guided'), mode='express';
+  toggle.onclick=function(){
+    mode = mode==='express' ? 'guided' : 'express';
+    exp.hidden = mode!=='express';
+    gui.hidden = mode!=='guided';
+    tlabel.textContent = mode==='express' ? 'Guided steps' : 'Express';
+  };
+</script>
+</body>
+</html>

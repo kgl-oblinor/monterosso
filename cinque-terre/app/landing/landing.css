@@ -1220,6 +1220,26 @@ body {
     padding: var(--s7) var(--s7);
   }
 }
+
+/* Booking wizard: a compact FIXED-height card so the footer buttons (Back /
+   Continue) sit at the EXACT same position on every step. The body scrolls
+   inside; the card itself never grows or shrinks between steps. */
+.landing-v2 .book-form.wiz-apple {
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  height: min(600px, 86vh);
+  overflow: hidden;
+}
+.landing-v2 .wiz-apple .wiz-body {
+  overflow-y: auto;
+  min-height: 0;
+}
+@media (min-width: 760px) {
+  .landing-v2 .book-form.wiz-apple {
+    padding: var(--s6) var(--s6);
+  }
+}
 /* prev/next as a clean header at the top of a village page */
 .landing-v2 .vp-nav--top {
   margin: 0 0 var(--s5);
@@ -2198,7 +2218,7 @@ body {
   letter-spacing: var(--ls-1);
   color: rgba(255, 246, 236, 0.6);
   padding: 12px 10px;
-  min-height: 44px;
+  min-height: 48px;
   display: inline-flex;
   align-items: center;
   -webkit-tap-highlight-color: transparent;
@@ -2454,6 +2474,10 @@ body {
   border: 1px solid var(--wa-ink);
   border-radius: 999px;
   box-shadow: var(--wa-shadow);
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .landing-v2 .wiz-apple .pay::before {
   display: none;
@@ -2955,4 +2979,350 @@ body:has(.landing-v2) {
     right: 16px;
     font-size: 14px;
   }
+}
+
+/* ============================================================
+   DOCKED EXPRESS BOOKING — the default booking surface.
+   The landing becomes hero (left, flex 1) + a white/frosted
+   Express panel docked right on desktop; on mobile the panel
+   drops to a full-width sheet under the hero. One toggle flips
+   the panel between Express and the Guided 5-step wizard.
+   Mockup source: public/book-express.html. Apple white+glass.
+   ============================================================ */
+.landing-v2 .lp-shell {
+  display: block; /* mobile default: hero then dock, stacked */
+}
+@media (min-width: 900px) {
+  .landing-v2 .lp-shell {
+    display: flex;
+    align-items: stretch;
+  }
+  .landing-v2 .lp-shell .lp {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+/* any open overlay popup hides the whole shell (hero + dock), so the
+   deep-linked flow-board screenshots stay clean — matches .popup-open .lp */
+.landing-v2.popup-open .lp-shell {
+  display: none;
+}
+
+/* the docked panel — dock-local light tokens (independent of the dark-glass
+   popup palette, which is scoped to .book-form / .vp-apple, not .lp-dock) */
+.landing-v2 .lp-dock {
+  --dk-ink: #2a1810;
+  --dk-muted: rgba(42, 24, 16, 0.6);
+  --dk-gold: #c49a34;
+  --dk-cream: #f2ecdf;
+  --dk-card: #ffffff;
+  --dk-line: rgba(0, 0, 0, 0.09);
+  --dk-surf: #f6f5f3;
+  color: var(--dk-ink);
+  background: #ffffff;
+  border-top: 1px solid var(--dk-line);
+  padding: 24px 22px 32px;
+}
+.landing-v2 .lp-dock,
+.landing-v2 .lp-dock * {
+  font-family: var(--lp-font); /* SF Pro system stack, not the hero's Fraunces */
+}
+@media (min-width: 900px) {
+  .landing-v2 .lp-dock {
+    width: clamp(380px, 27vw, 440px);
+    flex-shrink: 0;
+    height: 100vh;
+    height: 100svh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.86);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    backdrop-filter: blur(28px) saturate(160%);
+    border-top: 0;
+    border-left: 1px solid var(--dk-line);
+    box-shadow: -20px 0 50px rgba(60, 40, 10, 0.06);
+    padding: 26px 26px 34px;
+  }
+}
+
+/* flatten the inner Apple card chrome (the Guided wizard's .book-form.wiz-apple
+   and the Express wrapper's .wiz-apple) so both sit flush on the dock surface,
+   which already provides the frosted panel. Child styling is untouched. */
+.landing-v2 .lp-dock .wiz-apple {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  height: auto;
+  max-width: 100%;
+  padding: 0;
+  overflow: visible;
+}
+
+/* the single Express ↔ Guided toggle */
+.landing-v2 .lp-modebar {
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid var(--dk-line);
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+}
+.landing-v2 .lp-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 9px 17px;
+  background: var(--dk-surf);
+  border: 1px solid var(--dk-line);
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--dk-ink);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.landing-v2 .lp-toggle:hover {
+  border-color: var(--dk-gold);
+  color: var(--dk-gold);
+}
+.landing-v2 .lp-toggle__ic {
+  color: var(--dk-gold);
+  font-size: 15px;
+}
+
+/* Express — next-available departure */
+.landing-v2 .lp-eyebrow2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--dk-ink);
+  margin-bottom: 12px;
+}
+.landing-v2 .lp-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--dk-gold);
+  flex: none;
+}
+.landing-v2 .lp-dep {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--dk-cream);
+  border: 1.5px solid var(--dk-gold);
+  border-radius: 15px;
+  padding: 18px 20px;
+}
+.landing-v2 .lp-dep__h {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.landing-v2 .lp-dep__sub {
+  font-size: 13.5px;
+  color: var(--dk-muted);
+  margin-top: 7px;
+}
+.landing-v2 .lp-dep__check {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--dk-gold);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex: none;
+}
+.landing-v2 .lp-change {
+  display: block;
+  margin: 13px auto 0;
+  min-height: 44px;
+  background: none;
+  border: 0;
+  color: var(--dk-gold);
+  font-size: 13.5px;
+  text-decoration: underline;
+  text-decoration-color: rgba(196, 154, 52, 0.5);
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+/* revealed compact calendar (reuses .wiz-cal, light via the .wiz-apple scope) */
+.landing-v2 .lp-cal {
+  margin-top: 14px;
+}
+
+.landing-v2 .lp-label {
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--dk-muted);
+  margin: 22px 0 10px;
+}
+.landing-v2 .lp-label--tight {
+  margin: 0 0 8px;
+}
+
+/* experience cards — the three departures with their per-guest price */
+.landing-v2 .lp-exps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px;
+}
+.landing-v2 .lp-exp {
+  text-align: left;
+  background: var(--dk-card);
+  border: 1px solid var(--dk-line);
+  border-radius: 13px;
+  padding: 13px 14px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.landing-v2 .lp-exp:hover {
+  border-color: rgba(196, 154, 52, 0.5);
+}
+.landing-v2 .lp-exp.sel {
+  background: var(--dk-cream);
+  border: 1.5px solid var(--dk-gold);
+}
+.landing-v2 .lp-exp__n {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.landing-v2 .lp-exp__p {
+  display: block;
+  font-size: 12.5px;
+  color: var(--dk-muted);
+  margin-top: 5px;
+}
+
+/* guest stepper + live total */
+.landing-v2 .lp-grow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 22px;
+}
+.landing-v2 .lp-stepper {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+.landing-v2 .lp-step {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--dk-card);
+  border: 1px solid var(--dk-line);
+  font-size: 20px;
+  color: var(--dk-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.landing-v2 .lp-step:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.landing-v2 .lp-step:active:not(:disabled) {
+  transform: scale(0.95);
+}
+.landing-v2 .lp-gcount {
+  font-size: 24px;
+  font-weight: 700;
+  min-width: 22px;
+  text-align: center;
+}
+.landing-v2 .lp-total {
+  text-align: right;
+}
+.landing-v2 .lp-total__lbl {
+  font-size: 13px;
+  color: var(--dk-muted);
+}
+.landing-v2 .lp-total__val {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 2px;
+}
+
+.landing-v2 .lp-hr {
+  border: 0;
+  border-top: 1px solid var(--dk-line);
+  margin: 22px 0;
+}
+
+/* contact + reserve */
+.landing-v2 .lp-contact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px;
+  margin-bottom: 12px;
+}
+.landing-v2 .lp-cbtn {
+  min-height: 44px;
+  background: var(--dk-card);
+  border: 1px solid var(--dk-line);
+  border-radius: 11px;
+  padding: 13px 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--dk-gold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.landing-v2 .lp-cbtn.sel {
+  border: 1.5px solid var(--dk-gold);
+  background: var(--dk-cream);
+}
+.landing-v2 .lp-email {
+  margin-bottom: 12px;
+}
+.landing-v2 .lp-email input {
+  width: 100%;
+  font-size: 15px;
+  padding: 13px 14px;
+  border-radius: 11px;
+  background: #fff;
+  border: 1px solid var(--dk-line);
+  color: var(--dk-ink);
+  color-scheme: light;
+}
+.landing-v2 .lp-reserve {
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  padding: 17px;
+  font-size: 15.5px;
+  font-weight: 600;
+  background: var(--dk-surf);
+  color: var(--dk-muted);
+  cursor: not-allowed;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.landing-v2 .lp-reserve.on {
+  background: var(--dk-ink);
+  color: #fff;
+  cursor: pointer;
+}
+.landing-v2 .lp-reserve.on:active {
+  transform: scale(0.99);
 }
