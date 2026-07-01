@@ -1648,7 +1648,15 @@ function ExpressBooking() {
       >
         {submitting ? "Sending…" : "Reserve"}
       </button>
-      <div className="lp-rating">4.98 ⭐</div>
+      {/* TODO: live-reflect the company's Google Reviews (Places API — needs the
+          Google Business place-id + an API key; cache server-side). Hardcoded for now. */}
+      <div className="lp-rating">
+        <svg className="lp-rating__star" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 17.27l6.18 3.73-1.64-7.03L22 9.24l-7.19-.62L12 2 9.19 8.62 2 9.24l5.46 4.73L5.82 21z" />
+        </svg>
+        <span className="lp-rating__num">4.98</span>
+        <span className="lp-rating__lbl">Google reviews</span>
+      </div>
     </div>
   );
 }
