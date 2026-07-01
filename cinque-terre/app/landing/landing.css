@@ -3254,8 +3254,8 @@ body:has(.landing-v2) {
 /* experience cards — the three departures with their per-guest price */
 .landing-v2 .lp-exps {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 11px;
+  grid-template-columns: 1fr 1fr 1fr; /* the three departures side by side, never 2+1 */
+  gap: 9px;
 }
 .landing-v2 .lp-exp {
   text-align: left;
