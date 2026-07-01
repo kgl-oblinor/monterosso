@@ -242,18 +242,15 @@ export default function Landing() {
 
           {/* 🤍 for Mandy — the retired scene hid drifting gold hearts that
               secretly spell her name; carried here as a few faint hearts. */}
+          {/* Mandy-hjertene — midlertidig av ("vent med de"). Hent tilbake ved å avkommentere:
           <div className="lp-hearts" aria-hidden="true">
             {["M", "A", "N", "D", "Y"].map((letter, i) => (
-              <span
-                key={letter}
-                className="lp-heart"
-                data-letter={letter}
-                style={{ "--i": String(i) }}
-              >
+              <span key={letter} className="lp-heart" data-letter={letter} style={{ "--i": String(i) }}>
                 ♥
               </span>
             ))}
           </div>
+          */}
         </header>
       </main>
 

@@ -3039,7 +3039,7 @@ body:has(.landing-v2) {
 }
 @media (min-width: 900px) {
   .landing-v2 .lp-dock {
-    width: clamp(380px, 27vw, 440px);
+    width: clamp(300px, 20vw, 380px); /* the purchase menu = right 1/5 of the screen */
     flex-shrink: 0;
     height: 100vh;
     height: 100svh;
