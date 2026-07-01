@@ -261,6 +261,7 @@ export default function Landing() {
           right on desktop (a full-width sheet under the hero on mobile). One
           toggle flips it between Express and the Guided 5-step wizard. */}
       <aside className="lp-dock">
+        <div className="lp-box">
         <div className="lp-modebar">
           <button
             type="button"
@@ -280,6 +281,7 @@ export default function Landing() {
         ) : (
           <BookingForm onClose={() => setBookMode("express")} />
         )}
+        </div>
       </aside>
       </div>
 

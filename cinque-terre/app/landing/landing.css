@@ -3019,9 +3019,19 @@ body:has(.landing-v2) {
   --dk-line: rgba(0, 0, 0, 0.09);
   --dk-surf: #f6f5f3;
   color: var(--dk-ink);
-  background: #ffffff;
+  background: #f4f7fa; /* faint cool surround */
   border-top: 1px solid var(--dk-line);
-  padding: 24px 22px 32px;
+  padding: 16px;
+}
+
+/* the booking box itself — a distinct framed card floating on the dock's
+   cool, almost-invisible surround */
+.landing-v2 .lp-box {
+  background: #ffffff;
+  border: 1px solid var(--dk-line);
+  border-radius: 20px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 14px 34px rgba(60, 40, 10, 0.08);
+  padding: 22px 22px 26px;
 }
 .landing-v2 .lp-dock,
 .landing-v2 .lp-dock * {
@@ -3042,7 +3052,7 @@ body:has(.landing-v2) {
     border-top: 0;
     border-left: 1px solid rgba(20, 40, 70, 0.05);
     box-shadow: -16px 0 44px rgba(40, 50, 70, 0.035);
-    padding: 26px 26px 34px;
+    padding: 16px;
   }
 }
 
