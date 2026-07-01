@@ -5,7 +5,7 @@
 
 /**
  * Design tokens — single source of truth.
- * Light theme only for now; the `.dark` block exists for later but no toggle is wired up.
+ * Light theme only; the app runs light-only and no dark toggle is wired up.
  * Components use semantic Tailwind classes (bg-background, text-muted-foreground, …)
  * or the mapped CSS variables — never raw hex.
  */
@@ -37,19 +37,6 @@
   --border: rgba(0, 0, 0, 0.08);
   --input: rgba(0, 0, 0, 0.08);
   --ring: #c49a34;
-  --chart-1: #ead27e;
-  --chart-2: #a8743f;
-  --chart-3: #07182a;
-  --chart-4: #5f7a43;
-  --chart-5: #c9b78a;
-  --sidebar: #07182a;
-  --sidebar-foreground: #f7f1e3;
-  --sidebar-primary: #ead27e;
-  --sidebar-primary-foreground: #07182a;
-  --sidebar-accent: #0f2740;
-  --sidebar-accent-foreground: #f7f1e3;
-  --sidebar-border: #14304a;
-  --sidebar-ring: #ead27e;
   /* SwiftUI / SF system typography — the signed-in app reads like a native Apple surface. */
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
   --font-serif: -apple-system, "SF Pro Display", Georgia, serif;
@@ -81,49 +68,6 @@
   --pill-radius: 999px; /* pills / buttons */
 }
 
-.dark {
-  /* App runs light-only (`.dark` was removed from <html>); mirror the same Apple
-     white values here so nothing regresses if the class ever comes back. */
-  --background: #fffefc;
-  --foreground: #2a1810;
-  --card: #ffffff;
-  --card-foreground: #2a1810;
-  --popover: #ffffff;
-  --popover-foreground: #2a1810;
-  --primary: #2a1810;
-  --primary-foreground: #ffffff;
-  --secondary: #f6f5f3;
-  --secondary-foreground: #2a1810;
-  --muted: #f6f5f3;
-  --muted-foreground: rgba(42, 24, 16, 0.6);
-  --accent: #f6f5f3;
-  --accent-foreground: #2a1810;
-  --destructive: #dc2626;
-  --destructive-foreground: #ffffff;
-  --success: #5f7a43;
-  --success-foreground: #ffffff;
-  --border: rgba(0, 0, 0, 0.08);
-  --input: rgba(0, 0, 0, 0.08);
-  --ring: #c49a34;
-  --chart-1: #ead27e;
-  --chart-2: #a8743f;
-  --chart-3: #f7f1e3;
-  --chart-4: #7da352;
-  --chart-5: #c9b78a;
-  --sidebar: #07182a;
-  --sidebar-foreground: #f7f1e3;
-  --sidebar-primary: #ead27e;
-  --sidebar-primary-foreground: #07182a;
-  --sidebar-accent: #0f2740;
-  --sidebar-accent-foreground: #f7f1e3;
-  --sidebar-border: #1c3a55;
-  --sidebar-ring: #ead27e;
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
-  --font-serif: -apple-system, "SF Pro Display", Georgia, serif;
-  --font-mono: ui-monospace, "SF Mono", "Geist Mono", monospace;
-  --radius: 1.25rem;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -146,19 +90,6 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
 
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);

@@ -9,10 +9,7 @@ import type { UserRole } from "@/features/auth/api/types";
 import { type SectionKey } from "@/features/dashboard/sections";
 
 const ROLES: UserRole[] = ["customer", "skipper", "admin"];
-const SECTIONS: SectionKey[] = [
-  "home", "chat", "trips", "receipts",
-  "otherTrips", "otherCountries", "customers", "profile", "site",
-];
+const SECTIONS: SectionKey[] = ["home", "chat", "trips", "profile", "site"];
 
 /** ?preview=<role> → inject a mock active session so the protected dashboard renders
  *  without login. Call once, before the React tree mounts. Mock builds only. */

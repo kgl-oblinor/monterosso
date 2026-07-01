@@ -12,9 +12,10 @@ import {
 } from "@/components/ui/form";
 import { env } from "@/lib/env";
 import { MOCK_OTP_CODE } from "@/mocks/fixtures";
+import { useT } from "@/i18n";
 import {
-  forgotPasswordForm,
-  codePasswordForm,
+  makeForgotPasswordSchema,
+  makeCodePasswordSchema,
   type ForgotPasswordForm,
   type CodePasswordForm,
 } from "../schemas";
@@ -29,6 +30,7 @@ type View = "request" | "reset" | "done";
 /** Forgot-password = re-claim the account by email: send a code → enter code + new
  *  password (register/complete overwrites the password). `onBack` returns to login. */
 export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
+  const t = useT();
   const [view, setView] = useState<View>("request");
   const [email, setEmail] = useState("");
   const [sentTo, setSentTo] = useState<string | null>(null);
@@ -37,11 +39,11 @@ export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
   const complete = useRegisterComplete();
 
   const requestForm = useForm<ForgotPasswordForm>({
-    resolver: zodResolver(forgotPasswordForm),
+    resolver: zodResolver(makeForgotPasswordSchema(t)),
     defaultValues: { email: "" },
   });
   const resetForm = useForm<CodePasswordForm>({
-    resolver: zodResolver(codePasswordForm),
+    resolver: zodResolver(makeCodePasswordSchema(t)),
     defaultValues: { code: "", password: "" },
   });
 
@@ -63,11 +65,11 @@ export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
           <CheckCircle className="size-6 text-gold" />
         </div>
         <div className="space-y-1">
-          <h2 className="text-xl font-semibold text-ink">Passordet er oppdatert</h2>
-          <p className="text-sm text-ink-muted">Du kan nå logge inn med det nye passordet.</p>
+          <h2 className="text-xl font-semibold text-ink">{t("auth.forgot.doneTitle")}</h2>
+          <p className="text-sm text-ink-muted">{t("auth.forgot.doneBody")}</p>
         </div>
         <AuthButton type="button" onClick={onBack}>
-          Tilbake til innlogging
+          {t("auth.forgot.backToLogin")}
         </AuthButton>
       </div>
     );
@@ -78,17 +80,15 @@ export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
       <Form key="forgot-reset" {...resetForm}>
         <form onSubmit={onReset} className="space-y-5" noValidate>
           <div className="space-y-2 text-center">
-            <h2 className="text-xl font-semibold text-ink">Sjekk e-posten din</h2>
+            <h2 className="text-xl font-semibold text-ink">{t("auth.verify.title")}</h2>
             <p className="text-sm text-ink-muted">
-              Vi sendte en 6-sifret kode til{" "}
-              <span className="font-semibold text-ink">{sentTo ?? email}</span>.
+              {t("auth.forgot.codeSentTo", { email: sentTo ?? email })}
             </p>
           </div>
 
           {env.useMocks && (
             <p className="text-center text-sm text-ink-muted">
-              Demo-modus — bruk kode{" "}
-              <span className="font-mono font-medium text-ink">{MOCK_OTP_CODE}</span>.
+              {t("auth.demo.hint", { code: MOCK_OTP_CODE })}
             </p>
           )}
 
@@ -104,7 +104,7 @@ export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
                     icon={<ShieldCheck className="h-5 w-5" />}
                     inputMode="numeric"
                     maxLength={6}
-                    placeholder="6-sifret kode"
+                    placeholder={t("auth.field.code")}
                     autoComplete="one-time-code"
                     name={field.name}
                     ref={field.ref}
@@ -128,7 +128,7 @@ export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
               <FormItem>
                 <FormControl>
                   <PasswordInput
-                    placeholder="Nytt passord"
+                    placeholder={t("auth.field.newPassword")}
                     autoComplete="new-password"
                     name={field.name}
                     ref={field.ref}
@@ -144,10 +144,10 @@ export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
 
           <div className="flex flex-col gap-3 sm:flex-row">
             <AuthButton type="button" variant="outline" onClick={onBack}>
-              Avbryt
+              {t("auth.common.cancel")}
             </AuthButton>
             <AuthButton type="submit" loading={complete.isPending}>
-              Tilbakestill passord
+              {t("auth.forgot.resetSubmit")}
             </AuthButton>
           </div>
         </form>
@@ -161,18 +161,16 @@ export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
         <button
           type="button"
           onClick={onBack}
-          aria-label="Tilbake til innlogging"
+          aria-label={t("auth.forgot.backToLogin")}
           className="flex items-center gap-1 text-sm text-ink-muted transition-colors hover:text-ink"
         >
           <ArrowLeft className="size-4" />
-          Tilbake
+          {t("auth.common.back")}
         </button>
 
         <div className="space-y-2 text-center">
-          <h2 className="text-xl font-semibold text-ink">Glemt passord?</h2>
-          <p className="text-sm text-ink-muted">
-            Oppgi e-posten din, så sender vi deg en kode for å tilbakestille passordet.
-          </p>
+          <h2 className="text-xl font-semibold text-ink">{t("auth.forgot.requestTitle")}</h2>
+          <p className="text-sm text-ink-muted">{t("auth.forgot.requestBody")}</p>
         </div>
 
         {start.isError && <AuthError message={start.error.message} />}
@@ -188,7 +186,7 @@ export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
                   type="email"
                   inputMode="email"
                   autoComplete="email"
-                  placeholder="E-postadresse"
+                  placeholder={t("auth.field.email")}
                   {...field}
                 />
               </FormControl>
@@ -199,10 +197,10 @@ export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <AuthButton type="button" variant="outline" onClick={onBack}>
-            Avbryt
+            {t("auth.common.cancel")}
           </AuthButton>
           <AuthButton type="submit" loading={start.isPending}>
-            Send kode
+            {t("auth.common.sendCode")}
           </AuthButton>
         </div>
       </form>

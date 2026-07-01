@@ -12,9 +12,10 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { useT } from "@/i18n";
 import {
-  loginForm,
-  passwordlessForm,
+  makeLoginSchema,
+  makePasswordlessSchema,
   toPasswordlessInput,
   type LoginForm as LoginValues,
   type PasswordlessForm,
@@ -34,6 +35,7 @@ function isNeedsPassword(err: unknown): boolean {
 }
 
 export function LoginForm() {
+  const t = useT();
   const navigate = useNavigate();
   const setSession = useAuthStore((s) => s.setSession);
   // "passwordless" is the main way in; "password" and "forgot" are quiet, optional detours.
@@ -44,12 +46,12 @@ export function LoginForm() {
   const login = useLogin();
 
   const entryForm = useForm<PasswordlessForm>({
-    resolver: zodResolver(passwordlessForm),
+    resolver: zodResolver(makePasswordlessSchema(t)),
     defaultValues: { contact: "" },
   });
 
   const pwForm = useForm<LoginValues>({
-    resolver: zodResolver(loginForm),
+    resolver: zodResolver(makeLoginSchema(t)),
     defaultValues: { email: "", password: "" },
   });
 
@@ -90,11 +92,14 @@ export function LoginForm() {
     return (
       <Form key="login-password" {...pwForm}>
         <form onSubmit={onPassword} className="space-y-5" noValidate>
-          <AuthHeading title="Logg inn med passord" subtitle="For kontoer som er sikret med passord" />
+          <AuthHeading
+            title={t("auth.login.passwordTitle")}
+            subtitle={t("auth.login.passwordSubtitle")}
+          />
 
           {needsPasswordHint && (
             <p className="rounded-input border border-hairline bg-surface px-4 py-3 text-center text-sm text-ink-muted">
-              Denne kontoen er sikret med passord. Skriv passordet ditt for å logge inn.
+              {t("auth.login.securedHint")}
             </p>
           )}
 
@@ -111,7 +116,7 @@ export function LoginForm() {
                     type="email"
                     inputMode="email"
                     autoComplete="email"
-                    placeholder="E-postadresse"
+                    placeholder={t("auth.field.email")}
                     autoFocus
                     {...field}
                   />
@@ -127,7 +132,7 @@ export function LoginForm() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <PasswordInput placeholder="Passord" autoComplete="current-password" {...field} />
+                  <PasswordInput placeholder={t("auth.field.password")} autoComplete="current-password" {...field} />
                 </FormControl>
                 <FormMessage className="ml-4 text-red-600" />
               </FormItem>
@@ -140,12 +145,12 @@ export function LoginForm() {
               onClick={() => setForgot(true)}
               className="text-sm text-gold underline underline-offset-2 transition-opacity hover:opacity-80"
             >
-              Glemt passord?
+              {t("auth.login.forgot")}
             </button>
           </div>
 
           <AuthButton type="submit" loading={login.isPending}>
-            Logg inn
+            {t("auth.login.submit")}
           </AuthButton>
 
           <p className="text-center text-sm text-ink-muted">
@@ -154,7 +159,7 @@ export function LoginForm() {
               onClick={() => setMode("passwordless")}
               className="text-gold underline underline-offset-2 transition-opacity hover:opacity-80"
             >
-              Tilbake — logg inn uten passord
+              {t("auth.login.backToPasswordless")}
             </button>
           </p>
         </form>
@@ -166,7 +171,7 @@ export function LoginForm() {
   return (
     <Form key="login-passwordless" {...entryForm}>
       <form onSubmit={onEnter} className="space-y-5" noValidate>
-        <AuthHeading title="Velkommen" subtitle="Skriv e-post eller telefon, så er du inne" />
+        <AuthHeading title={t("auth.login.welcome")} subtitle={t("auth.login.welcomeSubtitle")} />
 
         {passwordless.isError && !needsPasswordHint && (
           <AuthError message={passwordless.error.message} />
@@ -182,7 +187,7 @@ export function LoginForm() {
                   icon={<AtSign className="h-5 w-5" />}
                   inputMode="email"
                   autoComplete="email"
-                  placeholder="E-post eller telefon"
+                  placeholder={t("auth.field.contact")}
                   autoFocus
                   {...field}
                 />
@@ -193,17 +198,17 @@ export function LoginForm() {
         />
 
         <AuthButton type="submit" loading={passwordless.isPending}>
-          Continue
+          {t("auth.common.continue")}
         </AuthButton>
 
         <p className="text-center text-sm text-ink-muted">
-          Har du et passord?{" "}
+          {t("auth.login.hasPassword")}{" "}
           <button
             type="button"
             onClick={() => setMode("password")}
             className="text-gold underline underline-offset-2 transition-opacity hover:opacity-80"
           >
-            Logg inn med passord
+            {t("auth.login.withPassword")}
           </button>
         </p>
       </form>

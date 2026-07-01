@@ -21,10 +21,11 @@ import {
 } from "@/components/ui/select";
 import { env } from "@/lib/env";
 import { MOCK_OTP_CODE } from "@/mocks/fixtures";
+import { useT } from "@/i18n";
 import {
-  claimStartForm,
-  codePasswordForm,
-  passwordlessForm,
+  makeClaimStartSchema,
+  makeCodePasswordSchema,
+  makePasswordlessSchema,
   toPasswordlessInput,
   type ClaimStartForm,
   type CodePasswordForm,
@@ -49,6 +50,7 @@ function isNeedsPassword(err: unknown): boolean {
 // password is a calm, OPTIONAL upgrade (the "secure with a password" detour below) — it uses
 // the code-verified claim flow and can also be done later from the profile.
 export function RegisterForm() {
+  const t = useT();
   const navigate = useNavigate();
   const setSession = useAuthStore((s) => s.setSession);
   const [secure, setSecure] = useState(false); // optional password-upgrade flow
@@ -61,18 +63,18 @@ export function RegisterForm() {
   const complete = useRegisterComplete();
 
   const entryForm = useForm<PasswordlessForm>({
-    resolver: zodResolver(passwordlessForm),
+    resolver: zodResolver(makePasswordlessSchema(t)),
     defaultValues: { contact: "" },
   });
 
   const idForm = useForm<ClaimStartForm>({
-    resolver: zodResolver(claimStartForm),
+    resolver: zodResolver(makeClaimStartSchema(t)),
     defaultValues: { mode: "email", email: "", phone: "", reservationCode: "" },
   });
   const mode = idForm.watch("mode");
 
   const verifyForm = useForm<CodePasswordForm>({
-    resolver: zodResolver(codePasswordForm),
+    resolver: zodResolver(makeCodePasswordSchema(t)),
     defaultValues: { code: "", password: "" },
   });
 
@@ -120,22 +122,19 @@ export function RegisterForm() {
         <Form key="register-verify" {...verifyForm}>
           <form onSubmit={onVerify} className="space-y-5" noValidate>
             <div className="space-y-3 text-center">
-              <h2 className="text-xl font-semibold text-ink">Sjekk e-posten din</h2>
-              <p className="text-sm text-ink-muted">
-                Vi sendte en 6-sifret kode. Oppgi koden og velg et passord.
-              </p>
+              <h2 className="text-xl font-semibold text-ink">{t("auth.verify.title")}</h2>
+              <p className="text-sm text-ink-muted">{t("auth.verify.subtitle")}</p>
               {sentTo && (
                 <div className="mx-auto inline-flex items-center gap-2 rounded-pill border border-hairline bg-surface px-4 py-1.5 text-sm text-ink">
                   <Mail className="size-4 shrink-0 text-gold" />
-                  Sjekk innboksen til <span className="font-semibold">{sentTo}</span>
+                  {t("auth.verify.checkInbox", { email: sentTo })}
                 </div>
               )}
             </div>
 
             {env.useMocks && (
               <p className="text-center text-sm text-ink-muted">
-                Demo-modus — bruk kode{" "}
-                <span className="font-mono font-medium text-ink">{MOCK_OTP_CODE}</span>.
+                {t("auth.demo.hint", { code: MOCK_OTP_CODE })}
               </p>
             )}
 
@@ -151,7 +150,7 @@ export function RegisterForm() {
                       icon={<ShieldCheck className="h-5 w-5" />}
                       inputMode="numeric"
                       maxLength={6}
-                      placeholder="6-sifret kode"
+                      placeholder={t("auth.field.code")}
                       autoComplete="one-time-code"
                       autoFocus
                       name={field.name}
@@ -175,7 +174,7 @@ export function RegisterForm() {
                 <FormItem>
                   <FormControl>
                     <PasswordInput
-                      placeholder="Velg et passord (minst 8 tegn)"
+                      placeholder={t("auth.field.choosePassword")}
                       autoComplete="new-password"
                       name={field.name}
                       ref={field.ref}
@@ -191,10 +190,10 @@ export function RegisterForm() {
 
             <div className="flex flex-col gap-3 sm:flex-row">
               <AuthButton type="button" variant="outline" onClick={() => setStep("identify")}>
-                Tilbake
+                {t("auth.common.back")}
               </AuthButton>
               <AuthButton type="submit" loading={complete.isPending}>
-                Lagre passord
+                {t("auth.verify.savePassword")}
               </AuthButton>
             </div>
           </form>
@@ -206,8 +205,8 @@ export function RegisterForm() {
       <Form key="register-identify" {...idForm}>
         <form onSubmit={onIdentify} className="space-y-5" noValidate>
           <AuthHeading
-            title="Sikre kontoen med passord"
-            subtitle="Valgfritt. Vi sender en kode til e-posten vi har registrert."
+            title={t("auth.secure.title")}
+            subtitle={t("auth.secure.subtitle")}
           />
 
           {start.isError && <AuthError message={start.error.message} />}
@@ -220,13 +219,13 @@ export function RegisterForm() {
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="h-12 rounded-input border border-hairline bg-white px-5 text-base text-ink data-[placeholder]:text-ink-muted">
-                      <SelectValue placeholder="Velg metode" />
+                      <SelectValue placeholder={t("auth.secure.methodPlaceholder")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="email">Med e-post</SelectItem>
-                    <SelectItem value="phone">Med telefon / WhatsApp</SelectItem>
-                    <SelectItem value="reservation">Med reservasjonskode</SelectItem>
+                    <SelectItem value="email">{t("auth.secure.methodEmail")}</SelectItem>
+                    <SelectItem value="phone">{t("auth.secure.methodPhone")}</SelectItem>
+                    <SelectItem value="reservation">{t("auth.secure.methodReservation")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage className="ml-4 text-red-600" />
@@ -243,7 +242,7 @@ export function RegisterForm() {
                   <FormControl>
                     <IconInput
                       icon={<Ticket className="h-5 w-5" />}
-                      placeholder="Reservasjonskode (f.eks. MT-210625-2)"
+                      placeholder={t("auth.field.reservation")}
                       autoFocus
                       {...field}
                     />
@@ -264,7 +263,7 @@ export function RegisterForm() {
                       type="tel"
                       inputMode="tel"
                       autoComplete="tel"
-                      placeholder="Telefon / WhatsApp (f.eks. +47 …)"
+                      placeholder={t("auth.field.phone")}
                       autoFocus
                       {...field}
                     />
@@ -285,7 +284,7 @@ export function RegisterForm() {
                       type="email"
                       inputMode="email"
                       autoComplete="email"
-                      placeholder="E-postadresse"
+                      placeholder={t("auth.field.email")}
                       autoFocus
                       {...field}
                     />
@@ -297,7 +296,7 @@ export function RegisterForm() {
           )}
 
           <AuthButton type="submit" loading={start.isPending}>
-            Send kode
+            {t("auth.common.sendCode")}
           </AuthButton>
 
           <p className="text-center text-sm text-ink-muted">
@@ -306,7 +305,7 @@ export function RegisterForm() {
               onClick={() => setSecure(false)}
               className="text-gold underline underline-offset-2 transition-opacity hover:opacity-80"
             >
-              Tilbake — kom rett inn uten passord
+              {t("auth.secure.backNoPassword")}
             </button>
           </p>
         </form>
@@ -318,7 +317,7 @@ export function RegisterForm() {
   return (
     <Form key="register-passwordless" {...entryForm}>
       <form onSubmit={onEnter} className="space-y-5" noValidate>
-        <AuthHeading title="Kom i gang" subtitle="Skriv e-post eller telefon, så er du inne" />
+        <AuthHeading title={t("auth.register.title")} subtitle={t("auth.register.subtitle")} />
 
         {passwordless.isError && !isNeedsPassword(passwordless.error) && (
           <AuthError message={passwordless.error.message} />
@@ -326,9 +325,9 @@ export function RegisterForm() {
 
         {passwordless.isError && isNeedsPassword(passwordless.error) && (
           <p className="rounded-input border border-hairline bg-surface px-4 py-3 text-center text-sm text-ink-muted">
-              Du har allerede en konto med passord.{" "}
+              {t("auth.register.alreadyHasPassword")}{" "}
               <Link to="/login" className="text-gold underline underline-offset-2 transition-opacity hover:opacity-80">
-                Logg inn med passord
+                {t("auth.login.withPassword")}
               </Link>
               .
             </p>
@@ -344,7 +343,7 @@ export function RegisterForm() {
                   icon={<AtSign className="h-5 w-5" />}
                   inputMode="email"
                   autoComplete="email"
-                  placeholder="E-post eller telefon"
+                  placeholder={t("auth.field.contact")}
                   autoFocus
                   {...field}
                 />
@@ -355,11 +354,11 @@ export function RegisterForm() {
         />
 
         <AuthButton type="submit" loading={passwordless.isPending}>
-          Continue
+          {t("auth.common.continue")}
         </AuthButton>
 
         <p className="text-center text-sm text-ink-muted">
-          Vil du sikre kontoen?{" "}
+          {t("auth.register.secureQuestion")}{" "}
           <button
             type="button"
             onClick={() => {
@@ -368,16 +367,16 @@ export function RegisterForm() {
             }}
             className="text-gold underline underline-offset-2 transition-opacity hover:opacity-80"
           >
-            Lag et passord
+            {t("auth.register.createPassword")}
           </button>
           <br />
-          <span className="text-ink-muted">Du kan også gjøre det senere i profilen.</span>
+          <span className="text-ink-muted">{t("auth.register.laterInProfile")}</span>
         </p>
 
         <p className="text-center text-sm text-ink-muted">
-          Har du allerede konto?{" "}
+          {t("auth.register.haveAccount")}{" "}
           <Link to="/login" className="text-gold underline underline-offset-2 transition-opacity hover:opacity-80">
-            Logg inn
+            {t("auth.login.link")}
           </Link>
         </p>
       </form>

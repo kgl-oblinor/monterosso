@@ -5,27 +5,25 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Compass,
-  Globe,
   LogOut,
   Mail,
   MessageSquare,
   Phone,
   Plus,
-  Receipt,
   Ship,
   Trash2,
   User,
   UserPlus,
-  Users,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import { useT, useLocale, formatDate, type TranslationKey } from "@/i18n";
 import { useAuthStore } from "@/features/auth/store";
 import {
-  formatTripDate,
   useMyProfile,
   useMyReservations,
   useUpdateProfile,
+  useUpdateReservationStatus,
   type MyReservation,
 } from "../api/threads";
 import {
@@ -71,21 +69,30 @@ function ComingSoon({ icon: Icon, title, hint }: { icon: LucideIcon; title: stri
   );
 }
 
-const STATUS_LABEL: Record<string, string> = {
-  requested: "Ny forespørsel",
-  booked: "Bekreftet",
-  completed: "Fullført",
-  cancelled: "Avlyst",
+const STATUS_KEY: Record<string, TranslationKey> = {
+  requested: "trips.status.requested",
+  booked: "trips.status.booked",
+  completed: "trips.status.completed",
+  cancelled: "trips.status.cancelled",
 };
 
-function statusLabel(status: string): string {
-  return STATUS_LABEL[status] ?? status;
-}
-
-function TripRow({ trip, contactLabel }: { trip: MyReservation; contactLabel: string }) {
+function TripRow({
+  trip,
+  contactLabel,
+  isSkipper,
+}: {
+  trip: MyReservation;
+  contactLabel: string;
+  isSkipper: boolean;
+}) {
+  const t = useT();
+  const locale = useLocale();
   const [inviteOpen, setInviteOpen] = useState(false);
-  const canInvite = trip.status !== "cancelled";
+  const updateStatus = useUpdateReservationStatus();
+  // Invite is a customer action (rallying the travel party); skippers don't see it.
+  const canInvite = !isSkipper && trip.status !== "cancelled";
   const isRequest = trip.status === "requested";
+  const statusText = STATUS_KEY[trip.status] ? t(STATUS_KEY[trip.status]) : trip.status;
   return (
     <li
       className={`flex items-center justify-between gap-4 rounded-card border border-hairline bg-surface px-5 py-4 shadow-soft ${
@@ -95,33 +102,57 @@ function TripRow({ trip, contactLabel }: { trip: MyReservation; contactLabel: st
       <div className="min-w-0">
         <div className="flex items-baseline gap-2">
           <span className="font-mono text-sm font-semibold text-ink">{trip.code}</span>
-          <span className="text-xs text-ink-muted">{formatTripDate(trip.tripDate)}</span>
+          <span className="text-xs text-ink-muted">{formatDate(trip.tripDate ?? "", locale)}</span>
         </div>
         <div className="mt-0.5 truncate text-sm text-ink-muted">
           <span className="text-ink-muted">{contactLabel}: </span>
           {trip.contactName ?? "—"}
-          {trip.guests != null && <span className="text-ink-muted"> · {trip.guests} gjester</span>}
+          {trip.guests != null && (
+            <span className="text-ink-muted"> · {t("trips.guests", { count: trip.guests })}</span>
+          )}
         </div>
       </div>
       <div className="flex shrink-0 items-center gap-2">
+        {/* Skipper acts on a new request here — no longer a dead end. */}
+        {isSkipper && isRequest && (
+          <>
+            <button
+              type="button"
+              onClick={() => updateStatus.mutate({ code: trip.code, status: "booked" })}
+              disabled={updateStatus.isPending}
+              className="btn-ink px-4 text-xs disabled:opacity-40"
+            >
+              {t("trips.confirm")}
+            </button>
+            <button
+              type="button"
+              onClick={() => updateStatus.mutate({ code: trip.code, status: "cancelled" })}
+              disabled={updateStatus.isPending}
+              className="inline-flex min-h-[44px] items-center rounded-pill border border-hairline px-4 text-xs font-semibold text-ink-muted transition-colors hover:bg-surface hover:text-ink active:scale-[0.98] disabled:opacity-40"
+            >
+              {t("trips.decline")}
+            </button>
+          </>
+        )}
         {canInvite && (
           <button
             type="button"
             onClick={() => setInviteOpen(true)}
-            className="flex items-center gap-1.5 rounded-pill border border-hairline px-3.5 py-2 text-xs font-semibold text-ink-muted transition-colors hover:bg-surface hover:text-ink active:scale-[0.98]"
+            className="flex min-h-[44px] items-center gap-1.5 rounded-pill border border-hairline px-3.5 text-xs font-semibold text-ink-muted transition-colors hover:bg-surface hover:text-ink active:scale-[0.98]"
           >
             <UserPlus className="size-3.5" />
-            <span className="hidden sm:inline">Inviter reisefølget</span>
+            <span className="hidden sm:inline">{t("trips.invite")}</span>
           </button>
         )}
         <span
-          className={`rounded-pill px-3 py-1 text-xs font-medium ${
+          className={`inline-flex items-center gap-1.5 rounded-pill px-3 py-1 text-xs font-medium ${
             isRequest
-              ? "bg-gold/15 text-gold ring-1 ring-inset ring-gold/30"
+              ? "bg-gold/10 text-ink ring-1 ring-inset ring-gold/30"
               : "bg-surface text-ink-muted ring-1 ring-inset ring-hairline"
           }`}
         >
-          {statusLabel(trip.status)}
+          {isRequest && <span className="size-1.5 rounded-full bg-gold" />}
+          {statusText}
         </span>
       </div>
       {inviteOpen && (
@@ -134,32 +165,29 @@ function TripRow({ trip, contactLabel }: { trip: MyReservation; contactLabel: st
 /** "Turer": the user's reservations. Customers see skipper/boat; skippers see the
  *  customer aboard. Same component — the Worker decides the data by role. */
 function TripsSection() {
+  const t = useT();
   const role = useAuthStore((s) => s.user?.role);
   const isSkipper = role === "skipper";
   const { data, isLoading, isError } = useMyReservations();
-  const title = isSkipper ? "Mine avganger" : "Turer";
-  const contactLabel = isSkipper ? "Gjest" : "Skipper";
+  const title = isSkipper ? t("trips.titleSkipper") : t("trips.title");
+  const contactLabel = isSkipper ? t("trips.contactLabel.skipper") : t("trips.contactLabel.customer");
 
   return (
     <SectionFrame title={title}>
       {isLoading ? (
-        <p className="px-1 py-8 text-sm text-ink-muted">Laster …</p>
+        <p className="px-1 py-8 text-sm text-ink-muted">{t("common.loading")}</p>
       ) : isError ? (
-        <p className="px-1 py-8 text-sm text-red-600">Kunne ikke laste turene.</p>
+        <p className="px-1 py-8 text-sm text-destructive">{t("trips.loadError")}</p>
       ) : !data || data.length === 0 ? (
         <ComingSoon
           icon={Compass}
-          title="Ingen turer ennå"
-          hint={
-            isSkipper
-              ? "Når noen bestiller en av avgangene dine, dukker den opp her – med hvem som er ombord."
-              : "Når en reservasjon kobles til kontoen din, ser du den her – med skipper, dato og status."
-          }
+          title={t("trips.emptyTitle")}
+          hint={isSkipper ? t("trips.emptyHintSkipper") : t("trips.emptyHintCustomer")}
         />
       ) : (
         <ul className="space-y-3">
           {data.map((trip) => (
-            <TripRow key={trip.code} trip={trip} contactLabel={contactLabel} />
+            <TripRow key={trip.code} trip={trip} contactLabel={contactLabel} isSkipper={isSkipper} />
           ))}
         </ul>
       )}
@@ -168,12 +196,12 @@ function TripsSection() {
 }
 
 /** First name only, for a warm greeting. Falls back to the email handle, then a soft default. */
-function firstNameOf(name?: string | null, email?: string | null): string {
+function firstNameOf(name?: string | null, email?: string | null, fallback = ""): string {
   const n = name?.trim().split(/\s+/)[0];
   if (n) return n;
   const handle = email?.split("@")[0];
   if (handle) return handle;
-  return "venn";
+  return fallback;
 }
 
 /** The soonest upcoming, non-cancelled reservation — the "next trip" on the home screen. */
@@ -188,50 +216,61 @@ function nextTripOf(trips: MyReservation[] | undefined): MyReservation | null {
   return upcoming[0] ?? null;
 }
 
-/** The customer home is a large, elderly-friendly 2×2 grid of real destinations —
- *  reading order, most important first. No "coming soon" dead ends. Kundeservice routes
- *  to Chat, which is the direct line to the skipper (our support channel). */
-const CUSTOMER_TILES: { id: string; key: SectionKey; icon: LucideIcon; label: string; hint: string }[] = [
-  { id: "chat", key: "chat", icon: MessageSquare, label: "Snakk med skipperen", hint: "Spør, avtal tid, bestill" },
-  { id: "trips", key: "trips", icon: Compass, label: "Turen min", hint: "Dato, sted og kode" },
-  { id: "support", key: "chat", icon: Phone, label: "Kundeservice", hint: "Ring eller skriv – vi svarer" },
-  { id: "profile", key: "profile", icon: User, label: "Min profil", hint: "Navn, e-post og telefon" },
+/** The public landing site — where a customer can browse and book another departure. */
+const LANDING_URL = "https://monterosso-cinque-terre.kgl-56a.workers.dev/";
+
+/** The customer home is a large, elderly-friendly 2×2 grid of FOUR distinct destinations —
+ *  reading order, most important first. No two tiles point to the same place, and no
+ *  "coming soon" dead ends: Chat (message the skipper), My trip, Book another trip (the
+ *  landing site), My profile. */
+const CUSTOMER_TILES: {
+  id: string;
+  key?: SectionKey;
+  href?: string;
+  icon: LucideIcon;
+  labelKey: TranslationKey;
+  hintKey: TranslationKey;
+}[] = [
+  { id: "chat", key: "chat", icon: MessageSquare, labelKey: "home.tile.chat.label", hintKey: "home.tile.chat.hint" },
+  { id: "trips", key: "trips", icon: Compass, labelKey: "home.tile.trips.label", hintKey: "home.tile.trips.hint" },
+  { id: "book", href: LANDING_URL, icon: Ship, labelKey: "home.tile.book.label", hintKey: "home.tile.book.hint" },
+  { id: "profile", key: "profile", icon: User, labelKey: "home.tile.profile.label", hintKey: "home.tile.profile.hint" },
 ];
 
 /** "Hjem": a calm overview shown on sign-in for both roles — a warm greeting, the next
  *  trip (if any), and discreet shortcuts into the role's sections. Minimal, on-theme. */
 function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) {
+  const t = useT();
+  const locale = useLocale();
   const user = useAuthStore((s) => s.user);
   const role = user?.role;
   const isSkipper = role === "skipper";
   const { data, isLoading } = useMyReservations();
   const next = nextTripOf(data);
   const shortcuts = shortcutsForRole(role);
-  const contactLabel = isSkipper ? "Gjest" : "Skipper";
+  const contactLabel = isSkipper ? t("trips.contactLabel.skipper") : t("trips.contactLabel.customer");
 
   return (
     <section className="flex min-w-0 flex-1 flex-col overflow-y-auto">
       <div className="mx-auto w-full max-w-2xl px-5 py-10 md:px-6 md:py-14">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-          Velkommen ombord
+          {t("home.welcome")}
         </p>
         <h1 className="mt-2 text-3xl font-bold leading-tight tracking-tight text-ink md:text-4xl">
-          God dag, {firstNameOf(user?.name, user?.email)}.
+          {t("home.greeting", { name: firstNameOf(user?.name, user?.email, t("home.friend")) })}
         </h1>
         <p className="mt-3 max-w-md text-sm leading-relaxed text-ink-muted">
-          {isSkipper
-            ? "Rolig oversikt over avgangene og samtalene dine. Sjøen venter."
-            : "Et stille øyeblikk før turen. Her finner du det viktigste samlet."}
+          {isSkipper ? t("home.subtitle.skipper") : t("home.subtitle.customer")}
         </p>
 
         {/* Next-trip hero widget */}
         <div className="mt-8">
           <h2 className="px-1 text-xs font-semibold uppercase tracking-wider text-ink-muted">
-            {isSkipper ? "Neste avgang" : "Neste tur"}
+            {isSkipper ? t("home.nextTrip.skipper") : t("home.nextTrip.customer")}
           </h2>
           {isLoading ? (
             <div className="mt-3 rounded-card border border-hairline bg-surface px-6 py-7 text-sm text-ink-muted shadow-soft">
-              Laster …
+              {t("common.loading")}
             </div>
           ) : next ? (
             <button
@@ -242,13 +281,13 @@ function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) 
               <div className="min-w-0">
                 <div className="flex items-baseline gap-2">
                   <span className="font-mono text-base font-semibold text-ink">{next.code}</span>
-                  <span className="text-xs text-ink-muted">{formatTripDate(next.tripDate)}</span>
+                  <span className="text-xs text-ink-muted">{formatDate(next.tripDate ?? "", locale)}</span>
                 </div>
                 <div className="mt-1.5 truncate text-sm text-ink-muted">
                   <span className="text-ink-muted">{contactLabel}: </span>
                   {next.contactName ?? "—"}
                   {next.guests != null && (
-                    <span className="text-ink-muted"> · {next.guests} gjester</span>
+                    <span className="text-ink-muted"> · {t("trips.guests", { count: next.guests })}</span>
                   )}
                 </div>
               </div>
@@ -258,9 +297,7 @@ function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) 
             </button>
           ) : (
             <div className="mt-3 rounded-card border border-hairline bg-surface px-6 py-7 text-sm leading-relaxed text-ink-muted shadow-soft">
-              {isSkipper
-                ? "Ingen kommende avganger ennå. Når noen bestiller, dukker den opp her."
-                : "Ingen kommende turer ennå. Når en reservasjon kobles til kontoen din, ser du den her."}
+              {isSkipper ? t("home.nextTrip.emptySkipper") : t("home.nextTrip.emptyCustomer")}
             </div>
           )}
         </div>
@@ -269,11 +306,11 @@ function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) 
             elderly-friendly 2×2 of real destinations (no "coming soon" dead ends). */}
         <div className="mt-8">
           <h2 className="px-1 text-xs font-semibold uppercase tracking-wider text-ink-muted">
-            Snarveier
+            {t("home.shortcuts")}
           </h2>
           {isSkipper ? (
             <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {shortcuts.map(({ key, icon: Icon, label }) => (
+              {shortcuts.map(({ key, icon: Icon, labelKey }) => (
                 <button
                   key={key}
                   type="button"
@@ -283,26 +320,34 @@ function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) 
                   <span className="flex size-9 items-center justify-center rounded-input bg-gold/15 text-gold">
                     <Icon className="size-4" />
                   </span>
-                  <span className="truncate">{label}</span>
+                  <span className="truncate">{t(labelKey)}</span>
                 </button>
               ))}
             </div>
           ) : (
             <div className="mt-3 grid grid-cols-2 gap-3">
-              {CUSTOMER_TILES.map(({ id, key, icon: Icon, label, hint }) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => onNavigate(key)}
-                  className="flex min-h-[96px] flex-col justify-center gap-2 rounded-card border border-hairline bg-surface p-5 text-left shadow-soft transition-[transform,background-color] hover:bg-page active:scale-[0.98]"
-                >
-                  <span className="flex size-12 items-center justify-center rounded-input bg-gold/15 text-gold">
-                    <Icon className="size-6" />
-                  </span>
-                  <span className="text-base font-semibold leading-snug text-ink">{label}</span>
-                  <span className="text-sm leading-relaxed text-ink-muted">{hint}</span>
-                </button>
-              ))}
+              {CUSTOMER_TILES.map(({ id, key, href, icon: Icon, labelKey, hintKey }) => {
+                const tileClass =
+                  "flex min-h-[96px] flex-col justify-center gap-2 rounded-card border border-hairline bg-surface p-5 text-left shadow-soft transition-[transform,background-color] hover:bg-page active:scale-[0.98]";
+                const inner = (
+                  <>
+                    <span className="flex size-12 items-center justify-center rounded-input bg-gold/15 text-gold">
+                      <Icon className="size-6" />
+                    </span>
+                    <span className="text-base font-semibold leading-snug text-ink">{t(labelKey)}</span>
+                    <span className="text-sm leading-relaxed text-ink-muted">{t(hintKey)}</span>
+                  </>
+                );
+                return href ? (
+                  <a key={id} href={href} target="_blank" rel="noopener noreferrer" className={tileClass}>
+                    {inner}
+                  </a>
+                ) : (
+                  <button key={id} type="button" onClick={() => key && onNavigate(key)} className={tileClass}>
+                    {inner}
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
@@ -353,6 +398,7 @@ function ProfileField({
  *  at the bottom of the rail. Same component for customer and skipper; the Worker reads
  *  and writes the right tables by role. */
 function ProfileSection() {
+  const t = useT();
   const navigate = useNavigate();
   const logout = useAuthStore((s) => s.logout);
   const updateUser = useAuthStore((s) => s.updateUser);
@@ -392,23 +438,21 @@ function ProfileSection() {
   };
 
   return (
-    <SectionFrame title="Profil">
+    <SectionFrame title={t("profile.title")}>
       {isLoading ? (
-        <p className="px-1 py-8 text-sm text-ink-muted">Laster …</p>
+        <p className="px-1 py-8 text-sm text-ink-muted">{t("common.loading")}</p>
       ) : isError ? (
-        <p className="px-1 py-8 text-sm text-red-600">Kunne ikke laste profilen.</p>
+        <p className="px-1 py-8 text-sm text-destructive">{t("profile.loadError")}</p>
       ) : (
         <div className="mx-auto w-full max-w-md">
-          <p className="text-sm leading-relaxed text-ink-muted">
-            Detaljene dine. Legg til eller endre, og lagre — så når skipperen deg lett.
-          </p>
+          <p className="text-sm leading-relaxed text-ink-muted">{t("profile.intro")}</p>
 
           <div className={`mt-8 ${GROUP_CLASS}`}>
             <ProfileField
               icon={User}
-              label="Navn"
+              label={t("profile.field.name")}
               autoComplete="name"
-              placeholder="Navnet ditt"
+              placeholder={t("profile.field.namePlaceholder")}
               value={name}
               onChange={(v) => {
                 setName(v);
@@ -417,11 +461,11 @@ function ProfileSection() {
             />
             <ProfileField
               icon={Mail}
-              label="E-post"
+              label={t("profile.field.email")}
               type="email"
               inputMode="email"
               autoComplete="email"
-              placeholder="navn@eksempel.no"
+              placeholder={t("profile.field.emailPlaceholder")}
               value={email}
               onChange={(v) => {
                 setEmail(v);
@@ -430,11 +474,11 @@ function ProfileSection() {
             />
             <ProfileField
               icon={Phone}
-              label="Telefon / WhatsApp"
+              label={t("profile.field.phone")}
               type="tel"
               inputMode="tel"
               autoComplete="tel"
-              placeholder="+47 …"
+              placeholder={t("profile.field.phonePlaceholder")}
               value={phone}
               onChange={(v) => {
                 setPhone(v);
@@ -444,10 +488,10 @@ function ProfileSection() {
           </div>
 
           {save.isError && (
-            <p className="mt-4 text-sm text-red-600">{(save.error as Error).message}</p>
+            <p className="mt-4 text-sm text-destructive">{(save.error as Error).message}</p>
           )}
           {saved && !save.isPending && (
-            <p className="mt-4 text-sm text-gold">Lagret.</p>
+            <p className="mt-4 text-sm text-ink">{t("common.saved")}</p>
           )}
 
           <button
@@ -456,7 +500,7 @@ function ProfileSection() {
             disabled={save.isPending}
             className="btn-ink mt-6 w-full"
           >
-            {save.isPending ? "Lagrer …" : "Lagre endringer"}
+            {save.isPending ? t("common.saving") : t("common.save")}
           </button>
 
           <button
@@ -465,7 +509,7 @@ function ProfileSection() {
             className="mt-8 flex w-full items-center justify-center gap-2 rounded-pill border border-hairline px-5 py-3 text-sm text-ink-muted transition-colors hover:bg-surface hover:text-ink active:scale-[0.98]"
           >
             <LogOut className="size-4" />
-            Logg ut
+            {t("profile.logout")}
           </button>
         </div>
       )}
@@ -498,11 +542,11 @@ function SettingRow({ label, children }: { label: string; children: React.ReactN
 const FIELD_CLASS =
   "min-w-0 flex-1 bg-transparent text-right text-sm text-ink placeholder:text-ink-muted focus:outline-none";
 
-const BACKGROUNDS: { key: ThemeBackground; label: string }[] = [
-  { key: "bay", label: "Bukt" },
-  { key: "deepblue", label: "Dyp blå" },
-  { key: "villages", label: "Landsbyer" },
-  { key: "scene", label: "Scene" },
+const BACKGROUNDS: { key: ThemeBackground; labelKey: TranslationKey }[] = [
+  { key: "bay", labelKey: "site.background.bay" },
+  { key: "deepblue", labelKey: "site.background.deepblue" },
+  { key: "villages", labelKey: "site.background.villages" },
+  { key: "scene", labelKey: "site.background.scene" },
 ];
 
 const BACKGROUND_SWATCH: Record<ThemeBackground, string> = {
@@ -518,6 +562,7 @@ const ACCENT_PRESETS = ["#ead27e", "#c46b3f", "#5f7a43", "#2a7d8c", "#b04a3a"];
  *  (Tilbud · Pris & gjester · Tider · Utseende · Blogg). Persists via siteApi (mock → localStorage
  *  in the demo). Save-on-explicit-button, mirroring the profile section. */
 function SiteSection() {
+  const t = useT();
   const { data, isLoading, isError } = useSiteSettings();
   const save = useUpdateSiteSettings();
   const addPost = useAddBlogPost();
@@ -571,7 +616,7 @@ function SiteSection() {
   };
 
   const addDeparture = () => {
-    setDepartures((d) => [...d, { key: `dep${Date.now()}`, label: "Ny avgang", time: "12:00" }]);
+    setDepartures((d) => [...d, { key: `dep${Date.now()}`, label: t("site.departure.new"), time: "12:00" }]);
     dirtied();
   };
 
@@ -594,23 +639,21 @@ function SiteSection() {
   };
 
   return (
-    <SectionFrame title="Min side">
+    <SectionFrame title={t("site.title")}>
       {isLoading ? (
-        <p className="px-1 py-8 text-sm text-ink-muted">Laster …</p>
+        <p className="px-1 py-8 text-sm text-ink-muted">{t("common.loading")}</p>
       ) : isError || !data ? (
-        <p className="px-1 py-8 text-sm text-red-600">Kunne ikke laste innstillingene.</p>
+        <p className="px-1 py-8 text-sm text-destructive">{t("site.loadError")}</p>
       ) : (
         <div className="mx-auto w-full max-w-md pb-4">
-          <p className="text-sm leading-relaxed text-ink-muted">
-            Dette er kontrollpanelet ditt. Det du endrer her, styrer den offentlige landingssiden.
-          </p>
+          <p className="text-sm leading-relaxed text-ink-muted">{t("site.intro")}</p>
 
           {/* Tilbud */}
-          <SettingsGroup title="Tilbud">
-            <SettingRow label="Tittel">
+          <SettingsGroup title={t("site.group.offer")}>
+            <SettingRow label={t("site.field.title")}>
               <input
                 className={FIELD_CLASS}
-                placeholder="Båt · sted"
+                placeholder={t("site.field.titlePlaceholder")}
                 value={listingTitle}
                 onChange={(e) => {
                   setListingTitle(e.target.value);
@@ -618,10 +661,10 @@ function SiteSection() {
                 }}
               />
             </SettingRow>
-            <SettingRow label="Undertittel">
+            <SettingRow label={t("site.field.subtitle")}>
               <input
                 className={FIELD_CLASS}
-                placeholder="En kort, varm linje"
+                placeholder={t("site.field.subtitlePlaceholder")}
                 value={tagline}
                 onChange={(e) => {
                   setTagline(e.target.value);
@@ -632,8 +675,8 @@ function SiteSection() {
           </SettingsGroup>
 
           {/* Pris & gjester */}
-          <SettingsGroup title="Pris & gjester">
-            <SettingRow label="Pris per gjest">
+          <SettingsGroup title={t("site.group.pricing")}>
+            <SettingRow label={t("site.field.pricePerGuest")}>
               <input
                 type="number"
                 inputMode="numeric"
@@ -647,7 +690,7 @@ function SiteSection() {
               />
               <span className="shrink-0 text-sm text-ink-muted">€</span>
             </SettingRow>
-            <SettingRow label="Maks gjester">
+            <SettingRow label={t("site.field.maxGuests")}>
               <input
                 type="number"
                 inputMode="numeric"
@@ -663,12 +706,12 @@ function SiteSection() {
           </SettingsGroup>
 
           {/* Tider */}
-          <SettingsGroup title="Tider">
+          <SettingsGroup title={t("site.group.times")}>
             {departures.map((dep, i) => (
               <div key={dep.key} className="flex items-center gap-2 px-4 py-3">
                 <input
                   className="min-w-0 flex-1 bg-transparent text-sm text-ink placeholder:text-ink-muted focus:outline-none"
-                  placeholder="Navn"
+                  placeholder={t("site.departure.namePlaceholder")}
                   value={dep.label}
                   onChange={(e) => setDeparture(i, { label: e.target.value })}
                 />
@@ -681,27 +724,27 @@ function SiteSection() {
                 <button
                   type="button"
                   onClick={() => removeDeparture(i)}
-                  aria-label="Fjern avgang"
-                  className="flex size-7 shrink-0 items-center justify-center rounded-pill text-ink-muted transition-colors hover:bg-surface hover:text-red-600"
+                  aria-label={t("site.departure.remove")}
+                  className="flex size-11 shrink-0 items-center justify-center rounded-pill text-ink-muted transition-colors hover:bg-surface hover:text-destructive"
                 >
-                  <Trash2 className="size-3.5" />
+                  <Trash2 className="size-4" />
                 </button>
               </div>
             ))}
             <button
               type="button"
               onClick={addDeparture}
-              className="flex w-full items-center gap-2 px-4 py-3 text-sm text-gold transition-colors hover:bg-page"
+              className="flex min-h-[44px] w-full items-center gap-2 px-4 py-3 text-sm text-gold transition-colors hover:bg-page"
             >
               <Plus className="size-4" />
-              Legg til avgang
+              {t("site.departure.add")}
             </button>
           </SettingsGroup>
 
           {/* Utseende */}
-          <SettingsGroup title="Utseende">
+          <SettingsGroup title={t("site.group.appearance")}>
             <div className="px-4 py-4">
-              <p className="text-sm text-ink-muted">Bakgrunn</p>
+              <p className="text-sm text-ink-muted">{t("site.appearance.background")}</p>
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {BACKGROUNDS.map((bg) => (
                   <button
@@ -721,13 +764,13 @@ function SiteSection() {
                       className="size-7 shrink-0 rounded-lg shadow-[inset_0_0_0_1px_rgba(0,0,0,0.08)]"
                       style={{ background: BACKGROUND_SWATCH[bg.key] }}
                     />
-                    <span className="truncate">{bg.label}</span>
+                    <span className="truncate">{t(bg.labelKey)}</span>
                   </button>
                 ))}
               </div>
             </div>
             <div className="px-4 py-4">
-              <p className="text-sm text-ink-muted">Farge</p>
+              <p className="text-sm text-ink-muted">{t("site.appearance.color")}</p>
               <div className="mt-3 flex items-center gap-2.5">
                 {ACCENT_PRESETS.map((c) => (
                   <button
@@ -737,16 +780,20 @@ function SiteSection() {
                       setAccent(c);
                       dirtied();
                     }}
-                    aria-label={`Velg farge ${c}`}
-                    className={`size-8 rounded-full transition-transform active:scale-90 ${
-                      accent.toLowerCase() === c.toLowerCase()
-                        ? "ring-2 ring-ink ring-offset-2 ring-offset-page"
-                        : ""
-                    }`}
-                    style={{ backgroundColor: c }}
-                  />
+                    aria-label={t("site.color.pick", { color: c })}
+                    className="flex size-11 items-center justify-center rounded-full transition-transform active:scale-90"
+                  >
+                    <span
+                      className={`size-8 rounded-full ${
+                        accent.toLowerCase() === c.toLowerCase()
+                          ? "ring-2 ring-ink ring-offset-2 ring-offset-page"
+                          : ""
+                      }`}
+                      style={{ backgroundColor: c }}
+                    />
+                  </button>
                 ))}
-                <label className="ml-1 flex size-8 cursor-pointer items-center justify-center rounded-full border border-hairline text-ink-muted hover:bg-surface">
+                <label className="ml-1 flex size-11 cursor-pointer items-center justify-center rounded-full border border-hairline text-ink-muted hover:bg-surface">
                   <input
                     type="color"
                     value={accent}
@@ -763,9 +810,9 @@ function SiteSection() {
           </SettingsGroup>
 
           {save.isError && (
-            <p className="mt-4 text-sm text-red-600">{(save.error as Error).message}</p>
+            <p className="mt-4 text-sm text-destructive">{(save.error as Error).message}</p>
           )}
-          {saved && !save.isPending && <p className="mt-4 text-sm text-gold">Lagret.</p>}
+          {saved && !save.isPending && <p className="mt-4 text-sm text-ink">{t("common.saved")}</p>}
 
           <button
             type="button"
@@ -773,13 +820,13 @@ function SiteSection() {
             disabled={save.isPending}
             className="btn-ink mt-6 w-full"
           >
-            {save.isPending ? "Lagrer …" : "Lagre endringer"}
+            {save.isPending ? t("common.saving") : t("common.save")}
           </button>
 
           {/* Blogg */}
-          <SettingsGroup title="Blogg">
+          <SettingsGroup title={t("site.group.blog")}>
             {data.blogPosts.length === 0 ? (
-              <p className="px-4 py-4 text-sm text-ink-muted">Ingen innlegg ennå.</p>
+              <p className="px-4 py-4 text-sm text-ink-muted">{t("site.blog.empty")}</p>
             ) : (
               data.blogPosts.map((post) => (
                 <div key={post.id} className="flex items-start gap-3 px-4 py-3.5">
@@ -795,10 +842,10 @@ function SiteSection() {
                   <button
                     type="button"
                     onClick={() => deletePost.mutate(post.id)}
-                    aria-label="Slett innlegg"
-                    className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-pill text-ink-muted transition-colors hover:bg-surface hover:text-red-600"
+                    aria-label={t("site.blog.delete")}
+                    className="flex size-11 shrink-0 items-center justify-center rounded-pill text-ink-muted transition-colors hover:bg-surface hover:text-destructive"
                   >
-                    <Trash2 className="size-3.5" />
+                    <Trash2 className="size-4" />
                   </button>
                 </div>
               ))
@@ -810,7 +857,7 @@ function SiteSection() {
               <div className="px-4 py-3">
                 <input
                   className="w-full bg-transparent text-sm text-ink placeholder:text-ink-muted focus:outline-none"
-                  placeholder="Tittel på nytt innlegg"
+                  placeholder={t("site.blog.newTitlePlaceholder")}
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                 />
@@ -819,7 +866,7 @@ function SiteSection() {
                 <textarea
                   rows={3}
                   className="w-full resize-none bg-transparent text-sm leading-relaxed text-ink placeholder:text-ink-muted focus:outline-none"
-                  placeholder="Skriv litt …"
+                  placeholder={t("site.blog.newBodyPlaceholder")}
                   value={newBody}
                   onChange={(e) => setNewBody(e.target.value)}
                 />
@@ -832,7 +879,7 @@ function SiteSection() {
               className="mt-3 flex w-full items-center justify-center gap-2 rounded-pill border border-hairline px-5 py-3 text-sm font-semibold text-ink-muted transition-colors hover:bg-surface hover:text-ink active:scale-[0.98] disabled:opacity-50"
             >
               <Plus className="size-4" />
-              {addPost.isPending ? "Legger til …" : "Nytt innlegg"}
+              {addPost.isPending ? t("site.blog.adding") : t("site.blog.addPost")}
             </button>
           </div>
         </div>
@@ -844,6 +891,7 @@ function SiteSection() {
 /** Publish toggle for a blog post. Persists by re-saving the full posts array through the
  *  settings update so a real backend can mirror it without a dedicated endpoint. */
 function PublishToggle({ post }: { post: SiteSettings["blogPosts"][number] }) {
+  const t = useT();
   const { data } = useSiteSettings();
   const save = useUpdateSiteSettings();
   const toggle = () => {
@@ -856,13 +904,14 @@ function PublishToggle({ post }: { post: SiteSettings["blogPosts"][number] }) {
     <button
       type="button"
       onClick={toggle}
-      className={`mt-0.5 shrink-0 rounded-pill px-3 py-1 text-xs font-medium transition-colors ${
+      className={`inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-pill px-3 text-xs font-medium transition-colors ${
         post.published
-          ? "bg-gold/15 text-gold ring-1 ring-inset ring-gold/30"
+          ? "bg-gold/10 text-ink ring-1 ring-inset ring-gold/30"
           : "bg-surface text-ink-muted ring-1 ring-inset ring-hairline hover:text-ink"
       }`}
     >
-      {post.published ? "Publisert" : "Skjult"}
+      {post.published && <span className="size-1.5 rounded-full bg-gold" />}
+      {post.published ? t("site.blog.published") : t("site.blog.hidden")}
     </button>
   );
 }
@@ -884,46 +933,6 @@ export function SectionView({
       return <TripsSection />;
     case "site":
       return <SiteSection />;
-    case "receipts":
-      return (
-        <SectionFrame title="Kvitteringer">
-          <ComingSoon
-            icon={Receipt}
-            title="Kvitteringer kommer snart"
-            hint="Her samles kvitteringene for turene dine, så du har dem trygt på ett sted."
-          />
-        </SectionFrame>
-      );
-    case "otherTrips":
-      return (
-        <SectionFrame title="Andre reiser">
-          <ComingSoon
-            icon={Ship}
-            title="Andre reiser kommer snart"
-            hint="Flere båtopplevelser langs kysten dukker opp her etter hvert som de blir tilgjengelige."
-          />
-        </SectionFrame>
-      );
-    case "otherCountries":
-      return (
-        <SectionFrame title="Andre land">
-          <ComingSoon
-            icon={Globe}
-            title="Andre land kommer snart"
-            hint="Etter hvert som plattformen vokser, finner du turer i flere land her."
-          />
-        </SectionFrame>
-      );
-    case "customers":
-      return (
-        <SectionFrame title="Kunder">
-          <ComingSoon
-            icon={Users}
-            title="Kundeoversikt kommer snart"
-            hint="En samlet oversikt over kundene dine på tvers av avganger kommer hit. I mellomtiden ser du dem under «Mine avganger» og i chatten."
-          />
-        </SectionFrame>
-      );
     default:
       return null;
   }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { useT } from "@/i18n";
 import { useAuthStore } from "@/features/auth/store";
 import { useConversations } from "../api/threads";
 import { DEFAULT_SECTION, type SectionKey } from "../sections";
@@ -17,12 +18,17 @@ import { SectionView } from "./SectionViews";
  *  Responsive: at md+ the conversations list and the thread sit side by side. On smaller
  *  screens only one shows at a time — the list, or the thread (with a back button). */
 export function DashboardLayout() {
+  const t = useT();
   const myId = useAuthStore((s) => s.user?.id ?? null);
   const myRole = useAuthStore((s) => s.user?.role);
   // The contacts list shows the *other* party: a customer sees skippers,
   // a skipper sees customers.
   const contactsLabel =
-    myRole === "customer" ? "Skippere" : myRole === "skipper" ? "Kunder" : "Kontakter";
+    myRole === "customer"
+      ? t("chat.contacts.skippers")
+      : myRole === "skipper"
+        ? t("chat.contacts.customers")
+        : t("chat.contacts.default");
   const { conversations, isLoading, isError } = useConversations();
   // Which top-level section is shown. On sign-in everyone lands on the calm Hjem overview
   // (unless the flow-overview board deep-links a section via ?section=).
@@ -56,7 +62,7 @@ export function DashboardLayout() {
         </>
       ) : isError ? (
         <div className="flex flex-1 items-center justify-center text-sm text-destructive">
-          Kunne ikke laste samtaler.
+          {t("chat.loadError")}
         </div>
       ) : (
         <>
@@ -87,9 +93,7 @@ export function DashboardLayout() {
             )
           ) : (
             <div className="hidden flex-1 items-center justify-center text-sm text-ink-muted md:flex">
-              {conversations.length
-                ? "Velg en samtale for å komme i gang."
-                : "Du har ingen kontakter å chatte med ennå."}
+              {conversations.length ? t("chat.selectPrompt") : t("chat.noContacts")}
             </div>
           )}
         </>

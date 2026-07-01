@@ -24,14 +24,14 @@ function renderFlow() {
 describe("ForgotPasswordFlow (user reset)", () => {
   it("code field is digits-only (whitespace/letters ignored) and password accepts input", async () => {
     renderFlow();
-    await userEvent.type(screen.getByPlaceholderText("E-postadresse"), "kari@example.com");
-    await userEvent.click(screen.getByRole("button", { name: "Send kode" }));
+    await userEvent.type(screen.getByPlaceholderText("Email address"), "kari@example.com");
+    await userEvent.click(screen.getByRole("button", { name: "Send code" }));
 
-    const codeInput = await screen.findByPlaceholderText("6-sifret kode");
+    const codeInput = await screen.findByPlaceholderText("6-digit code");
     await userEvent.type(codeInput, ` 12 ab 34x56 `); // whitespace + letters stripped
     expect(codeInput).toHaveValue(MOCK_OTP_CODE);
 
-    const pwInput = screen.getByPlaceholderText("Nytt passord");
+    const pwInput = screen.getByPlaceholderText("New password");
     await userEvent.type(pwInput, "hunter2pw");
     expect(pwInput).toHaveValue("hunter2pw");
   });

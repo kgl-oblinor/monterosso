@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Check, Copy, Link2, Loader2, X } from "lucide-react";
 
+import { useT } from "@/i18n";
 import { useCreateInvite, type CreatedInvite } from "../api/group";
 
 /** A calm modal for inviting the travel party ("turfølget") into a trip's group chat.
@@ -14,6 +15,7 @@ export function InviteDialog({
   reservationCode: string;
   onClose: () => void;
 }) {
+  const t = useT();
   const [contact, setContact] = useState("");
   const [invite, setInvite] = useState<CreatedInvite | null>(null);
   const [copied, setCopied] = useState(false);
@@ -43,7 +45,7 @@ export function InviteDialog({
   };
 
   const waText = invite
-    ? `Hei! Bli med i reisefølget vårt for turen ${invite.reservationCode}. Trykk her for å komme inn i chatten: ${invite.link}`
+    ? t("invite.waMessage", { code: invite.reservationCode, link: invite.link })
     : "";
   const waHref = `https://wa.me/?text=${encodeURIComponent(waText)}`;
 
@@ -60,15 +62,13 @@ export function InviteDialog({
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-lg font-bold text-ink">Inviter reisefølget</h2>
-            <p className="mt-1 text-sm leading-relaxed text-ink-muted">
-              Del en lenke med dem du reiser sammen med, så er de inne i samme chat – uten passord.
-            </p>
+            <h2 className="text-lg font-bold text-ink">{t("invite.title")}</h2>
+            <p className="mt-1 text-sm leading-relaxed text-ink-muted">{t("invite.subtitle")}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Lukk"
+            aria-label={t("invite.close")}
             className="-mr-1 -mt-1 rounded-full p-1.5 text-ink-muted transition-colors hover:bg-black/[0.04] hover:text-ink"
           >
             <X className="size-5" />
@@ -79,19 +79,17 @@ export function InviteDialog({
           <div className="mt-6 space-y-4">
             <label className="block">
               <span className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
-                E-post eller telefon (valgfritt)
+                {t("invite.contactLabel")}
               </span>
               <input
                 value={contact}
                 onChange={(e) => setContact(e.target.value)}
-                placeholder="navn@eksempel.no eller +47 …"
+                placeholder={t("invite.contactPlaceholder")}
                 inputMode="email"
                 className="mt-2 w-full rounded-input border border-hairline bg-surface px-4 py-3 text-sm text-ink placeholder:text-ink-muted focus:border-gold focus:outline-none"
               />
             </label>
-            <p className="text-xs leading-relaxed text-ink-muted">
-              Du lager en lenke du deler selv. Vi sender ingenting automatisk ennå.
-            </p>
+            <p className="text-xs leading-relaxed text-ink-muted">{t("invite.noAutoSend")}</p>
 
             {create.isError && (
               <p className="text-sm text-destructive">{(create.error as Error).message}</p>
@@ -108,7 +106,7 @@ export function InviteDialog({
               ) : (
                 <Link2 className="size-4" />
               )}
-              Lag invitasjonslenke
+              {t("invite.create")}
             </button>
           </div>
         ) : (
@@ -119,16 +117,16 @@ export function InviteDialog({
               <button
                 type="button"
                 onClick={onCopy}
-                aria-label="Kopier lenke"
-                className="flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-ink-muted transition-colors hover:bg-black/[0.04] hover:text-ink"
+                aria-label={t("invite.copyAria")}
+                className="flex min-h-[44px] shrink-0 items-center gap-1 rounded-full px-2.5 text-xs font-medium text-ink-muted transition-colors hover:bg-black/[0.04] hover:text-ink"
               >
                 {copied ? (
                   <>
-                    <Check className="size-3.5 text-gold" /> Kopiert
+                    <Check className="size-3.5 text-gold" /> {t("invite.copied")}
                   </>
                 ) : (
                   <>
-                    <Copy className="size-3.5" /> Kopier
+                    <Copy className="size-3.5" /> {t("invite.copy")}
                   </>
                 )}
               </button>
@@ -140,12 +138,10 @@ export function InviteDialog({
               rel="noopener noreferrer"
               className="flex w-full items-center justify-center gap-2 rounded-pill border border-[#25D366]/40 bg-[#25D366]/15 px-5 py-3 text-sm font-semibold text-[#1a8f47] transition-[transform,background-color] hover:bg-[#25D366]/25 active:scale-[0.98]"
             >
-              Del på WhatsApp
+              {t("invite.whatsapp")}
             </a>
 
-            <p className="text-xs leading-relaxed text-ink-muted">
-              Lenken gjelder for én person og brukes én gang. Trenger du å invitere flere, lag en ny.
-            </p>
+            <p className="text-xs leading-relaxed text-ink-muted">{t("invite.oneUse")}</p>
 
             <button
               type="button"
@@ -155,7 +151,7 @@ export function InviteDialog({
               }}
               className="w-full rounded-pill border border-hairline px-5 py-2.5 text-sm text-ink-muted transition-colors hover:border-black/20 hover:bg-black/[0.04] hover:text-ink active:scale-[0.98]"
             >
-              Inviter en til
+              {t("invite.again")}
             </button>
           </div>
         )}

@@ -9,7 +9,8 @@ import { useAuthStore } from "../store";
 
 // Mock layer is active by default (VITE_USE_MOCKS unset → mocks on). The main path is
 // passwordless (any email/phone → straight in); a "skipper*/guest*" email is treated as
-// password-protected in the mock. The password login lives behind "Logg inn med passord".
+// password-protected in the mock. The password login lives behind "Log in with password".
+// No user is signed in during these tests, so the UI locale falls back to English.
 
 function renderLogin() {
   const client = new QueryClient({
@@ -32,7 +33,7 @@ describe("LoginForm (passwordless main path)", () => {
 
   it("lets a brand-new contact in with just an email (no password)", async () => {
     renderLogin();
-    await userEvent.type(screen.getByPlaceholderText("E-post eller telefon"), "nyperson@example.com");
+    await userEvent.type(screen.getByPlaceholderText("Email or phone"), "nyperson@example.com");
     await userEvent.click(screen.getByRole("button", { name: "Continue" }));
 
     await waitFor(() => expect(useAuthStore.getState().token).toBeTruthy(), { timeout: 3000 });
@@ -41,7 +42,7 @@ describe("LoginForm (passwordless main path)", () => {
 
   it("lets a contact in with a phone number", async () => {
     renderLogin();
-    await userEvent.type(screen.getByPlaceholderText("E-post eller telefon"), "+47 900 00 000");
+    await userEvent.type(screen.getByPlaceholderText("Email or phone"), "+47 900 00 000");
     await userEvent.click(screen.getByRole("button", { name: "Continue" }));
 
     await waitFor(() => expect(useAuthStore.getState().token).toBeTruthy(), { timeout: 3000 });
@@ -49,11 +50,11 @@ describe("LoginForm (passwordless main path)", () => {
 
   it("switches a password-protected account to the password login", async () => {
     renderLogin();
-    await userEvent.type(screen.getByPlaceholderText("E-post eller telefon"), "skipper@example.com");
+    await userEvent.type(screen.getByPlaceholderText("Email or phone"), "skipper@example.com");
     await userEvent.click(screen.getByRole("button", { name: "Continue" }));
 
     expect(
-      await screen.findByRole("heading", { name: /logg inn med passord/i })
+      await screen.findByRole("heading", { name: /log in with password/i })
     ).toBeInTheDocument();
   });
 });
@@ -65,24 +66,24 @@ describe("LoginForm (password)", () => {
   });
 
   async function openPasswordLogin() {
-    await userEvent.click(screen.getByRole("button", { name: "Logg inn med passord" }));
+    await userEvent.click(screen.getByRole("button", { name: "Log in with password" }));
   }
 
   it("validates the email before submitting", async () => {
     renderLogin();
     await openPasswordLogin();
-    await userEvent.type(screen.getByPlaceholderText("E-postadresse"), "not-an-email");
-    await userEvent.type(screen.getByPlaceholderText("Passord"), "hunter2pw");
-    await userEvent.click(screen.getByRole("button", { name: "Logg inn" }));
-    expect(await screen.findByText(/gyldig e-postadresse/i)).toBeInTheDocument();
+    await userEvent.type(screen.getByPlaceholderText("Email address"), "not-an-email");
+    await userEvent.type(screen.getByPlaceholderText("Password"), "hunter2pw");
+    await userEvent.click(screen.getByRole("button", { name: "Log in" }));
+    expect(await screen.findByText(/valid email address/i)).toBeInTheDocument();
   });
 
   it("logs in and stores the session on valid credentials", async () => {
     renderLogin();
     await openPasswordLogin();
-    await userEvent.type(screen.getByPlaceholderText("E-postadresse"), "kari@example.com");
-    await userEvent.type(screen.getByPlaceholderText("Passord"), "hunter2pw");
-    await userEvent.click(screen.getByRole("button", { name: "Logg inn" }));
+    await userEvent.type(screen.getByPlaceholderText("Email address"), "kari@example.com");
+    await userEvent.type(screen.getByPlaceholderText("Password"), "hunter2pw");
+    await userEvent.click(screen.getByRole("button", { name: "Log in" }));
 
     await waitFor(() => expect(useAuthStore.getState().token).toBeTruthy(), {
       timeout: 3000,
@@ -93,9 +94,9 @@ describe("LoginForm (password)", () => {
   it("reveals the forgot-password flow", async () => {
     renderLogin();
     await openPasswordLogin();
-    await userEvent.click(screen.getByRole("button", { name: /glemt passord/i }));
+    await userEvent.click(screen.getByRole("button", { name: /forgot password/i }));
     expect(
-      await screen.findByRole("heading", { name: /glemt passord/i })
+      await screen.findByRole("heading", { name: /forgot password/i })
     ).toBeInTheDocument();
   });
 });

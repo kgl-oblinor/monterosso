@@ -6,19 +6,16 @@
 // were dead ends that confused older users; the sections stay defined but off the nav.
 // On sign-in we land on a calm "Hjem" overview (not straight into chat) — Hjem sits at the
 // top of the rail, with Chat right below it. The profile avatar lives at the bottom (IconRail).
-import { Anchor, Compass, LayoutPanelLeft, MessageSquare, Users } from "lucide-react";
+import { Anchor, Compass, LayoutPanelLeft, MessageSquare } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import type { TranslationKey } from "@/i18n";
 import type { UserRole } from "@/features/auth/api/types";
 
 export type SectionKey =
   | "home"
   | "chat"
   | "trips"
-  | "receipts"
-  | "otherTrips"
-  | "otherCountries"
-  | "customers"
   | "site"
   | "profile"; // reached via the avatar at the bottom of the rail, not a nav item
 
@@ -28,24 +25,24 @@ export const DEFAULT_SECTION: SectionKey = "home";
 export interface NavItem {
   key: SectionKey;
   icon: LucideIcon;
-  label: string;
+  /** i18n key — resolved with t() at render (IconRail + the home shortcut grid). */
+  labelKey: TranslationKey;
 }
 
-const HOME: NavItem = { key: "home", icon: Anchor, label: "Hjem" };
-const CHAT: NavItem = { key: "chat", icon: MessageSquare, label: "Chat" };
+const HOME: NavItem = { key: "home", icon: Anchor, labelKey: "nav.home" };
+const CHAT: NavItem = { key: "chat", icon: MessageSquare, labelKey: "nav.chat" };
 
 const CUSTOMER_NAV: NavItem[] = [
   HOME,
   CHAT,
-  { key: "trips", icon: Compass, label: "Turer" },
+  { key: "trips", icon: Compass, labelKey: "nav.trips" },
 ];
 
 const SKIPPER_NAV: NavItem[] = [
   HOME,
   CHAT,
-  { key: "trips", icon: Compass, label: "Mine avganger" },
-  { key: "customers", icon: Users, label: "Kunder" },
-  { key: "site", icon: LayoutPanelLeft, label: "Min side" },
+  { key: "trips", icon: Compass, labelKey: "nav.departures" },
+  { key: "site", icon: LayoutPanelLeft, labelKey: "nav.site" },
 ];
 
 /** The nav items for a role. Unknown/admin roles fall back to Hjem + Chat. */

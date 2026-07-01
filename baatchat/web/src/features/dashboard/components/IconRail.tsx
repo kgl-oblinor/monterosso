@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 
+import { useT } from "@/i18n";
 import { cn, initialsOf } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuthStore } from "@/features/auth/store";
@@ -34,6 +35,7 @@ interface IconRailProps {
  *  Mobile: collapsed it's a slim icon strip; expanded it overlays the content as a
  *  drawer (with a scrim) so the narrow viewport isn't squeezed. */
 export function IconRail({ active, onSelect }: IconRailProps) {
+  const t = useT();
   const user = useAuthStore((s) => s.user);
   const nav = navForRole(user?.role);
   const [expanded, setExpanded] = useRailExpanded();
@@ -50,7 +52,7 @@ export function IconRail({ active, onSelect }: IconRailProps) {
       {expanded && (
         <button
           type="button"
-          aria-label="Lukk meny"
+          aria-label={t("nav.closeDrawer")}
           onClick={() => setExpanded(false)}
           className="fixed inset-0 z-20 bg-black/40 md:hidden"
         />
@@ -76,7 +78,7 @@ export function IconRail({ active, onSelect }: IconRailProps) {
         <button
           type="button"
           onClick={() => setExpanded(!expanded)}
-          aria-label={expanded ? "Lukk sidemeny" : "Åpne sidemeny"}
+          aria-label={expanded ? t("nav.closeMenu") : t("nav.openMenu")}
           aria-expanded={expanded}
           className={cn(
             "mx-2 mt-3 flex h-10 items-center gap-3 rounded-xl text-ink-muted transition-colors hover:bg-black/[0.04] hover:text-ink",
@@ -88,12 +90,13 @@ export function IconRail({ active, onSelect }: IconRailProps) {
           ) : (
             <PanelLeftOpen className="size-5 shrink-0" />
           )}
-          {expanded && <span className="truncate text-sm">Skjul meny</span>}
+          {expanded && <span className="truncate text-sm">{t("nav.hideMenu")}</span>}
         </button>
 
         <div className="mt-2 flex flex-col gap-1 px-2">
-          {nav.map(({ key, icon: Icon, label }) => {
+          {nav.map(({ key, icon: Icon, labelKey }) => {
             const isActive = key === active;
+            const label = t(labelKey);
             return (
               <button
                 key={key}
@@ -122,9 +125,9 @@ export function IconRail({ active, onSelect }: IconRailProps) {
           <button
             type="button"
             onClick={() => handleSelect("profile")}
-            aria-label="Profil"
+            aria-label={t("nav.profile")}
             aria-current={active === "profile"}
-            title={expanded ? undefined : "Profil"}
+            title={expanded ? undefined : t("nav.profile")}
             className={cn(
               "flex items-center gap-3 outline-none focus-visible:ring-2 focus-visible:ring-gold",
               expanded ? "w-full rounded-xl px-2 py-1.5 hover:bg-black/[0.04]" : "rounded-full",
@@ -140,7 +143,7 @@ export function IconRail({ active, onSelect }: IconRailProps) {
             />
             {expanded && (
               <span className="min-w-0 flex-1 truncate text-left text-sm text-ink-muted">
-                {user?.name ?? "Profil"}
+                {user?.name ?? t("nav.profile")}
               </span>
             )}
           </button>

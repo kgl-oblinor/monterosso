@@ -240,6 +240,57 @@ export async function myReservations(env: Env, user: SessionUser): Promise<MyRes
   return [];
 }
 
+// Confirm ('booked') or decline ('cancelled') an incoming booking request. Skipper-only, and
+// guarded to the reservation's OWNING skipper (skipper_id must match the authed skipper). Only a
+// still-pending 'requested' reservation may change, so a settled trip (booked/completed/cancelled)
+// is never clobbered. The UPDATE is parameterized and re-scoped by skipper_id. Returns the
+// refreshed row, or a reason the route maps to an HTTP status.
+const RESERVATION_STATUS_UPDATES = ["booked", "cancelled"] as const;
+export type ReservationStatusUpdate = (typeof RESERVATION_STATUS_UPDATES)[number];
+
+export async function updateReservationStatus(
+  env: Env,
+  user: SessionUser,
+  code: string,
+  status: string
+): Promise<
+  | { ok: true; reservation: MyReservation }
+  | { ok: false; reason: "role" | "invalid_status" | "not_found" | "conflict" }
+> {
+  if (user.role !== "skipper") return { ok: false, reason: "role" };
+  if (!RESERVATION_STATUS_UPDATES.includes(status as ReservationStatusUpdate)) {
+    return { ok: false, reason: "invalid_status" };
+  }
+
+  // Ownership guard: load the reservation scoped to this skipper. A row for someone else's
+  // reservation is indistinguishable from a missing one (no leak).
+  const current = await env.DB.prepare(
+    `SELECT status FROM reservations WHERE reservation_code = ? AND skipper_id = ?`
+  )
+    .bind(code, user.id)
+    .first<{ status: string }>();
+  if (!current) return { ok: false, reason: "not_found" };
+  // Transition guard: only a pending request may be confirmed/declined.
+  if (current.status !== "requested") return { ok: false, reason: "conflict" };
+
+  await env.DB.prepare(
+    `UPDATE reservations SET status = ? WHERE reservation_code = ? AND skipper_id = ?`
+  )
+    .bind(status, code, user.id)
+    .run();
+
+  const updated = await env.DB.prepare(
+    `SELECT r.reservation_code AS code, r.trip_date AS tripDate, r.guests, r.status,
+            c.name AS contactName
+       FROM reservations r
+       LEFT JOIN customers c ON r.customer_id = c.customer_id
+      WHERE r.reservation_code = ? AND r.skipper_id = ?`
+  )
+    .bind(code, user.id)
+    .first<MyReservation>();
+  return { ok: true, reservation: updated! };
+}
+
 // --- profile (the logged-in user's own contact details) --------------------
 // Read from chat_accounts (the auth row) joined with the role's source table
 // (customers or skippers) for the on-file phone. name/email live on both — we

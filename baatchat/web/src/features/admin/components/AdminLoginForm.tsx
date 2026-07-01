@@ -11,7 +11,8 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { loginForm, type LoginForm as LoginValues } from "@/features/auth/schemas";
+import { useT } from "@/i18n";
+import { makeLoginSchema, type LoginForm as LoginValues } from "@/features/auth/schemas";
 import { useAdminLogin } from "@/features/auth/api/hooks";
 import { useAuthStore } from "@/features/auth/store";
 import { IconInput } from "@/features/auth/components/IconInput";
@@ -22,13 +23,14 @@ import { AuthHeading } from "@/features/auth/components/AuthLayout";
 import { AdminForgotFlow } from "./AdminForgotFlow";
 
 export function AdminLoginForm() {
+  const t = useT();
   const navigate = useNavigate();
   const setSession = useAuthStore((s) => s.setSession);
   const login = useAdminLogin();
   const [forgot, setForgot] = useState(false);
 
   const form = useForm<LoginValues>({
-    resolver: zodResolver(loginForm),
+    resolver: zodResolver(makeLoginSchema(t)),
     defaultValues: { email: "", password: "" },
   });
 
@@ -63,7 +65,7 @@ export function AdminLoginForm() {
                   type="email"
                   inputMode="email"
                   autoComplete="email"
-                  placeholder="E-postadresse"
+                  placeholder={t("auth.field.email")}
                   autoFocus
                   {...field}
                 />
@@ -79,7 +81,7 @@ export function AdminLoginForm() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <PasswordInput placeholder="Passord" autoComplete="current-password" {...field} />
+                <PasswordInput placeholder={t("auth.field.password")} autoComplete="current-password" {...field} />
               </FormControl>
               <FormMessage className="ml-4 text-red-600" />
             </FormItem>
@@ -92,12 +94,12 @@ export function AdminLoginForm() {
             onClick={() => setForgot(true)}
             className="text-sm text-gold underline underline-offset-2 transition-opacity hover:opacity-80"
           >
-            Glemt passord?
+            {t("auth.login.forgot")}
           </button>
         </div>
 
         <AuthButton type="submit" loading={login.isPending}>
-          Logg inn
+          {t("auth.login.submit")}
         </AuthButton>
       </form>
     </Form>

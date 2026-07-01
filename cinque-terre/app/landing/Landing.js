@@ -768,6 +768,7 @@ function BookingForm({ onClose }) {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [resCode, setResCode] = useState("");
+  const [synced, setSynced] = useState(false);
 
   // Returning visitor (we left a marker last time) → offer saved details first.
   useEffect(() => {
@@ -848,13 +849,14 @@ function BookingForm({ onClose }) {
       email: contactMode === "email" ? email : null,
       contactMode,
     };
-    const { code } = await submitBookingRequest(booking);
+    const { code, synced: didSync } = await submitBookingRequest(booking);
     saveLead(code);
     try {
       localStorage.setItem("mtr_returning", "1");
       if (contactMode === "email" && email) localStorage.setItem("mtr_email", email);
     } catch {}
     setResCode(code);
+    setSynced(didSync);
     setSubmitting(false);
     setDone(true);
   }
@@ -898,7 +900,8 @@ function BookingForm({ onClose }) {
         <h3 className="wiz-done__h">Request sent</h3>
         <p className="confirm-lead">
           We&rsquo;re checking availability with the skipper — you&rsquo;ll hear
-          back shortly. Your account is ready.
+          back shortly.{" "}
+          {synced ? "Your account is ready." : "We’ve noted your request."}
         </p>
         <div className="conf-summary">
           <div className="conf-row conf-row--code">
@@ -939,7 +942,7 @@ function BookingForm({ onClose }) {
           className="conf-cta"
           href="https://monterosso-app.kgl-56a.workers.dev/login"
         >
-          Go to your conversation
+          Open my account
         </a>
         <p className="cal-label">Add me to your calendar</p>
         <div className="cal-row">
@@ -1271,7 +1274,9 @@ const CHAT_API_BASE = "https://monterosso-chat.kgl-56a.workers.dev";
 // On ANY failure (network/validation/etc.) we fall back to a locally-generated code so the
 // customer experience — the "Request sent" confirmation + WhatsApp fallback — never breaks.
 async function submitBookingRequest(booking) {
-  const fallback = { code: makeCode(booking.date, booking.guests) };
+  // synced:false marks a local-only fallback code (no backend account created);
+  // synced:true means the request actually reached the backend and an account exists.
+  const fallback = { code: makeCode(booking.date, booking.guests), synced: false };
   // In "saved" mode there's no freshly-typed email — reuse the one we stored on a
   // previous successful booking so returning customers still hit the backend.
   let email = booking.email;
@@ -1295,7 +1300,7 @@ async function submitBookingRequest(booking) {
     });
     if (!res.ok) return fallback;
     const data = await res.json();
-    return data?.code ? { code: data.code } : fallback;
+    return data?.code ? { code: data.code, synced: true } : fallback;
   } catch {
     return fallback;
   }

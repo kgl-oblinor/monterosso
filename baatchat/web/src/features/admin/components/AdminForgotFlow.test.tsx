@@ -24,20 +24,20 @@ function renderFlow() {
 describe("AdminForgotFlow", () => {
   it("lets the admin type the 6-digit recovery code", async () => {
     renderFlow();
-    await userEvent.type(screen.getByPlaceholderText("E-postadresse"), "bk@example.com");
-    await userEvent.click(screen.getByRole("button", { name: "Send kode" }));
+    await userEvent.type(screen.getByPlaceholderText("Email address"), "bk@example.com");
+    await userEvent.click(screen.getByRole("button", { name: "Send code" }));
 
-    const codeInput = await screen.findByPlaceholderText("6-sifret kode");
+    const codeInput = await screen.findByPlaceholderText("6-digit code");
     await userEvent.type(codeInput, "123456");
     expect(codeInput).toHaveValue("123456");
   });
 
   it("accepts digits only and ignores whitespace/letters", async () => {
     renderFlow();
-    await userEvent.type(screen.getByPlaceholderText("E-postadresse"), "bk@example.com");
-    await userEvent.click(screen.getByRole("button", { name: "Send kode" }));
+    await userEvent.type(screen.getByPlaceholderText("Email address"), "bk@example.com");
+    await userEvent.click(screen.getByRole("button", { name: "Send code" }));
 
-    const codeInput = await screen.findByPlaceholderText("6-sifret kode");
+    const codeInput = await screen.findByPlaceholderText("6-digit code");
     await userEvent.type(codeInput, " 12 ab 34x56 ");
     expect(codeInput).toHaveValue("123456");
   });

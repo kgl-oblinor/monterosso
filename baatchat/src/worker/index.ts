@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { registerStart, registerComplete, passwordLogin, passwordlessEntry, userFromToken, adminLogin, adminRecoveryStart, adminRecoveryVerify, getAccountState } from "./auth";
 import type { SessionUser } from "./auth";
-import { listContacts, listThreads, openThread, getMessages, postMessage, markRead, contactReservations, myReservations, getMyProfile, updateMyProfile } from "./chat";
+import { listContacts, listThreads, openThread, getMessages, postMessage, markRead, contactReservations, myReservations, updateReservationStatus, getMyProfile, updateMyProfile } from "./chat";
 import { createInvite, joinByInvite, invitepreview, invitableTrips, listTripConversations, openTripThread, getTripMessages, postTripMessage, markTripRead } from "./group";
 import { listAccounts, approveAccount, revokeAccount, setEmailVerified, setSkipperEmail, setCustomerEmail, listSkipperDirectory, listCustomerDirectory, listAllThreads, adminThreadMessages, listSkippers, getSkipper, createSkipper, updateSkipper, validateSkipperInput, listCustomers, listReservations } from "./admin";
 import type { SkipperInput } from "./admin";
@@ -243,6 +243,24 @@ chat.get("/threads", async (c) => c.json({ ok: true, threads: await listThreads(
 chat.get("/me/reservations", async (c) =>
   c.json({ ok: true, reservations: await myReservations(c.env, c.get("user")) })
 );
+
+// Confirm ('booked') or decline ('cancelled') an incoming booking request. Skipper-only;
+// guarded to the reservation's owning skipper and only while it's still 'requested'.
+chat.patch("/reservations/:code/status", async (c) => {
+  const code = c.req.param("code");
+  const { status } = await c.req
+    .json<{ status?: string }>()
+    .catch(() => ({ status: undefined }));
+  if (!status) return c.json({ ok: false, error: "Status er påkrevd" }, 400);
+  const r = await updateReservationStatus(c.env, c.get("user"), code, status);
+  if (!r.ok) {
+    if (r.reason === "role") return c.json({ ok: false, error: "Kun skipper kan endre en forespørsel" }, 403);
+    if (r.reason === "invalid_status") return c.json({ ok: false, error: "Ugyldig status" }, 400);
+    if (r.reason === "not_found") return c.json({ ok: false, error: "Ikke funnet" }, 404);
+    return c.json({ ok: false, error: "Forespørselen kan ikke endres nå" }, 409); // conflict
+  }
+  return c.json({ ok: true, reservation: r.reservation });
+});
 
 // My profile — the logged-in user's own contact details (name, email, phone).
 chat.get("/me/profile", async (c) =>

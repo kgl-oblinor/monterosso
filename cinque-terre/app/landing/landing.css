@@ -34,87 +34,6 @@
 
 /* working aid: "N / 7" counter at the top of each glass box (temporary) */
 
-/* Andiamo — a slow stream: ♥ m a n d y ★, in order (spells Mandy) 🤍 */
-.landing-v2 .scroll-hint .andiamo-fall {
-  position: relative;
-  width: 100%;
-  height: 62px;
-  margin-top: 4px;
-}
-.landing-v2 .scroll-hint .af-bit {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-  font-family: "Fraunces", Georgia, serif;
-  font-size: 1.05rem;
-  letter-spacing: 0.08em;
-  color: rgba(253, 246, 234, 0.6);
-  /* foggy, shadow-like, mysterious — soft solid hearts that drift */
-  filter: blur(1.8px);
-  text-shadow: 0 0 10px rgba(2, 10, 20, 0.5);
-  opacity: 0;
-  animation: andiamoFall 29s ease-in-out infinite;
-}
-.landing-v2 .scroll-hint .af-bit--gold {
-  color: var(--gold);
-}
-@keyframes andiamoFall {
-  0% {
-    transform: translate(-50%, -2px);
-    opacity: 0;
-  }
-  12% {
-    opacity: 0.85;
-  }
-  60% {
-    opacity: 0.5;
-  }
-  100% {
-    transform: translate(-50%, 58px);
-    opacity: 0;
-  }
-}
-
-/* a very subtle sun-shimmer on the water, under the sun (top-right) */
-.landing-v2 .aurora .sun-glint {
-  position: absolute;
-  top: 0;
-  right: 9%;
-  width: clamp(140px, 24vw, 340px);
-  height: 78%;
-  pointer-events: none;
-  background: radial-gradient(
-    50% 60% at 50% 0%,
-    rgba(255, 241, 204, 0.14) 0%,
-    rgba(255, 236, 194, 0.05) 36%,
-    transparent 72%
-  );
-  filter: blur(12px);
-  mix-blend-mode: screen;
-  opacity: 0.7;
-  animation: sunGlint 11s ease-in-out infinite;
-}
-@keyframes sunGlint {
-  0%,
-  100% {
-    opacity: 0.5;
-    transform: translateX(0) scaleY(1);
-  }
-  50% {
-    opacity: 0.85;
-    transform: translateX(-2%) scaleY(1.05);
-  }
-}
-[data-theme="dark"] .landing-v2 .aurora .sun-glint {
-  background: radial-gradient(
-    50% 60% at 50% 0%,
-    rgba(190, 214, 255, 0.1) 0%,
-    transparent 70%
-  );
-  opacity: 0.4;
-}
-
 /* trail signpost — the five village boards on a weathered post */
 /* one sign planted at each village along the shore (x is set inline per village) */
 .landing-v2 .village-signs {
@@ -1111,18 +1030,6 @@ body {
   margin-block: auto;
 }
 
-/* ---------- CONFIRM STEP — readable summary line ----------
-   "Day after · 17 June · 3 guests · $270" was set in cursive. */
-.landing-v2 .book-form .send-summary {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 600;
-  font-size: 0.95rem;
-  letter-spacing: var(--ls-1);
-  line-height: 1.5;
-  color: var(--cream);
-  opacity: 0.95;
-}
-
 /* ---------- TOUCH DEVICES — drop the custom (laggy) cursor ----------
    The site hides the native cursor and draws a custom ring that follows
    with easing — which feels "slow" when a pointer is used on a phone /
@@ -1333,7 +1240,6 @@ body {
 /* quiet labels → soft cream */
 .landing-v2 .reassure,
 .landing-v2 .box-count,
-.landing-v2 .send-summary,
 .landing-v2 .send-via,
 .landing-v2 .cal-label,
 .landing-v2 .confirm__back,
@@ -1945,27 +1851,6 @@ body {
   border-color: var(--gold);
 }
 
-/* ============================================================
-   POPUP OPEN — when any glass popup is open, everything "alive"
-   fades away (boat, hero text, CTA, the whole moving scene and
-   the switcher). Behind the glass stays only the still backdrop:
-   the sky gradient (scene mode) or the chosen photo.
-   ============================================================ */
-.landing-v2.popup-open .stars,
-.landing-v2.popup-open .constellations,
-.landing-v2.popup-open .clouds,
-.landing-v2.popup-open .aurora,
-.landing-v2.popup-open .skyline,
-.landing-v2.popup-open .clocktower,
-.landing-v2.popup-open .village-posts,
-.landing-v2.popup-open .village-signs,
-.landing-v2.popup-open .boat3d,
-.landing-v2.popup-open .shell,
-.landing-v2.popup-open .bg-switch,
-.landing-v2.popup-open .theme-toggle {
-  display: none !important;
-}
-
 /* ── Style switcher — 7 complete looks, discreet stack top-right under the bg dots ── */
 .landing-v2 .style-switch {
   position: fixed;
@@ -1996,7 +1881,6 @@ body {
   background: var(--gold);
   border-color: var(--gold);
 }
-.landing-v2.popup-open .style-switch { display: none; }
 @media (max-width: 640px) {
   .landing-v2 .style-switch {
     top: auto;
@@ -2985,6 +2869,9 @@ body:has(.landing-v2) {
 .landing-v2 .lp-link {
   background: none;
   border: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   padding: 0;
   cursor: pointer;
   font-family: var(--lp-font);
@@ -3017,6 +2904,9 @@ body:has(.landing-v2) {
 .landing-v2 .lp-village {
   background: none;
   border: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   padding: var(--s1) var(--s2);
   cursor: pointer;
   font-family: var(--lp-font);
@@ -3038,6 +2928,9 @@ body:has(.landing-v2) {
   top: clamp(20px, 4vh, 40px);
   right: clamp(20px, 4vw, 48px);
   z-index: 11;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   font-family: var(--lp-font);
   font-weight: 500;
   font-size: 15px;

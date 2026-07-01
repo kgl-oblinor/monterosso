@@ -13,9 +13,10 @@ import {
 } from "@/components/ui/form";
 import { env } from "@/lib/env";
 import { MOCK_OTP_CODE } from "@/mocks/fixtures";
+import { useT } from "@/i18n";
 import {
-  forgotPasswordForm,
-  codeForm,
+  makeForgotPasswordSchema,
+  makeCodeSchema,
   type ForgotPasswordForm,
   type CodeForm,
 } from "@/features/auth/schemas";
@@ -28,6 +29,7 @@ import { AuthError } from "@/features/auth/components/AuthError";
 /** Admin recovery: enter an allow-listed admin email → receive a code → verify it and log
  *  straight in (admins share a secret, so there's no password to reset). `onBack` → login. */
 export function AdminForgotFlow({ onBack }: { onBack: () => void }) {
+  const t = useT();
   const navigate = useNavigate();
   const setSession = useAuthStore((s) => s.setSession);
 
@@ -39,11 +41,11 @@ export function AdminForgotFlow({ onBack }: { onBack: () => void }) {
   const verify = useAdminResetVerify();
 
   const requestForm = useForm<ForgotPasswordForm>({
-    resolver: zodResolver(forgotPasswordForm),
+    resolver: zodResolver(makeForgotPasswordSchema(t)),
     defaultValues: { email: "" },
   });
   const verifyForm = useForm<CodeForm>({
-    resolver: zodResolver(codeForm),
+    resolver: zodResolver(makeCodeSchema(t)),
     defaultValues: { code: "" },
   });
 
@@ -71,7 +73,7 @@ export function AdminForgotFlow({ onBack }: { onBack: () => void }) {
       <Form key="admin-recovery-verify" {...verifyForm}>
         <form onSubmit={onVerify} className="space-y-5" noValidate>
           <div className="space-y-2 text-center">
-            <h2 className="text-xl font-semibold text-ink">Sjekk e-posten din</h2>
+            <h2 className="text-xl font-semibold text-ink">{t("auth.verify.title")}</h2>
             <p className="text-sm text-ink-muted">
               Hvis <span className="font-semibold text-ink">{email}</span> er en
               administrator, sendte vi en 6-sifret kode dit
@@ -87,8 +89,7 @@ export function AdminForgotFlow({ onBack }: { onBack: () => void }) {
 
           {env.useMocks && (
             <p className="text-center text-sm text-ink-muted">
-              Demo-modus — bruk kode{" "}
-              <span className="font-mono font-medium text-ink">{MOCK_OTP_CODE}</span>.
+              {t("auth.demo.hint", { code: MOCK_OTP_CODE })}
             </p>
           )}
 
@@ -104,7 +105,7 @@ export function AdminForgotFlow({ onBack }: { onBack: () => void }) {
                     icon={<ShieldCheck className="h-5 w-5" />}
                     inputMode="numeric"
                     maxLength={6}
-                    placeholder="6-sifret kode"
+                    placeholder={t("auth.field.code")}
                     autoComplete="one-time-code"
                     autoFocus
                     name={field.name}
@@ -124,10 +125,10 @@ export function AdminForgotFlow({ onBack }: { onBack: () => void }) {
 
           <div className="flex flex-col gap-3 sm:flex-row">
             <AuthButton type="button" variant="outline" onClick={onBack}>
-              Avbryt
+              {t("auth.common.cancel")}
             </AuthButton>
             <AuthButton type="submit" loading={verify.isPending}>
-              Logg inn
+              {t("auth.login.submit")}
             </AuthButton>
           </div>
         </form>
@@ -141,15 +142,15 @@ export function AdminForgotFlow({ onBack }: { onBack: () => void }) {
         <button
           type="button"
           onClick={onBack}
-          aria-label="Tilbake til innlogging"
+          aria-label={t("auth.forgot.backToLogin")}
           className="flex items-center gap-1 text-sm text-ink-muted transition-colors hover:text-ink"
         >
           <ArrowLeft className="size-4" />
-          Tilbake
+          {t("auth.common.back")}
         </button>
 
         <div className="space-y-2 text-center">
-          <h2 className="text-xl font-semibold text-ink">Glemt passord?</h2>
+          <h2 className="text-xl font-semibold text-ink">{t("auth.forgot.requestTitle")}</h2>
           <p className="text-sm text-ink-muted">
             Oppgi administrator-e-posten din, så sender vi deg en kode for å logge inn.
           </p>
@@ -168,7 +169,7 @@ export function AdminForgotFlow({ onBack }: { onBack: () => void }) {
                   type="email"
                   inputMode="email"
                   autoComplete="email"
-                  placeholder="E-postadresse"
+                  placeholder={t("auth.field.email")}
                   autoFocus
                   {...field}
                 />
@@ -180,10 +181,10 @@ export function AdminForgotFlow({ onBack }: { onBack: () => void }) {
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <AuthButton type="button" variant="outline" onClick={onBack}>
-            Avbryt
+            {t("auth.common.cancel")}
           </AuthButton>
           <AuthButton type="submit" loading={start.isPending}>
-            Send kode
+            {t("auth.common.sendCode")}
           </AuthButton>
         </div>
       </form>

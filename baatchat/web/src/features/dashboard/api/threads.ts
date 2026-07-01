@@ -73,6 +73,12 @@ export interface Conversation {
 
 // --- formatting helpers -----------------------------------------------------
 
+// Locale seam: the date/relative-time formatters below accept an optional BCP-47 locale and
+// default to DEFAULT_LOCALE. When the shared i18n module lands (src/i18n with formatDate/
+// formatRelative(locale) + useLocale()), callers can thread the active locale through, or these
+// can delegate to it — until then, no more hardcoded 'nb-NO'.
+const DEFAULT_LOCALE = "en-GB";
+
 /** D1 datetime('now') yields naive UTC ("2026-06-17 09:01:19") — parse as UTC. */
 function parseUtc(s: string): Date {
   return new Date(s.replace(" ", "T") + "Z");
@@ -87,22 +93,23 @@ function initialsOf(name: string | null): string {
 }
 
 /** Short relative label for the conversation list ("09:48", "i går", "12.06"). */
-function relativeLabel(s: string | null): string {
+function relativeLabel(s: string | null, locale: string = DEFAULT_LOCALE): string {
   if (!s) return "";
   const d = parseUtc(s);
   const now = new Date();
   if (d.toDateString() === now.toDateString()) {
-    return d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
+    return d.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
   }
   const yesterday = new Date(now);
   yesterday.setDate(now.getDate() - 1);
+  // TODO(i18n): "i går" is Norwegian; the shared formatRelative(locale) will localize this word.
   if (d.toDateString() === yesterday.toDateString()) return "i går";
-  return d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit" });
+  return d.toLocaleDateString(locale, { day: "2-digit", month: "2-digit" });
 }
 
 /** Clock label for a single message bubble. */
-export function messageClock(s: string): string {
-  return parseUtc(s).toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
+export function messageClock(s: string, locale: string = DEFAULT_LOCALE): string {
+  return parseUtc(s).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
 }
 
 // The label shown on a contact row is the *contact's* role: a customer's contacts are
@@ -238,11 +245,11 @@ export function useContactReservations(contactId: number | null) {
 }
 
 /** Pretty trip-date label, e.g. "21.06.2025". Falls back to the raw value. */
-export function formatTripDate(s: string | null): string {
+export function formatTripDate(s: string | null, locale: string = DEFAULT_LOCALE): string {
   if (!s) return "";
   const d = new Date(s);
   if (isNaN(d.getTime())) return s;
-  return d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", year: "numeric" });
+  return d.toLocaleDateString(locale, { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
 /** A trip in the "Turer" section. For a customer `contactName` is the skipper/boat;
@@ -265,6 +272,26 @@ export function useMyReservations() {
         "/chat/me/reservations"
       );
       return r.reservations;
+    },
+  });
+}
+
+/** Confirm ('booked') or decline ('cancelled') an incoming booking request (skipper only).
+ *  The Worker guards ownership + the 'requested' transition; on success we invalidate the
+ *  reservations list so the row's status refreshes. Wire "Confirm" → status 'booked' and
+ *  "Decline" → status 'cancelled'. */
+export function useUpdateReservationStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ code, status }: { code: string; status: "booked" | "cancelled" }) => {
+      const r = await apiClient.patch<{ ok: true; reservation: MyReservation }>(
+        `/chat/reservations/${code}/status`,
+        { status }
+      );
+      return r.reservation;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["myReservations"] });
     },
   });
 }
