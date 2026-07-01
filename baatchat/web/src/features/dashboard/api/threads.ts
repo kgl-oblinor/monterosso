@@ -11,6 +11,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { apiClient } from "@/lib/apiClient";
+import { useAuthStore } from "@/features/auth/store";
 import { useTripConversations, type TripConversation } from "./group";
 
 // --- backend shapes ---------------------------------------------------------
@@ -37,7 +38,7 @@ export interface ThreadSummary {
 export interface ChatMessage {
   id: number;
   senderId: number;
-  senderRole: "skipper" | "customer";
+  senderRole: "skipper" | "customer" | "admin"; // 'admin' only in the support thread
   body: string;
   createdAt: string; // "YYYY-MM-DD HH:MM:SS" (UTC)
   editedAt: string | null;
@@ -47,8 +48,8 @@ export interface ChatMessage {
  *  skipper) or a "group" trip chat ("turfølget" — all reservation members + the skipper). The
  *  UI keys rows by `key` so the two kinds can live in one list without id collisions. */
 export interface Conversation {
-  key: string; // stable list key: "d:<contactId>" or "g:<reservationId>"
-  kind: "direct" | "group";
+  key: string; // stable list key: "d:<contactId>", "g:<reservationId>" or "a:support"
+  kind: "direct" | "group" | "admin";
   name: string;
   initials: string;
   subtitle: string; // role label ("Skipper" / "Kunde") or participant summary for groups
@@ -69,6 +70,9 @@ export interface Conversation {
   tripThreadId?: number | null;
   participantCount?: number;
   participantNames?: string[];
+
+  // admin/support only
+  adminThreadId?: number | null;
 }
 
 // --- formatting helpers -----------------------------------------------------
@@ -159,12 +163,70 @@ function groupSubtitle(t: TripConversation): string {
   return `${names.slice(0, 2).join(", ")} +${names.length - 2}`;
 }
 
+// --- support thread (skipper ↔ platform admin) ------------------------------
+
+/** The skipper's direct support line to the platform admin. Lazily created server-side, so
+ *  it's always present for a skipper. */
+export interface SupportThread {
+  id: number;
+  status: string; // 'active' | 'locked'
+  lastMessageAt: string | null;
+  preview: string | null;
+  unread: number;
+}
+
+/** The skipper's support thread. Enabled only for skippers (customers have no admin line). */
+export function useSupportThread() {
+  const role = useAuthStore((s) => s.user?.role);
+  return useQuery({
+    queryKey: ["supportThread"],
+    enabled: role === "skipper",
+    refetchInterval: 8000,
+    queryFn: async () => {
+      const r = await apiClient.get<{ ok: true; thread: SupportThread }>("/chat/support");
+      return r.thread;
+    },
+  });
+}
+
+export function useSupportMessages(threadId: number | null) {
+  return useQuery({
+    queryKey: ["supportMessages", threadId],
+    enabled: threadId != null,
+    refetchInterval: 4000,
+    queryFn: async () => {
+      const r = await apiClient.get<{ ok: true; messages: ChatMessage[] }>(
+        `/chat/support/${threadId}/messages?since=0`
+      );
+      return r.messages;
+    },
+  });
+}
+
+export function useSendSupportMessage() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ threadId, body }: { threadId: number; body: string }) => {
+      const r = await apiClient.post<{ ok: true; message: { id: number } }>(
+        `/chat/support/${threadId}/messages`,
+        { body }
+      );
+      return r.message.id;
+    },
+    onSuccess: (_id, { threadId }) => {
+      qc.invalidateQueries({ queryKey: ["supportMessages", threadId] });
+      qc.invalidateQueries({ queryKey: ["supportThread"] });
+    },
+  });
+}
+
 /** Merge direct contacts + thread summaries AND group trip threads into one conversation list.
  *  Conversations with recent activity sort to the top; the rest go alphabetically. */
 export function useConversations() {
   const contacts = useContacts();
   const summaries = useThreadSummaries();
   const trips = useTripConversations();
+  const support = useSupportThread();
 
   const byContact = new Map<number, ThreadSummary>();
   for (const s of summaries.data ?? []) byContact.set(s.contactId, s);
@@ -214,8 +276,28 @@ export function useConversations() {
     return a.name.localeCompare(b.name, "nb-NO");
   });
 
+  // The support line (skipper only) is pinned to the very top — a persistent, clearly
+  // labelled entry, distinct from customer conversations.
+  const admin: Conversation[] = support.data
+    ? [
+        {
+          key: "a:support",
+          kind: "admin" as const,
+          adminThreadId: support.data.id,
+          name: "Support",
+          initials: "S",
+          subtitle: "Support",
+          preview: support.data.preview ?? "",
+          timeLabel: relativeLabel(support.data.lastMessageAt),
+          unread: support.data.unread,
+          status: support.data.status,
+          lastMessageAt: support.data.lastMessageAt,
+        },
+      ]
+    : [];
+
   return {
-    conversations,
+    conversations: [...admin, ...conversations],
     isLoading: contacts.isLoading || summaries.isLoading,
     isError: contacts.isError,
   };

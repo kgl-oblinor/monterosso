@@ -6,6 +6,7 @@ import { listContacts, listThreads, openThread, getMessages, postMessage, markRe
 import { createInvite, joinByInvite, invitepreview, invitableTrips, listTripConversations, openTripThread, getTripMessages, postTripMessage, markTripRead } from "./group";
 import { listAccounts, approveAccount, revokeAccount, setEmailVerified, setSkipperEmail, setCustomerEmail, listSkipperDirectory, listCustomerDirectory, listAllThreads, adminThreadMessages, listSkippers, getSkipper, createSkipper, updateSkipper, validateSkipperInput, listCustomers, listReservations } from "./admin";
 import type { SkipperInput } from "./admin";
+import { adminOpenSupportThread, adminListSupportThreads, adminSupportMessages, adminPostSupportMessage, skipperSupportThread, skipperSupportMessages, skipperPostSupportMessage } from "./adminChat";
 import { createPublicBooking } from "./public";
 import { getMySite, saveMySite, getPublicSite } from "./site";
 
@@ -431,6 +432,40 @@ chat.post("/threads/:id/read", async (c) => {
   return c.json({ ok: true });
 });
 
+// --- skipper ↔ admin support chat (skipper side) ---------------------------
+// The skipper's direct line to the platform admin (Kristian). Skipper-only; the thread is
+// lazily created so a skipper can always open it. Distinct from customer conversations.
+chat.get("/support", async (c) => {
+  const user = c.get("user");
+  if (user.role !== "skipper") return c.json({ ok: false, error: "Kun for skippere" }, 403);
+  return c.json({ ok: true, thread: await skipperSupportThread(c.env, user) });
+});
+
+chat.get("/support/:id/messages", async (c) => {
+  const user = c.get("user");
+  if (user.role !== "skipper") return c.json({ ok: false, error: "Kun for skippere" }, 403);
+  const id = Number(c.req.param("id"));
+  const since = Number(c.req.query("since")) || 0;
+  const messages = await skipperSupportMessages(c.env, user, id, since);
+  if (messages === null) return c.json({ ok: false, error: "Ikke funnet" }, 404);
+  return c.json({ ok: true, messages });
+});
+
+chat.post("/support/:id/messages", async (c) => {
+  const user = c.get("user");
+  if (user.role !== "skipper") return c.json({ ok: false, error: "Kun for skippere" }, 403);
+  const id = Number(c.req.param("id"));
+  const { body } = await c.req.json<{ body?: string }>().catch(() => ({ body: undefined }));
+  if (!body) return c.json({ ok: false, error: "Melding er påkrevd" }, 400);
+  if (body.trim().split(/\s+/).filter(Boolean).length > 500) {
+    return c.json({ ok: false, error: "Meldingen kan ha maks 500 ord" }, 400);
+  }
+  const result = await skipperPostSupportMessage(c.env, user, id, body);
+  if (result === null) return c.json({ ok: false, error: "Ikke funnet" }, 404);
+  if (result === "locked") return c.json({ ok: false, error: "Samtalen er låst" }, 409);
+  return c.json({ ok: true, message: result });
+});
+
 app.route("/chat", chat);
 
 // --- admin (Kristian): directory + approval + conversation oversight --------
@@ -473,6 +508,38 @@ admin.get("/threads/:id/messages", async (c) => {
   const data = await adminThreadMessages(c.env, Number(c.req.param("id")));
   if (!data) return c.json({ ok: false, error: "Ikke funnet" }, 404);
   return c.json({ ok: true, ...data });
+});
+
+// --- admin ↔ skipper support chat (admin side) -----------------------------
+// A direct line to message a skipper (support/coordination), separate from the read-only
+// oversight above. Open/get the thread for a skipper, list its messages, and post as admin.
+admin.get("/support", async (c) =>
+  c.json({ ok: true, threads: await adminListSupportThreads(c.env) })
+);
+
+admin.post("/skippers/:id/support", async (c) => {
+  const thread = await adminOpenSupportThread(c.env, Number(c.req.param("id")));
+  if (!thread) return c.json({ ok: false, error: "Ikke funnet" }, 404);
+  return c.json({ ok: true, thread });
+});
+
+admin.get("/support/:id/messages", async (c) => {
+  const since = Number(c.req.query("since")) || 0;
+  const data = await adminSupportMessages(c.env, Number(c.req.param("id")), since);
+  if (!data) return c.json({ ok: false, error: "Ikke funnet" }, 404);
+  return c.json({ ok: true, ...data });
+});
+
+admin.post("/support/:id/messages", async (c) => {
+  const { body } = await c.req.json<{ body?: string }>().catch(() => ({ body: undefined }));
+  if (!body) return c.json({ ok: false, error: "Melding er påkrevd" }, 400);
+  if (body.trim().split(/\s+/).filter(Boolean).length > 500) {
+    return c.json({ ok: false, error: "Meldingen kan ha maks 500 ord" }, 400);
+  }
+  const result = await adminPostSupportMessage(c.env, Number(c.req.param("id")), body);
+  if (result === null) return c.json({ ok: false, error: "Ikke funnet" }, 404);
+  if (result === "locked") return c.json({ ok: false, error: "Samtalen er låst" }, 409);
+  return c.json({ ok: true, message: result });
 });
 
 admin.post("/users/:id/approve", async (c) => {

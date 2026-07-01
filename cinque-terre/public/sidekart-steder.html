@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sidekart · Steder (2D-nettverk)</title>
+<style>
+  :root{--ink:#2A1810;--muted:rgba(42,24,16,.6);--gold:#C49A34;--line:rgba(0,0,0,.10);--surf:#f6f5f3;
+    --seo:#8fc46b;--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",system-ui,sans-serif}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);color:var(--ink);background:#fffefc;padding:34px 26px 60px;min-height:100vh}
+  h1{font-size:20px;font-weight:600;letter-spacing:-.01em}
+  .sub{font-size:13px;color:var(--muted);margin:3px 0 22px}
+
+  /* recursive tree */
+  ul.tree{list-style:none}
+  ul.tree ul{list-style:none;margin-left:22px;border-left:1px solid var(--line);padding-left:0}
+  ul.tree li{position:relative;padding-left:20px;margin-top:8px}
+  ul.tree ul li::before{content:"";position:absolute;left:0;top:15px;width:16px;height:1px;background:var(--line)}
+  .row{display:inline-flex;align-items:center;gap:8px}
+  .card{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--seo);
+    border-radius:12px;padding:7px 13px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 5px 14px rgba(60,40,10,.06)}
+  .card .kind{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:600}
+  .card .name{font-size:14.5px;font-weight:600}
+  .card .rt{font-size:10.5px;color:var(--muted)}
+  li.place>.row>.card{border-left-color:var(--gold)}
+  li.place>.row>.card .name{font-size:16px}
+  .goal{margin-top:30px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+  .goal b{color:var(--ink)}
+</style>
+</head>
+<body>
+  <h1>Sidekart · Steder</h1>
+  <div class="sub">2D-nettverk. <b>Sted: navn</b> → dets undersider (restauranter, strender …) → som kan grene videre. Alltid ett nettverk.</div>
+  <ul class="tree" id="tree"></ul>
+  <div class="goal">Alle sider i denne grenen har ett samlet mål: <b>rangere på Google</b> → organisk trafikk → funnel til booking.</div>
+
+<script>
+"use strict";
+/* Rekursiv data — legg til/utvid fritt. children = nettverket videre. */
+var STEDER = {
+  label:"Steder",
+  children:[
+    { label:"Monterosso", route:"/monterosso", children:[
+      { label:"Restaurants", route:"/monterosso/restaurants", children:[
+        { label:"(enkelt-restaurant)", route:"…" }
+      ]},
+      { label:"Beaches", route:"/monterosso/beaches" },
+      { label:"Il Gigante", route:"landemerke" }
+    ]},
+    { label:"Vernazza", route:"/cinque-terre/vernazza", children:[
+      { label:"Restaurants", route:"…" },
+      { label:"Harbour", route:"…" }
+    ]},
+    { label:"Corniglia", route:"/cinque-terre/corniglia", children:[
+      { label:"Restaurants", route:"…" },
+      { label:"382 steps", route:"…" }
+    ]},
+    { label:"Manarola", route:"/cinque-terre/manarola", children:[
+      { label:"Restaurants", route:"…" },
+      { label:"Sciacchetrà (vin)", route:"…" }
+    ]},
+    { label:"Riomaggiore", route:"/cinque-terre/riomaggiore", children:[
+      { label:"Restaurants", route:"…" },
+      { label:"Via dell'Amore", route:"…" }
+    ]}
+  ]
+};
+
+var esc=function(s){return String(s).replace(/[&<>"]/g,function(m){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[m]})};
+
+function card(node, isPlace){
+  var kind = isPlace ? '<span class="kind">Sted</span>' : '';
+  var rt = node.route ? '<span class="rt">'+esc(node.route)+'</span>' : '';
+  return '<span class="card">'+kind+'<span class="name">'+esc(node.label)+'</span>'+rt+'</span>';
+}
+
+function renderChildren(nodes, placeLevel){
+  var html = '<ul>';
+  for (var i=0;i<nodes.length;i++){
+    var n=nodes[i];
+    html += '<li'+(placeLevel?' class="place"':'')+'>'
+         +  '<span class="row">'+card(n, placeLevel)+'</span>'
+         +  (n.children && n.children.length ? renderChildren(n.children, false) : '')
+         +  '</li>';
+  }
+  return html + '</ul>';
+}
+
+document.getElementById('tree').innerHTML =
+  '<li><span class="row"><span class="card" style="border-left-color:var(--seo)">'
+  + '<span class="kind">Kategori</span><span class="name">Steder</span></span></span>'
+  + renderChildren(STEDER.children, true) + '</li>';
+</script>
+</body>
+</html>

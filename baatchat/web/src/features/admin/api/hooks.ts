@@ -4,11 +4,13 @@ import { apiClient } from "@/lib/apiClient";
 import { adminApi } from "./adminApi";
 import type {
   AdminMessage,
+  AdminSupportThread,
   AdminThread,
   DirectoryCustomer,
   DirectorySkipper,
   Skipper,
   SkipperInput,
+  SupportMessage,
 } from "./types";
 
 const USERS_KEY = ["admin", "users"] as const;
@@ -113,6 +115,56 @@ export function useAdminThreadMessages(threadId: number | null) {
         `/admin/threads/${threadId}/messages`
       );
       return r;
+    },
+  });
+}
+
+// --- admin ↔ skipper support chat (direct line) -----------------------------
+
+/** Open (or lazily create) the support thread with a skipper; returns its id + name. */
+export function useOpenSupportThread(skipperId: number | null) {
+  return useQuery({
+    queryKey: ["admin", "support", "open", skipperId],
+    enabled: skipperId != null,
+    queryFn: async () => {
+      const r = await apiClient.post<{
+        ok: true;
+        thread: { id: number; skipperId: number; skipperName: string | null };
+      }>(`/admin/skippers/${skipperId}/support`, {});
+      return r.thread;
+    },
+  });
+}
+
+export function useAdminSupportMessages(threadId: number | null) {
+  return useQuery({
+    queryKey: ["admin", "support", threadId, "messages"],
+    enabled: threadId != null,
+    refetchInterval: 5000,
+    queryFn: async () => {
+      const r = await apiClient.get<{
+        ok: true;
+        thread: AdminSupportThread;
+        messages: SupportMessage[];
+      }>(`/admin/support/${threadId}/messages?since=0`);
+      return r;
+    },
+  });
+}
+
+export function useSendAdminSupportMessage() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ threadId, body }: { threadId: number; body: string }) => {
+      const r = await apiClient.post<{ ok: true; message: { id: number } }>(
+        `/admin/support/${threadId}/messages`,
+        { body }
+      );
+      return r.message.id;
+    },
+    onSuccess: (_id, { threadId }) => {
+      qc.invalidateQueries({ queryKey: ["admin", "support", threadId, "messages"] });
+      qc.invalidateQueries({ queryKey: ["admin", "support"] });
     },
   });
 }

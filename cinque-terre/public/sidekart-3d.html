@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sidekart · 3D</title>
+<style>
+  :root{
+    --ink:#2A1810; --muted:rgba(42,24,16,.6); --gold:#C49A34;
+    --line:rgba(0,0,0,.10); --surf:#f6f5f3;
+    --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",system-ui,sans-serif;
+    --gate:#c9a15a; --land:#ead27e; --book:#e8896b; --kunde:#6ba8e8; --skipper:#5ec8c8; --admin:#b79ae8; --seo:#8fc46b; --logic:#b07cc6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);color:var(--ink);overflow:hidden;
+    background:radial-gradient(130% 130% at 50% 0%,#fff,#f4f1ec 70%,#ece5da 100%)}
+  header{position:fixed;inset:0 0 auto 0;z-index:30;padding:15px 22px;pointer-events:none;
+    background:linear-gradient(#fffefcf2,#fffefc00)}
+  header h1{font-size:18px;font-weight:600;letter-spacing:-.01em}
+  header .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .legend{position:fixed;bottom:14px;left:22px;z-index:30;display:flex;gap:11px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);max-width:66vw}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .legend i{width:10px;height:10px;border-radius:50%}
+  .hint{position:fixed;bottom:14px;right:22px;z-index:30;font-size:11.5px;color:var(--muted)}
+  .ctrl{position:fixed;top:14px;right:22px;z-index:30;display:flex;gap:6px}
+  .ctrl button{font-family:inherit;min-width:34px;height:32px;padding:0 8px;border:1px solid var(--line);background:#fff;border-radius:9px;cursor:pointer;font-size:15px;color:var(--ink)}
+  .ctrl button:hover{border-color:var(--gold);color:var(--gold)}
+  .ctrl button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .card .addlink{margin-top:8px;width:100%;font-family:inherit;font-size:11px;padding:5px 6px;border:1px dashed var(--gold);border-radius:8px;background:#fff;color:var(--gold);cursor:pointer}
+
+  .scene{position:fixed;inset:0;perspective:2200px;cursor:grab;touch-action:none}
+  .scene.grabbing{cursor:grabbing}
+  .world{position:absolute;top:50%;left:50%;transform-style:preserve-3d;will-change:transform;
+    transform:translate(calc(-50% + var(--tx,0px)),calc(-50% + var(--ty,0px))) scale(var(--s,.4)) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
+
+  .node{position:absolute;top:0;left:0;transform-style:preserve-3d;width:190px;margin:-36px 0 0 -95px}
+  .card{background:rgba(255,255,255,.66);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
+    border:1px solid var(--line);border-radius:15px;padding:11px 13px;border-left:3px solid var(--c,var(--land));
+    box-shadow:0 1px 2px rgba(0,0,0,.05),0 12px 26px rgba(60,40,10,.13);cursor:pointer;transition:transform .15s,box-shadow .15s}
+  .node:hover .card{transform:translateZ(24px);box-shadow:0 2px 6px rgba(0,0,0,.08),0 24px 48px rgba(60,40,10,.22)}
+  .card .top{display:flex;align-items:center;gap:6px;font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+  .card .top i{width:7px;height:7px;border-radius:50%;background:var(--c,var(--land));flex-shrink:0}
+  .card .top .rt{margin-left:auto;opacity:.75;font-size:9px}
+  .card h2{font-size:16px;font-weight:600;letter-spacing:-.01em;margin:5px 0 0}
+  .card .meta{font-size:10.5px;color:var(--muted);margin-top:3px}
+  .card .grp{margin-top:8px;padding-top:7px;border-top:1px solid var(--line)}
+  .card .grp b{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .card .grp .row{display:flex;flex-wrap:wrap;gap:4px}
+  .card .lk{font-size:10.5px;color:var(--ink);background:var(--surf);border:1px solid var(--line);border-radius:999px;padding:1px 8px}
+  .card .lk::before{content:"→ "}
+  .card .lk.c{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .card .lk.c::before{content:""}
+  .node.mini{width:104px;margin:-20px 0 0 -52px}
+  .node.mini .card{padding:7px 12px;text-align:center;border-radius:999px}
+  .node.mini h2{font-size:14px;margin:0}
+  .node.hot .card{border:1.5px solid var(--gold);box-shadow:0 0 0 4px rgba(196,154,52,.14),0 16px 36px rgba(120,80,10,.2)}
+  .node .tag{position:absolute;top:-22px;left:0;font-size:9px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--gold);background:rgba(255,255,255,.88);border:1px solid rgba(196,154,52,.4);border-radius:999px;padding:2px 8px;white-space:nowrap}
+
+  .edge{position:absolute;top:0;left:0;height:1.2px;transform-origin:0 50%;
+    background:linear-gradient(90deg,rgba(196,154,52,.05),rgba(196,154,52,.36));pointer-events:none}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>Sidekart · 3D</h1><div class="sub" id="sub">Site-nettverk. Dra for å rotere · rull/±  for zoom.</div></div>
+</header>
+<div class="ctrl"><button id="editBtn">✎ Rediger</button><button data-z="in">＋</button><button data-z="out">－</button><button data-z="reset">⟲</button></div>
+<div class="scene" id="scene"><div class="world" id="world"></div></div>
+<div class="legend" id="legend"></div>
+<div class="hint">🖱️ dra = panorer · Shift+dra = roter · rull = zoom · ⟲ nullstill</div>
+
+<script>
+"use strict";
+/* ============================================================
+   Sidekart 3D — gjenbrukbar, data-drevet site-nettverksgraf.
+   Rediger KUN DATA-blokken (CLUSTERS · NODES · EDGES) for å endre kartet.
+   Alt annet (layout · render · kontroller) er generisk.
+   ============================================================ */
+(function () {
+
+  /* ---------- 1) CONFIG ---------- */
+  var CONFIG = {
+    gap: 300,            // X-avstand i "row"-klynger (luftig)
+    colGap: 180,         // Y-avstand i "col"-klynger (kolonner)
+    stagger: 16,         // liten forskyvning annenhver node
+    view: { rx: 0, ry: 0, s: 0.34 },   // flat 2D for oversikt
+    scale: { min: 0.28, max: 1.5, step: 0.12 },
+    rotSpeed: 0.3,
+    cat: { gate:'--gate', land:'--land', book:'--book', kunde:'--kunde',
+           skipper:'--skipper', admin:'--admin', seo:'--seo', logic:'--logic' },
+    legend: [ ['gate','Gate'],['land','Landing'],['book','Booking'],['logic','Logikk'],
+              ['seo','SEO'],['kunde','Kunde'],['skipper','Skipper'],['admin','Admin'] ]
+  };
+
+  /* ---------- 2) DATA ---------- */
+  // Top-down: y = nivå (nedover), x = horisontalt. dir:'col' = stable nedover (kolonne), ellers rad i X.
+  var CLUSTERS = {
+    root:    { x:0,     y:-1160, z:0 },
+    consent: { x:0,     y:-980,  z:0 },
+    landing: { x:0,     y:-780,  z:0 },
+    platform:{ x:-1400, y:-780,  z:0 },
+    booking: { x:-380,  y:-520,  z:0, dir:'col' },
+    login:   { x:340,   y:-520,  z:0, dir:'col' },
+    spublic: { x:1850,  y:160,   z:0 },
+    customer:{ x:-560,  y:80,    z:0, dir:'col' },
+    skipper: { x:560,   y:80,    z:0, dir:'col' },
+    admin:   { x:-2200, y:80,    z:0, dir:'col' }
+  };
+
+  // node: { id, title, cl, cat?, route?, links?[], ctas?[], hot?, mini?, tag? }
+  var NODES = [
+    { id:'cookies', title:'Cookies?', cl:'root', type:'Consent', cat:'gate', links:['Yes','No'] },
+    { id:'yes', title:'Yes', cl:'consent', cat:'gate', mini:true },
+    { id:'no',  title:'No',  cl:'consent', cat:'gate', mini:true },
+
+    { id:'platform', title:'BoatUber landing', cl:'platform', type:'Landing', cat:'land',
+      links:['Skippers','Kart','Byer'], ctas:['Log in','Book'] },
+    { id:'landing', title:'Landingpage', cl:'landing', type:'Landing', cat:'land',
+      links:['Read more'], ctas:['Check availability'] },
+
+    { id:'booking', title:'Booking', cl:'booking', type:'Booking', cat:'book', links:['Tour','Date','Guests'] },
+    { id:'contact', title:'Check availability', cl:'booking', type:'Booking', cat:'logic', meta:'Har allerede konto?', links:['Log in'] },
+    { id:'confirm', title:'Request sent', cl:'booking', type:'Booking', cat:'book', ctas:['Open my account','WhatsApp'] },
+
+    // SEO-nodene ligger nå i SEO_TREE (rekursivt tre) — merges inn i init()
+
+    { id:'login', title:'Log in', cl:'login', type:'Login', cat:'gate', ctas:['Continue'] },
+    { id:'webdash', title:'Web dashboard', cl:'login', type:'Dashboard (web)', cat:'kunde', meta:'Fullskjerm · sidebar · ingen scroll (mobil)', links:['SEO-sider (sidebar)'], ctas:['Log in','Book','Kart: aktive båter','Last ned app'] },
+    { id:'sandrea', title:'/s/andrea', cl:'spublic', type:'Landing', cat:'skipper', ctas:['Check availability','WhatsApp'] },
+
+    { id:'c_home', title:'Customer · Home', cl:'customer', type:'Dashboard', cat:'kunde', links:['2×2'] },
+    { id:'c_chat', title:'Chat', cl:'customer', cat:'kunde' },
+    { id:'c_trips', title:'Turen min', cl:'customer', cat:'kunde' },
+    { id:'c_prof', title:'Min profil', cl:'customer', cat:'kunde' },
+
+    { id:'k_home', title:'Skipper · Home', cl:'skipper', cat:'skipper' },
+    { id:'k_chat', title:'Chat', cl:'skipper', cat:'skipper' },
+    { id:'k_trips', title:'Mine avganger', cl:'skipper', cat:'skipper', links:['Confirm/Decline'] },
+    { id:'k_site', title:'Min side', cl:'skipper', cat:'skipper', links:['Preview'] },
+    { id:'k_prof', title:'Profil', cl:'skipper', cat:'skipper' },
+    { id:'k_supp', title:'Support', cl:'skipper', cat:'skipper' },
+
+    { id:'a_pend', title:'Til godkjenning', cl:'admin', cat:'admin' },
+    { id:'a_skip', title:'Skippere', cl:'admin', cat:'admin', links:['Melding'] },
+    { id:'a_cust', title:'Kunder', cl:'admin', cat:'admin' },
+    { id:'a_conv', title:'Samtaler', cl:'admin', cat:'admin' },
+    { id:'a_side', title:'Sidekart', cl:'admin', cat:'admin' }
+  ];
+
+  var EDGES = [
+    ['cookies','yes'],['cookies','no'],['yes','landing'],['no','landing'],
+    ['platform','login'],['platform','booking'],['landing','booking'],
+    ['booking','contact'],['contact','confirm'],['contact','login'],['contact','c_home'],['contact','k_home'],['confirm','login'],
+    ['login','webdash'],['webdash','c_home'],['login','k_home'],['login','a_pend'],
+    ['sandrea','landing'],['k_site','sandrea'],
+    ['c_home','c_chat'],['c_home','c_trips'],['c_home','c_prof'],['c_home','landing'],
+    ['k_home','k_chat'],['k_home','k_trips'],['k_home','k_site'],['k_home','k_prof'],['k_home','k_supp'],
+    ['a_skip','k_supp']
+  ];
+
+  // SEO som rekursivt tre (data-drevet). Henger på webdash, egen tidy-tree-layout.
+  var SEO_TREE = { id:'seoroot', label:'SEO', kind:'Google-hub', meta:'~40 artikler · mål: Google', children:[
+    { id:'cat_steder', label:'Steder', kind:'Sted', count:5, unit:'steder', avg:850, children:[
+      { id:'sub_rest', label:'Restauranter', kind:'Restaurant', count:5, unit:'artikler', avg:700 },
+      { id:'sub_vin',  label:'Vin', kind:'Vin', count:3, unit:'artikler', avg:600 },
+      { id:'sub_strand', label:'Strender', kind:'Strand', count:4, unit:'artikler', avg:520 } ]},
+    { id:'cat_gjore', label:'Gjøremål', kind:'Kategori', count:8, unit:'artikler', avg:900 },
+    { id:'cat_mat', label:'Mat & drikke', kind:'Kategori', count:6, unit:'artikler', avg:700 },
+    { id:'cat_rev', label:'Reviews', kind:'Kategori', count:12, unit:'reviews', avg:400 },
+    { id:'cat_prakt', label:'Praktisk', kind:'Kategori', count:7, unit:'artikler', avg:1100 }
+  ]};
+  // KORT-TYPER (lagres som kategorier). Delt regel: ALLE SEO-kort linker på alle mulige måter —
+  // opp (forelder) · til siden (søsken) · ned (barn/artikler) · + alltid → Dashboard og → Book.
+  // Uendelig antall informative sider (steder/turer/mat/restauranter) — samme link-mønster overalt.
+  var CARD_TYPES = {
+    'seo-hoved': { label:'SEO · Hovedkategori', links:['Underkat.','Andre kategorier'], ctas:['Dashboard','Book'] },
+    'seo-under': { label:'SEO · Underkategori', links:['Artikler','Søsken','Hovedkat.'], ctas:['Dashboard','Book'] }
+  };
+  var TREECFG = { sibGap:230, depthGap:240 };
+  var TREE_ANCHOR = { x:1500, y:-660, z:0 };   // egen kolonne til høyre, mellom landing og web-dashboard
+
+  /* ---------- 3) LAYOUT ENGINE ---------- */
+  function layout(nodes, clusters, cfg) {
+    var counts = {}, i;
+    for (i = 0; i < nodes.length; i++) counts[nodes[i].cl] = (counts[nodes[i].cl] || 0) + 1;
+    var seen = {};
+    for (i = 0; i < nodes.length; i++) {
+      var n = nodes[i], c = clusters[n.cl];
+      if (!c) { console.warn('Ukjent klynge:', n.cl, 'for', n.id); c = { x:0, y:0, z:0 }; }
+      var k = (seen[n.cl] = (seen[n.cl] === undefined ? 0 : seen[n.cl] + 1));
+      var off = k - (counts[n.cl] - 1) / 2;
+      n.pos = (c.dir === 'col')
+        ? [ c.x + (k % 2 ? cfg.stagger : 0), c.y + off * cfg.colGap, c.z ]
+        : [ c.x + off * cfg.gap, c.y + (k % 2 ? cfg.stagger : 0), c.z ];
+    }
+  }
+
+  // tidy-tree i 3D: dybde → Y (grener nedover), søsken → X, foreldre sentreres på barna
+  function layoutTree(root, anchor, cfg) {
+    var leaf = 0;
+    (function place(n, depth) {
+      n._d = depth;
+      if (n.children && n.children.length) {
+        for (var i = 0; i < n.children.length; i++) place(n.children[i], depth + 1);
+        n._x = (n.children[0]._x + n.children[n.children.length - 1]._x) / 2;
+      } else { n._x = leaf++ * cfg.sibGap; }
+    })(root, 0);
+    var maxX = (leaf - 1) * cfg.sibGap;
+    (function o(n) { n.x = n._x - maxX / 2 + anchor.x; n.y = anchor.y + n._d * cfg.depthGap; n.z = anchor.z;
+      if (n.children) n.children.forEach(o); })(root);
+  }
+
+  // flat ut treet til node-liste + parent→child-kanter, med samme node-modell som resten
+  function walkTree(root) {
+    var nodes = [], edges = [];
+    (function rec(n, depth) {
+      var type = depth === 1 ? 'seo-hoved' : (depth === 2 ? 'seo-under' : null);
+      var t = type ? CARD_TYPES[type] : null;
+      var meta = (n.count != null) ? (n.count + ' ' + (n.unit || '') + ' · snitt ' + n.avg + ' ord/art') : (n.meta || '');
+      nodes.push({ id:n.id, title:n.label, type:type, cat: depth === 1 ? 'gate' : 'seo',
+        cl: t ? t.label : (n.kind || 'SEO'), meta: meta,
+        links: t ? t.links : null,
+        ctas:  t ? t.ctas : (depth === 0 ? ['Google →'] : null),
+        pos:[n.x, n.y, n.z] });
+      if (n.children) for (var i = 0; i < n.children.length; i++) { edges.push([n.id, n.children[i].id]); rec(n.children[i], depth + 1); }
+    })(root, 0);
+    return { nodes:nodes, edges:edges };
+  }
+
+  /* ---------- 4) RENDER ---------- */
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (m) {
+    return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' })[m]; }); };
+
+  function chips(arr, isCta) {
+    return arr.map(function (l) { return '<span class="lk' + (isCta ? ' c' : '') + '">' + esc(l) + '</span>'; }).join('');
+  }
+
+  function nodeHtml(n, cfg) {
+    var c = 'var(' + (cfg.cat[n.cat] || '--land') + ')';
+    if (n.mini) return '<div class="card" style="--c:' + c + '"><h2>' + esc(n.title) + '</h2></div>';
+    var links = (n.links && n.links.length) ? '<div class="grp"><b>Links</b><div class="row">' + chips(n.links) + '</div></div>' : '';
+    var ctas  = (n.ctas  && n.ctas.length)  ? '<div class="grp"><b>CTA</b><div class="row">' + chips(n.ctas, true) + '</div></div>' : '';
+    var tag   = n.tag ? '<div class="tag">' + esc(n.tag) + '</div>' : '';
+    return tag + '<div class="card" style="--c:' + c + '">' +
+      '<div class="top"><i></i>' + esc(n.type || n.cl) + '<span class="rt">' + esc(n.route || '') + '</span></div>' +
+      '<h2>' + esc(n.title) + '</h2>' + (n.meta ? '<div class="meta">' + esc(n.meta) + '</div>' : '') + links + ctas + '</div>';
+  }
+
+  function edgeEl(a, b) {
+    var dx = b.pos[0]-a.pos[0], dy = b.pos[1]-a.pos[1], dz = b.pos[2]-a.pos[2];
+    var len = Math.hypot(dx, dy, dz);
+    var ry = Math.atan2(-dz, dx) * 180 / Math.PI;
+    var rz = Math.atan2(dy, Math.hypot(dx, dz)) * 180 / Math.PI;
+    var el = document.createElement('div');
+    el.className = 'edge';
+    el.style.width = len + 'px';
+    el.style.transform = 'translate3d(' + a.pos[0] + 'px,' + a.pos[1] + 'px,' + a.pos[2] + 'px) rotateY(' + ry + 'deg) rotateZ(' + rz + 'deg)';
+    return el;
+  }
+
+  function render(world, nodes, edges, byId, cfg, editMode, opts) {
+    var frag = document.createDocumentFragment(), i;
+    // edges first (behind), then nodes
+    for (i = 0; i < edges.length; i++) {
+      var a = byId[edges[i][0]], b = byId[edges[i][1]];
+      if (!a || !b) { console.warn('Kant til ukjent node:', edges[i]); continue; }
+      frag.appendChild(edgeEl(a, b));
+    }
+    for (i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      var el = document.createElement('div');
+      el.className = 'node' + (n.mini ? ' mini' : '') + (n.hot ? ' hot' : '');
+      el.style.transform = 'translate3d(' + n.pos[0] + 'px,' + n.pos[1] + 'px,' + n.pos[2] + 'px)';
+      el.innerHTML = nodeHtml(n, cfg);
+      if (editMode && !n.mini) {
+        var sel = document.createElement('select');
+        sel.className = 'addlink'; sel.setAttribute('data-id', n.id);
+        sel.innerHTML = '<option value="">+ link…</option>' + opts;
+        sel.addEventListener('pointerdown', function (e) { e.stopPropagation(); });
+        var card = el.querySelector('.card'); if (card) card.appendChild(sel);
+      }
+      frag.appendChild(el);
+    }
+    world.textContent = '';
+    world.appendChild(frag);
+  }
+
+  /* ---------- 5) CONTROLS (drag-rotate · wheel/buttons-zoom) ---------- */
+  function controls(scene, world, cfg) {
+    var rx = cfg.view.rx, ry = cfg.view.ry, s = cfg.view.s, tx = 0, ty = 0;
+    var dragging = false, rotating = false, lx = 0, ly = 0, raf = 0;
+
+    function draw() { raf = 0;
+      world.style.setProperty('--rx', rx + 'deg'); world.style.setProperty('--ry', ry + 'deg');
+      world.style.setProperty('--s', s); world.style.setProperty('--tx', tx + 'px'); world.style.setProperty('--ty', ty + 'px'); }
+    function schedule() { if (!raf) raf = requestAnimationFrame(draw); }
+    function zoom(d) { s = Math.max(cfg.scale.min, Math.min(cfg.scale.max, s + d)); schedule(); }
+
+    scene.addEventListener('pointerdown', function (e) {
+      dragging = true; rotating = e.shiftKey || e.button === 2; lx = e.clientX; ly = e.clientY;
+      scene.classList.add('grabbing'); scene.setPointerCapture && scene.setPointerCapture(e.pointerId);
+    });
+    scene.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      if (rotating) {                                   // Shift/høyre-dra = roter
+        ry += (e.clientX - lx) * cfg.rotSpeed;
+        rx = Math.max(-85, Math.min(85, rx - (e.clientY - ly) * cfg.rotSpeed));
+      } else {                                          // dra = panorer
+        tx += (e.clientX - lx); ty += (e.clientY - ly);
+      }
+      lx = e.clientX; ly = e.clientY; schedule();
+    });
+    function end() { dragging = false; scene.classList.remove('grabbing'); }
+    scene.addEventListener('pointerup', end);
+    scene.addEventListener('pointercancel', end);
+    scene.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    scene.addEventListener('wheel', function (e) { e.preventDefault(); zoom(e.deltaY < 0 ? cfg.scale.step : -cfg.scale.step); }, { passive: false });
+
+    document.querySelector('.ctrl').addEventListener('click', function (e) {
+      var z = e.target.getAttribute('data-z'); if (!z) return;
+      if (z === 'in') zoom(cfg.scale.step);
+      else if (z === 'out') zoom(-cfg.scale.step);
+      else { rx = cfg.view.rx; ry = cfg.view.ry; s = cfg.view.s; tx = 0; ty = 0; schedule(); }
+    });
+    draw();
+  }
+
+  /* ---------- 6) LEGEND ---------- */
+  function legend(el, cfg) {
+    el.innerHTML = cfg.legend.map(function (p) {
+      return '<span><i style="background:var(' + cfg.cat[p[0]] + ')"></i>' + esc(p[1]) + '</span>';
+    }).join('');
+  }
+
+  /* ---------- 7) INIT ---------- */
+  function init() {
+    var world = document.getElementById('world');
+    var scene = document.getElementById('scene');
+    layout(NODES, CLUSTERS, CONFIG);            // hovedflyt (klynge-layout)
+    layoutTree(SEO_TREE, TREE_ANCHOR, TREECFG); // SEO (tidy-tree)
+    var tree = walkTree(SEO_TREE);
+    var allNodes = NODES.concat(tree.nodes);
+    var allEdges = EDGES.concat(tree.edges);
+    allEdges.push(['landing', 'webdash']);      // «les mer / SEO» → web-dashboard (samme sted som login lander)
+    allEdges.push(['webdash', SEO_TREE.id]);    // SEO ligger på web-dashboardet
+    var byId = {}, i;
+    for (i = 0; i < allNodes.length; i++) byId[allNodes[i].id] = allNodes[i];
+    var OPTS = allNodes.map(function (n) { return '<option value="' + n.id + '">' + esc(n.title) + '</option>'; }).join('');
+    var editMode = false;
+
+    function rebuild() { render(world, allNodes, allEdges, byId, CONFIG, editMode, OPTS); }
+    rebuild();
+    legend(document.getElementById('legend'), CONFIG);
+    controls(scene, world, CONFIG);
+
+    document.getElementById('editBtn').addEventListener('click', function () {
+      editMode = !editMode; this.classList.toggle('on', editMode); rebuild();
+    });
+    world.addEventListener('change', function (e) {
+      if (!e.target.classList || !e.target.classList.contains('addlink')) return;
+      var src = e.target.getAttribute('data-id'), dst = e.target.value;
+      if (!dst || !byId[src] || !byId[dst]) return;
+      byId[src].links = byId[src].links || [];
+      byId[src].links.push(byId[dst].title);   // vis som link-chip
+      allEdges.push([src, dst]);               // + tegn strek
+      rebuild();
+    });
+    document.getElementById('sub').textContent =
+      allNodes.length + ' noder · trykk ✎ Rediger → «+ link…» på et kort for å koble.';
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+</body>
+</html>

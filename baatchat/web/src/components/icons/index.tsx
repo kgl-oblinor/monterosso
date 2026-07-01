@@ -146,6 +146,16 @@ export const Ship: IconComponent = (props) => (
   </Svg>
 );
 
+/** Profile / account — a single figure. */
+export const Profile: IconComponent = (props) => (
+  <Svg {...props}>
+    <circle cx="12" cy="8" r="3.4" {...wash} />
+    <circle cx="12" cy="8" r="3.4" />
+    <path {...wash} d="M5.5 19.5a6.5 6.5 0 0 1 13 0z" />
+    <path d="M5.5 19.5a6.5 6.5 0 0 1 13 0" />
+  </Svg>
+);
+
 /** Customers — two figures. */
 export const Users: IconComponent = (props) => (
   <Svg {...props}>

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sidekart · Steder (3D-tre)</title>
+<style>
+  :root{--ink:#2A1810;--muted:rgba(42,24,16,.6);--gold:#C49A34;--line:rgba(0,0,0,.10);--surf:#f6f5f3;
+    --seo:#8fc46b;--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",system-ui,sans-serif}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);color:var(--ink);overflow:hidden;
+    background:radial-gradient(130% 130% at 50% 0%,#fff,#f4f1ec 70%,#ece5da 100%)}
+  header{position:fixed;inset:0 0 auto 0;z-index:30;padding:15px 22px;pointer-events:none;background:linear-gradient(#fffefcf2,#fffefc00)}
+  header h1{font-size:18px;font-weight:600;letter-spacing:-.01em}
+  header .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .hint{position:fixed;bottom:14px;right:22px;z-index:30;font-size:11.5px;color:var(--muted)}
+  .goal{position:fixed;bottom:14px;left:22px;z-index:30;font-size:11.5px;color:var(--muted)}
+  .goal b{color:var(--ink)}
+  .ctrl{position:fixed;top:14px;right:22px;z-index:30;display:flex;gap:6px}
+  .ctrl button{font-family:inherit;min-width:34px;height:32px;padding:0 8px;border:1px solid var(--line);background:#fff;border-radius:9px;cursor:pointer;font-size:15px;color:var(--ink)}
+  .ctrl button:hover{border-color:var(--gold);color:var(--gold)}
+
+  .scene{position:fixed;inset:0;perspective:2000px;cursor:grab;touch-action:none}
+  .scene.grabbing{cursor:grabbing}
+  .world{position:absolute;top:50%;left:50%;transform-style:preserve-3d;will-change:transform;
+    transform:translate(-50%,-50%) scale(var(--s,.62)) rotateX(var(--rx,-14deg)) rotateY(var(--ry,26deg))}
+
+  .node{position:absolute;top:0;left:0;transform-style:preserve-3d;width:180px;margin:-32px 0 0 -90px}
+  .card{background:rgba(255,255,255,.66);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
+    border:1px solid var(--line);border-radius:14px;padding:10px 13px;border-left:3px solid var(--c,var(--seo));
+    box-shadow:0 1px 2px rgba(0,0,0,.05),0 12px 26px rgba(60,40,10,.13);cursor:pointer;transition:transform .15s,box-shadow .15s}
+  .node:hover .card{transform:translateZ(24px);box-shadow:0 2px 6px rgba(0,0,0,.08),0 24px 48px rgba(60,40,10,.22)}
+  .card .kind{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .card h2{font-size:15px;font-weight:600;letter-spacing:-.01em;margin:2px 0 0}
+  .card .rt{font-size:9.5px;color:var(--muted);margin-top:2px}
+  .node.place .card{border-left-color:var(--gold)}
+  .node.place .card .kind{color:var(--gold)}
+  .node.place .card h2{font-size:17px}
+  .node.root .card{border-left-color:var(--seo)}
+
+  .edge{position:absolute;top:0;left:0;height:1.4px;transform-origin:0 50%;
+    background:linear-gradient(90deg,rgba(143,196,107,.15),rgba(143,196,107,.6));pointer-events:none}
+</style>
+</head>
+<body>
+<header><div><h1>Sidekart · Steder — 3D-tre</h1><div class="sub" id="sub">Rekursivt nettverk i 3D. Dra for å rotere · rull for zoom.</div></div></header>
+<div class="ctrl"><button data-z="in">＋</button><button data-z="out">－</button><button data-z="reset">⟲</button></div>
+<div class="scene" id="scene"><div class="world" id="world"></div></div>
+<div class="goal">Mål: <b>rangere på Google</b> → funnel til booking.</div>
+<div class="hint">🖱️ dra · rull for zoom</div>
+
+<script>
+"use strict";
+/* ============================================================
+   3D tre-renderer — data-drevet & rekursiv.
+   Rediger KUN TREE. Layout/render/kontroller er generisk (tidy-tree i 3D).
+   ============================================================ */
+(function () {
+
+  var CONFIG = { xGap:340, yGap:112, zStep:90, view:{rx:-14,ry:26,s:.62},
+                 scale:{min:.3,max:1.5,step:.12}, rotSpeed:.3 };
+
+  /* ---- DATA (rekursivt) ---- */
+  var TREE = {
+    label:"Steder", kind:"Kategori", children:[
+      { label:"Monterosso", route:"/monterosso", children:[
+        { label:"Restaurants", route:"/monterosso/restaurants", children:[
+          { label:"(enkelt-restaurant)", route:"…" } ]},
+        { label:"Beaches", route:"/monterosso/beaches" },
+        { label:"Il Gigante", route:"landemerke" } ]},
+      { label:"Vernazza", route:"/cinque-terre/vernazza", children:[
+        { label:"Restaurants", route:"…" }, { label:"Harbour", route:"…" } ]},
+      { label:"Corniglia", route:"/cinque-terre/corniglia", children:[
+        { label:"Restaurants", route:"…" }, { label:"382 steps", route:"…" } ]},
+      { label:"Manarola", route:"/cinque-terre/manarola", children:[
+        { label:"Restaurants", route:"…" }, { label:"Sciacchetrà (vin)", route:"…" } ]},
+      { label:"Riomaggiore", route:"/cinque-terre/riomaggiore", children:[
+        { label:"Restaurants", route:"…" }, { label:"Via dell'Amore", route:"…" } ]}
+    ]
+  };
+
+  /* ---- LAYOUT: tidy-tree i 3D ----
+     X = dybde · Y = tidy søsken-plassering (foreldre sentreres på barna) · Z = dybde-resess */
+  function layout(root, cfg) {
+    var leaf = 0;
+    (function place(n, depth) {
+      n.depth = depth;
+      if (n.children && n.children.length) {
+        for (var i = 0; i < n.children.length; i++) place(n.children[i], depth + 1);
+        n.y = (n.children[0].y + n.children[n.children.length - 1].y) / 2;
+      } else { n.y = leaf++ * cfg.yGap; }
+      n.x = depth * cfg.xGap;
+      n.z = depth * cfg.zStep;
+    })(root, 0);
+    // sentrer vertikalt rundt 0
+    var maxY = (leaf - 1) * cfg.yGap;
+    (function shift(n){ n.y -= maxY / 2; if (n.children) n.children.forEach(shift); })(root);
+    // startposisjon: skyv treet mot venstre så det er sentrert i view
+    var midX = (function () { var d=0; (function f(n){ if(n.depth>d)d=n.depth; if(n.children)n.children.forEach(f);})(root); return d*cfg.xGap/2; })();
+    (function sx(n){ n.x -= midX; if (n.children) n.children.forEach(sx); })(root);
+  }
+
+  /* ---- RENDER ---- */
+  var esc = function (s){ return String(s).replace(/[&<>"]/g,function(m){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[m]});};
+
+  function nodeEl(n) {
+    var cls = 'node' + (n.depth === 0 ? ' root' : '') + (n.depth === 1 ? ' place' : '');
+    var kind = n.depth === 0 ? (n.kind || '') : (n.depth === 1 ? 'Sted' : '');
+    var el = document.createElement('div');
+    el.className = cls;
+    el.style.transform = 'translate3d(' + n.x + 'px,' + n.y + 'px,' + n.z + 'px)';
+    el.innerHTML = '<div class="card">' +
+      (kind ? '<div class="kind">' + esc(kind) + '</div>' : '') +
+      '<h2>' + esc(n.label) + '</h2>' +
+      (n.route ? '<div class="rt">' + esc(n.route) + '</div>' : '') + '</div>';
+    return el;
+  }
+
+  function edgeEl(a, b) {
+    var dx=b.x-a.x, dy=b.y-a.y, dz=b.z-a.z, len=Math.hypot(dx,dy,dz);
+    var ry=Math.atan2(-dz,dx)*180/Math.PI, rz=Math.atan2(dy,Math.hypot(dx,dz))*180/Math.PI;
+    var el=document.createElement('div'); el.className='edge'; el.style.width=len+'px';
+    el.style.transform='translate3d('+a.x+'px,'+a.y+'px,'+a.z+'px) rotateY('+ry+'deg) rotateZ('+rz+'deg)';
+    return el;
+  }
+
+  function render(world, root) {
+    var frag = document.createDocumentFragment(), nodes = 0;
+    (function edges(n){ if(!n.children)return; for(var i=0;i<n.children.length;i++){ frag.appendChild(edgeEl(n,n.children[i])); edges(n.children[i]); } })(root);
+    (function walk(n){ frag.appendChild(nodeEl(n)); nodes++; if(n.children) n.children.forEach(walk); })(root);
+    world.textContent=''; world.appendChild(frag);
+    return nodes;
+  }
+
+  /* ---- CONTROLS (delt med hoved-3D) ---- */
+  function controls(scene, world, cfg) {
+    var rx=cfg.view.rx, ry=cfg.view.ry, s=cfg.view.s, drag=false, lx=0, ly=0, raf=0;
+    function draw(){ raf=0; world.style.setProperty('--rx',rx+'deg'); world.style.setProperty('--ry',ry+'deg'); world.style.setProperty('--s',s); }
+    function go(){ if(!raf) raf=requestAnimationFrame(draw); }
+    function zoom(d){ s=Math.max(cfg.scale.min,Math.min(cfg.scale.max,s+d)); go(); }
+    scene.addEventListener('pointerdown',function(e){ drag=true; lx=e.clientX; ly=e.clientY; scene.classList.add('grabbing'); scene.setPointerCapture&&scene.setPointerCapture(e.pointerId); });
+    scene.addEventListener('pointermove',function(e){ if(!drag)return; ry+=(e.clientX-lx)*cfg.rotSpeed; rx=Math.max(-85,Math.min(85,rx-(e.clientY-ly)*cfg.rotSpeed)); lx=e.clientX; ly=e.clientY; go(); });
+    function end(){ drag=false; scene.classList.remove('grabbing'); }
+    scene.addEventListener('pointerup',end); scene.addEventListener('pointercancel',end);
+    scene.addEventListener('wheel',function(e){ e.preventDefault(); zoom(e.deltaY<0?cfg.scale.step:-cfg.scale.step); },{passive:false});
+    document.querySelector('.ctrl').addEventListener('click',function(e){ var z=e.target.getAttribute('data-z'); if(!z)return;
+      if(z==='in')zoom(cfg.scale.step); else if(z==='out')zoom(-cfg.scale.step); else {rx=cfg.view.rx;ry=cfg.view.ry;s=cfg.view.s;go();} });
+    draw();
+  }
+
+  /* ---- INIT ---- */
+  function init(){
+    var world=document.getElementById('world'), scene=document.getElementById('scene');
+    layout(TREE, CONFIG);
+    var n=render(world, TREE);
+    controls(scene, world, CONFIG);
+    document.getElementById('sub').textContent = n+' noder · rekursivt tre i 3D. Dra for å rotere · rull for zoom.';
+  }
+  if (document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();
+</script>
+</body>
+</html>

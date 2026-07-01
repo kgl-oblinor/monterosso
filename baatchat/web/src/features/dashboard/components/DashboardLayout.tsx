@@ -9,6 +9,7 @@ import { IconRail } from "./IconRail";
 import { ConversationsPanel } from "./ConversationsPanel";
 import { ChatThread } from "./ChatThread";
 import { GroupThread } from "./GroupThread";
+import { SupportThread } from "./SupportThread";
 import { ChatThreadSkeleton, ConversationsPanelSkeleton } from "./ChatSkeletons";
 import { SectionView } from "./SectionViews";
 
@@ -76,6 +77,14 @@ export function DashboardLayout() {
           {selected ? (
             selected.kind === "group" ? (
               <GroupThread
+                key={selected.key}
+                conversation={selected}
+                myId={myId}
+                onBack={() => setMobileView("list")}
+                className={mobileView === "list" ? "hidden md:flex" : "flex"}
+              />
+            ) : selected.kind === "admin" ? (
+              <SupportThread
                 key={selected.key}
                 conversation={selected}
                 myId={myId}

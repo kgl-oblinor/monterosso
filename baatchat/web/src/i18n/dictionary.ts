@@ -295,6 +295,35 @@ export const dictionary = {
   "chat.contactFallback.skipper": { en: "Skipper #{id}", it: "Skipper #{id}", nb: "Skipper #{id}" },
   "chat.contactFallback.customer": { en: "Customer #{id}", it: "Cliente #{id}", nb: "Kunde #{id}" },
 
+  // --- support chat (skipper ↔ platform admin) ------------------------------
+  "chat.support.title": { en: "Support", it: "Assistenza", nb: "Support" },
+  "chat.support.subtitle": {
+    en: "The Monterosso team",
+    it: "Il team Monterosso",
+    nb: "Monterosso-teamet",
+  },
+  "chat.support.admin": { en: "Support", it: "Assistenza", nb: "Support" },
+  "chat.support.empty": {
+    en: "No messages yet. Write to the Monterosso team — we're here to help.",
+    it: "Ancora nessun messaggio. Scrivi al team Monterosso — siamo qui per aiutarti.",
+    nb: "Ingen meldinger ennå. Skriv til Monterosso-teamet — vi er her for å hjelpe.",
+  },
+  "chat.support.placeholder": {
+    en: "Write to support …",
+    it: "Scrivi all'assistenza …",
+    nb: "Skriv til support …",
+  },
+  "chat.support.locked": {
+    en: "This conversation is locked.",
+    it: "Questa conversazione è bloccata.",
+    nb: "Denne samtalen er låst.",
+  },
+  "chat.support.sendError": {
+    en: "The message wasn't sent. Check your connection and try again.",
+    it: "Il messaggio non è stato inviato. Controlla la connessione e riprova.",
+    nb: "Meldingen ble ikke sendt. Sjekk nettforbindelsen og prøv igjen.",
+  },
+
   // --- "coming soon" section states -----------------------------------------
   "soon.receipts.frameTitle": { en: "Receipts", it: "Ricevute", nb: "Kvitteringer" },
   "soon.receipts.title": {

@@ -7,15 +7,17 @@ import {
   Compass,
   LogOut,
   Mail,
-  MessageSquare,
   Phone,
   Plus,
-  Ship,
   Trash2,
   User,
   UserPlus,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+
+// Bespoke nautical duotone marks (same set used in the rail) — for the customer home tiles.
+import { Message, Compass as CompassMark, Ship, Profile } from "@/components/icons";
+import type { IconComponent } from "@/components/icons";
 
 import { useT, useLocale, formatDate, type TranslationKey } from "@/i18n";
 import { useAuthStore } from "@/features/auth/store";
@@ -229,14 +231,14 @@ const CUSTOMER_TILES: {
   id: string;
   key?: SectionKey;
   href?: string;
-  icon: LucideIcon;
+  icon: IconComponent;
   labelKey: TranslationKey;
   hintKey: TranslationKey;
 }[] = [
-  { id: "chat", key: "chat", icon: MessageSquare, labelKey: "home.tile.chat.label", hintKey: "home.tile.chat.hint" },
-  { id: "trips", key: "trips", icon: Compass, labelKey: "home.tile.trips.label", hintKey: "home.tile.trips.hint" },
+  { id: "chat", key: "chat", icon: Message, labelKey: "home.tile.chat.label", hintKey: "home.tile.chat.hint" },
+  { id: "trips", key: "trips", icon: CompassMark, labelKey: "home.tile.trips.label", hintKey: "home.tile.trips.hint" },
   { id: "book", href: LANDING_URL, icon: Ship, labelKey: "home.tile.book.label", hintKey: "home.tile.book.hint" },
-  { id: "profile", key: "profile", icon: User, labelKey: "home.tile.profile.label", hintKey: "home.tile.profile.hint" },
+  { id: "profile", key: "profile", icon: Profile, labelKey: "home.tile.profile.label", hintKey: "home.tile.profile.hint" },
 ];
 
 /** "Hjem": a calm overview shown on sign-in for both roles — a warm greeting, the next
@@ -294,7 +296,7 @@ function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) 
                 </div>
               </div>
               <span className="flex size-11 shrink-0 items-center justify-center rounded-input bg-gold/15 text-gold">
-                <Compass className="size-5" />
+                <CompassMark className="size-5" />
               </span>
             </button>
           ) : (
@@ -639,6 +641,24 @@ function SiteSection() {
       ) : (
         <div className="mx-auto w-full max-w-md pb-4">
           <p className="text-sm leading-relaxed text-ink-muted">{t("site.intro")}</p>
+
+          {/* Preview the public landing these edits produce, in a new tab. The skipper's slug
+              isn't part of SiteSettings yet, so we read it off the loaded config if present and
+              fall back to the pilot. TODO: expose `slug` on SiteSettings and drop the default. */}
+          {(() => {
+            const slug = (data as { slug?: string }).slug ?? "andrea";
+            return (
+              <a
+                href={`https://monterosso-cinque-terre.kgl-56a.workers.dev/s/${slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex min-h-[44px] items-center gap-1.5 text-sm font-semibold text-gold underline decoration-gold/40 underline-offset-4 transition-colors hover:decoration-gold"
+              >
+                View your public page
+                <span aria-hidden="true">→</span>
+              </a>
+            );
+          })()}
 
           {/* Tilbud */}
           <SettingsGroup title={t("site.group.offer")}>

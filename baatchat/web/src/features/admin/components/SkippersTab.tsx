@@ -2,10 +2,12 @@ import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, Loader2, Pencil, Plus, Search } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { Message } from "@/components/icons";
 import { useSkippers } from "../api/hooks";
 import type { Skipper } from "../api/types";
 import { Initials } from "./AdminUI";
 import { SkipperForm } from "./SkipperForm";
+import { AdminSkipperChat } from "./AdminSkipperChat";
 
 const SERVICE_LABEL: Record<string, string> = {
   charter: "Charter",
@@ -13,7 +15,11 @@ const SERVICE_LABEL: Record<string, string> = {
   freight: "Frakt",
 };
 
-type View = { mode: "list" } | { mode: "new" } | { mode: "edit"; skipper: Skipper };
+type View =
+  | { mode: "list" }
+  | { mode: "new" }
+  | { mode: "edit"; skipper: Skipper }
+  | { mode: "chat"; skipper: Skipper };
 
 /** Skipper management: the list of listings, plus the add/edit form. This is where
  *  Kristian creates a skipper (name, contact, boat, service type, departure times,
@@ -38,6 +44,10 @@ export function SkippersTab() {
         .sort((a, b) => (a.name ?? "").localeCompare(b.name ?? "", "nb-NO")),
     [skippers, q]
   );
+
+  if (view.mode === "chat") {
+    return <AdminSkipperChat skipper={view.skipper} onBack={() => setView({ mode: "list" })} />;
+  }
 
   if (view.mode !== "list") {
     return (
@@ -106,7 +116,14 @@ export function SkippersTab() {
                     </span>
                   </td>
                   <td className="px-4 py-2.5">
-                    <div className="flex justify-end">
+                    <div className="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setView({ mode: "chat", skipper: s })}
+                        className="inline-flex h-8 items-center gap-1 rounded-pill border border-hairline px-3 text-xs font-medium text-ink-muted transition-colors hover:border-gold/40 hover:bg-surface hover:text-gold"
+                      >
+                        <Message className="size-3.5" /> Melding
+                      </button>
                       <button
                         type="button"
                         onClick={() => setView({ mode: "edit", skipper: s })}

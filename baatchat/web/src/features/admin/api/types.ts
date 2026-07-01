@@ -104,3 +104,25 @@ export interface AdminMessage {
   createdAt: string;
   editedAt: string | null;
 }
+
+// --- admin ↔ skipper support chat (direct line) -----------------------------
+
+export interface AdminSupportThread {
+  id: number;
+  skipperId: number;
+  skipperName: string | null;
+  status: string;
+  lastMessageAt: string | null;
+  preview: string | null;
+  unread: number;
+}
+
+/** A support message. senderRole 'admin' is Kristian; 'skipper' is the skipper's reply. */
+export interface SupportMessage {
+  id: number;
+  senderId: number;
+  senderRole: "admin" | "skipper";
+  body: string;
+  createdAt: string;
+  editedAt: string | null;
+}

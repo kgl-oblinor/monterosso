@@ -238,7 +238,7 @@ export default function Landing() {
               className="lp-cta"
               onClick={() => setShowBook(true)}
             >
-              Come aboard
+              Check availability
             </button>
           </div>
 
@@ -425,7 +425,7 @@ export default function Landing() {
                     setShowBook(true);
                   }}
                 >
-                  Come aboard →
+                  Check availability →
                 </button>
                 <button type="button" className="vp-read" onClick={openHub}>
                   Explore <Arrow />

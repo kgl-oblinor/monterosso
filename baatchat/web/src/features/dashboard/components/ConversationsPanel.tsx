@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Search, Users } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { Anchor } from "@/components/icons";
 import { Avatar } from "@/components/ui/avatar";
 import type { Conversation } from "../api/threads";
 
@@ -25,9 +26,10 @@ export function ConversationsPanel({
     c.name.toLowerCase().includes(query.trim().toLowerCase())
   );
   // Conversations with a message bubble to the top (already sorted newest-first upstream);
-  // everyone else stays in the plain contact list below.
-  const active = filtered.filter((c) => c.lastMessageAt);
-  const rest = filtered.filter((c) => !c.lastMessageAt);
+  // everyone else stays in the plain contact list below. The support line (kind "admin") is
+  // always kept in the top section so it stays clearly visible and correctly labelled.
+  const active = filtered.filter((c) => c.lastMessageAt || c.kind === "admin");
+  const rest = filtered.filter((c) => !c.lastMessageAt && c.kind !== "admin");
 
   return (
     <aside
@@ -141,6 +143,9 @@ function ConversationRow({
           <span className="flex min-w-0 items-center gap-1.5">
             {conversation.kind === "group" && (
               <Users className="size-3.5 shrink-0 text-gold" />
+            )}
+            {conversation.kind === "admin" && (
+              <Anchor className="size-3.5 shrink-0 text-gold" />
             )}
             <span className="truncate text-[15px] font-semibold text-ink">
               {conversation.name}
