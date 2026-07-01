@@ -3018,7 +3018,9 @@ body:has(.landing-v2) {
     transition: width 0.24s ease;
   }
   .landing-v2 .lp-sidebar--collapsed {
-    width: 62px;
+    width: 48px;
+    padding-left: 6px;
+    padding-right: 6px;
   }
 }
 .landing-v2 .lp-sb-toggle {
