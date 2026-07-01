@@ -71,14 +71,14 @@ export function AdminForgotFlow({ onBack }: { onBack: () => void }) {
       <Form key="admin-recovery-verify" {...verifyForm}>
         <form onSubmit={onVerify} className="space-y-5" noValidate>
           <div className="space-y-2 text-center">
-            <h2 className="text-xl font-semibold">Sjekk e-posten din</h2>
-            <p className="text-sm text-white/80">
-              Hvis <span className="font-semibold text-white">{email}</span> er en
+            <h2 className="text-xl font-semibold text-ink">Sjekk e-posten din</h2>
+            <p className="text-sm text-ink-muted">
+              Hvis <span className="font-semibold text-ink">{email}</span> er en
               administrator, sendte vi en 6-sifret kode dit
               {sentTo ? (
                 <>
                   {" "}
-                  (<span className="font-semibold text-white">{sentTo}</span>)
+                  (<span className="font-semibold text-ink">{sentTo}</span>)
                 </>
               ) : null}
               . Skriv den inn for å logge inn.
@@ -86,9 +86,9 @@ export function AdminForgotFlow({ onBack }: { onBack: () => void }) {
           </div>
 
           {env.useMocks && (
-            <p className="text-center text-sm text-white/70">
+            <p className="text-center text-sm text-ink-muted">
               Demo-modus — bruk kode{" "}
-              <span className="font-mono font-medium text-white">{MOCK_OTP_CODE}</span>.
+              <span className="font-mono font-medium text-ink">{MOCK_OTP_CODE}</span>.
             </p>
           )}
 
@@ -117,7 +117,7 @@ export function AdminForgotFlow({ onBack }: { onBack: () => void }) {
                     }
                   />
                 </FormControl>
-                <FormMessage className="ml-4 text-red-400" />
+                <FormMessage className="ml-4 text-red-600" />
               </FormItem>
             )}
           />
@@ -142,15 +142,15 @@ export function AdminForgotFlow({ onBack }: { onBack: () => void }) {
           type="button"
           onClick={onBack}
           aria-label="Tilbake til innlogging"
-          className="flex items-center gap-1 text-sm text-white/70 transition-colors hover:text-white"
+          className="flex items-center gap-1 text-sm text-ink-muted transition-colors hover:text-ink"
         >
           <ArrowLeft className="size-4" />
           Tilbake
         </button>
 
         <div className="space-y-2 text-center">
-          <h2 className="text-xl font-semibold">Glemt passord?</h2>
-          <p className="text-sm text-white/80">
+          <h2 className="text-xl font-semibold text-ink">Glemt passord?</h2>
+          <p className="text-sm text-ink-muted">
             Oppgi administrator-e-posten din, så sender vi deg en kode for å logge inn.
           </p>
         </div>
@@ -173,7 +173,7 @@ export function AdminForgotFlow({ onBack }: { onBack: () => void }) {
                   {...field}
                 />
               </FormControl>
-              <FormMessage className="ml-4 text-red-400" />
+              <FormMessage className="ml-4 text-red-600" />
             </FormItem>
           )}
         />

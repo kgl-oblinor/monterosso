@@ -46,23 +46,23 @@ export function CustomersTab() {
       ) : isError ? (
         <ErrorBox>Kunne ikke laste kunder.</ErrorBox>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-white/10">
+        <div className="overflow-x-auto rounded-card border border-hairline shadow-soft">
           <table className="w-full min-w-[720px] text-left text-sm">
             <Thead cols={["#", "Navn", "E-post", "Turer", "Status", "Handling"]} />
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-hairline">
               {customers.map((c, i) => (
-                <tr key={c.id} className="transition-colors hover:bg-white/[0.04]">
+                <tr key={c.id} className="transition-colors hover:bg-black/[0.04]">
                   <RowNum n={start + i + 1} />
                   <td className="px-4 py-2.5">
                     <div className="flex items-center gap-3">
                       <Initials name={c.name} fallback={c.email ?? "?"} />
-                      <span className="font-medium text-white">{c.name ?? "—"}</span>
+                      <span className="font-medium text-ink">{c.name ?? "—"}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-2.5 text-white/70">
+                  <td className="px-4 py-2.5 text-ink-muted">
                     <CustomerEmail id={c.id} email={c.email} />
                   </td>
-                  <td className="px-4 py-2.5 text-white/70">{c.reservationCount}</td>
+                  <td className="px-4 py-2.5 text-ink-muted">{c.reservationCount}</td>
                   <td className="px-4 py-2.5">
                     <StatusBadge status={c.status} />
                   </td>

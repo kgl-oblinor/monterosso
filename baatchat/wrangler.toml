@@ -20,7 +20,7 @@ APP_BASE_URL = "https://monterosso-app.kgl-56a.workers.dev"
 # Admin (Kristian) emails allowed to use password login (/auth/admin-login). Password is
 # the ADMIN_PASSWORD secret (set via `wrangler secret put`), never stored here.
 ADMIN_EMAILS = "kgl@oblinor.no"
-ALLOWED_ORIGINS = "https://monterosso-app.kgl-56a.workers.dev,http://localhost:5173"
+ALLOWED_ORIGINS = "https://monterosso-app.kgl-56a.workers.dev,http://localhost:5173,http://localhost:3000"
 # Defaults for local dev. CI overrides these per deploy with `--var`.
 APP_VERSION = "dev"
 GIT_SHA = "local"

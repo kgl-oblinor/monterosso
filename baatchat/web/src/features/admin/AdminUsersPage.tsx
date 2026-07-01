@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Clock, LogOut, Menu, MessageSquare, Ship, Users, X } from "lucide-react";
+import { Clock, LayoutGrid, LogOut, Menu, MessageSquare, Ship, Users, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import logoUrl from "@/monterosso-mark.svg";
@@ -12,7 +12,7 @@ import { SkippersTab } from "./components/SkippersTab";
 import { CustomersTab } from "./components/CustomersTab";
 import { ConversationsTab } from "./components/ConversationsTab";
 
-type TabId = "pending" | "skippers" | "customers" | "conversations";
+type TabId = "pending" | "skippers" | "customers" | "conversations" | "sidekart";
 
 interface NavItem {
   id: TabId;
@@ -46,6 +46,7 @@ export function AdminUsersPage() {
     { id: "skippers", label: "Skippere", icon: Ship },
     { id: "customers", label: "Kunder", icon: Users },
     { id: "conversations", label: "Samtaler", icon: MessageSquare },
+    { id: "sidekart", label: "Sidekart", icon: LayoutGrid },
   ];
 
   const onLogout = () => {
@@ -71,20 +72,20 @@ export function AdminUsersPage() {
   );
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[radial-gradient(120%_120%_at_50%_0%,#0f2740_0%,#0a1f33_42%,#07182a_100%)] text-white">
+    <div className="flex h-screen w-full overflow-hidden bg-page text-ink">
       {/* Desktop sidebar */}
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-white/10 md:flex">{sidebar}</aside>
+      <aside className="hidden w-64 shrink-0 flex-col border-r border-hairline md:flex">{sidebar}</aside>
 
       {/* Mobile drawer */}
       {drawerOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
           <div className="absolute inset-0 bg-black/60" onClick={() => setDrawerOpen(false)} />
-          <aside className="absolute left-0 top-0 flex h-full w-64 flex-col border-r border-white/10 bg-[#07182a]">
+          <aside className="absolute left-0 top-0 flex h-full w-64 flex-col border-r border-hairline bg-page">
             <button
               type="button"
               aria-label="Lukk meny"
               onClick={() => setDrawerOpen(false)}
-              className="absolute right-3 top-3 rounded-md p-1 text-white/50 hover:bg-white/5 hover:text-white"
+              className="absolute right-3 top-3 rounded-md p-1 text-ink-muted hover:bg-black/[0.04] hover:text-ink"
             >
               <X className="size-5" />
             </button>
@@ -96,12 +97,12 @@ export function AdminUsersPage() {
       {/* Main column */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Mobile top bar */}
-        <header className="flex items-center gap-3 border-b border-white/10 px-4 py-3 md:hidden">
+        <header className="flex items-center gap-3 border-b border-hairline px-4 py-3 md:hidden">
           <button
             type="button"
             aria-label="Åpne meny"
             onClick={() => setDrawerOpen(true)}
-            className="rounded-md p-1.5 text-white/70 hover:bg-white/5 hover:text-white"
+            className="rounded-md p-1.5 text-ink-muted hover:bg-black/[0.04] hover:text-ink"
           >
             <Menu className="size-5" />
           </button>
@@ -110,6 +111,9 @@ export function AdminUsersPage() {
         </header>
 
         <main className="flex-1 overflow-y-auto">
+          {tab === "sidekart" ? (
+            <iframe src="/pages-grid.html" title="Sidekart" className="block h-full w-full border-0" />
+          ) : (
           <div className="max-w-[1400px] px-4 py-6 md:px-8 md:py-8">
             <h1 className="mb-6 hidden text-2xl font-semibold md:block">{heading}</h1>
 
@@ -146,6 +150,7 @@ export function AdminUsersPage() {
             {tab === "customers" && <CustomersTab />}
             {tab === "conversations" && <ConversationsTab />}
           </div>
+          )}
         </main>
       </div>
     </div>
@@ -156,7 +161,7 @@ export function AdminUsersPage() {
 function Hint({ n, suffix }: { n: number; suffix: string }) {
   return (
     <>
-      <span className="font-semibold text-[#ead27e]">{n.toLocaleString("nb-NO")}</span> {suffix}
+      <span className="font-semibold text-gold">{n.toLocaleString("nb-NO")}</span> {suffix}
     </>
   );
 }
@@ -180,7 +185,7 @@ function SidebarContent({
         <img src={logoUrl} alt="" className="size-8 rounded-lg" />
         <div className="min-w-0">
           <div className="text-sm font-semibold leading-tight">Administrasjon</div>
-          <div className="truncate text-xs text-white/45">{adminEmail}</div>
+          <div className="truncate text-xs text-ink-muted">{adminEmail}</div>
         </div>
       </div>
 
@@ -197,14 +202,14 @@ function SidebarContent({
               className={cn(
                 "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                 activeTab
-                  ? "bg-[#ead27e]/15 text-[#ead27e]"
-                  : "text-white/60 hover:bg-white/5 hover:text-white"
+                  ? "bg-surface text-gold ring-1 ring-inset ring-gold/30"
+                  : "text-ink-muted hover:bg-black/[0.04] hover:text-ink"
               )}
             >
               <Icon className="size-4 shrink-0" />
               <span className="flex-1 text-left">{n.label}</span>
               {n.badge != null && (
-                <span className="rounded-full bg-amber-500/20 px-1.5 py-0.5 text-[11px] font-semibold text-amber-300">
+                <span className="rounded-full bg-gold/15 px-1.5 py-0.5 text-[11px] font-semibold text-gold">
                   {n.badge}
                 </span>
               )}
@@ -217,7 +222,7 @@ function SidebarContent({
         <button
           type="button"
           onClick={onLogout}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-white/60 transition-colors hover:bg-white/5 hover:text-white"
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-ink-muted transition-colors hover:bg-black/[0.04] hover:text-ink"
         >
           <LogOut className="size-4" /> Logg ut
         </button>

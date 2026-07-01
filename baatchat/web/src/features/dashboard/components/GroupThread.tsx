@@ -102,24 +102,24 @@ export function GroupThread({
   return (
     <section className={cn("min-w-0 flex-1 flex-col", className)}>
       {/* Header — group name + participant summary + invite */}
-      <header className="flex items-center gap-3 border-b border-white/5 px-4 py-3 md:px-6">
+      <header className="glass sticky top-0 z-10 flex items-center gap-3 border-b border-hairline px-4 py-3 md:px-6">
         {onBack && (
           <button
             type="button"
             onClick={onBack}
             aria-label="Tilbake til samtaler"
-            className="-ml-1 rounded-full p-1.5 text-white/60 transition-colors hover:bg-white/5 hover:text-white md:hidden"
+            className="-ml-1 rounded-full p-1.5 text-ink-muted transition-colors hover:bg-black/[0.04] hover:text-ink md:hidden"
           >
             <ArrowLeft className="size-5" />
           </button>
         )}
-        <Avatar initials={conversation.initials} />
+        <Avatar initials={conversation.initials} className="bg-gold/20 text-gold" />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <Users className="size-3.5 shrink-0 text-[#ead27e]/70" />
-            <span className="truncate font-semibold text-white">{conversation.name}</span>
+            <Users className="size-3.5 shrink-0 text-gold" />
+            <span className="truncate font-semibold text-ink">{conversation.name}</span>
           </div>
-          <div className="truncate text-xs text-white/50">
+          <div className="truncate text-xs text-ink-muted">
             {conversation.participantCount} deltakere
             {conversation.participantNames && conversation.participantNames.length > 0
               ? ` · ${conversation.participantNames.join(", ")}`
@@ -129,7 +129,7 @@ export function GroupThread({
         <button
           type="button"
           onClick={() => setInviteOpen(true)}
-          className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/10 px-3.5 py-2 text-xs font-semibold text-white/70 transition-colors hover:border-[#ead27e]/40 hover:bg-[#ead27e]/10 hover:text-[#ead27e] active:scale-[0.98]"
+          className="flex shrink-0 items-center gap-1.5 rounded-pill border border-hairline px-3.5 py-2 text-xs font-semibold text-ink-muted transition-colors hover:border-gold/40 hover:bg-surface hover:text-gold active:scale-[0.98]"
         >
           <UserPlus className="size-3.5" />
           <span className="hidden sm:inline">Inviter</span>
@@ -141,13 +141,13 @@ export function GroupThread({
         {isLoading && tripThreadId != null ? (
           <MessagesSkeleton />
         ) : !messages?.length ? (
-          <p className="pt-10 text-center text-sm text-white/40">
+          <p className="pt-10 text-center text-sm text-ink-muted">
             Ingen meldinger ennå. Send den første meldingen til reisefølget.
           </p>
         ) : (
           <>
             <div className="flex justify-center">
-              <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-white/50">
+              <span className="rounded-pill bg-surface px-3 py-1 text-xs text-ink-muted">
                 Turfølget
               </span>
             </div>
@@ -165,11 +165,11 @@ export function GroupThread({
 
       {/* Composer */}
       {locked ? (
-        <div className="border-t border-white/5 px-4 py-4 text-center text-sm text-white/40">
+        <div className="border-t border-hairline px-4 py-4 text-center text-sm text-ink-muted">
           Denne samtalen er låst.
         </div>
       ) : (
-        <form ref={formRef} onSubmit={send} className="border-t border-white/5 px-4 py-3">
+        <form ref={formRef} onSubmit={send} className="border-t border-hairline px-4 py-3">
           <div className="flex items-end gap-2">
             <textarea
               ref={taRef}
@@ -184,13 +184,13 @@ export function GroupThread({
               rows={1}
               placeholder="Skriv til reisefølget …"
               aria-label="Skriv en melding"
-              className="max-h-40 min-h-[44px] flex-1 resize-none rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm leading-relaxed text-white placeholder:text-white/40 focus:border-[#ead27e]/50 focus:outline-none"
+              className="max-h-40 min-h-[44px] flex-1 resize-none rounded-input border border-hairline bg-surface px-4 py-2.5 text-sm leading-relaxed text-ink placeholder:text-ink-muted focus:border-gold focus:outline-none"
             />
             <button
               type="submit"
               aria-label="Send melding"
               disabled={!draft.trim() || sending || tooLong}
-              className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#ead27e] text-[#07182a] transition-opacity hover:bg-[#f0dd9a] disabled:opacity-40"
+              className="flex size-11 shrink-0 items-center justify-center rounded-full bg-ink text-white transition-opacity hover:opacity-90 disabled:opacity-40"
             >
               {sending ? (
                 <Loader2 className="size-5 animate-spin" />
@@ -200,7 +200,7 @@ export function GroupThread({
             </button>
           </div>
           {sendError && (
-            <p role="alert" className="mt-1.5 px-1 text-xs text-red-300">
+            <p role="alert" className="mt-1.5 px-1 text-xs text-destructive">
               Meldingen ble ikke sendt. Sjekk nettforbindelsen og prøv igjen.
             </p>
           )}
@@ -208,7 +208,7 @@ export function GroupThread({
             <p
               className={cn(
                 "mt-1.5 px-1 text-right text-xs tabular-nums",
-                tooLong ? "text-red-300" : "text-white/40"
+                tooLong ? "text-destructive" : "text-ink-muted"
               )}
             >
               {wordCount} / {WORD_LIMIT} ord{tooLong ? " · maks 500" : ""}

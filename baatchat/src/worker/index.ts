@@ -6,6 +6,7 @@ import { listContacts, listThreads, openThread, getMessages, postMessage, markRe
 import { createInvite, joinByInvite, invitepreview, invitableTrips, listTripConversations, openTripThread, getTripMessages, postTripMessage, markTripRead } from "./group";
 import { listAccounts, approveAccount, revokeAccount, setEmailVerified, setSkipperEmail, setCustomerEmail, listSkipperDirectory, listCustomerDirectory, listAllThreads, adminThreadMessages, listSkippers, getSkipper, createSkipper, updateSkipper, validateSkipperInput, listCustomers, listReservations } from "./admin";
 import type { SkipperInput } from "./admin";
+import { createPublicBooking } from "./public";
 
 export interface Env {
   DB: D1Database;
@@ -39,6 +40,8 @@ app.use("*", (c, next) => {
     if (/^https:\/\/([a-z0-9-]+\.)?monterosso-chat-web\.pages\.dev$/.test(origin)) return origin;
     // Accept the deployed Worker-served frontend (canonical + preview hashes).
     if (/^https:\/\/([a-z0-9-]+\.)?monterosso-app\.kgl-56a\.workers\.dev$/.test(origin)) return origin;
+    // Accept the landing (cinque-terre) Worker frontend that calls the public booking endpoint.
+    if (/^https:\/\/([a-z0-9-]+\.)?monterosso-cinque-terre\.kgl-56a\.workers\.dev$/.test(origin)) return origin;
     return null;
   };
   return cors({ origin: originFn, credentials: true })(c, next);
@@ -68,6 +71,19 @@ app.get("/health", async (c) => {
 app.get("/version", (c) =>
   c.json({ version: c.env.APP_VERSION, commit: c.env.GIT_SHA })
 );
+
+// --- public booking intake (landing "Check availability") ------------------
+// Intentionally UNAUTHENTICATED (frictionless): one call creates an instant customer
+// account + a 'requested' reservation for the pilot skipper. CORS is handled by the
+// global middleware above (landing origin allow-listed).
+app.post("/public/bookings", async (c) => {
+  const input = await c.req
+    .json<{ tour?: string; date?: string; time?: string; guests?: number | string; email?: string; name?: string }>()
+    .catch(() => ({}));
+  const r = await createPublicBooking(c.env, input);
+  if (!r.ok) return c.json({ ok: false, error: r.error }, 400);
+  return c.json({ ok: true, code: r.code, reservationId: r.reservationId }, 201);
+});
 
 // --- auth: account claim (onboarding) + password login ---------------------
 const auth = new Hono<{ Bindings: Env }>();

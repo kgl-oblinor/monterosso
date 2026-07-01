@@ -1,13 +1,21 @@
 /* ============================================================
    News — Monterosso · Cinque Terre
-   Nordic editorial calm. Own stylesheet (these pages live outside
-   the (content) route group), but the SAME design system as the
-   rest of the site: 4px spacing rhythm · 1.2 type scale ·
-   sharp corners (radius 0) · separation by AIR, hairlines only
-   where strictly needed · muted fasit palette
-   (ink #07182a / cream #f7f1e3 / gold #ead27e / terracotta #a8743f).
-   Fonts (Fraunces, Great Vibes, Limelight) load globally in layout.js.
+   Clean Apple reading design (same tokens as content.css):
+   clean white background · solid white surfaces, no blur · neutral
+   hairlines rgba(0,0,0,.08) · gold #C49A34 as a restrained accent
+   only · ink #2A1810 / muted rgba(42,24,16,.6) · SF Pro / system
+   font · soft small shadows · 16px card radius · CTA = filled ink pill.
    ============================================================ */
+
+/* clean white reading page; scrolls and uses the native cursor
+   (globals.css locks the booking app). */
+body:has(.news) {
+  overflow-y: auto;
+  overflow-x: clip;
+  height: auto;
+  cursor: auto;
+  background: #fffefc;
+}
 
 .news {
   /* spacing — 4px base */
@@ -18,19 +26,20 @@
   --t-lg: 23px; --t-xl: 28px; --t-2xl: 33px;
   /* letter-spacing */
   --ls-1: 0.02em; --ls-2: 0.08em; --ls-3: 0.14em;
-  /* colour — fasit palette */
-  --ink: #07182a;
-  --ink-soft: rgba(7, 24, 42, 0.62);
-  --ink-faint: rgba(7, 24, 42, 0.40);
-  --cream: #f7f1e3;
-  --cream-deep: #efe6d2;
-  --gold: #ead27e;
-  --terracotta: #a8743f;
-  --hair: rgba(7, 24, 42, 0.12);
+  /* colour — clean Apple tokens */
+  --ink: #2A1810;
+  --ink-soft: rgba(42, 24, 16, 0.60);
+  --ink-faint: rgba(42, 24, 16, 0.40);
+  --gold: #C49A34;
+  --gold-line: rgba(0, 0, 0, 0.08);
+  --glass: #ffffff;
+  --glass-2: #f6f5f3;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 6px 18px rgba(0, 0, 0, 0.06);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
 
-  background: var(--cream);
+  background: transparent;
   color: var(--ink);
-  font-family: "Fraunces", Georgia, serif;
+  font-family: var(--font);
   font-weight: 400;
   line-height: 1.65;
   min-height: 100svh;
@@ -46,27 +55,29 @@
   padding: 0 var(--s5);
 }
 
-/* ---------- top bar ---------- */
+/* ---------- top bar — clean, transparent, hairline divider ---------- */
 .news__nav {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: var(--s4);
+  margin: 0;
   padding: var(--s5) 0;
+  background: transparent;
+  border-bottom: 1px solid var(--gold-line);
 }
 .news__brand {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font);
+  font-weight: 600;
   font-size: var(--t-base);
-  letter-spacing: var(--ls-3);
-  text-transform: uppercase;
+  letter-spacing: -0.01em;
   color: var(--ink);
   text-decoration: none;
 }
 .news__navlink {
   font-size: var(--t-sm);
-  letter-spacing: var(--ls-2);
-  color: var(--terracotta);
+  letter-spacing: 0;
+  color: var(--ink-soft);
   text-decoration: none;
 }
 .news__navlink:hover { color: var(--gold); }
@@ -74,18 +85,21 @@
 /* ---------- index hero ---------- */
 .news__hero { padding: var(--s7) 0 var(--s6); }
 .news__eyebrow {
-  font-family: "Great Vibes", cursive;
-  font-size: var(--t-xl);
+  font-family: var(--font);
+  font-weight: 600;
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-3);
+  text-transform: uppercase;
   color: var(--gold);
-  margin: 0 0 var(--s2);
+  margin: 0 0 var(--s3);
   line-height: 1;
 }
 .news h1 {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font);
+  font-weight: 600;
   font-size: clamp(33px, 6vw, 52px);
   line-height: 1.08;
-  letter-spacing: var(--ls-1);
+  letter-spacing: -0.02em;
   margin: 0 0 var(--s4);
 }
 .news__lede {
@@ -96,17 +110,22 @@
   max-width: 56ch;
 }
 
-/* ---------- the list — separated by AIR, one hairline per item ---------- */
+/* ---------- the list — restrained white cards, hairline ---------- */
 .news__list {
   list-style: none;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
 }
 .news__item {
-  padding: var(--s6) 0;
-  border-top: 1px solid var(--hair);
+  padding: var(--s5);
+  background: var(--glass);
+  border: 1px solid var(--gold-line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
 }
-.news__item:first-child { border-top: none; }
 
 .news__date {
   font-size: var(--t-sm);
@@ -116,18 +135,18 @@
   margin: 0 0 var(--s3);
 }
 .news__item h2 {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font);
+  font-weight: 600;
   font-size: clamp(23px, 4vw, 30px);
   line-height: 1.15;
-  letter-spacing: var(--ls-1);
+  letter-spacing: -0.015em;
   margin: 0 0 var(--s3);
 }
 .news__item h2 a {
   color: var(--ink);
   text-decoration: none;
 }
-.news__item h2 a:hover { color: var(--terracotta); }
+.news__item h2 a:hover { color: var(--gold); }
 .news__dek {
   font-size: var(--t-md);
   color: var(--ink-soft);
@@ -137,7 +156,7 @@
 .news__more {
   font-size: var(--t-sm);
   letter-spacing: var(--ls-2);
-  color: var(--terracotta);
+  color: var(--ink);
   text-decoration: none;
 }
 .news__more:hover { color: var(--gold); }
@@ -193,20 +212,22 @@
 .news__body p { margin: 0 0 var(--s5); max-width: 62ch; }
 .news__body p:last-child { margin-bottom: 0; }
 .news__body h2 {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font);
+  font-weight: 600;
   font-size: var(--t-xl);
+  letter-spacing: -0.015em;
   margin: var(--s7) 0 var(--s3);
 }
 .news__body h3 {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font);
+  font-weight: 600;
   font-size: var(--t-md);
   margin: var(--s6) 0 var(--s2);
 }
 .news__body a {
-  color: var(--terracotta);
+  color: var(--ink);
   text-decoration: underline;
+  text-decoration-color: var(--gold);
   text-underline-offset: 3px;
 }
 .news__body a:hover { color: var(--gold); }
@@ -215,11 +236,10 @@
 .news__body em { font-style: italic; }
 .news__body strong { font-weight: 600; }
 
-/* ---------- article foot — back link + quiet CTA ---------- */
+/* ---------- article foot — filled ink pill + back link ---------- */
 .news__article-foot {
   margin: var(--s8) 0 0;
   padding: var(--s7) 0 var(--s8);
-  border-top: 1px solid var(--hair);
   text-align: center;
 }
 .news__article-foot p {
@@ -230,25 +250,25 @@
 }
 .news__cta-link {
   display: inline-block;
-  font-family: "Limelight", "Fraunces", serif;
+  font-family: var(--font);
+  font-weight: 600;
   font-size: var(--t-base);
-  letter-spacing: var(--ls-3);
-  text-transform: uppercase;
-  color: var(--ink);
+  letter-spacing: var(--ls-1);
+  color: #fff;
   text-decoration: none;
-  padding: var(--s4) var(--s6);
-  border: 1px solid var(--ink);
-  background: var(--gold);
-  transition: filter 0.2s ease, transform 0.1s ease;
+  padding: var(--s3) var(--s6);
+  border-radius: 999px;
+  background: var(--ink);
+  transition: transform 0.18s ease, opacity 0.2s ease;
 }
-.news__cta-link:hover { filter: brightness(1.05); }
+.news__cta-link:hover { transform: translateY(-1px); opacity: 0.88; }
 .news__cta-link:active { transform: translateY(1px); }
 .news__back {
   display: block;
   margin: var(--s6) 0 0;
   font-size: var(--t-sm);
   letter-spacing: var(--ls-2);
-  color: var(--terracotta);
+  color: var(--ink-soft);
   text-decoration: none;
 }
 .news__back:hover { color: var(--gold); }

@@ -1,5 +1,9 @@
 /* ============================================================
    /map — internal flow & sitemap canvas (planning tool).
+   Clean Apple design (same tokens as content.css):
+   clean white background · solid white surfaces, no blur · neutral
+   hairlines rgba(0,0,0,.08) · gold #C49A34 as a restrained accent ·
+   ink #2A1810 / muted rgba(42,24,16,.6) · SF Pro / system font.
    Scoped under .flowmap; overrides globals so the page scrolls
    and uses the native cursor.
    ============================================================ */
@@ -7,19 +11,30 @@ body:has(.flowmap) {
   overflow-y: auto;
   overflow-x: clip;
   height: auto;
-  background: #0a1422;
   cursor: auto;
+  background: #fffefc;
 }
 
 .flowmap {
+  /* clean Apple tokens */
+  --ink: #2A1810;
+  --ink-soft: rgba(42, 24, 16, 0.60);
+  --gold: #C49A34;
+  --gold-line: rgba(0, 0, 0, 0.08);
+  --glass: #ffffff;
+  --glass-2: #f6f5f3;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 6px 18px rgba(0, 0, 0, 0.06);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
+
   position: relative;
   z-index: 10;
   max-width: 1080px;
   margin: 0 auto;
   padding: 48px 22px 120px;
-  color: #fdf6ea;
-  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  color: var(--ink);
+  font-family: var(--font);
   cursor: auto;
+  -webkit-font-smoothing: antialiased;
 }
 .flowmap a,
 .flowmap button {
@@ -27,13 +42,13 @@ body:has(.flowmap) {
 }
 
 .fm-head h1 {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 900;
+  font-family: var(--font);
+  font-weight: 700;
   font-size: clamp(2rem, 6vw, 3rem);
-  letter-spacing: 0.01em;
+  letter-spacing: -0.02em;
 }
 .fm-head p {
-  opacity: 0.7;
+  color: var(--ink-soft);
   margin-top: 8px;
   max-width: 60ch;
   line-height: 1.5;
@@ -51,7 +66,7 @@ body:has(.flowmap) {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  opacity: 0.85;
+  color: var(--ink-soft);
 }
 .fm-dot {
   width: 14px;
@@ -59,11 +74,12 @@ body:has(.flowmap) {
   border-radius: 4px;
 }
 .fm-dot--live {
-  background: #4fe0d8;
+  background: var(--glass);
+  border: 1px solid var(--gold-line);
 }
 .fm-dot--plan {
   background: transparent;
-  border: 2px dashed #ead27e;
+  border: 2px dashed var(--gold-line);
 }
 
 /* phase headings */
@@ -72,20 +88,21 @@ body:has(.flowmap) {
   font-size: 0.78rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  opacity: 0.6;
-  border-top: 1px solid rgba(255, 246, 236, 0.12);
+  color: var(--ink-soft);
+  border-top: 1px solid var(--gold-line);
   padding-top: 20px;
 }
 
-/* nodes */
+/* nodes — restrained white cards, hairline */
 .fm-node {
   border-radius: 16px;
   padding: 18px 20px;
-  background: rgba(79, 224, 216, 0.07);
-  border: 1.5px solid rgba(79, 224, 216, 0.4);
+  background: var(--glass);
+  border: 1px solid var(--gold-line);
+  box-shadow: var(--shadow);
 }
 .fm-node h3 {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: var(--font);
   font-weight: 700;
   font-size: 1.25rem;
   margin-bottom: 6px;
@@ -94,35 +111,35 @@ body:has(.flowmap) {
   font-size: 0.68rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  opacity: 0.55;
+  color: var(--ink-soft);
 }
 .fm-node ul {
   margin: 10px 0 0 0;
   padding-left: 18px;
   line-height: 1.6;
   font-size: 0.92rem;
-  opacity: 0.9;
+  color: var(--ink-soft);
 }
 .fm-cta-line {
   margin-top: 12px;
   font-weight: 700;
-  color: #ead27e;
+  color: var(--gold);
 }
 
 /* planned nodes read as dashed gold */
 .fm-node--plan {
-  background: rgba(234, 210, 126, 0.08);
-  border: 1.5px dashed rgba(234, 210, 126, 0.6);
+  background: var(--glass-2);
+  border: 1px dashed var(--gold-line);
 }
 .fm-node--plan h3 {
-  color: #ead27e;
+  color: var(--gold);
 }
 
 /* connector arrow between stacked nodes */
 .fm-arrow {
   text-align: center;
   font-size: 1.4rem;
-  color: #ead27e;
+  color: var(--gold);
   margin: 10px 0;
   line-height: 1;
 }
@@ -130,7 +147,7 @@ body:has(.flowmap) {
   display: block;
   font-size: 0.72rem;
   letter-spacing: 0.06em;
-  opacity: 0.7;
+  color: var(--ink-soft);
   margin-top: 2px;
   font-weight: 600;
 }
@@ -147,9 +164,9 @@ body:has(.flowmap) {
   gap: 12px;
   align-items: flex-start;
   padding: 12px 14px;
-  border-radius: 12px;
-  background: rgba(3, 16, 29, 0.5);
-  border: 1px solid rgba(255, 246, 236, 0.12);
+  border-radius: 16px;
+  background: var(--glass-2);
+  border: 1px solid var(--gold-line);
 }
 .fm-step .fm-n {
   flex: none;
@@ -160,15 +177,16 @@ body:has(.flowmap) {
   place-items: center;
   font-weight: 700;
   font-size: 0.85rem;
-  background: #ead27e;
-  color: #15233a;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid var(--gold-line);
+  color: var(--ink);
 }
 .fm-step b {
   font-size: 0.98rem;
 }
 .fm-step p {
   font-size: 0.85rem;
-  opacity: 0.75;
+  color: var(--ink-soft);
   margin-top: 2px;
 }
 
@@ -176,13 +194,13 @@ body:has(.flowmap) {
 .fm-exit {
   margin-top: 14px;
   padding: 12px 16px;
-  border-radius: 12px;
-  background: rgba(255, 122, 94, 0.12);
-  border: 1px solid rgba(255, 122, 94, 0.45);
+  border-radius: 16px;
+  background: var(--glass-2);
+  border: 1px solid var(--gold-line);
   font-size: 0.9rem;
 }
 .fm-exit b {
-  color: #ff9e7e;
+  color: var(--gold);
 }
 
 /* SEO destination grid */
@@ -202,14 +220,14 @@ body:has(.flowmap) {
   font-size: 0.82rem;
   padding: 5px 12px;
   border-radius: 999px;
-  background: rgba(234, 210, 126, 0.15);
-  border: 1px solid rgba(234, 210, 126, 0.4);
+  background: var(--glass-2);
+  border: 1px solid var(--gold-line);
 }
 
 .fm-note {
   margin-top: 26px;
   font-size: 0.85rem;
-  opacity: 0.6;
+  color: var(--ink-soft);
   line-height: 1.6;
 }
 

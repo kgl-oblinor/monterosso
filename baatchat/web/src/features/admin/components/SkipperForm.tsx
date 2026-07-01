@@ -117,16 +117,16 @@ export function SkipperForm({
   return (
     <form onSubmit={submit} className="max-w-2xl space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-white">
+        <h2 className="text-lg font-semibold text-ink">
           {editing ? "Rediger skipper" : "Legg til skipper"}
         </h2>
-        <p className="mt-1 text-sm text-white/50">
+        <p className="mt-1 text-sm text-ink-muted">
           Fyll inn oppføringen. Telefonen brukes til WhatsApp. Du trenger e-post eller telefon.
         </p>
       </div>
 
       {error && (
-        <div className="rounded-md border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+        <div className="rounded-input border border-red-600/20 bg-red-500/10 px-4 py-3 text-sm text-red-700">
           {error.message}
         </div>
       )}
@@ -206,7 +206,7 @@ export function SkipperForm({
             onChange={(e) => set("slots", e.target.value)}
             rows={4}
             placeholder={"10:00\n14:00\n17:30"}
-            className="w-full resize-none rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#ead27e]/50 focus:outline-none"
+            className="w-full resize-none rounded-input border border-hairline bg-white px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:border-gold/50 focus:outline-none"
           />
         </Field>
       </Section>
@@ -243,7 +243,7 @@ export function SkipperForm({
         <button
           type="submit"
           disabled={!canSave || saving}
-          className="inline-flex h-10 items-center gap-2 rounded-lg bg-[#ead27e] px-5 text-sm font-semibold text-[#07182a] transition-opacity hover:bg-[#f0dd9a] disabled:opacity-40"
+          className="btn-ink gap-2 text-sm"
         >
           {saving && <Loader2 className="size-4 animate-spin" />}
           {editing ? "Lagre endringer" : "Legg til skipper"}
@@ -251,7 +251,7 @@ export function SkipperForm({
         <button
           type="button"
           onClick={onCancel}
-          className="inline-flex h-10 items-center rounded-lg border border-white/15 px-5 text-sm font-medium text-white/70 transition-colors hover:bg-white/5"
+          className="inline-flex h-11 items-center rounded-pill border border-hairline px-5 text-sm font-medium text-ink transition-colors hover:bg-black/[0.04]"
         >
           Avbryt
         </button>
@@ -265,7 +265,7 @@ export function SkipperForm({
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="space-y-4">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-white/40">{title}</h3>
+      <h3 className="text-xs font-semibold uppercase tracking-wider text-ink-muted">{title}</h3>
       {children}
     </section>
   );
@@ -288,12 +288,12 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-white/80">
+      <span className="mb-1.5 block text-sm font-medium text-ink">
         {label}
-        {required && <span className="ml-1 text-[#ead27e]">*</span>}
+        {required && <span className="ml-1 text-gold">*</span>}
       </span>
       {children}
-      {hint && <span className="mt-1 block text-xs text-white/40">{hint}</span>}
+      {hint && <span className="mt-1 block text-xs text-ink-muted">{hint}</span>}
     </label>
   );
 }
@@ -310,7 +310,7 @@ function TextInput({
     <input
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="h-10 w-full rounded-md border border-white/10 bg-white/[0.04] px-3 text-sm text-white placeholder:text-white/30 focus:border-[#ead27e]/50 focus:outline-none"
+      className="h-10 w-full rounded-input border border-hairline bg-white px-3 text-sm text-ink placeholder:text-ink-muted focus:border-gold/50 focus:outline-none"
       {...rest}
     />
   );
@@ -326,7 +326,7 @@ function Segmented<T extends string>({
   options: { value: T; label: string }[];
 }) {
   return (
-    <div className="flex h-10 rounded-md border border-white/10 bg-white/[0.04] p-0.5">
+    <div className="flex h-10 rounded-input border border-hairline bg-surface p-0.5">
       {options.map((o) => (
         <button
           key={o.value}
@@ -334,10 +334,10 @@ function Segmented<T extends string>({
           onClick={() => onChange(o.value)}
           aria-pressed={value === o.value}
           className={cn(
-            "flex-1 rounded text-sm font-medium transition-colors",
+            "flex-1 rounded-[10px] text-sm font-medium transition-colors",
             value === o.value
-              ? "bg-[#ead27e]/20 text-[#ead27e]"
-              : "text-white/55 hover:text-white"
+              ? "bg-white text-gold ring-1 ring-inset ring-gold/30"
+              : "text-ink-muted hover:text-ink"
           )}
         >
           {o.label}

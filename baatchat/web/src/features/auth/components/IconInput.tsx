@@ -11,13 +11,13 @@ interface IconInputProps extends React.ComponentProps<"input"> {
 export const IconInput = React.forwardRef<HTMLInputElement, IconInputProps>(
   ({ icon, className, ...props }, ref) => (
     <div className="relative">
-      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-5 text-black/60">
+      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-5 text-ink-muted">
         {icon}
       </div>
       <input
         ref={ref}
         className={cn(
-          "auth-field h-12 w-full rounded-full border-2 border-white bg-white pl-14 pr-4 text-base text-black shadow-widget transition-all placeholder:text-black/60 focus:border-white focus:outline-none focus:ring-0",
+          "auth-field h-12 w-full rounded-input border border-hairline bg-white pl-14 pr-4 text-base text-ink transition-all placeholder:text-ink-muted focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30",
           className
         )}
         {...props}

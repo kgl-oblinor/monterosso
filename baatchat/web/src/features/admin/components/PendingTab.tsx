@@ -24,21 +24,21 @@ export function PendingTab() {
   if (isError) return <ErrorBox>Kunne ikke laste kontoer.</ErrorBox>;
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-white/10">
+    <div className="overflow-x-auto rounded-card border border-hairline shadow-soft">
       <table className="w-full min-w-[680px] text-left text-sm">
         <Thead cols={["Navn", "E-post", "Rolle", "Opprettet", "Status", "Handling"]} />
-        <tbody className="divide-y divide-white/5">
+        <tbody className="divide-y divide-hairline">
           {queue.map((u) => (
-            <tr key={u.id} className="hover:bg-white/[0.03]">
+            <tr key={u.id} className="hover:bg-black/[0.04]">
               <td className="px-4 py-3">
                 <div className="flex items-center gap-3">
                   <Initials name={u.name} fallback={u.email} />
-                  <span className="font-medium text-white">{u.name ?? "—"}</span>
+                  <span className="font-medium text-ink">{u.name ?? "—"}</span>
                 </div>
               </td>
-              <td className="px-4 py-3 text-white/55">{u.email}</td>
-              <td className="px-4 py-3 text-white/55">{ROLE_LABEL[u.role] ?? u.role}</td>
-              <td className="px-4 py-3 text-white/45">{u.createdAt}</td>
+              <td className="px-4 py-3 text-ink-muted">{u.email}</td>
+              <td className="px-4 py-3 text-ink-muted">{ROLE_LABEL[u.role] ?? u.role}</td>
+              <td className="px-4 py-3 text-ink-muted">{u.createdAt}</td>
               <td className="px-4 py-3">
                 <StatusBadge status={u.status} />
               </td>

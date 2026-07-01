@@ -1,7 +1,7 @@
 /** Translucent error banner used across the auth screens. */
 export function AuthError({ message }: { message: string }) {
   return (
-    <div className="rounded-lg border border-red-500/50 bg-red-500/20 p-3 text-sm text-red-200">
+    <div className="rounded-input border border-red-200 bg-red-50 p-3 text-sm text-red-700">
       {message}
     </div>
   );

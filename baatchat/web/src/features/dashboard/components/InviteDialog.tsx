@@ -55,13 +55,13 @@ export function InviteDialog({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-3xl border border-white/10 bg-[#0a1f33] p-6 shadow-widget-lg"
+        className="w-full max-w-md rounded-card border border-hairline bg-page p-6 shadow-soft"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-lg font-bold text-white">Inviter reisefølget</h2>
-            <p className="mt-1 text-sm leading-relaxed text-white/55">
+            <h2 className="text-lg font-bold text-ink">Inviter reisefølget</h2>
+            <p className="mt-1 text-sm leading-relaxed text-ink-muted">
               Del en lenke med dem du reiser sammen med, så er de inne i samme chat – uten passord.
             </p>
           </div>
@@ -69,7 +69,7 @@ export function InviteDialog({
             type="button"
             onClick={onClose}
             aria-label="Lukk"
-            className="-mr-1 -mt-1 rounded-full p-1.5 text-white/50 transition-colors hover:bg-white/5 hover:text-white"
+            className="-mr-1 -mt-1 rounded-full p-1.5 text-ink-muted transition-colors hover:bg-black/[0.04] hover:text-ink"
           >
             <X className="size-5" />
           </button>
@@ -78,7 +78,7 @@ export function InviteDialog({
         {!invite ? (
           <div className="mt-6 space-y-4">
             <label className="block">
-              <span className="text-xs font-semibold uppercase tracking-wider text-white/40">
+              <span className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
                 E-post eller telefon (valgfritt)
               </span>
               <input
@@ -86,22 +86,22 @@ export function InviteDialog({
                 onChange={(e) => setContact(e.target.value)}
                 placeholder="navn@eksempel.no eller +47 …"
                 inputMode="email"
-                className="mt-2 w-full rounded-xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-[#ead27e]/40 focus:outline-none"
+                className="mt-2 w-full rounded-input border border-hairline bg-surface px-4 py-3 text-sm text-ink placeholder:text-ink-muted focus:border-gold focus:outline-none"
               />
             </label>
-            <p className="text-xs leading-relaxed text-white/40">
+            <p className="text-xs leading-relaxed text-ink-muted">
               Du lager en lenke du deler selv. Vi sender ingenting automatisk ennå.
             </p>
 
             {create.isError && (
-              <p className="text-sm text-red-300">{(create.error as Error).message}</p>
+              <p className="text-sm text-destructive">{(create.error as Error).message}</p>
             )}
 
             <button
               type="button"
               onClick={onCreate}
               disabled={create.isPending}
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#ead27e] px-5 py-3 text-sm font-semibold text-[#07182a] shadow-widget transition-[transform,background-color] hover:bg-[#f0dd9a] active:scale-[0.98] disabled:opacity-50"
+              className="btn-ink w-full gap-2 disabled:opacity-50"
             >
               {create.isPending ? (
                 <Loader2 className="size-4 animate-spin" />
@@ -113,18 +113,18 @@ export function InviteDialog({
           </div>
         ) : (
           <div className="mt-6 space-y-4">
-            <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2.5">
-              <Link2 className="size-4 shrink-0 text-[#ead27e]/70" />
-              <span className="min-w-0 flex-1 truncate text-sm text-white/75">{invite.link}</span>
+            <div className="flex items-center gap-2 rounded-input border border-hairline bg-surface px-3 py-2.5">
+              <Link2 className="size-4 shrink-0 text-gold" />
+              <span className="min-w-0 flex-1 truncate text-sm text-ink">{invite.link}</span>
               <button
                 type="button"
                 onClick={onCopy}
                 aria-label="Kopier lenke"
-                className="flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
+                className="flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-ink-muted transition-colors hover:bg-black/[0.04] hover:text-ink"
               >
                 {copied ? (
                   <>
-                    <Check className="size-3.5 text-[#ead27e]" /> Kopiert
+                    <Check className="size-3.5 text-gold" /> Kopiert
                   </>
                 ) : (
                   <>
@@ -138,12 +138,12 @@ export function InviteDialog({
               href={waHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex w-full items-center justify-center gap-2 rounded-full border border-[#25D366]/40 bg-[#25D366]/15 px-5 py-3 text-sm font-semibold text-[#25D366] transition-[transform,background-color] hover:bg-[#25D366]/25 active:scale-[0.98]"
+              className="flex w-full items-center justify-center gap-2 rounded-pill border border-[#25D366]/40 bg-[#25D366]/15 px-5 py-3 text-sm font-semibold text-[#1a8f47] transition-[transform,background-color] hover:bg-[#25D366]/25 active:scale-[0.98]"
             >
               Del på WhatsApp
             </a>
 
-            <p className="text-xs leading-relaxed text-white/40">
+            <p className="text-xs leading-relaxed text-ink-muted">
               Lenken gjelder for én person og brukes én gang. Trenger du å invitere flere, lag en ny.
             </p>
 
@@ -153,7 +153,7 @@ export function InviteDialog({
                 setInvite(null);
                 setContact("");
               }}
-              className="w-full rounded-full border border-white/10 px-5 py-2.5 text-sm text-white/60 transition-colors hover:border-white/20 hover:bg-white/[0.04] hover:text-white active:scale-[0.98]"
+              className="w-full rounded-pill border border-hairline px-5 py-2.5 text-sm text-ink-muted transition-colors hover:border-black/20 hover:bg-black/[0.04] hover:text-ink active:scale-[0.98]"
             >
               Inviter en til
             </button>

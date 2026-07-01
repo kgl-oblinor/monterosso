@@ -4,19 +4,21 @@ import { useEffect, useRef, useState } from "react";
 import { tour, WHATSAPP_NUMBER, MEETING_POINT, SKIPPER_NAME } from "../../lib/tour";
 
 // 🤍 Built with love on this coast — for vakreste Mandy, always remembered here.
-import Skyline from "./Skyline";
-import SeaClock from "./SeaClock";
-import "./styles/editoriale.css";
-import "./styles/riviera-deco.css";
-import "./styles/studio.css";
-import "./styles/maritimo.css";
-import "./styles/cartolina.css";
-import "./styles/notturno.css";
-import Boat3D from "./Boat3D";
-import Clouds from "./Clouds";
-import Constellations from "./Constellations";
-import ClockTower from "./ClockTower";
-import Signpost from "./Signpost";
+// RETIRED SCENE (reversible): the animated sea scene is no longer rendered —
+// a clean Apple hero stands in its place. Re-enable these imports together with
+// their JSX (further down) to bring the living scene back, nothing was deleted.
+// import Skyline from "./Skyline";
+// import "./styles/editoriale.css";
+// import "./styles/riviera-deco.css";
+// import "./styles/studio.css";
+// import "./styles/maritimo.css";
+// import "./styles/cartolina.css";
+// import "./styles/notturno.css";
+// import Boat3D from "./Boat3D";
+// import Clouds from "./Clouds";
+// import Constellations from "./Constellations";
+// import ClockTower from "./ClockTower";
+// import Signpost from "./Signpost";
 import VillagePage from "./VillagePage";
 import { VILLAGES } from "./villageData";
 
@@ -26,16 +28,6 @@ const firstName = (n) => n.split(" ")[0]; // "Monterosso al Mare" → "Monteross
 const WA_ALTS = [
   "Hi! Which times do you have available this week?",
   "Hi! We are four — what is the price for a private tour?",
-];
-
-// Selectable backgrounds. "scene" = the live animated scene (day/night).
-// The rest are still photos; when one is active the whole live scene is
-// hidden — only the hero text + CTA sit over the image.
-const BGS = [
-  { key: "scene", label: "Living scene" },
-  { key: "bay", label: "Aerial bay", src: "/backgrounds/aerial-bay.webp" },
-  { key: "deepblue", label: "Deep blue", src: "/backgrounds/aerial-deepblue.webp" },
-  { key: "villages", label: "Villages", src: "/backgrounds/village-panorama.webp" },
 ];
 
 // slim arrow that breathes with the loop script (stroke = currentColor)
@@ -101,40 +93,7 @@ const ICON = {
   ),
 };
 
-const STYLES = [
-  { key: "", label: "Classic" },
-  { key: "editoriale", label: "Editoriale" },
-  { key: "riviera-deco", label: "Riviera" },
-  { key: "studio", label: "Studio" },
-  { key: "maritimo", label: "Maritimo" },
-  { key: "cartolina", label: "Cartolina" },
-  { key: "notturno", label: "Notturno" },
-];
-
 export default function Landing() {
-  const [theme, setTheme] = useState("light");
-  const [styleKey, setStyleKey] = useState("");
-  useEffect(() => {
-    const s = localStorage.getItem("style");
-    if (s) setStyleKey(s);
-  }, []);
-  useEffect(() => {
-    try {
-      localStorage.setItem("style", styleKey);
-    } catch {}
-  }, [styleKey]);
-  // Scene-only sandbox: ?scene in the URL hides all text/UI, leaving just the living scene.
-  const [sceneOnly, setSceneOnly] = useState(false);
-  useEffect(() => {
-    if (new URLSearchParams(window.location.search).has("scene")) {
-      setSceneOnly(true);
-      setBg("scene"); // force the living animated scene, not a photo backdrop
-    }
-  }, []);
-  useEffect(() => {
-    const saved = localStorage.getItem("theme");
-    if (saved === "dark" || saved === "light") setTheme(saved);
-  }, []);
   const logged = useRef(false);
   useEffect(() => {
     if (logged.current) return; // guard React strict-mode double-invoke
@@ -146,18 +105,10 @@ export default function Landing() {
       keepalive: true,
     }).catch(() => {});
   }, []);
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    try {
-      localStorage.setItem("theme", theme);
-    } catch {}
-  }, [theme]);
 
   // Scroll / swipe / button all bring the booking card in as an overlay —
   // same screen, no navigation.
   const [showBook, setShowBook] = useState(false);
-  const [bg, setBg] = useState("deepblue"); // "scene" | photo key — land on the open-sea aerial photo by default
-  const bgSrc = BGS.find((b) => b.key === bg)?.src;
   const [villageIdx, setVillageIdx] = useState(null); // open village page (0–4) or null
   const [showBoat, setShowBoat] = useState(false); // "the boat & her captain" page
   const [showHub, setShowHub] = useState(false); // "Explore" — the hub of everything
@@ -244,150 +195,99 @@ export default function Landing() {
   }, []);
 
   return (
-    <div
-      className={
-        "landing-v2" +
-        (bg !== "scene" ? " bg-photo-on" : "") +
-        (styleKey ? " style-" + styleKey : "") +
-        (sceneOnly ? " scene-only" : "") +
-        (anyOpen ? " popup-open" : "")
-      }
-    >
+    <div className={"landing-v2" + (anyOpen ? " popup-open" : "")}>
       <Effects />
 
-      {/* always-on SeaClock — top left; hidden under any popup via .popup-open */}
-      <SeaClock />
+      {/* RETIRED SCENE (reversible): the animated sea scene — sky/stars/
+          Constellations, the aurora sea + sun-glint, Boat3D, Skyline, the
+          Signpost/ClockTower village signs, Clouds, the sun/moon theme
+          switcher and the photo/style background switchers — is no longer
+          rendered. The clean Apple hero below stands in its place. To bring
+          the living scene back, re-enable the imports at the top of this file
+          and restore their JSX here; no component files were deleted. */}
 
-      {bg !== "scene" && bgSrc && (
-        <div
-          className="bg-photo"
-          aria-hidden="true"
-          style={{ backgroundImage: `url(${bgSrc})` }}
-        />
-      )}
-
-      {/* background switcher — a top-right column: sun (day scene), moon
-          (night scene), then the photo backdrops, one by one. Sun/moon also
-          set the light/dark theme of the living scene. */}
-      <div className="bg-switch" role="group" aria-label="Choose a background">
-        <button
-          type="button"
-          className={
-            "bg-dot bg-dot--sun" +
-            (bg === "scene" && theme === "light" ? " is-sel" : "")
-          }
-          onClick={() => {
-            setBg("scene");
-            setTheme("light");
-          }}
-          aria-label="Daytime scene"
-          title="Daytime scene"
+      <main className="lp">
+        {/* quiet top-right entry for returning customers — into the separate
+            dashboard app's login. Understated, never competes with "Come aboard". */}
+        <a
+          className="lp-login"
+          href="https://monterosso-app.kgl-56a.workers.dev/login"
         >
-          <SunIcon />
-        </button>
-        <button
-          type="button"
-          className={
-            "bg-dot bg-dot--moon" +
-            (bg === "scene" && theme === "dark" ? " is-sel" : "")
-          }
-          onClick={() => {
-            setBg("scene");
-            setTheme("dark");
-          }}
-          aria-label="Night scene"
-          title="Night scene"
-        >
-          <MoonIcon />
-        </button>
-        {BGS.filter((b) => b.src).map((b) => (
-          <button
-            key={b.key}
-            type="button"
-            className={"bg-dot" + (bg === b.key ? " is-sel" : "")}
-            onClick={() => setBg(b.key)}
-            aria-label={b.label}
-            title={b.label}
-            style={{ backgroundImage: `url(${b.src})` }}
-          />
-        ))}
-      </div>
+          Log in
+        </a>
 
-      {/* style switcher — 7 complete looks; "Classic" = today (no class) */}
-      <div className="style-switch" role="group" aria-label="Choose a style">
-        {STYLES.map((s) => (
-          <button
-            key={s.key || "classic"}
-            type="button"
-            className={"style-chip" + (styleKey === s.key ? " is-sel" : "")}
-            onClick={() => setStyleKey(s.key)}
-          >
-            {s.label}
-          </button>
-        ))}
-      </div>
-
-      <div className="grain" aria-hidden="true"></div>
-      <div className="cursor" aria-hidden="true"></div>
-      <div className="cursor-ring" aria-hidden="true"></div>
-
-      {/* sky — upper half */}
-      <div className="sky" aria-hidden="true"></div>
-      <div className="stars" aria-hidden="true"></div>
-      <Constellations />
-      <Clouds />
-
-      {/* living sea — lower half */}
-      <div className="aurora" aria-hidden="true">
-        <div className="aurora__layer aurora__layer--a"></div>
-        <div className="aurora__layer aurora__layer--b"></div>
-        <div className="aurora__gloss"></div>
-        <div className="aurora__vignette"></div>
-        <div className="sun-glint"></div>
-      </div>
-      {/* the five villages on the horizon */}
-      <Skyline />
-
-      {/* Vernazza's clock tower — a live clock; click opens Vernazza's page */}
-      <ClockTower onOpen={() => setVillageIdx(0)} />
-
-      {/* trail signpost — the five villages; each board opens its page */}
-      <Signpost onSelect={(i) => setVillageIdx(i)} />
-
-      {/* a little 3D tour boat sailing on the sea */}
-      <Boat3D theme={theme} />
-
-      <div className="shell">
         <p className="sr-only">
           A private sea tour of the Cinque Terre from Monterosso al Mare,
           Liguria — three unhurried hours along the coast, ${tour.priceUsd} per
           guest. Book in a moment, no prepayment.
         </p>
 
-        {/* SCREEN 1 — HERO + RESERVE CTA */}
-        <header className="hero" id="top">
-          <p className="eyebrow">Monterosso al Mare</p>
-          <h1>Cinque Terre</h1>
-          <div className="sea-copy">
-            <p className="tagline">
-              A private sail on the Mar Ligure,
-              <br />aboard the Paolona.
-            </p>
-            <div className="cta-wrap">
-            <button className="cta" onClick={() => setShowBook(true)}>
+        {/* HERO — clean Apple front page + the booking CTA */}
+        <header className="lp-hero" id="top">
+          <p className="lp-eyebrow">Monterosso al Mare</p>
+          <h1 className="lp-title">Cinque Terre</h1>
+          <p className="lp-tagline">
+            A private sail on the Mar Ligure, aboard the Paolona.
+          </p>
+
+          <div className="lp-cta-row">
+            <button
+              type="button"
+              className="lp-cta"
+              onClick={() => setShowBook(true)}
+            >
               Come aboard
             </button>
-            </div>
           </div>
-          <div className="scroll-hint">
-            <span>Andiamo</span>
-            <span className="andiamo-fall" aria-hidden="true">
-              <span className="af-bit af-bit--gold" style={{ animationDelay: "0s" }}>♥</span>
-              <span className="af-bit af-bit--gold" style={{ animationDelay: "14.5s" }}>❥</span>
-            </span>
+
+          {/* the sections the scene used to gate — kept reachable as quiet
+              Apple links, reusing the existing open handlers */}
+          <nav className="lp-nav" aria-label="Discover the coast">
+            <button type="button" className="lp-link" onClick={openHub}>
+              Explore
+            </button>
+            <button
+              type="button"
+              className="lp-link"
+              onClick={() => setShowCaptain(true)}
+            >
+              The captain
+            </button>
+            <button type="button" className="lp-link" onClick={openService}>
+              Customer service
+            </button>
+          </nav>
+
+          {/* the five villages, each opening its own page */}
+          <nav className="lp-villages" aria-label="The five villages">
+            {VILLAGES.map((v, i) => (
+              <button
+                type="button"
+                key={v.name}
+                className="lp-village"
+                onClick={() => setVillageIdx(i)}
+              >
+                {firstName(v.name)}
+              </button>
+            ))}
+          </nav>
+
+          {/* 🤍 for Mandy — the retired scene hid drifting gold hearts that
+              secretly spell her name; carried here as a few faint hearts. */}
+          <div className="lp-hearts" aria-hidden="true">
+            {["M", "A", "N", "D", "Y"].map((letter, i) => (
+              <span
+                key={letter}
+                className="lp-heart"
+                data-letter={letter}
+                style={{ "--i": String(i) }}
+              >
+                ♥
+              </span>
+            ))}
           </div>
         </header>
-      </div>
+      </main>
 
       <div
         className={"book-overlay" + (showBook ? " open" : "")}
@@ -403,7 +303,7 @@ export default function Landing() {
           >
             ✕
           </button>
-          <BookingForm active={showBook} />
+          <BookingForm onClose={() => setShowBook(false)} />
         </div>
       </div>
 
@@ -463,7 +363,7 @@ export default function Landing() {
           >
             ✕
           </button>
-          <article className="village-page">
+          <article className="village-page vp-apple">
             <p className="vp-eyebrow">The boat · Cinque Terre</p>
             <h2 className="vp-title">Aboard the Paolona</h2>
             <p className="vp-lede">
@@ -565,7 +465,7 @@ export default function Landing() {
           >
             ✕
           </button>
-          <article className="village-page">
+          <article className="village-page vp-apple">
             <p className="vp-eyebrow">Monterosso · Cinque Terre</p>
             <h2 className="vp-title">Explore</h2>
             <p className="vp-lede">
@@ -644,7 +544,7 @@ export default function Landing() {
           >
             ✕
           </button>
-          <article className="village-page">
+          <article className="village-page vp-apple">
             <p className="vp-eyebrow">The captain · Cinque Terre</p>
             <h2 className="vp-title">{SKIPPER_NAME || "The captain"}</h2>
             <p className="vp-lede">
@@ -707,7 +607,7 @@ export default function Landing() {
           >
             ✕
           </button>
-          <article className="village-page">
+          <article className="village-page vp-apple">
             <p className="vp-eyebrow">From the coast · Cinque Terre</p>
             <h2 className="vp-title">News</h2>
             <p className="vp-lede">
@@ -769,7 +669,7 @@ export default function Landing() {
           >
             ✕
           </button>
-          <article className="village-page">
+          <article className="village-page vp-apple">
             <p className="vp-eyebrow">Help · Cinque Terre</p>
             <h2 className="vp-title">Customer service</h2>
             <p className="vp-lede">
@@ -845,93 +745,180 @@ export default function Landing() {
   );
 }
 
-function BookingForm({ active }) {
-  const [date, setDate] = useState("");
-  const [guests, setGuests] = useState(2);
-  const [error, setError] = useState("");
-  const [days, setDays] = useState([]);
-  const [step, setStep] = useState("receipt"); // receipt-first; each step returns to the receipt
-  const [done, setDone] = useState(false);
-  const [sent, setSent] = useState(false);
-  const [slot, setSlot] = useState("sunset");
-  const [dateMore, setDateMore] = useState(false);
+// The guided booking wizard: 01 Tour · 02 Date · 03 Departure · 04 Guests ·
+// 05 Summary (+ contact). Rendered in our glass/sharp design system. Tours and
+// prices are read from lib/tour.js so the flow stays data-driven.
+const STEP_LABELS = ["Tour", "Date", "Departure", "Guests", "Summary"];
 
+function BookingForm({ onClose }) {
+  // Data-driven from tour.js — one tour today, but the step scales if more are
+  // added later. The single tour is pre-selected so step 01 confirms the boat.
+  const TOURS = [tour];
+  const now = new Date();
+
+  const [step, setStep] = useState(0);
+  const [tourIdx, setTourIdx] = useState(0);
+  const [date, setDate] = useState("");
+  const [slot, setSlot] = useState("");
+  const [guests, setGuests] = useState(2);
+  const [calY, setCalY] = useState(now.getFullYear());
+  const [calM, setCalM] = useState(now.getMonth());
+  const [contactMode, setContactMode] = useState(""); // "saved" | "email"
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+  const [resCode, setResCode] = useState("");
+
+  // Returning visitor (we left a marker last time) → offer saved details first.
   useEffect(() => {
-    setDays(buildDays(21));
-    // smart guess: two places on the next real departure, in Monterosso time.
-    const { slot: guessSlot, iso: guessIso } = nextDeparture();
-    setSlot(guessSlot);
-    setDate((d) => d || guessIso);
+    try {
+      if (localStorage.getItem("mtr_returning")) setContactMode("saved");
+    } catch {}
   }, []);
 
-  // Deep-link a single booking step for the flow-overview board (public/flow.html):
-  // ?screen=book&step=receipt|date|time|guests|done|sent jumps straight to it.
+  // Deep-link a single wizard step for the flow-overview board (public/flow.html):
+  // ?screen=book&step=date|time|guests|done|sent jumps straight to it.
   useEffect(() => {
     const sp = new URLSearchParams(window.location.search);
     if (sp.get("screen") !== "book") return;
     const st = sp.get("step");
-    if (st === "sent") setSent(true);
-    else if (st === "done") setDone(true);
-    else if (st === "date" || st === "time" || st === "guests") setStep(st);
+    if (st === "sent") setDone(true);
+    else if (st === "date") setStep(1);
+    else if (st === "time") setStep(2);
+    else if (st === "guests") setStep(3);
+    else if (st === "done") setStep(4);
   }, []);
 
-  // pick a date tile → set it and return to the receipt
-  function pickDate(iso) {
-    setError("");
-    setDate(iso);
-    setStep("receipt");
+  const selTour = TOURS[tourIdx] || tour;
+  const maxGuests = selTour.maxGuests;
+  const total = totalFor(guests, slot || "sunshine");
+  const slotLabel = tour.slots[slot]?.label || "—";
+  const slotWindow = tour.slots[slot]?.window || "";
+  const when = fmtNice(date);
+
+  const stepValid =
+    step === 0
+      ? tourIdx != null
+      : step === 1
+      ? !!date
+      : step === 2
+      ? !!slot
+      : step === 3
+      ? guests >= 1 && guests <= maxGuests
+      : true;
+  const canSubmit =
+    tourIdx != null &&
+    !!date &&
+    !!slot &&
+    guests >= 1 &&
+    (contactMode === "saved" || (contactMode === "email" && validEmail(email)));
+
+  // Lead capture to our backend (D1), best-effort — never blocks the page.
+  function saveLead(code) {
+    try {
+      navigator.sendBeacon?.(
+        "/api/track",
+        new Blob(
+          [
+            JSON.stringify({
+              type: "lead",
+              code,
+              dato: date,
+              guests,
+              slot,
+              email: contactMode === "email" ? email : null,
+            }),
+          ],
+          { type: "application/json" }
+        )
+      );
+    } catch {}
   }
 
-  // ← / → move between the receipt and each single edit step, then back.
-  // Each step is a one-tap change that returns to the receipt.
-  useEffect(() => {
-    if (!active) return;
-    const onKey = (e) => {
-      if (e.key === "ArrowRight") {
-        e.preventDefault();
-        if (done || sent) return;
-        if (step === "receipt") setStep("time");
-      } else if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        if (done) {
-          setDone(false);
-          setStep("receipt");
-        } else if (step !== "receipt") setStep("receipt");
-      }
+  // THE booking action. Sends the request, shows our confirmation.
+  async function onCheck() {
+    if (!canSubmit || submitting) return;
+    setSubmitting(true);
+    const booking = {
+      tour: selTour.name,
+      date,
+      slot,
+      guests,
+      total,
+      email: contactMode === "email" ? email : null,
+      contactMode,
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, done, sent, step]);
+    const { code } = await submitBookingRequest(booking);
+    saveLead(code);
+    try {
+      localStorage.setItem("mtr_returning", "1");
+      if (contactMode === "email" && email) localStorage.setItem("mtr_email", email);
+    } catch {}
+    setResCode(code);
+    setSubmitting(false);
+    setDone(true);
+  }
 
-  const sel = days.find((d) => d.iso === date);
-  const code = makeCode(date, guests);
-  const when = sel ? `${sel.label} · ${sel.small}` : date;
-  const total = totalFor(guests, slot);
-  const slotLabel = tour.slots[slot]?.label || "Sunset";
-  // priority-1 booking link: WhatsApp, prefilled from the customer's choices
-  const bookingWa = waLink(bookingMessage({ iso: date, slot, guests }));
+  function onBack() {
+    if (step === 0) onClose?.();
+    else setStep((s) => s - 1);
+  }
+  function onNext() {
+    if (stepValid) setStep((s) => Math.min(4, s + 1));
+  }
 
-  // SCREEN 3 — confirmation: combined info + add-to-calendar + share
-  if (sent) {
+  const atCurrentMonth = calY === now.getFullYear() && calM === now.getMonth();
+  function prevMonth() {
+    if (atCurrentMonth) return;
+    let m = calM - 1,
+      y = calY;
+    if (m < 0) {
+      m = 11;
+      y -= 1;
+    }
+    setCalM(m);
+    setCalY(y);
+  }
+  function nextMonth() {
+    let m = calM + 1,
+      y = calY;
+    if (m > 11) {
+      m = 0;
+      y += 1;
+    }
+    setCalM(m);
+    setCalY(y);
+  }
+
+  // CONFIRMATION — soft, honest: a request is on its way, the account is ready.
+  if (done) {
+    const bookingWa = waLink(bookingMessage({ iso: date, slot, guests }));
     return (
-      <div className="book-form confirm-sent">
+      <div className="book-form wiz-apple">
+        <h3 className="wiz-done__h">Request sent</h3>
         <p className="confirm-lead">
-          Thank you — send the message we opened for you, and we will confirm
-          your place right there.
+          We&rsquo;re checking availability with the skipper — you&rsquo;ll hear
+          back shortly. Your account is ready.
         </p>
         <div className="conf-summary">
+          <div className="conf-row conf-row--code">
+            <span>Reservation</span>
+            <strong>{resCode}</strong>
+          </div>
           <div className="conf-row">
-            <span>When</span>
+            <span>Tour</span>
+            <strong>{selTour.name}</strong>
+          </div>
+          <div className="conf-row">
+            <span>Date</span>
             <strong>{when}</strong>
           </div>
           <div className="conf-row">
             <span>Departure</span>
-            <strong>{slotLabel}</strong>
-          </div>
-          <div className="conf-row">
-            <span>Meeting point</span>
-            <strong>{MEETING_POINT}</strong>
+            <strong>
+              {slotLabel}
+              {slotWindow ? ` · ${slotWindow}` : ""}
+            </strong>
           </div>
           <div className="conf-row">
             <span>Guests</span>
@@ -940,19 +927,19 @@ function BookingForm({ active }) {
             </strong>
           </div>
           <div className="conf-row">
+            <span>Meeting point</span>
+            <strong>{MEETING_POINT}</strong>
+          </div>
+          <div className="conf-row conf-row--total">
             <span>Total</span>
             <strong>${total}</strong>
-          </div>
-          <div className="conf-row">
-            <span>Code</span>
-            <strong>{code}</strong>
           </div>
         </div>
         <p className="cal-label">Add me to your calendar</p>
         <div className="cal-row">
           <a
             className="cal-btn"
-            href={googleCalUrl({ iso: date, guests, total, code, slot })}
+            href={googleCalUrl({ iso: date, guests, total, code: resCode, slot })}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -962,14 +949,16 @@ function BookingForm({ active }) {
           <button
             type="button"
             className="cal-btn"
-            onClick={() => downloadIcs({ iso: date, guests, total, code, slot })}
+            onClick={() =>
+              downloadIcs({ iso: date, guests, total, code: resCode, slot })
+            }
           >
             <CalGlyph />
             Apple
           </button>
           <a
             className="cal-btn"
-            href={outlookCalUrl({ iso: date, guests, total, code, slot })}
+            href={outlookCalUrl({ iso: date, guests, total, code: resCode, slot })}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -977,322 +966,373 @@ function BookingForm({ active }) {
             Outlook
           </a>
         </div>
-        <button
-          type="button"
-          className="pay pay--ghost share-btn"
-          onClick={() => shareTrip({ when, guests })}
-        >
-          Tell a friend
-        </button>
-        <button
-          type="button"
-          className="confirm__back"
-          onClick={() => {
-            setSent(false);
-            setDone(false);
-          }}
-        >
-          Finish
-        </button>
-      </div>
-    );
-  }
-
-  if (done) {
-    // Save the lead to our backend (D1), then hand off to WhatsApp.
-    const saveLead = () => {
-      try {
-        navigator.sendBeacon?.(
-          "/api/track",
-          new Blob(
-            [
-              JSON.stringify({
-                type: "lead",
-                code,
-                dato: date,
-                guests,
-                slot,
-              }),
-            ],
-            { type: "application/json" }
-          )
-        );
-      } catch {}
-    };
-    // Priority 1: open WhatsApp with the message built from the choices,
-    // then advance to the confirmation screen.
-    const bookOnWhatsApp = () => {
-      saveLead();
-      try {
-        window.open(bookingWa, "_blank", "noopener");
-      } catch {}
-      setSent(true);
-    };
-    // Email fallback — same booking details, our inbox.
-    const bookByEmail = () => {
-      saveLead();
-      const details = `Monterosso sea tour\nCode: ${code}\n${when} · ${slotLabel} · ${guests} ${
-        guests === 1 ? "guest" : "guests"
-      } · $${total}\nMeeting point: ${MEETING_POINT}`;
-      const mailto = `mailto:${tour.email}?subject=${encodeURIComponent(
-        `Booking enquiry — Monterosso sea tour (${code})`
-      )}&body=${encodeURIComponent(details)}`;
-      try {
-        window.location.href = mailto;
-      } catch {}
-      setSent(true);
-    };
-    return (
-      <div className="book-form">
-        <p className="confirm-lead">
-          One tap, and we will pick it up on WhatsApp — your message is ready.
-        </p>
-        <p className="send-summary">
-          {when} · {slotLabel} · {guests}{" "}
-          {guests === 1 ? "guest" : "guests"} · ${total}
-        </p>
-        <button type="button" className="pay" onClick={bookOnWhatsApp}>
-          Book on WhatsApp
-        </button>
-        <button type="button" className="pay pay--ghost" onClick={bookByEmail}>
-          Or send by email
-        </button>
-        <p className="field-head wa-alt-head">Or ask us something first</p>
-        <div className="wa-alts">
-          {WA_ALTS.map((m) => (
-            <a
-              key={m}
-              className="cs-opt wa-alt"
-              href={waLink(m)}
-              target="_blank"
-              rel="noopener"
-              onClick={saveLead}
-            >
-              <span>
-                <b>{m}</b>
-              </span>
-            </a>
-          ))}
-        </div>
-        <button
-          type="button"
-          className="confirm__back"
-          onClick={() => {
-            setError("");
-            setDone(false);
-            setStep("receipt");
-          }}
-        >
-          Go back
-        </button>
-      </div>
-    );
-  }
-
-  // SCREEN — RECEIPT: a guessed booking (two places, the next departure),
-  // shown first. Send it, or tap "Change the time" to adjust.
-  if (step === "receipt") {
-    return (
-      <div className="book-form">
-        <p className="box-count">Your place</p>
-        <p className="confirm-lead">
-          We have set aside <strong>two seats</strong> on the next sailing.
-          Change anything you like, then continue.
-        </p>
-        <div className="conf-summary">
-          <button
-            type="button"
-            className="conf-row conf-row--edit"
-            onClick={() => {
-              setError("");
-              setStep("date");
-            }}
-          >
-            <span>When</span>
-            <strong>{when}</strong>
-          </button>
-          <button
-            type="button"
-            className="conf-row conf-row--edit"
-            onClick={() => {
-              setError("");
-              setStep("time");
-            }}
-          >
-            <span>Departure</span>
-            <strong>{slotLabel}</strong>
-          </button>
-          <button
-            type="button"
-            className="conf-row conf-row--edit"
-            onClick={() => {
-              setError("");
-              setStep("guests");
-            }}
-          >
-            <span>Guests</span>
-            <strong>
-              {guests} {guests === 1 ? "guest" : "guests"}
-            </strong>
-          </button>
-          <div className="conf-row">
-            <span>Meeting point</span>
-            <strong>{MEETING_POINT}</strong>
-          </div>
-          <div className="conf-row">
-            <span>Total</span>
-            <strong>${total}</strong>
-          </div>
-        </div>
-        <button className="pay" onClick={() => setDone(true)}>
-          Continue
-        </button>
-        <button
-          type="button"
-          className="confirm__back"
-          onClick={() => {
-            setError("");
-            setStep("time");
-          }}
-        >
-          Change the time
-        </button>
-      </div>
-    );
-  }
-
-  // EDIT — guests (single tap returns to the receipt)
-  if (step === "guests") {
-    return (
-      <div className="book-form">
-        <span className="field-head step-q">How many of you?</span>
-        <div className="choice-grid choice-grid--nums">
-          {Array.from({ length: tour.maxGuests }, (_, i) => i + 1).map((n) => (
-            <button
-              type="button"
-              key={n}
-              className={"choice choice--num" + (guests === n ? " is-sel" : "")}
-              onClick={() => {
-                setGuests(n);
-                setStep("receipt");
-              }}
-            >
-              <span className="choice-label">{n}</span>
-            </button>
-          ))}
-        </div>
-        <a className="cs-link guests-more" href={waLink(WA_ALTS[1])} target="_blank" rel="noopener">
-          More than {tour.maxGuests}? Ask us ›
+        <a className="wiz-wa" href={bookingWa} target="_blank" rel="noopener">
+          Prefer WhatsApp? Message us
         </a>
-        <button
-          type="button"
-          className="confirm__back"
-          onClick={() => {
-            setError("");
-            setStep("receipt");
-          }}
-        >
-          Back
-        </button>
-        <p className="reassure">No prepayment · from ${tour.priceUsd} per guest</p>
       </div>
     );
   }
 
-  // EDIT — departure time (single tap returns to the receipt)
-  if (step === "time") {
-    const opts = ["sunrise", "sunshine", "sunset"].map((v) => ({
-      v,
-      label: tour.slots[v].label,
-      window: tour.slots[v].window,
-      price: slotPriceUsd(v),
-    }));
-    return (
-      <div className="book-form">
-        <span className="field-head step-q">
-          What time would you like to leave?
-        </span>
-        <div className="choice-grid choice-grid--time">
-          {opts.map((o) => (
-            <button
-              type="button"
-              key={o.v}
-              className={"choice choice--sq" + (slot === o.v ? " is-sel" : "")}
-              onClick={() => {
-                setSlot(o.v);
-                setStep("receipt");
-              }}
-            >
-              <span className="choice-label">{o.label}</span>
-              <span className="choice-sub">{o.window}</span>
-              <span className="choice-sub">${o.price}/guest</span>
-            </button>
-          ))}
-        </div>
-        <button
-          type="button"
-          className="confirm__back"
-          onClick={() => setStep("receipt")}
-        >
-          Back
-        </button>
-      </div>
-    );
-  }
-
-  // EDIT — date (single tap returns to the receipt)
   return (
-    <div className="book-form">
-      <span className="field-head step-q">Which day?</span>
-      {dateMore ? (
-        <div className="choice-grid choice-scroll">
-          {days.map((d) => (
+    <div className="book-form wiz-apple">
+      {/* numbered progress header + gold bar */}
+      <div className="wiz-steps">
+        <div className="wiz-row">
+          {STEP_LABELS.map((label, i) => (
             <button
               type="button"
-              key={d.iso}
-              className={"choice" + (date === d.iso ? " is-sel" : "")}
-              onClick={() => pickDate(d.iso)}
+              key={label}
+              className={
+                "wiz-step" +
+                (i === step ? " is-active" : "") +
+                (i < step ? " is-done" : "")
+              }
+              onClick={() => setStep(i)}
             >
-              <span className="choice-label">{d.label}</span>
-              <span className="choice-sub">{d.small}</span>
+              <span className="wiz-step__num">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="wiz-step__lbl">{label}</span>
             </button>
           ))}
         </div>
-      ) : (
-        <div className="choice-grid choice-grid--days2">
-          {days.slice(0, 3).map((d) => (
-            <button
-              type="button"
-              key={d.iso}
-              className={"choice choice--sq" + (date === d.iso ? " is-sel" : "")}
-              onClick={() => pickDate(d.iso)}
-            >
-              <span className="choice-label">{d.label}</span>
-              <span className="choice-sub">{d.small}</span>
-            </button>
-          ))}
-          <button
-            type="button"
-            className="choice choice--sq choice--more"
-            onClick={() => setDateMore(true)}
-          >
-            <span className="choice-label">More dates…</span>
-          </button>
+        <div className="wiz-bar">
+          <div
+            className="wiz-bar__fill"
+            style={{ width: `${(step / 4) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      {/* 01 — TOUR */}
+      {step === 0 && (
+        <div className="wiz-body">
+          <span className="field-head step-q">Choose your tour</span>
+          <div className="choice-grid">
+            {TOURS.map((tr, i) => (
+              <button
+                type="button"
+                key={tr.name}
+                className={
+                  "choice choice--tour" + (tourIdx === i ? " is-sel" : "")
+                }
+                onClick={() => setTourIdx(i)}
+              >
+                <span className="choice-label">{tr.name}</span>
+                <span className="choice-sub">
+                  ~{tr.durationHours} hours · ${tr.priceUsd} {tr.unit}
+                </span>
+                <span className="choice-sub">{tr.tagline}</span>
+              </button>
+            ))}
+          </div>
         </div>
       )}
-      <button
-        type="button"
-        className="confirm__back"
-        onClick={() => {
-          setError("");
-          setStep("receipt");
-        }}
-      >
-        Back
-      </button>
-      <p className="reassure">No prepayment · from ${tour.priceUsd} per guest</p>
+
+      {/* 02 — DATE */}
+      {step === 1 && (
+        <div className="wiz-body">
+          <span className="field-head step-q">Choose a date</span>
+          <div className="wiz-cal">
+            <div className="wiz-cal__head">
+              <button
+                type="button"
+                className="wiz-cal__nav"
+                onClick={prevMonth}
+                disabled={atCurrentMonth}
+                aria-label="Previous month"
+              >
+                ‹
+              </button>
+              <span className="wiz-cal__title">
+                {MONTHS[calM]} {calY}
+              </span>
+              <button
+                type="button"
+                className="wiz-cal__nav"
+                onClick={nextMonth}
+                aria-label="Next month"
+              >
+                ›
+              </button>
+            </div>
+            <div className="wiz-cal__grid">
+              {WEEKDAYS.map((wd) => (
+                <div key={wd} className="wiz-cal__wd">
+                  {wd}
+                </div>
+              ))}
+              {monthWeeks(calY, calM).map((cell, idx) => {
+                if (!cell)
+                  return (
+                    <span
+                      key={"b" + idx}
+                      className="wiz-cal__day wiz-cal__day--blank"
+                      aria-hidden="true"
+                    />
+                  );
+                const past = cell.iso < todayISO();
+                return (
+                  <button
+                    type="button"
+                    key={cell.iso}
+                    className={
+                      "wiz-cal__day" + (date === cell.iso ? " is-sel" : "")
+                    }
+                    disabled={past}
+                    onClick={() => setDate(cell.iso)}
+                  >
+                    {cell.d}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 03 — DEPARTURE */}
+      {step === 2 && (
+        <div className="wiz-body">
+          <span className="field-head step-q">Choose a departure</span>
+          <div className="choice-grid choice-grid--time">
+            {["sunrise", "sunshine", "sunset"].map((v) => (
+              <button
+                type="button"
+                key={v}
+                className={"choice choice--sq" + (slot === v ? " is-sel" : "")}
+                onClick={() => setSlot(v)}
+              >
+                <span className="choice-label">{tour.slots[v].label}</span>
+                <span className="choice-sub">{tour.slots[v].window}</span>
+                <span className="choice-sub">${slotPriceUsd(v)}/guest</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 04 — GUESTS */}
+      {step === 3 && (
+        <div className="wiz-body">
+          <span className="field-head step-q">How many guests?</span>
+          <div className="wiz-guests">
+            <button
+              type="button"
+              className="wiz-pm"
+              onClick={() => setGuests((g) => Math.max(1, g - 1))}
+              disabled={guests <= 1}
+              aria-label="Fewer guests"
+            >
+              −
+            </button>
+            <div className="wiz-count">
+              <div className="wiz-count__n">{guests}</div>
+              <div className="wiz-count__w">
+                {guests === 1 ? "Guest" : "Guests"}
+              </div>
+            </div>
+            <button
+              type="button"
+              className="wiz-pm"
+              onClick={() => setGuests((g) => Math.min(maxGuests, g + 1))}
+              disabled={guests >= maxGuests}
+              aria-label="More guests"
+            >
+              +
+            </button>
+          </div>
+          <a
+            className="cs-link guests-more"
+            href={waLink(WA_ALTS[1])}
+            target="_blank"
+            rel="noopener"
+          >
+            More than {maxGuests}? Ask us ›
+          </a>
+        </div>
+      )}
+
+      {/* 05 — SUMMARY + CONTACT */}
+      {step === 4 && (
+        <div className="wiz-body">
+          <span className="field-head step-q">Your reservation</span>
+          <div className="conf-summary">
+            <div className="conf-row">
+              <span>Tour</span>
+              <strong>{selTour.name}</strong>
+            </div>
+            <div className="conf-row">
+              <span>Date</span>
+              <strong>{when}</strong>
+            </div>
+            <div className="conf-row">
+              <span>Departure</span>
+              <strong>
+                {slotLabel}
+                {slotWindow ? ` · ${slotWindow}` : ""}
+              </strong>
+            </div>
+            <div className="conf-row">
+              <span>Guests</span>
+              <strong>
+                {guests} {guests === 1 ? "guest" : "guests"}
+              </strong>
+            </div>
+            <div className="conf-row conf-row--total">
+              <span>Total</span>
+              <strong>${total}</strong>
+            </div>
+          </div>
+          <div className="wiz-contact">
+            <button
+              type="button"
+              className={
+                "wiz-contact__btn" + (contactMode === "saved" ? " is-sel" : "")
+              }
+              onClick={() => setContactMode("saved")}
+            >
+              Use my saved details
+            </button>
+            <button
+              type="button"
+              className={
+                "wiz-contact__btn" + (contactMode === "email" ? " is-sel" : "")
+              }
+              onClick={() => setContactMode("email")}
+            >
+              Enter email
+            </button>
+          </div>
+          {contactMode === "saved" && (
+            <p className="wiz-saved-note">
+              We&rsquo;ll use the details we have saved for you.
+            </p>
+          )}
+          {contactMode === "email" && (
+            <div className="wiz-email">
+              <input
+                type="email"
+                inputMode="email"
+                placeholder="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* footer: Back always · Continue on 01–04 · the CTA on 05 */}
+      <div className="wiz-foot">
+        <button type="button" className="wiz-back" onClick={onBack}>
+          ‹ Back
+        </button>
+        {step < 4 ? (
+          <button
+            type="button"
+            className="pay wiz-next"
+            onClick={onNext}
+            disabled={!stepValid}
+          >
+            Continue ›
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="pay wiz-next"
+            onClick={onCheck}
+            disabled={!canSubmit || submitting}
+          >
+            {submitting ? "Sending…" : "Check availability"}
+          </button>
+        )}
+      </div>
     </div>
   );
+}
+
+/* Lightweight email check for the contact step. */
+function validEmail(s) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s).trim());
+}
+
+// Chat/booking API (baatchat Worker). The public booking endpoint creates an instant
+// customer account + a 'requested' reservation for the pilot skipper in one call.
+const CHAT_API_BASE = "https://monterosso-chat.kgl-56a.workers.dev";
+
+// Wire to the chat backend: create the instant customer account + reservation(status='requested').
+// On ANY failure (network/validation/etc.) we fall back to a locally-generated code so the
+// customer experience — the "Request sent" confirmation + WhatsApp fallback — never breaks.
+async function submitBookingRequest(booking) {
+  const fallback = { code: makeCode(booking.date, booking.guests) };
+  // In "saved" mode there's no freshly-typed email — reuse the one we stored on a
+  // previous successful booking so returning customers still hit the backend.
+  let email = booking.email;
+  if (!email) {
+    try {
+      email = localStorage.getItem("mtr_email") || null;
+    } catch {}
+  }
+  if (!email) return fallback; // genuinely no email on file → local code only
+  try {
+    const res = await fetch(`${CHAT_API_BASE}/public/bookings`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tour: booking.tour,
+        date: booking.date,
+        time: booking.slot,
+        guests: booking.guests,
+        email,
+      }),
+    });
+    if (!res.ok) return fallback;
+    const data = await res.json();
+    return data?.code ? { code: data.code } : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+/* Month calendar helpers (Monday-first) for the date step. */
+const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+/* Today as a local ISO date (YYYY-MM-DD) — string compare gates past days. */
+function todayISO() {
+  return new Date().toLocaleDateString("sv-SE");
+}
+/* Weeks of {d, iso} cells (null = leading/trailing blank) for one month. */
+function monthWeeks(year, month) {
+  const first = new Date(year, month, 1);
+  const offset = (first.getDay() + 6) % 7; // Monday-first
+  const daysIn = new Date(year, month + 1, 0).getDate();
+  const cells = [];
+  for (let i = 0; i < offset; i++) cells.push(null);
+  for (let d = 1; d <= daysIn; d++) {
+    const iso = `${year}-${String(month + 1).padStart(2, "0")}-${String(
+      d
+    ).padStart(2, "0")}`;
+    cells.push({ d, iso });
+  }
+  while (cells.length % 7) cells.push(null);
+  const weeks = [];
+  for (let i = 0; i < cells.length; i += 7) weeks.push(...cells.slice(i, i + 7));
+  return weeks;
+}
+/* Friendly date phrase for the summary, e.g. "Fri 3 July 2026". */
+function fmtNice(iso) {
+  if (!iso) return "—";
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 }
 
 /* Reservation code — a memorable Italian word-pair the guest & skipper read back,
@@ -1413,69 +1453,10 @@ function downloadIcs(opts) {
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
-async function shareTrip({ when, guests }) {
-  const url = typeof window !== "undefined" ? window.location.origin : "";
-  const g = `${guests} ${guests === 1 ? "guest" : "guests"}`;
-  const text = `Join me on the Monterosso · Cinque Terre sea tour — ${when}, ${g}.`;
-  try {
-    if (navigator.share) {
-      await navigator.share({ title: "Monterosso · Cinque Terre sea tour", text, url });
-      return;
-    }
-  } catch {
-    return; // user dismissed the share sheet
-  }
-  try {
-    await navigator.clipboard.writeText(`${text} ${url}`);
-    alert("Link copied — send it to a friend.");
-  } catch {
-    window.open(
-      `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`,
-      "_blank"
-    );
-  }
-}
-
 /* ---------- WhatsApp (priority-1 booking channel) ----------
    wa.me opens the app on iOS/Android and WhatsApp Web on desktop. */
 function waLink(text) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
-}
-
-/* The next real departure in Monterosso time (Europe/Rome), so the receipt
-   guess always lands on an actual, still-bookable slot. We read the current
-   hour:minute in Rome, then pick the first slot whose start is still ahead
-   today; if the day's last departure has gone, we roll to tomorrow's sunrise.
-   Slot order matches tour.js (sunrise → sunshine → sunset). */
-function nextDeparture() {
-  const order = ["sunrise", "sunshine", "sunset"];
-  // current minutes-since-midnight in Europe/Rome
-  const parts = new Intl.DateTimeFormat("en-GB", {
-    timeZone: CAL_TZ,
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).formatToParts(new Date());
-  const hh = Number(parts.find((p) => p.type === "hour")?.value ?? 0);
-  const mm = Number(parts.find((p) => p.type === "minute")?.value ?? 0);
-  const nowMin = hh * 60 + mm;
-  const startMin = (s) =>
-    Number(s.start.slice(0, 2)) * 60 + Number(s.start.slice(2, 4));
-  for (const v of order) {
-    if (nowMin < startMin(tour.slots[v])) {
-      return { slot: v, iso: romeISO(0) };
-    }
-  }
-  // every departure has passed today → tomorrow's first slot
-  return { slot: order[0], iso: romeISO(1) };
-}
-
-/* ISO date (YYYY-MM-DD) for "today + offset" as seen in Europe/Rome. */
-function romeISO(offsetDays) {
-  const d = new Date();
-  d.setDate(d.getDate() + offsetDays);
-  // en-CA gives YYYY-MM-DD; tie it to Rome so the calendar day is correct
-  return new Intl.DateTimeFormat("en-CA", { timeZone: CAL_TZ }).format(d);
 }
 
 /* Natural English day phrase from an ISO date, relative to today:
@@ -1522,26 +1503,6 @@ function CalGlyph() {
       />
     </svg>
   );
-}
-
-/* Friendly day picker: today / tomorrow / day-after-tomorrow, then weekdays,
-   with the actual date kept small and subtle in the poster's gold. */
-function buildDays(n) {
-  const rel = ["Today", "Tomorrow", "Day after tomorrow"];
-  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-  const base = new Date();
-  base.setHours(0, 0, 0, 0);
-  const out = [];
-  for (let i = 0; i < n; i++) {
-    const d = new Date(base);
-    d.setDate(base.getDate() + i);
-    out.push({
-      iso: d.toLocaleDateString("sv-SE"),
-      label: i < 3 ? rel[i] : cap(d.toLocaleDateString("en-GB", { weekday: "long" })),
-      small: d.toLocaleDateString("en-GB", { day: "numeric", month: "long" }),
-    });
-  }
-  return out;
 }
 
 /* All the original vanilla-JS effects, ported into one mount effect. */
@@ -1621,49 +1582,4 @@ function Effects() {
   }, []);
 
   return null;
-}
-
-function SunIcon() {
-  return (
-    <svg viewBox="0 0 100 100" className="celestial celestial--sun">
-      <defs>
-        <radialGradient id="sunGrad" cx="0.42" cy="0.4" r="0.7">
-          <stop offset="0" stopColor="#f6eccf" />
-          <stop offset="0.58" stopColor="#ead27e" />
-          <stop offset="1" stopColor="#d4b257" />
-        </radialGradient>
-      </defs>
-      {Array.from({ length: 12 }).map((_, i) => (
-        <rect
-          key={i}
-          x="48.4"
-          y="5"
-          width="3.2"
-          height="12"
-          rx="1.6"
-          fill="#e0c06a"
-          transform={`rotate(${i * 30} 50 50)`}
-        />
-      ))}
-      <circle cx="50" cy="50" r="20" fill="url(#sunGrad)" />
-    </svg>
-  );
-}
-
-function MoonIcon() {
-  return (
-    <svg viewBox="0 0 100 100" className="celestial">
-      <defs>
-        <radialGradient id="moonGrad" cx="0.4" cy="0.35" r="0.8">
-          <stop offset="0" stopColor="#fdf7e3" />
-          <stop offset="1" stopColor="#c9d0e0" />
-        </radialGradient>
-      </defs>
-      <circle cx="50" cy="50" r="27" fill="url(#moonGrad)" />
-      <circle cx="41" cy="44" r="5" fill="#bcc3d4" opacity="0.55" />
-      <circle cx="59" cy="57" r="7" fill="#bcc3d4" opacity="0.45" />
-      <circle cx="57" cy="37" r="3.4" fill="#bcc3d4" opacity="0.5" />
-      <circle cx="46" cy="60" r="3" fill="#bcc3d4" opacity="0.4" />
-    </svg>
-  );
 }

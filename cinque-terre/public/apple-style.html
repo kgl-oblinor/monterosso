@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apple-glass · stilprøve (oransje + hvit)</title>
+<style>
+  :root{
+    --ink:#2A1810; --muted:rgba(42,24,16,.60);
+    --accent1:#FF9A4B; --accent2:#F25C2A;
+    --r:28px;
+  }
+  /* ---- background-agnostic glass: tokens switch per bg mode ---- */
+  body.bg-orange{
+    background:radial-gradient(135% 115% at 74% 6%,#FFC83A 0%,#FF8C16 30%,#F1530C 60%,#B5300A 100%);
+    --glass:rgba(255,255,255,.2); --glass-2:rgba(255,255,255,.27);
+    --border:rgba(255,231,150,.82); --track:rgba(255,255,255,.22);
+    --shadow:0 24px 64px rgba(110,34,3,.38);
+    --hair:rgba(255,255,255,.66);
+    --cta-bg:rgba(255,255,255,.52); --cta-border:rgba(255,236,165,.92);
+    --cta-shadow:0 12px 32px rgba(150,55,10,.26);
+    --chk-shadow:0 8px 22px rgba(150,55,10,.2); --blob-op:.85;
+  }
+  body.bg-white{
+    background:#ffffff;
+    --glass:rgba(255,255,255,.6); --glass-2:rgba(248,243,238,.75);
+    --border:rgba(196,154,52,.72); --track:rgba(0,0,0,.05);
+    --shadow:0 12px 40px rgba(0,0,0,.10);
+    --hair:rgba(0,0,0,.04);
+    --cta-bg:rgba(255,255,255,.78); --cta-border:rgba(196,154,52,.78);
+    --cta-shadow:0 10px 28px rgba(0,0,0,.16);
+    --chk-shadow:0 8px 22px rgba(0,0,0,.14); --blob-op:.42;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    min-height:100vh;background-attachment:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",system-ui,sans-serif;
+    color:var(--ink);-webkit-font-smoothing:antialiased;
+    display:flex;flex-direction:column;align-items:center;padding:46px 20px 80px;gap:24px;
+    transition:background .3s;
+  }
+  /* bg switch */
+  .bgswitch{position:fixed;top:16px;right:16px;z-index:10;display:flex;gap:6px;padding:4px;
+    border-radius:999px;background:var(--track);border:1px solid var(--border);backdrop-filter:blur(20px)}
+  .bgswitch button{font:inherit;font-size:13px;font-weight:600;border:0;cursor:pointer;padding:7px 14px;border-radius:999px;background:transparent;color:var(--ink)}
+  .bgswitch button.on{background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+
+  .title{text-align:center}
+  .title h1{font-size:34px;font-weight:600;letter-spacing:-.02em}
+  .title p{font-size:15px;color:var(--muted);margin-top:6px}
+
+  .glass{
+    background:var(--glass);
+    backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);
+    border:1px solid var(--border);border-radius:var(--r);
+    box-shadow:var(--shadow), inset 0 1px 0 var(--hair);
+  }
+  .card{width:100%;max-width:520px;padding:30px}
+  .kicker{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  h2{font-size:25px;font-weight:600;letter-spacing:-.015em;margin-bottom:4px}
+  .sub{font-size:15px;color:var(--muted);margin-bottom:22px}
+
+  .seg{display:inline-flex;padding:4px;gap:4px;border-radius:999px;background:var(--track);
+    border:1px solid var(--border);backdrop-filter:blur(20px)}
+  .seg button{font:inherit;font-size:14px;font-weight:500;border:0;cursor:pointer;padding:8px 18px;border-radius:999px;background:transparent;color:var(--ink)}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 2px 10px rgba(0,0,0,.16)}
+
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px}
+  .tile{padding:18px;border-radius:20px;background:var(--glass-2);border:1px solid var(--border);cursor:pointer;transition:.18s;backdrop-filter:blur(14px)}
+  .tile:hover{transform:translateY(-2px)}
+  .tile.sel{background:#fff;box-shadow:0 8px 26px rgba(0,0,0,.16)}
+  .tile .nm{font-size:17px;font-weight:600}
+  .tile .meta{font-size:13px;color:var(--muted);margin-top:4px}
+  .tile .tag{font-size:13px;color:var(--ink);opacity:.7;margin-top:8px}
+
+  .row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}
+  .step{display:inline-flex;align-items:center;gap:16px}
+  .step button{width:42px;height:42px;border-radius:999px;border:1px solid var(--border);background:var(--glass-2);font-size:22px;color:var(--ink);cursor:pointer;backdrop-filter:blur(12px)}
+  .step .n{font-size:30px;font-weight:600;min-width:40px;text-align:center}
+  input.gl{width:100%;padding:15px 18px;border-radius:16px;border:1px solid var(--border);background:var(--glass-2);font:inherit;font-size:16px;color:var(--ink);outline:none;margin-bottom:18px}
+  input.gl::placeholder{color:var(--muted)}
+
+  .cta{width:100%;padding:16px;border-radius:999px;border:1px solid var(--cta-border);cursor:pointer;font:inherit;font-size:17px;font-weight:600;
+    background:var(--cta-bg);color:var(--ink);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);box-shadow:var(--cta-shadow);transition:.18s}
+  .cta:hover{transform:translateY(-1px);filter:brightness(1.04)}
+  .ghost{width:100%;padding:14px;border-radius:999px;cursor:pointer;font:inherit;font-size:15px;font-weight:500;
+    background:var(--glass-2);border:1px solid var(--border);color:var(--ink);backdrop-filter:blur(14px);margin-top:10px}
+
+  .conf{display:flex;align-items:center;gap:16px}
+  .check{width:54px;height:54px;border-radius:999px;background:var(--cta-bg);color:var(--ink);border:1px solid var(--cta-border);backdrop-filter:blur(20px) saturate(180%);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:var(--chk-shadow);flex-shrink:0}
+  .note{font-size:12px;color:var(--muted);text-align:center;max-width:520px;line-height:1.5}
+  body>*{position:relative;z-index:1}
+  .blobs{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+  body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.07;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")}
+  .blob{position:absolute;border-radius:50%;filter:blur(8px);opacity:var(--blob-op);transition:opacity .3s}
+  .blob.a{width:330px;height:330px;background:#FFCE2E;top:6%;left:5%}
+  .blob.b{width:300px;height:300px;background:#FF2E63;top:28%;right:3%}
+  .blob.c{width:380px;height:380px;background:#FF6A00;bottom:0%;left:28%}
+  .blob.d{width:250px;height:250px;background:#C81E5B;top:56%;left:12%}
+  .blob.e{width:280px;height:280px;background:#FFA014;top:4%;right:22%}
+</style>
+</head>
+<body class="bg-white">
+  <div class="blobs"><div class="blob a"></div><div class="blob b"></div><div class="blob c"></div><div class="blob d"></div><div class="blob e"></div></div>
+  <div class="bgswitch">
+    <button id="b-orange">🍊 Oransje</button>
+    <button id="b-white" class="on">⬜ Hvit</button>
+  </div>
+
+  <div class="title">
+    <h1>L'Ora d'Oro</h1>
+    <p>Streng Apple-glass — fungerer på oransje <i>og</i> hvit</p>
+  </div>
+
+  <div style="display:flex;justify-content:center">
+    <div class="seg"><button class="on">EN</button><button>IT</button></div>
+  </div>
+
+  <div class="card glass">
+    <div class="kicker">Step 01 · Tour</div>
+    <h2>Choose your tour</h2>
+    <p class="sub">A private sail on the Ligurian sea.</p>
+    <div class="tiles">
+      <div class="tile sel"><div class="nm">Il Classico</div><div class="meta">~3 hours · $100 / guest</div><div class="tag">The five villages from the water</div></div>
+      <div class="tile"><div class="nm">L'Ora d'Oro</div><div class="meta">~2 hours · sunset</div><div class="tag">Golden hour, made for two</div></div>
+    </div>
+    <div class="row">
+      <div><div style="font-weight:600">How many guests?</div><div class="sub" style="margin:0">Up to 8</div></div>
+      <div class="step"><button>−</button><span class="n">2</span><button>+</button></div>
+    </div>
+    <input class="gl" placeholder="Email address">
+    <button class="cta">Check availability</button>
+    <button class="ghost">Prefer WhatsApp? Message us</button>
+  </div>
+
+  <div class="card glass">
+    <div class="conf">
+      <div class="check">✓</div>
+      <div>
+        <h2 style="font-size:21px">Request sent</h2>
+        <p class="sub" style="margin:0">We're checking availability with the skipper. Your account is ready.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">Bytt mellom 🍊 oransje og ⬜ hvit øverst til høyre — samme komponenter, mørk tekst + definerte kanter/skygger holder på begge. Innholdet er likt dagens; kun uttrykket endres.</p>
+
+<script>
+  var b=document.body, o=document.getElementById("b-orange"), w=document.getElementById("b-white");
+  function set(mode){
+    b.classList.toggle("bg-orange",mode==="orange");
+    b.classList.toggle("bg-white",mode==="white");
+    o.classList.toggle("on",mode==="orange"); w.classList.toggle("on",mode==="white");
+  }
+  o.onclick=function(){set("orange")}; w.onclick=function(){set("white")};
+</script>
+</body>
+</html>

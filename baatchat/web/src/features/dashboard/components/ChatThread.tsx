@@ -112,21 +112,21 @@ export function ChatThread({
   return (
     <section className={cn("min-w-0 flex-1 flex-col", className)}>
       {/* Header */}
-      <header className="flex items-center gap-3 border-b border-white/5 px-4 py-3 md:px-6">
+      <header className="glass sticky top-0 z-10 flex items-center gap-3 border-b border-hairline px-4 py-3 md:px-6">
         {onBack && (
           <button
             type="button"
             onClick={onBack}
             aria-label="Tilbake til samtaler"
-            className="-ml-1 rounded-full p-1.5 text-white/60 transition-colors hover:bg-white/5 hover:text-white md:hidden"
+            className="-ml-1 rounded-full p-1.5 text-ink-muted transition-colors hover:bg-black/[0.04] hover:text-ink md:hidden"
           >
             <ArrowLeft className="size-5" />
           </button>
         )}
-        <Avatar initials={conversation.initials} />
+        <Avatar initials={conversation.initials} className="bg-gold/20 text-gold" />
         <div className="min-w-0 flex-1">
-          <div className="truncate font-semibold text-white">{conversation.name}</div>
-          <div className="text-xs text-white/50">{conversation.subtitle}</div>
+          <div className="truncate font-semibold text-ink">{conversation.name}</div>
+          <div className="text-xs text-ink-muted">{conversation.subtitle}</div>
         </div>
       </header>
 
@@ -138,13 +138,13 @@ export function ChatThread({
         {isLoading && threadId != null ? (
           <MessagesSkeleton />
         ) : !messages?.length ? (
-          <p className="pt-10 text-center text-sm text-white/40">
+          <p className="pt-10 text-center text-sm text-ink-muted">
             Ingen meldinger ennå. Send den første meldingen for å starte samtalen.
           </p>
         ) : (
           <>
             <div className="flex justify-center">
-              <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-white/50">
+              <span className="rounded-pill bg-surface px-3 py-1 text-xs text-ink-muted">
                 Meldinger
               </span>
             </div>
@@ -162,14 +162,14 @@ export function ChatThread({
 
       {/* Composer */}
       {locked ? (
-        <div className="border-t border-white/5 px-4 py-4 text-center text-sm text-white/40">
+        <div className="border-t border-hairline px-4 py-4 text-center text-sm text-ink-muted">
           Denne samtalen er låst.
         </div>
       ) : (
         <form
           ref={formRef}
           onSubmit={send}
-          className="border-t border-white/5 px-4 py-3"
+          className="border-t border-hairline px-4 py-3"
         >
           <div className="flex items-end gap-2">
             <textarea
@@ -186,13 +186,13 @@ export function ChatThread({
               rows={1}
               placeholder="Skriv en melding …"
               aria-label="Skriv en melding"
-              className="max-h-40 min-h-[44px] flex-1 resize-none rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm leading-relaxed text-white placeholder:text-white/40 focus:border-[#ead27e]/50 focus:outline-none"
+              className="max-h-40 min-h-[44px] flex-1 resize-none rounded-input border border-hairline bg-surface px-4 py-2.5 text-sm leading-relaxed text-ink placeholder:text-ink-muted focus:border-gold focus:outline-none"
             />
             <button
               type="submit"
               aria-label="Send melding"
               disabled={!draft.trim() || sending || tooLong}
-              className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#ead27e] text-[#07182a] transition-opacity hover:bg-[#f0dd9a] disabled:opacity-40"
+              className="flex size-11 shrink-0 items-center justify-center rounded-full bg-ink text-white transition-opacity hover:opacity-90 disabled:opacity-40"
             >
               {sending ? (
                 <Loader2 className="size-5 animate-spin" />
@@ -202,7 +202,7 @@ export function ChatThread({
             </button>
           </div>
           {sendError && (
-            <p role="alert" className="mt-1.5 px-1 text-xs text-red-300">
+            <p role="alert" className="mt-1.5 px-1 text-xs text-destructive">
               Meldingen ble ikke sendt. Sjekk nettforbindelsen og prøv igjen.
             </p>
           )}
@@ -210,7 +210,7 @@ export function ChatThread({
             <p
               className={cn(
                 "mt-1.5 px-1 text-right text-xs tabular-nums",
-                tooLong ? "text-red-300" : "text-white/40"
+                tooLong ? "text-destructive" : "text-ink-muted"
               )}
             >
               {wordCount} / {WORD_LIMIT} ord{tooLong ? " · maks 500" : ""}
@@ -233,16 +233,16 @@ function ReservationContext({ contactId }: { contactId: number }) {
   const tripLabel = `${reservations.length} ${reservations.length === 1 ? "tur" : "turer"}`;
 
   return (
-    <div className="border-b border-white/5 bg-white/[0.02]">
+    <div className="border-b border-hairline bg-surface">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex w-full items-center gap-2 px-4 py-2 text-left transition-colors hover:bg-white/[0.03] md:px-6"
+        className="flex w-full items-center gap-2 px-4 py-2 text-left transition-colors hover:bg-black/[0.04] md:px-6"
       >
-        <Ship className="size-3.5 shrink-0 text-[#ead27e]/70" />
-        <span className="text-xs font-medium text-white/50">Gjelder</span>
-        <span className="truncate text-xs text-white/75">
+        <Ship className="size-3.5 shrink-0 text-gold" />
+        <span className="text-xs font-medium text-ink-muted">Gjelder</span>
+        <span className="truncate text-xs text-ink">
           {reservations.length === 1
             ? `${reservations[0].code}${
                 reservations[0].tripDate ? ` · ${formatTripDate(reservations[0].tripDate)}` : ""
@@ -251,7 +251,7 @@ function ReservationContext({ contactId }: { contactId: number }) {
         </span>
         <ChevronDown
           className={cn(
-            "ml-auto size-4 shrink-0 text-white/40 transition-transform",
+            "ml-auto size-4 shrink-0 text-ink-muted transition-transform",
             open && "rotate-180"
           )}
         />
@@ -261,13 +261,13 @@ function ReservationContext({ contactId }: { contactId: number }) {
           {reservations.map((r) => (
             <li
               key={r.code}
-              className="flex items-baseline justify-between gap-3 rounded-md px-2 py-1 text-xs hover:bg-white/[0.03]"
+              className="flex items-baseline justify-between gap-3 rounded-md px-2 py-1 text-xs hover:bg-black/[0.04]"
             >
-              <span className="shrink-0 font-mono text-white/40">{r.code}</span>
-              <span className="min-w-0 flex-1 truncate text-white/75">
+              <span className="shrink-0 font-mono text-ink-muted">{r.code}</span>
+              <span className="min-w-0 flex-1 truncate text-ink">
                 {r.tripDate ? formatTripDate(r.tripDate) : "Ukjent dato"}
               </span>
-              <span className="flex shrink-0 items-center gap-1 text-white/45">
+              <span className="flex shrink-0 items-center gap-1 text-ink-muted">
                 <Users className="size-3" />
                 {r.guests ?? "?"}
               </span>
@@ -291,9 +291,13 @@ export function MessagesSkeleton() {
       {rows.map((r, i) => (
         <div key={i} className={cn("flex flex-col", r.mine ? "items-end" : "items-start")}>
           <Skeleton
-            className={cn("h-10 rounded-3xl", r.w, r.mine ? "rounded-br-lg" : "rounded-bl-lg")}
+            className={cn(
+              "h-10 rounded-card bg-black/[0.06]",
+              r.w,
+              r.mine ? "rounded-br-md" : "rounded-bl-md"
+            )}
           />
-          <Skeleton className="mt-1 h-2.5 w-8" />
+          <Skeleton className="mt-1 h-2.5 w-8 bg-black/[0.06]" />
         </div>
       ))}
     </>
@@ -313,19 +317,19 @@ export function MessageBubble({
     <div className={cn("flex flex-col", mine ? "items-end" : "items-start")}>
       {/* In a group thread, label other people's bubbles with who sent them. */}
       {!mine && senderLabel && (
-        <span className="mb-0.5 px-1 text-[11px] font-medium text-[#ead27e]/80">{senderLabel}</span>
+        <span className="mb-0.5 px-1 text-[11px] font-medium text-gold">{senderLabel}</span>
       )}
       <div
         className={cn(
-          "max-w-[85%] whitespace-pre-wrap break-words rounded-3xl px-4 py-2.5 text-sm shadow-[0_1px_2px_rgba(0,0,0,0.12)] md:max-w-[72%]",
+          "max-w-[85%] whitespace-pre-wrap break-words rounded-card px-4 py-2.5 text-sm shadow-soft md:max-w-[72%]",
           mine
-            ? "rounded-br-lg bg-[#ead27e] text-[#07182a]"
-            : "rounded-bl-lg bg-white/[0.14] text-white ring-1 ring-inset ring-white/10"
+            ? "rounded-br-md bg-ink text-white"
+            : "rounded-bl-md border border-hairline bg-page text-ink"
         )}
       >
         {message.body}
       </div>
-      <span className="mt-1 px-1 text-[11px] text-white/35">
+      <span className="mt-1 px-1 text-[11px] text-ink-muted">
         {messageClock(message.createdAt)}
       </span>
     </div>

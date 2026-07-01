@@ -68,7 +68,7 @@ export function AdminLoginForm() {
                   {...field}
                 />
               </FormControl>
-              <FormMessage className="ml-4 text-red-400" />
+              <FormMessage className="ml-4 text-red-600" />
             </FormItem>
           )}
         />
@@ -81,7 +81,7 @@ export function AdminLoginForm() {
               <FormControl>
                 <PasswordInput placeholder="Passord" autoComplete="current-password" {...field} />
               </FormControl>
-              <FormMessage className="ml-4 text-red-400" />
+              <FormMessage className="ml-4 text-red-600" />
             </FormItem>
           )}
         />
@@ -90,7 +90,7 @@ export function AdminLoginForm() {
           <button
             type="button"
             onClick={() => setForgot(true)}
-            className="text-sm text-white/70 underline transition-colors hover:text-white"
+            className="text-sm text-gold underline underline-offset-2 transition-opacity hover:opacity-80"
           >
             Glemt passord?
           </button>

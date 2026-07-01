@@ -79,12 +79,12 @@ export function ConversationsTab() {
         ) : isError ? (
           <ErrorBox>Kunne ikke laste samtaler.</ErrorBox>
         ) : threads.length === 0 ? (
-          <div className="rounded-xl border border-white/10 px-4 py-16 text-center text-sm text-white/40">
+          <div className="rounded-card border border-hairline px-4 py-16 text-center text-sm text-ink-muted">
             Ingen samtaler funnet.
           </div>
         ) : (
-          <div className="overflow-hidden rounded-xl border border-white/10">
-            <ul className="h-[64vh] divide-y divide-white/5 overflow-y-auto">
+          <div className="overflow-hidden rounded-card border border-hairline shadow-soft">
+            <ul className="h-[64vh] divide-y divide-hairline overflow-y-auto">
               {threads.map((t) => (
                 <li key={t.id}>
                   <button
@@ -94,24 +94,24 @@ export function ConversationsTab() {
                       setOpenOnMobile(true);
                     }}
                     className={cn(
-                      "flex w-full items-center gap-3 px-3 py-3 text-left transition-colors hover:bg-white/[0.03]",
-                      t.id === selectedId && "bg-[#ead27e]/10"
+                      "flex w-full items-center gap-3 px-3 py-3 text-left transition-colors hover:bg-black/[0.04]",
+                      t.id === selectedId && "bg-gold/10"
                     )}
                   >
                     <Initials name={t.skipperName} fallback="?" />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline justify-between gap-2">
-                        <span className="truncate text-sm font-medium text-white">
+                        <span className="truncate text-sm font-medium text-ink">
                           {t.skipperName ?? `Skipper #${t.skipperId}`}
                         </span>
-                        <span className="shrink-0 text-[11px] text-white/35">
+                        <span className="shrink-0 text-[11px] text-ink-muted">
                           {t.lastMessageAt ? clock(t.lastMessageAt).split(",")[0] : ""}
                         </span>
                       </div>
-                      <div className="truncate text-xs text-white/45">
+                      <div className="truncate text-xs text-ink-muted">
                         ↔ {t.customerName ?? `Kunde #${t.customerId}`}
                       </div>
-                      <div className="mt-0.5 truncate text-xs text-white/40">
+                      <div className="mt-0.5 truncate text-xs text-ink-muted">
                         {t.preview || "Ingen meldinger"} · {t.messageCount} meld.
                       </div>
                     </div>
@@ -122,7 +122,7 @@ export function ConversationsTab() {
           </div>
         )}
 
-        <div className="mt-3 flex items-center justify-between text-xs text-white/45">
+        <div className="mt-3 flex items-center justify-between text-xs text-ink-muted">
           <span className="flex items-center gap-2">
             {total > 0 ? `Viser ${from}–${to} av ${total.toLocaleString("nb-NO")}` : "—"}
             {isFetching && <Loader2 className="size-3 animate-spin" />}
@@ -160,7 +160,7 @@ function PageButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="flex size-8 items-center justify-center rounded-lg border border-white/10 text-white/70 transition-colors hover:bg-white/5 disabled:opacity-30"
+      className="flex size-8 items-center justify-center rounded-input border border-hairline text-ink-muted transition-colors hover:bg-black/[0.04] disabled:opacity-30"
     >
       {children}
     </button>
@@ -172,36 +172,36 @@ function MessagePanel({ threadId, onBack }: { threadId: number | null; onBack: (
 
   if (threadId == null) {
     return (
-      <div className="flex h-[72vh] items-center justify-center rounded-xl border border-white/10 text-sm text-white/40">
+      <div className="flex h-[72vh] items-center justify-center rounded-card border border-hairline text-sm text-ink-muted">
         Velg en samtale.
       </div>
     );
   }
 
   return (
-    <div className="flex h-[72vh] flex-col overflow-hidden rounded-xl border border-white/10 bg-white/[0.015]">
+    <div className="flex h-[72vh] flex-col overflow-hidden rounded-card border border-hairline bg-white shadow-soft">
       {data?.thread && (
-        <header className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
+        <header className="flex items-center gap-3 border-b border-hairline px-4 py-3">
           <button
             type="button"
             aria-label="Tilbake til samtaler"
             onClick={onBack}
-            className="-ml-1 flex size-8 shrink-0 items-center justify-center rounded-md text-white/70 transition-colors hover:bg-white/5 lg:hidden"
+            className="-ml-1 flex size-8 shrink-0 items-center justify-center rounded-input text-ink-muted transition-colors hover:bg-black/[0.04] lg:hidden"
           >
             <ArrowLeft className="size-5" />
           </button>
           <Avatar initials={initialsOf(data.thread.skipperName, "?")} />
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5 truncate text-sm font-semibold text-white">
+            <div className="flex items-center gap-1.5 truncate text-sm font-semibold text-ink">
               {data.thread.skipperName ?? `Skipper #${data.thread.skipperId}`}
-              <span className="text-white/40">↔</span>
-              <span className="font-normal text-white/70">
+              <span className="text-ink-muted">↔</span>
+              <span className="font-normal text-ink-muted">
                 {data.thread.customerName ?? `Kunde #${data.thread.customerId}`}
               </span>
             </div>
-            <div className="text-xs text-white/45">Skipper ↔ Kunde</div>
+            <div className="text-xs text-ink-muted">Skipper ↔ Kunde</div>
           </div>
-          <span className="rounded-full bg-white/5 px-2.5 py-1 text-[11px] text-white/40">
+          <span className="rounded-full bg-surface px-2.5 py-1 text-[11px] text-ink-muted">
             kun lesing
           </span>
         </header>
@@ -209,15 +209,15 @@ function MessagePanel({ threadId, onBack }: { threadId: number | null; onBack: (
 
       <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4 md:px-6">
         {isLoading ? (
-          <div className="flex justify-center pt-8 text-white/40">
+          <div className="flex justify-center pt-8 text-ink-muted">
             <Loader2 className="size-5 animate-spin" />
           </div>
         ) : !data?.messages.length ? (
-          <p className="pt-10 text-center text-sm text-white/40">Ingen meldinger i denne samtalen.</p>
+          <p className="pt-10 text-center text-sm text-ink-muted">Ingen meldinger i denne samtalen.</p>
         ) : (
           <>
             <div className="flex justify-center">
-              <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-white/50">Meldinger</span>
+              <span className="rounded-full bg-surface px-3 py-1 text-xs text-ink-muted">Meldinger</span>
             </div>
             {data.messages.map((m) => {
               const fromCustomer = m.senderRole === "customer";
@@ -226,20 +226,20 @@ function MessagePanel({ threadId, onBack }: { threadId: number | null; onBack: (
                   key={m.id}
                   className={cn("flex flex-col", fromCustomer ? "items-end" : "items-start")}
                 >
-                  <span className="mb-1 px-1 text-[11px] text-white/40">
+                  <span className="mb-1 px-1 text-[11px] text-ink-muted">
                     {fromCustomer ? "Kunde" : "Skipper"}
                   </span>
                   <div
                     className={cn(
                       "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm md:max-w-[72%]",
                       fromCustomer
-                        ? "rounded-br-md bg-[#ead27e]/70 text-white"
-                        : "rounded-bl-md bg-white/[0.07] text-white/90"
+                        ? "rounded-br-md bg-gold/15 text-ink"
+                        : "rounded-bl-md bg-surface text-ink"
                     )}
                   >
                     {m.body}
                   </div>
-                  <span className="mt-1 px-1 text-[11px] text-white/35">{clock(m.createdAt)}</span>
+                  <span className="mt-1 px-1 text-[11px] text-ink-muted">{clock(m.createdAt)}</span>
                 </div>
               );
             })}

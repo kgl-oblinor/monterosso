@@ -120,22 +120,22 @@ export function RegisterForm() {
         <Form key="register-verify" {...verifyForm}>
           <form onSubmit={onVerify} className="space-y-5" noValidate>
             <div className="space-y-3 text-center">
-              <h2 className="text-xl font-semibold">Sjekk e-posten din</h2>
-              <p className="text-sm text-white/80">
+              <h2 className="text-xl font-semibold text-ink">Sjekk e-posten din</h2>
+              <p className="text-sm text-ink-muted">
                 Vi sendte en 6-sifret kode. Oppgi koden og velg et passord.
               </p>
               {sentTo && (
-                <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-white">
-                  <Mail className="size-4 shrink-0 text-[#ead27e]" />
+                <div className="mx-auto inline-flex items-center gap-2 rounded-pill border border-hairline bg-surface px-4 py-1.5 text-sm text-ink">
+                  <Mail className="size-4 shrink-0 text-gold" />
                   Sjekk innboksen til <span className="font-semibold">{sentTo}</span>
                 </div>
               )}
             </div>
 
             {env.useMocks && (
-              <p className="text-center text-sm text-white/70">
+              <p className="text-center text-sm text-ink-muted">
                 Demo-modus — bruk kode{" "}
-                <span className="font-mono font-medium text-white">{MOCK_OTP_CODE}</span>.
+                <span className="font-mono font-medium text-ink">{MOCK_OTP_CODE}</span>.
               </p>
             )}
 
@@ -163,7 +163,7 @@ export function RegisterForm() {
                       }
                     />
                   </FormControl>
-                  <FormMessage className="ml-4 text-red-400" />
+                  <FormMessage className="ml-4 text-red-600" />
                 </FormItem>
               )}
             />
@@ -184,7 +184,7 @@ export function RegisterForm() {
                       onChange={field.onChange}
                     />
                   </FormControl>
-                  <FormMessage className="ml-4 text-red-400" />
+                  <FormMessage className="ml-4 text-red-600" />
                 </FormItem>
               )}
             />
@@ -219,7 +219,7 @@ export function RegisterForm() {
               <FormItem>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className="h-12 rounded-full border-2 border-white bg-white px-5 text-base text-black shadow-lg data-[placeholder]:text-black/60">
+                    <SelectTrigger className="h-12 rounded-input border border-hairline bg-white px-5 text-base text-ink data-[placeholder]:text-ink-muted">
                       <SelectValue placeholder="Velg metode" />
                     </SelectTrigger>
                   </FormControl>
@@ -229,7 +229,7 @@ export function RegisterForm() {
                     <SelectItem value="reservation">Med reservasjonskode</SelectItem>
                   </SelectContent>
                 </Select>
-                <FormMessage className="ml-4 text-red-400" />
+                <FormMessage className="ml-4 text-red-600" />
               </FormItem>
             )}
           />
@@ -248,7 +248,7 @@ export function RegisterForm() {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage className="ml-4 text-red-400" />
+                  <FormMessage className="ml-4 text-red-600" />
                 </FormItem>
               )}
             />
@@ -269,7 +269,7 @@ export function RegisterForm() {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage className="ml-4 text-red-400" />
+                  <FormMessage className="ml-4 text-red-600" />
                 </FormItem>
               )}
             />
@@ -290,7 +290,7 @@ export function RegisterForm() {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage className="ml-4 text-red-400" />
+                  <FormMessage className="ml-4 text-red-600" />
                 </FormItem>
               )}
             />
@@ -300,11 +300,11 @@ export function RegisterForm() {
             Send kode
           </AuthButton>
 
-          <p className="text-center text-sm text-white/70">
+          <p className="text-center text-sm text-ink-muted">
             <button
               type="button"
               onClick={() => setSecure(false)}
-              className="text-white underline transition-colors hover:text-white/80"
+              className="text-gold underline underline-offset-2 transition-opacity hover:opacity-80"
             >
               Tilbake — kom rett inn uten passord
             </button>
@@ -325,9 +325,9 @@ export function RegisterForm() {
         )}
 
         {passwordless.isError && isNeedsPassword(passwordless.error) && (
-          <p className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-center text-sm text-white/80">
+          <p className="rounded-input border border-hairline bg-surface px-4 py-3 text-center text-sm text-ink-muted">
               Du har allerede en konto med passord.{" "}
-              <Link to="/login" className="text-white underline">
+              <Link to="/login" className="text-gold underline underline-offset-2 transition-opacity hover:opacity-80">
                 Logg inn med passord
               </Link>
               .
@@ -349,7 +349,7 @@ export function RegisterForm() {
                   {...field}
                 />
               </FormControl>
-              <FormMessage className="ml-4 text-red-400" />
+              <FormMessage className="ml-4 text-red-600" />
             </FormItem>
           )}
         />
@@ -358,7 +358,7 @@ export function RegisterForm() {
           Continue
         </AuthButton>
 
-        <p className="text-center text-sm text-white/70">
+        <p className="text-center text-sm text-ink-muted">
           Vil du sikre kontoen?{" "}
           <button
             type="button"
@@ -366,17 +366,17 @@ export function RegisterForm() {
               setStep("identify");
               setSecure(true);
             }}
-            className="text-white underline transition-colors hover:text-white/80"
+            className="text-gold underline underline-offset-2 transition-opacity hover:opacity-80"
           >
             Lag et passord
           </button>
           <br />
-          <span className="text-white/50">Du kan også gjøre det senere i profilen.</span>
+          <span className="text-ink-muted">Du kan også gjøre det senere i profilen.</span>
         </p>
 
-        <p className="text-center text-sm text-white/70">
+        <p className="text-center text-sm text-ink-muted">
           Har du allerede konto?{" "}
-          <Link to="/login" className="text-white underline transition-colors hover:text-white/80">
+          <Link to="/login" className="text-gold underline underline-offset-2 transition-opacity hover:opacity-80">
             Logg inn
           </Link>
         </p>

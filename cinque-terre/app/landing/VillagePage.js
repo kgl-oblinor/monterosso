@@ -35,7 +35,7 @@ export default function VillagePage({
   onService,
 }) {
   return (
-    <article className="village-page">
+    <article className="village-page vp-apple">
       <nav className="vp-nav vp-nav--top">
         <button type="button" onClick={onPrev}>
           ← {prevName}

@@ -33,20 +33,20 @@ export function ConversationsPanel({
     <aside
       className={cn(
         // Mobile: fill the space left of the icon rail (flex-1). md+: fixed 320px column.
-        "min-w-0 flex-1 flex-col border-r border-white/5 md:w-[320px] md:flex-none",
+        "min-w-0 flex-1 flex-col border-r border-hairline md:w-[320px] md:flex-none",
         className
       )}
     >
       <div className="px-4 pb-3 pt-6">
-        <h1 className="mb-4 text-2xl font-bold tracking-tight">Chat</h1>
+        <h1 className="mb-4 text-2xl font-bold tracking-tight text-ink">Chat</h1>
         <div className="relative">
-          <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-white/40" />
+          <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-ink-muted" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Søk i samtaler"
             aria-label="Søk i samtaler"
-            className="h-11 w-full rounded-full border border-white/10 bg-white/[0.06] pl-11 pr-4 text-sm text-white placeholder:text-white/40 focus:border-[#ead27e]/50 focus:outline-none"
+            className="h-11 w-full rounded-pill border border-hairline bg-surface pl-11 pr-4 text-sm text-ink placeholder:text-ink-muted focus:border-gold focus:outline-none"
           />
         </div>
       </div>
@@ -55,14 +55,14 @@ export function ConversationsPanel({
         {filtered.length === 0 &&
           (conversations.length === 0 ? (
             <div className="px-4 py-10 text-center">
-              <p className="text-sm font-medium text-white/70">Ingen samtaler ennå</p>
-              <p className="mt-2 text-sm leading-relaxed text-white/40">
+              <p className="text-sm font-medium text-ink">Ingen samtaler ennå</p>
+              <p className="mt-2 text-sm leading-relaxed text-ink-muted">
                 Når en reservasjon kobles til kontoen din, dukker den andre parten opp her –
                 klar til å chatte.
               </p>
             </div>
           ) : (
-            <p className="px-2 py-8 text-center text-sm text-white/40">
+            <p className="px-2 py-8 text-center text-sm text-ink-muted">
               Ingen kontakter funnet.
             </p>
           ))}
@@ -109,7 +109,7 @@ export function ConversationsPanel({
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="px-3 pb-2 pt-3 text-xs font-semibold uppercase tracking-wider text-white/40">
+    <p className="px-3 pb-2 pt-3 text-xs font-semibold uppercase tracking-wider text-ink-muted">
       {children}
     </p>
   );
@@ -130,40 +130,40 @@ function ConversationRow({
       onClick={onClick}
       aria-current={selected}
       className={cn(
-        "flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-colors hover:bg-white/[0.04]",
+        "flex w-full items-center gap-3 rounded-card px-3 py-3 text-left transition-colors hover:bg-black/[0.04]",
         selected &&
-          "bg-[#ead27e]/10 ring-1 ring-inset ring-[#ead27e]/20 hover:bg-[#ead27e]/10"
+          "bg-surface ring-1 ring-inset ring-gold/30 hover:bg-surface"
       )}
     >
-      <Avatar initials={conversation.initials} className="size-12 text-base" />
+      <Avatar initials={conversation.initials} className="size-12 bg-gold/20 text-base text-gold" />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline justify-between gap-2">
           <span className="flex min-w-0 items-center gap-1.5">
             {conversation.kind === "group" && (
-              <Users className="size-3.5 shrink-0 text-[#ead27e]/70" />
+              <Users className="size-3.5 shrink-0 text-gold" />
             )}
-            <span className="truncate text-[15px] font-semibold text-white">
+            <span className="truncate text-[15px] font-semibold text-ink">
               {conversation.name}
             </span>
           </span>
-          <span className="shrink-0 text-xs text-white/40">{conversation.timeLabel}</span>
+          <span className="shrink-0 text-xs text-ink-muted">{conversation.timeLabel}</span>
         </div>
         <div className="mt-0.5 flex items-center justify-between gap-2">
           <span
             className={cn(
               "truncate text-sm",
               conversation.unread > 0
-                ? "font-medium text-white"
+                ? "font-medium text-ink"
                 : conversation.preview
-                  ? "text-white/55"
-                  : "italic text-white/30"
+                  ? "text-ink-muted"
+                  : "italic text-ink-muted"
             )}
           >
             {conversation.preview ||
               (conversation.kind === "group" ? conversation.subtitle : "Ingen meldinger ennå")}
           </span>
           {conversation.unread > 0 && (
-            <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#ead27e] text-[11px] font-semibold text-[#07182a]">
+            <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-gold text-[11px] font-semibold text-white">
               {conversation.unread}
             </span>
           )}

@@ -21,19 +21,19 @@ export function PendingApproval() {
   return (
     <AuthLayout>
       <div className="space-y-6 text-center">
-        <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-amber-400/15">
-          <Clock className="size-8 text-amber-400" />
+        <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-gold/15">
+          <Clock className="size-8 text-gold" />
         </div>
         <div className="space-y-2">
-          <h2 className="text-xl font-semibold">Venter på godkjenning</h2>
-          <p className="text-sm text-white/80">
+          <h2 className="text-xl font-semibold text-ink">Venter på godkjenning</h2>
+          <p className="text-sm text-ink-muted">
             Takk! E-posten din er bekreftet. En administrator må godkjenne tilgangen din før du
             kan starte samtaler. Du får beskjed så snart kontoen er aktivert.
           </p>
         </div>
 
         {refresh.isSuccess && refresh.data.status !== "active" && (
-          <p className="text-sm text-amber-300">Fortsatt under behandling — prøv igjen senere.</p>
+          <p className="text-sm text-ink-muted">Fortsatt under behandling — prøv igjen senere.</p>
         )}
 
         <div className="flex flex-col gap-3">

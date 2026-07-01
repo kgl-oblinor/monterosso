@@ -1,11 +1,22 @@
 /* ============================================================
    Content / SEO pages — Monterosso · Cinque Terre
-   Own stylesheet, but the SAME design system as landing.css:
-   spacing 4px-base (--s1..--s8) · type 1.2 minor-third (--t-*) ·
-   sharp corners (radius 0) · separation by AIR not lines ·
-   ink #07182a / cream #f7f1e3 / gold #ead27e / terracotta #a8743f.
-   Fonts are already loaded globally in layout.js.
+   Clean Apple reading design (shared tokens across the site's
+   content surfaces): clean white background · solid white surfaces,
+   no blur · neutral hairlines rgba(0,0,0,.08) · gold #C49A34 kept
+   as a restrained accent only (eyebrows, links, thin rules) · warm
+   ink #2A1810 / muted rgba(42,24,16,.6) · SF Pro / system font ·
+   soft small shadows · 16px card radius · primary CTA = filled ink pill.
    ============================================================ */
+
+/* clean white reading page; scrolls and uses the native cursor
+   (globals.css locks the booking app). */
+body:has(.content) {
+  overflow-y: auto;
+  overflow-x: clip;
+  height: auto;
+  cursor: auto;
+  background: #fffefc;
+}
 
 .content {
   /* spacing — 4px base */
@@ -16,17 +27,19 @@
   --t-lg: 23px; --t-xl: 28px; --t-2xl: 33px;
   /* letter-spacing */
   --ls-1: 0.02em; --ls-2: 0.08em; --ls-3: 0.14em;
-  /* colour — fasit palette */
-  --ink: #07182a;            /* blekk — primary text */
-  --ink-soft: rgba(7, 24, 42, 0.62);
-  --cream: #f7f1e3;          /* solid cream surface (per fasit) */
-  --cream-deep: #efe6d2;     /* faint band */
-  --gold: #ead27e;           /* vintage poster gold */
-  --terracotta: #a8743f;     /* link / accent */
+  /* colour — clean Apple tokens */
+  --ink: #2A1810;                       /* warm dark ink — primary text */
+  --ink-soft: rgba(42, 24, 16, 0.60);   /* muted secondary */
+  --gold: #C49A34;                       /* gold — restrained accent only */
+  --gold-line: rgba(0, 0, 0, 0.08);      /* neutral hairline */
+  --glass: #ffffff;                      /* solid white surface */
+  --glass-2: #f6f5f3;                    /* barely-tinted secondary surface */
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 6px 18px rgba(0, 0, 0, 0.06);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
 
-  background: var(--cream);
+  background: transparent;
   color: var(--ink);
-  font-family: "Fraunces", Georgia, serif;
+  font-family: var(--font);
   font-weight: 400;
   line-height: 1.6;
   min-height: 100svh;
@@ -42,27 +55,29 @@
   padding: 0 var(--s5);
 }
 
-/* ---------- top bar ---------- */
+/* ---------- top bar — clean, transparent, hairline divider ---------- */
 .content__nav {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: var(--s4);
+  margin: 0;
   padding: var(--s5) 0;
+  background: transparent;
+  border-bottom: 1px solid var(--gold-line);
 }
 .content__brand {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font);
+  font-weight: 600;
   font-size: var(--t-base);
-  letter-spacing: var(--ls-3);
-  text-transform: uppercase;
+  letter-spacing: -0.01em;
   color: var(--ink);
   text-decoration: none;
 }
 .content__navlink {
   font-size: var(--t-sm);
-  letter-spacing: var(--ls-2);
-  color: var(--terracotta);
+  letter-spacing: 0;
+  color: var(--ink-soft);
   text-decoration: none;
 }
 .content__navlink:hover { color: var(--gold); }
@@ -70,18 +85,21 @@
 /* ---------- hero ---------- */
 .content__hero { padding: var(--s7) 0 var(--s2); }
 .content__eyebrow {
-  font-family: "Great Vibes", cursive;
-  font-size: var(--t-xl);
+  font-family: var(--font);
+  font-weight: 600;
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-3);
+  text-transform: uppercase;
   color: var(--gold);
-  margin: 0 0 var(--s2);
+  margin: 0 0 var(--s3);
   line-height: 1;
 }
 .content h1 {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font);
+  font-weight: 600;
   font-size: clamp(33px, 6vw, 52px);
   line-height: 1.08;
-  letter-spacing: var(--ls-1);
+  letter-spacing: -0.02em;
   margin: 0 0 var(--s4);
 }
 .content__lede {
@@ -103,38 +121,42 @@
 .content section { padding: var(--s7) 0; }
 .content section:first-of-type { padding-top: var(--s5); }
 .content h2 {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font);
+  font-weight: 600;
   font-size: clamp(24px, 4vw, 32px);
-  letter-spacing: var(--ls-1);
+  letter-spacing: -0.015em;
   margin: 0 0 var(--s4);
 }
 .content h3 {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font);
+  font-weight: 600;
   font-size: var(--t-md);
   margin: var(--s6) 0 var(--s2);
 }
 .content p { font-size: var(--t-md); margin: 0 0 var(--s4); max-width: 64ch; }
 .content p:last-child { margin-bottom: 0; }
-.content a { color: var(--terracotta); text-decoration: underline; text-underline-offset: 3px; }
+.content a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 3px;
+}
 .content a:hover { color: var(--gold); }
 
 .content ul { margin: 0 0 var(--s4); padding-left: var(--s5); }
 .content li { font-size: var(--t-md); margin: 0 0 var(--s2); max-width: 60ch; }
 
-/* pull-quote / fact band — gold ledge, no boxing lines */
+/* pull-quote / fact band — clean blockquote, thin gold rule */
 .content__fact {
-  background: var(--cream-deep);
-  border-left: 3px solid var(--gold);
-  padding: var(--s5) var(--s5);
-  margin: var(--s5) 0;
-  font-size: var(--t-md);
-  font-style: italic;
-  color: var(--ink-soft);
+  border-left: 2px solid var(--gold);
+  padding: var(--s1) 0 var(--s1) var(--s5);
+  margin: var(--s6) 0;
+  font-size: var(--t-lg);
+  line-height: 1.5;
+  color: var(--ink);
 }
 
-/* ---------- primary CTA — solid gold "ticket" (matches landing) ---------- */
+/* ---------- primary CTA — filled ink pill ---------- */
 .content__cta {
   text-align: center;
   padding: var(--s7) 0 var(--s5);
@@ -146,18 +168,18 @@
 }
 .content__cta-link {
   display: inline-block;
-  font-family: "Limelight", "Fraunces", serif;
+  font-family: var(--font);
+  font-weight: 600;
   font-size: var(--t-base);
-  letter-spacing: var(--ls-3);
-  text-transform: uppercase;
-  color: var(--ink);
+  letter-spacing: var(--ls-1);
+  color: #fff;
   text-decoration: none;
-  padding: var(--s4) var(--s6);
-  border: 1px solid var(--ink);
-  background: var(--gold);
-  transition: filter 0.2s ease, transform 0.1s ease;
+  padding: var(--s3) var(--s6);
+  border-radius: 999px;
+  background: var(--ink);
+  transition: transform 0.18s ease, opacity 0.2s ease;
 }
-.content__cta-link:hover { filter: brightness(1.05); }
+.content__cta-link:hover { transform: translateY(-1px); opacity: 0.88; }
 .content__cta-link:active { transform: translateY(1px); }
 
 /* ---------- nearby / internal links ---------- */
@@ -169,7 +191,7 @@
 }
 .content__links a { font-size: var(--t-base); }
 
-/* ---------- hub card grid — air between cards, no grid lines ---------- */
+/* ---------- hub card grid — restrained white cards, hairline ---------- */
 .content__grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -177,14 +199,20 @@
   margin: var(--s2) 0 0;
 }
 .content__card {
-  background: var(--cream-deep);
+  background: var(--glass);
+  border: 1px solid var(--gold-line);
+  border-radius: 16px;
   padding: var(--s5);
   text-decoration: none;
   color: var(--ink);
   display: block;
-  transition: filter 0.2s ease;
+  box-shadow: var(--shadow);
+  transition: transform 0.18s ease, box-shadow 0.2s ease;
 }
-.content__card:hover { filter: brightness(0.98); }
+.content__card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), 0 12px 28px rgba(0, 0, 0, 0.09);
+}
 .content__card h3 {
   margin: 0 0 var(--s2);
   font-size: var(--t-md);
@@ -209,7 +237,7 @@
 .content__foot h2 { font-size: var(--t-sm); letter-spacing: var(--ls-3); text-transform: uppercase; }
 .content__foot ul { padding-left: var(--s5); }
 .content__foot li { font-size: var(--t-sm); line-height: 1.5; }
-.content__foot a { color: var(--terracotta); word-break: break-word; }
+.content__foot a { color: var(--ink); word-break: break-word; }
 
 @media (max-width: 520px) {
   .content__wrap { padding: 0 var(--s4); }

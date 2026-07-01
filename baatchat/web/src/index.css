@@ -48,7 +48,7 @@
   --sidebar-border: #14304a;
   --sidebar-ring: #ead27e;
   /* SwiftUI / SF system typography — the signed-in app reads like a native Apple surface. */
-  --font-sans: -apple-system, "SF Pro Text", "SF Pro Display", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
   --font-serif: -apple-system, "SF Pro Display", Georgia, serif;
   --font-mono: ui-monospace, "SF Mono", "Geist Mono", monospace;
   /* Apple-widget squircle radius — generous, continuous corners (this is the logged-in app,
@@ -56,6 +56,26 @@
   --radius: 1.25rem;
   --tracking-normal: 0em;
   --spacing: 0.25rem;
+
+  /* ───────────────────────────────────────────────────────────────────────
+     APPLE WHITE SYSTEM — canonical design tokens (single source of truth).
+     The whole project is migrating onto these. Reference them either as CSS
+     vars (var(--page)) or via the generated Tailwind utilities mapped below
+     in @theme inline (bg-page, text-ink, text-ink-muted, text-gold,
+     border-hairline, bg-surface, bg-glass, rounded-card, shadow-soft, …).
+     Values are exact and identical across every surface — do not diverge.
+     ─────────────────────────────────────────────────────────────────────── */
+  --page: #fffefc; /* clean white page background */
+  --ink: #2a1810; /* primary text / ink-filled CTA */
+  --ink-muted: rgba(42, 24, 16, 0.6); /* secondary/muted text */
+  --gold: #c49a34; /* RESTRAINED accent — eyebrows, links, thin rules, selected ring */
+  --hairline: rgba(0, 0, 0, 0.08); /* neutral 1px divider/border */
+  --surface-2: #f6f5f3; /* secondary surface / subtle fill */
+  --glass: rgba(255, 255, 255, 0.72); /* frosted material — FUNCTIONAL layer only */
+  --soft-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 6px 18px rgba(0, 0, 0, 0.06);
+  --card-radius: 16px; /* cards */
+  --input-radius: 14px; /* inputs (12–16px) */
+  --pill-radius: 999px; /* pills / buttons */
 }
 
 .dark {
@@ -93,7 +113,7 @@
   --sidebar-accent-foreground: #f7f1e3;
   --sidebar-border: #1c3a55;
   --sidebar-ring: #ead27e;
-  --font-sans: -apple-system, "SF Pro Text", "SF Pro Display", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
   --font-serif: -apple-system, "SF Pro Display", Georgia, serif;
   --font-mono: ui-monospace, "SF Mono", "Geist Mono", monospace;
   --radius: 1.25rem;
@@ -148,6 +168,22 @@
   --radius-xl: 1.25rem;  /* 20px — cards, widgets */
   --radius-2xl: 1.375rem;/* 22px — sheets, modals */
   --radius-3xl: 1.75rem; /* 28px — hero widgets */
+
+  /* Apple white system → Tailwind utilities (see :root for the raw values).
+     bg-page · text-ink / bg-ink · text-ink-muted · text-gold / border-gold /
+     bg-gold · border-hairline · bg-surface · bg-glass · rounded-card /
+     rounded-input / rounded-pill · shadow-soft */
+  --color-page: var(--page);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-gold: var(--gold);
+  --color-hairline: var(--hairline);
+  --color-surface: var(--surface-2);
+  --color-glass: var(--glass);
+  --radius-card: var(--card-radius);
+  --radius-input: var(--input-radius);
+  --radius-pill: var(--pill-radius);
+  --shadow-soft: var(--soft-shadow);
 }
 
 @layer base {
@@ -155,7 +191,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-page text-ink;
     font-family: var(--font-sans);
   }
   html {
@@ -186,6 +222,40 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+  }
+
+  /* Frosted glass — the FUNCTIONAL material layer only (nav/rail when floating,
+     sheets/modals, floating controls). NEVER place it behind body text. */
+  .glass {
+    background-color: var(--glass);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+  }
+
+  /* Primary CTA — ink-filled pill. One per screen, verb label, always a press
+     state, ≥44px tap target. (#2A1810 background, white label.) */
+  .btn-ink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 1.25rem;
+    border-radius: var(--pill-radius);
+    background-color: var(--ink);
+    color: #fff;
+    font-weight: 600;
+    line-height: 1;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+  .btn-ink:hover {
+    opacity: 0.92;
+  }
+  .btn-ink:active {
+    transform: scale(0.97);
+    opacity: 0.85;
+  }
+  .btn-ink:disabled {
+    opacity: 0.4;
   }
 
   /* Apple-widget soft, layered shadows — low + diffuse, never a hard line.

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Monterosso — ny design (vann + Apple-widgets)</title>
+  <style>
+    :root{
+      --ink:#0a2230;
+      --glass: rgba(255,255,255,.16);
+      --glass-line: rgba(255,255,255,.30);
+      --text:#f4fbff;
+      --muted: rgba(244,251,255,.72);
+      --gold:#ead27e;
+      --r: 28px;      /* widget squircle */
+      --r-sm: 16px;   /* inner controls */
+      --s: 8px;       /* strict 8px spacing base */
+      --font: -apple-system, "SF Pro Display","SF Pro Text", system-ui, sans-serif;
+    }
+    *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html,body{ height:100%; margin:0; }
+    body{
+      font-family:var(--font); color:var(--text);
+      background:#0b3a52;
+      overflow-x:hidden;
+    }
+
+    /* ============ SHIMMERING WATER ============ */
+    .sea{ position:fixed; inset:0; z-index:-2; overflow:hidden;
+      background:
+        radial-gradient(140% 100% at 50% -10%, #1f6f93 0%, #0d4a63 42%, #08374f 100%);
+    }
+    .sea .glint{ position:absolute; border-radius:50%; filter:blur(60px); opacity:.5;
+      background:radial-gradient(circle, rgba(255,255,255,.55), rgba(255,255,255,0) 70%); }
+    .g1{ width:48vw; height:48vw; left:-8vw; top:-6vw; animation:drift1 19s ease-in-out infinite alternate; }
+    .g2{ width:36vw; height:36vw; right:-6vw; top:8vh; opacity:.35; animation:drift2 23s ease-in-out infinite alternate; }
+    .g3{ width:60vw; height:60vw; left:20vw; bottom:-24vw; opacity:.30; animation:drift3 27s ease-in-out infinite alternate; }
+    @keyframes drift1{ to{ transform:translate(8vw,6vh) scale(1.12);} }
+    @keyframes drift2{ to{ transform:translate(-6vw,4vh) scale(1.18);} }
+    @keyframes drift3{ to{ transform:translate(-8vw,-5vh) scale(1.1);} }
+
+    /* moving caustic sheen */
+    .sea .sheen{ position:absolute; inset:-20%;
+      background:repeating-linear-gradient(98deg, rgba(255,255,255,0) 0 22px, rgba(255,255,255,.05) 26px, rgba(255,255,255,0) 34px);
+      mix-blend-mode:screen; animation:sheen 14s linear infinite; }
+    @keyframes sheen{ to{ transform:translateX(-120px) translateY(40px);} }
+
+    /* real ripple via animated SVG turbulence, kept subtle */
+    .ripple{ position:fixed; inset:0; z-index:-1; opacity:.22; pointer-events:none;
+      backdrop-filter:url(#water); }
+
+    /* ============ APPLE-WIDGET PRIMITIVES ============ */
+    .wrap{ max-width:1100px; margin:0 auto; padding:calc(var(--s)*5) calc(var(--s)*3) calc(var(--s)*10); }
+    .top{ display:flex; align-items:center; gap:calc(var(--s)*1.5); margin-bottom:calc(var(--s)*4); }
+    .top .dot{ width:34px;height:34px;border-radius:50%; background:linear-gradient(160deg,#2aa0c8,#0d4a63);
+      box-shadow:0 4px 14px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.4);}
+    .top h1{ font-size:17px; font-weight:600; margin:0; letter-spacing:.2px;}
+    .top .tag{ margin-left:auto; font-size:12px; color:var(--muted);}
+
+    .grid{ display:grid; gap:calc(var(--s)*2.5);
+      grid-template-columns: 1.4fr 1fr; align-items:start; }
+    @media (max-width:760px){ .grid{ grid-template-columns:1fr; } }
+
+    .widget{
+      background:var(--glass);
+      backdrop-filter:saturate(160%) blur(30px); -webkit-backdrop-filter:saturate(160%) blur(30px);
+      border:1px solid var(--glass-line);
+      border-radius:var(--r);
+      box-shadow:0 1px 0 rgba(255,255,255,.18) inset, 0 18px 50px rgba(2,18,28,.38);
+      padding:calc(var(--s)*3);
+    }
+    .widget h2{ font-size:13px; font-weight:600; letter-spacing:1px; text-transform:uppercase;
+      color:var(--muted); margin:0 0 calc(var(--s)*2);}
+    .lead{ font-size:26px; font-weight:600; letter-spacing:.2px; margin:0 0 calc(var(--s)*0.5);}
+    .sub{ color:var(--muted); font-size:14px; margin:0 0 calc(var(--s)*3);}
+
+    /* segmented control (Apple) */
+    .seg{ display:flex; gap:4px; padding:4px; border-radius:var(--r-sm);
+      background:rgba(0,0,0,.20); border:1px solid rgba(255,255,255,.12); }
+    .seg button{ flex:1; border:0; cursor:pointer; font-family:inherit; font-size:14px; font-weight:600;
+      color:var(--text); padding:calc(var(--s)*1.5) 0; border-radius:12px; background:transparent; transition:.18s;}
+    .seg button.on{ background:rgba(255,255,255,.92); color:var(--ink); box-shadow:0 2px 8px rgba(0,0,0,.25);}
+
+    .row{ display:flex; align-items:center; justify-content:space-between; gap:var(--s);
+      padding:calc(var(--s)*2) 0; border-top:1px solid rgba(255,255,255,.12); }
+    .row:first-of-type{ border-top:0; }
+    .row .k{ color:var(--muted); font-size:14px; }
+    .row .v{ font-size:16px; font-weight:600; }
+
+    .step{ display:flex; align-items:center; gap:calc(var(--s)*2); }
+    .step button{ width:34px;height:34px;border-radius:50%; border:1px solid rgba(255,255,255,.25);
+      background:rgba(255,255,255,.10); color:var(--text); font-size:18px; cursor:pointer; line-height:1;}
+    .step .n{ min-width:22px; text-align:center; font-size:17px; font-weight:700;}
+
+    .total{ display:flex; align-items:baseline; justify-content:space-between; margin:calc(var(--s)*2) 0 calc(var(--s)*3);}
+    .total .amt{ font-size:30px; font-weight:700; letter-spacing:.5px;}
+    .total .per{ color:var(--muted); font-size:13px;}
+
+    .cta{ display:flex; align-items:center; justify-content:center; gap:calc(var(--s)*1.5);
+      width:100%; border:0; cursor:pointer; font-family:inherit; font-size:16px; font-weight:700;
+      color:var(--ink); background:linear-gradient(180deg,#f6e7a6,#e7c866);
+      padding:calc(var(--s)*2.2) 0; border-radius:var(--r-sm);
+      box-shadow:0 10px 24px rgba(160,120,30,.35), inset 0 1px 0 rgba(255,255,255,.6);}
+    .reassure{ text-align:center; color:var(--muted); font-size:12.5px; margin-top:calc(var(--s)*1.5);}
+
+    /* small side widgets */
+    .mini .big{ font-size:34px; font-weight:700; line-height:1; }
+    .mini .lbl{ color:var(--muted); font-size:13px; margin-top:6px;}
+    .chips{ display:flex; gap:var(--s); flex-wrap:wrap; margin-top:calc(var(--s)*1.5);}
+    .chip{ font-size:12.5px; padding:6px 12px; border-radius:999px;
+      background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18);}
+    .stars{ color:var(--gold); letter-spacing:2px; font-size:15px;}
+    .stack{ display:grid; gap:calc(var(--s)*2.5); }
+    .note{ text-align:center; color:var(--muted); font-size:12px; margin-top:calc(var(--s)*5);}
+  </style>
+</head>
+<body>
+  <!-- water -->
+  <div class="sea">
+    <div class="glint g1"></div><div class="glint g2"></div><div class="glint g3"></div>
+    <div class="sheen"></div>
+  </div>
+  <div class="ripple"></div>
+  <svg width="0" height="0" style="position:absolute">
+    <filter id="water">
+      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.018" numOctaves="2" seed="7" result="n">
+        <animate attributeName="baseFrequency" dur="26s" values="0.008 0.018; 0.012 0.022; 0.008 0.018" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="14"/>
+    </filter>
+  </svg>
+
+  <div class="wrap">
+    <div class="top">
+      <div class="dot"></div>
+      <h1>Paolona · Cinque Terre</h1>
+      <span class="tag">ny design — vann + Apple-widgets</span>
+    </div>
+
+    <div class="grid">
+      <!-- BOOKING widget -->
+      <section class="widget" aria-label="Bestilling">
+        <h2>Bestilling</h2>
+        <p class="lead">Tre rolige timer langs kysten</p>
+        <p class="sub">Privat tur for opptil 8 · de fem landsbyene fra sjøen · badestopp i en skjult bukt.</p>
+
+        <div class="seg" role="group" aria-label="Avgang">
+          <button>Soloppgang</button>
+          <button class="on">Solnedgang</button>
+          <button>Dag</button>
+        </div>
+
+        <div class="row" style="margin-top:calc(var(--s)*2)">
+          <span class="k">Dato</span>
+          <span class="v">Fre 27. juni</span>
+        </div>
+        <div class="row">
+          <span class="k">Gjester</span>
+          <span class="step"><button>−</button><span class="n">2</span><button>+</button></span>
+        </div>
+
+        <div class="total">
+          <div><div class="amt">€200</div><div class="per">€100 per gjest · ingen forskuddsbetaling</div></div>
+          <span class="stars">★★★★★</span>
+        </div>
+
+        <button class="cta">💬 Bestill via WhatsApp</button>
+        <p class="reassure">Vi bekrefter i chatten · endre hva som helst</p>
+      </section>
+
+      <!-- side widgets -->
+      <div class="stack">
+        <section class="widget mini" aria-label="Sjø i dag">
+          <h2>Sjøen i dag</h2>
+          <div class="big">Rolig</div>
+          <div class="lbl">24°C · sikt klar · lett bris</div>
+          <div class="chips">
+            <span class="chip">Badestopp ✓</span>
+            <span class="chip">Aperitivo om bord</span>
+          </div>
+        </section>
+        <section class="widget mini" aria-label="Skipper">
+          <h2>Din skipper</h2>
+          <div class="big" style="font-size:22px">Andrea</div>
+          <div class="lbl">Tiburon Boat Services · Monterosso</div>
+          <div class="chips">
+            <span class="chip">★ 4.8 · 216 anmeldelser</span>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <p class="note">Samme språk skal gjelde alle fire flatene: landingsside · bruker · skipper · admin.</p>
+  </div>
+</body>
+</html>

@@ -59,12 +59,12 @@ export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
   if (view === "done") {
     return (
       <div className="space-y-6 text-center">
-        <div className="mx-auto flex size-11 items-center justify-center rounded-full bg-[#ead27e]/20">
-          <CheckCircle className="size-6 text-[#ead27e]" />
+        <div className="mx-auto flex size-11 items-center justify-center rounded-full bg-gold/15">
+          <CheckCircle className="size-6 text-gold" />
         </div>
         <div className="space-y-1">
-          <h2 className="text-xl font-semibold">Passordet er oppdatert</h2>
-          <p className="text-sm text-white/80">Du kan nå logge inn med det nye passordet.</p>
+          <h2 className="text-xl font-semibold text-ink">Passordet er oppdatert</h2>
+          <p className="text-sm text-ink-muted">Du kan nå logge inn med det nye passordet.</p>
         </div>
         <AuthButton type="button" onClick={onBack}>
           Tilbake til innlogging
@@ -78,17 +78,17 @@ export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
       <Form key="forgot-reset" {...resetForm}>
         <form onSubmit={onReset} className="space-y-5" noValidate>
           <div className="space-y-2 text-center">
-            <h2 className="text-xl font-semibold">Sjekk e-posten din</h2>
-            <p className="text-sm text-white/80">
+            <h2 className="text-xl font-semibold text-ink">Sjekk e-posten din</h2>
+            <p className="text-sm text-ink-muted">
               Vi sendte en 6-sifret kode til{" "}
-              <span className="font-semibold text-white">{sentTo ?? email}</span>.
+              <span className="font-semibold text-ink">{sentTo ?? email}</span>.
             </p>
           </div>
 
           {env.useMocks && (
-            <p className="text-center text-sm text-white/70">
+            <p className="text-center text-sm text-ink-muted">
               Demo-modus — bruk kode{" "}
-              <span className="font-mono font-medium text-white">{MOCK_OTP_CODE}</span>.
+              <span className="font-mono font-medium text-ink">{MOCK_OTP_CODE}</span>.
             </p>
           )}
 
@@ -116,7 +116,7 @@ export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
                     }
                   />
                 </FormControl>
-                <FormMessage className="ml-4 text-red-400" />
+                <FormMessage className="ml-4 text-red-600" />
               </FormItem>
             )}
           />
@@ -137,7 +137,7 @@ export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
                     onChange={field.onChange}
                   />
                 </FormControl>
-                <FormMessage className="ml-4 text-red-400" />
+                <FormMessage className="ml-4 text-red-600" />
               </FormItem>
             )}
           />
@@ -162,15 +162,15 @@ export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
           type="button"
           onClick={onBack}
           aria-label="Tilbake til innlogging"
-          className="flex items-center gap-1 text-sm text-white/70 transition-colors hover:text-white"
+          className="flex items-center gap-1 text-sm text-ink-muted transition-colors hover:text-ink"
         >
           <ArrowLeft className="size-4" />
           Tilbake
         </button>
 
         <div className="space-y-2 text-center">
-          <h2 className="text-xl font-semibold">Glemt passord?</h2>
-          <p className="text-sm text-white/80">
+          <h2 className="text-xl font-semibold text-ink">Glemt passord?</h2>
+          <p className="text-sm text-ink-muted">
             Oppgi e-posten din, så sender vi deg en kode for å tilbakestille passordet.
           </p>
         </div>
@@ -192,7 +192,7 @@ export function ForgotPasswordFlow({ onBack }: { onBack: () => void }) {
                   {...field}
                 />
               </FormControl>
-              <FormMessage className="ml-4 text-red-400" />
+              <FormMessage className="ml-4 text-red-600" />
             </FormItem>
           )}
         />

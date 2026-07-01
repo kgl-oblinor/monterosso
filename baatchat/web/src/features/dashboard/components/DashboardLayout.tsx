@@ -44,7 +44,7 @@ export function DashboardLayout() {
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[radial-gradient(120%_120%_at_50%_0%,#0f2740_0%,#0a1f33_42%,#07182a_100%)] text-white">
+    <div className="flex h-screen w-full overflow-hidden bg-page text-ink">
       <IconRail active={section} onSelect={setSection} />
 
       {section !== "chat" ? (
@@ -55,7 +55,7 @@ export function DashboardLayout() {
           <ChatThreadSkeleton className="hidden md:flex" />
         </>
       ) : isError ? (
-        <div className="flex flex-1 items-center justify-center text-sm text-red-300">
+        <div className="flex flex-1 items-center justify-center text-sm text-[#b04a3a]">
           Kunne ikke laste samtaler.
         </div>
       ) : (
@@ -86,7 +86,7 @@ export function DashboardLayout() {
               />
             )
           ) : (
-            <div className="hidden flex-1 items-center justify-center text-sm text-white/40 md:flex">
+            <div className="hidden flex-1 items-center justify-center text-sm text-ink-muted md:flex">
               {conversations.length
                 ? "Velg en samtale for å komme i gang."
                 : "Du har ingen kontakter å chatte med ennå."}

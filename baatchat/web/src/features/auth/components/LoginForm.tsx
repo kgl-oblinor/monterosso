@@ -93,7 +93,7 @@ export function LoginForm() {
           <AuthHeading title="Logg inn med passord" subtitle="For kontoer som er sikret med passord" />
 
           {needsPasswordHint && (
-            <p className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-center text-sm text-white/80">
+            <p className="rounded-input border border-hairline bg-surface px-4 py-3 text-center text-sm text-ink-muted">
               Denne kontoen er sikret med passord. Skriv passordet ditt for å logge inn.
             </p>
           )}
@@ -116,7 +116,7 @@ export function LoginForm() {
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="ml-4 text-red-400" />
+                <FormMessage className="ml-4 text-red-600" />
               </FormItem>
             )}
           />
@@ -129,7 +129,7 @@ export function LoginForm() {
                 <FormControl>
                   <PasswordInput placeholder="Passord" autoComplete="current-password" {...field} />
                 </FormControl>
-                <FormMessage className="ml-4 text-red-400" />
+                <FormMessage className="ml-4 text-red-600" />
               </FormItem>
             )}
           />
@@ -138,7 +138,7 @@ export function LoginForm() {
             <button
               type="button"
               onClick={() => setForgot(true)}
-              className="text-sm text-white/70 underline transition-colors hover:text-white"
+              className="text-sm text-gold underline underline-offset-2 transition-opacity hover:opacity-80"
             >
               Glemt passord?
             </button>
@@ -148,11 +148,11 @@ export function LoginForm() {
             Logg inn
           </AuthButton>
 
-          <p className="text-center text-sm text-white/70">
+          <p className="text-center text-sm text-ink-muted">
             <button
               type="button"
               onClick={() => setMode("passwordless")}
-              className="text-white underline transition-colors hover:text-white/80"
+              className="text-gold underline underline-offset-2 transition-opacity hover:opacity-80"
             >
               Tilbake — logg inn uten passord
             </button>
@@ -187,7 +187,7 @@ export function LoginForm() {
                   {...field}
                 />
               </FormControl>
-              <FormMessage className="ml-4 text-red-400" />
+              <FormMessage className="ml-4 text-red-600" />
             </FormItem>
           )}
         />
@@ -196,12 +196,12 @@ export function LoginForm() {
           Continue
         </AuthButton>
 
-        <p className="text-center text-sm text-white/70">
+        <p className="text-center text-sm text-ink-muted">
           Har du et passord?{" "}
           <button
             type="button"
             onClick={() => setMode("password")}
-            className="text-white underline transition-colors hover:text-white/80"
+            className="text-gold underline underline-offset-2 transition-opacity hover:opacity-80"
           >
             Logg inn med passord
           </button>

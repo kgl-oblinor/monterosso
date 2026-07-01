@@ -58,7 +58,7 @@ export function IconRail({ active, onSelect }: IconRailProps) {
 
       <nav
         className={cn(
-          "z-30 flex shrink-0 flex-col items-stretch border-r border-white/5 bg-[#07182a] py-4 transition-[width] duration-300 ease-out md:bg-transparent",
+          "z-30 flex shrink-0 flex-col items-stretch border-r border-hairline bg-page py-4 transition-[width] duration-300 ease-out",
           expanded ? "w-60" : "w-16",
           // On mobile the expanded rail floats over the content as a drawer.
           expanded ? "fixed inset-y-0 left-0 md:static" : "relative"
@@ -67,7 +67,7 @@ export function IconRail({ active, onSelect }: IconRailProps) {
         <div className={cn("flex items-center gap-2 px-3", expanded ? "justify-between" : "justify-center")}>
           <img src={logoUrl} alt="Monterosso" className="size-9 rounded-xl" />
           {expanded && (
-            <span className="truncate font-serif text-sm tracking-wide text-white/70">
+            <span className="truncate font-serif text-sm tracking-wide text-ink-muted">
               Monterosso
             </span>
           )}
@@ -79,7 +79,7 @@ export function IconRail({ active, onSelect }: IconRailProps) {
           aria-label={expanded ? "Lukk sidemeny" : "Åpne sidemeny"}
           aria-expanded={expanded}
           className={cn(
-            "mx-2 mt-3 flex h-10 items-center gap-3 rounded-xl text-white/45 transition-colors hover:bg-white/5 hover:text-white",
+            "mx-2 mt-3 flex h-10 items-center gap-3 rounded-xl text-ink-muted transition-colors hover:bg-black/[0.04] hover:text-ink",
             expanded ? "px-3" : "justify-center px-0"
           )}
         >
@@ -106,8 +106,8 @@ export function IconRail({ active, onSelect }: IconRailProps) {
                   "flex h-11 items-center gap-3 rounded-xl transition-colors",
                   expanded ? "px-3" : "justify-center px-0",
                   isActive
-                    ? "bg-[#ead27e]/15 text-[#ead27e] shadow-[inset_0_0_0_1px_rgba(234,210,126,0.25)]"
-                    : "text-white/55 hover:bg-white/5 hover:text-white"
+                    ? "bg-surface text-gold ring-1 ring-inset ring-gold/30"
+                    : "text-ink-muted hover:bg-black/[0.04] hover:text-ink"
                 )}
               >
                 <Icon className="size-5 shrink-0" />
@@ -126,20 +126,20 @@ export function IconRail({ active, onSelect }: IconRailProps) {
             aria-current={active === "profile"}
             title={expanded ? undefined : "Profil"}
             className={cn(
-              "flex items-center gap-3 outline-none focus-visible:ring-2 focus-visible:ring-[#ead27e]",
-              expanded ? "w-full rounded-xl px-2 py-1.5 hover:bg-white/5" : "rounded-full",
-              active === "profile" && expanded && "bg-[#ead27e]/15"
+              "flex items-center gap-3 outline-none focus-visible:ring-2 focus-visible:ring-gold",
+              expanded ? "w-full rounded-xl px-2 py-1.5 hover:bg-black/[0.04]" : "rounded-full",
+              active === "profile" && expanded && "bg-surface"
             )}
           >
             <Avatar
               initials={initialsOf(user?.name ?? user?.email)}
               className={cn(
-                "bg-[#ead27e]/30 text-[#ead27e]",
-                active === "profile" && "ring-2 ring-[#ead27e]"
+                "bg-gold/20 text-gold",
+                active === "profile" && "ring-2 ring-gold"
               )}
             />
             {expanded && (
-              <span className="min-w-0 flex-1 truncate text-left text-sm text-white/70">
+              <span className="min-w-0 flex-1 truncate text-left text-sm text-ink-muted">
                 {user?.name ?? "Profil"}
               </span>
             )}

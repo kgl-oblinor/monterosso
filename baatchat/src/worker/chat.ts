@@ -231,7 +231,7 @@ export async function myReservations(env: Env, user: SessionUser): Promise<MyRes
          FROM reservations r
          LEFT JOIN customers c ON r.customer_id = c.customer_id
         WHERE r.skipper_id = ?
-        ORDER BY r.trip_date DESC, r.reservation_id DESC`
+        ORDER BY r.status = 'requested' DESC, r.trip_date DESC, r.reservation_id DESC`
     )
       .bind(user.id)
       .all<MyReservation>();

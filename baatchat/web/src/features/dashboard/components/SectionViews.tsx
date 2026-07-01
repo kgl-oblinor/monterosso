@@ -39,12 +39,16 @@ import {
 import { InviteDialog } from "./InviteDialog";
 import { shortcutsForRole, type SectionKey } from "../sections";
 
+/** Shared inset-list container: one rounded card, hairline dividers between rows. */
+const GROUP_CLASS =
+  "overflow-hidden rounded-card border border-hairline bg-surface shadow-soft divide-y divide-hairline";
+
 /** Shared frame: a scrollable column with a title, matching the chat shell's tone. */
 function SectionFrame({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="flex min-w-0 flex-1 flex-col">
       <div className="px-6 pb-3 pt-6">
-        <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-ink">{title}</h1>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6">{children}</div>
     </section>
@@ -55,18 +59,19 @@ function SectionFrame({ title, children }: { title: string; children: React.Reac
 function ComingSoon({ icon: Icon, title, hint }: { icon: LucideIcon; title: string; hint: string }) {
   return (
     <div className="flex h-full items-center justify-center px-2">
-      <div className="material-card shadow-widget flex max-w-sm flex-col items-center rounded-3xl px-8 py-10 text-center">
-        <span className="mb-4 flex size-16 items-center justify-center rounded-2xl bg-[#ead27e]/15 text-[#ead27e] shadow-[inset_0_0_0_1px_rgba(234,210,126,0.2)]">
+      <div className="flex max-w-sm flex-col items-center rounded-card border border-hairline bg-surface px-8 py-10 text-center shadow-soft">
+        <span className="mb-4 flex size-16 items-center justify-center rounded-input bg-gold/15 text-gold">
           <Icon className="size-7" />
         </span>
-        <p className="text-base font-semibold text-white/85">{title}</p>
-        <p className="mt-2 text-sm leading-relaxed text-white/50">{hint}</p>
+        <p className="text-base font-semibold text-ink">{title}</p>
+        <p className="mt-2 text-sm leading-relaxed text-ink-muted">{hint}</p>
       </div>
     </div>
   );
 }
 
 const STATUS_LABEL: Record<string, string> = {
+  requested: "Ny forespørsel",
   booked: "Bekreftet",
   completed: "Fullført",
   cancelled: "Avlyst",
@@ -79,17 +84,22 @@ function statusLabel(status: string): string {
 function TripRow({ trip, contactLabel }: { trip: MyReservation; contactLabel: string }) {
   const [inviteOpen, setInviteOpen] = useState(false);
   const canInvite = trip.status !== "cancelled";
+  const isRequest = trip.status === "requested";
   return (
-    <li className="material-card shadow-widget flex items-center justify-between gap-4 rounded-2xl px-5 py-4">
+    <li
+      className={`flex items-center justify-between gap-4 rounded-card border border-hairline bg-surface px-5 py-4 shadow-soft ${
+        isRequest ? "ring-1 ring-inset ring-gold/30" : ""
+      }`}
+    >
       <div className="min-w-0">
         <div className="flex items-baseline gap-2">
-          <span className="font-mono text-sm font-semibold text-white">{trip.code}</span>
-          <span className="text-xs text-white/45">{formatTripDate(trip.tripDate)}</span>
+          <span className="font-mono text-sm font-semibold text-ink">{trip.code}</span>
+          <span className="text-xs text-ink-muted">{formatTripDate(trip.tripDate)}</span>
         </div>
-        <div className="mt-0.5 truncate text-sm text-white/55">
-          <span className="text-white/40">{contactLabel}: </span>
+        <div className="mt-0.5 truncate text-sm text-ink-muted">
+          <span className="text-ink-muted">{contactLabel}: </span>
           {trip.contactName ?? "—"}
-          {trip.guests != null && <span className="text-white/40"> · {trip.guests} gjester</span>}
+          {trip.guests != null && <span className="text-ink-muted"> · {trip.guests} gjester</span>}
         </div>
       </div>
       <div className="flex shrink-0 items-center gap-2">
@@ -97,13 +107,19 @@ function TripRow({ trip, contactLabel }: { trip: MyReservation; contactLabel: st
           <button
             type="button"
             onClick={() => setInviteOpen(true)}
-            className="flex items-center gap-1.5 rounded-full border border-white/10 px-3.5 py-2 text-xs font-semibold text-white/65 transition-colors hover:border-[#ead27e]/40 hover:bg-[#ead27e]/10 hover:text-[#ead27e] active:scale-[0.98]"
+            className="flex items-center gap-1.5 rounded-pill border border-hairline px-3.5 py-2 text-xs font-semibold text-ink-muted transition-colors hover:bg-surface hover:text-ink active:scale-[0.98]"
           >
             <UserPlus className="size-3.5" />
             <span className="hidden sm:inline">Inviter reisefølget</span>
           </button>
         )}
-        <span className="rounded-full bg-white/[0.08] px-3 py-1 text-xs font-medium text-white/75">
+        <span
+          className={`rounded-pill px-3 py-1 text-xs font-medium ${
+            isRequest
+              ? "bg-gold/15 text-gold ring-1 ring-inset ring-gold/30"
+              : "bg-surface text-ink-muted ring-1 ring-inset ring-hairline"
+          }`}
+        >
           {statusLabel(trip.status)}
         </span>
       </div>
@@ -126,9 +142,9 @@ function TripsSection() {
   return (
     <SectionFrame title={title}>
       {isLoading ? (
-        <p className="px-1 py-8 text-sm text-white/40">Laster …</p>
+        <p className="px-1 py-8 text-sm text-ink-muted">Laster …</p>
       ) : isError ? (
-        <p className="px-1 py-8 text-sm text-red-300">Kunne ikke laste turene.</p>
+        <p className="px-1 py-8 text-sm text-red-600">Kunne ikke laste turene.</p>
       ) : !data || data.length === 0 ? (
         <ComingSoon
           icon={Compass}
@@ -185,13 +201,13 @@ function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) 
   return (
     <section className="flex min-w-0 flex-1 flex-col overflow-y-auto">
       <div className="mx-auto w-full max-w-2xl px-5 py-10 md:px-6 md:py-14">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#ead27e]/80">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
           Velkommen ombord
         </p>
-        <h1 className="mt-2 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+        <h1 className="mt-2 text-3xl font-bold leading-tight tracking-tight text-ink md:text-4xl">
           God dag, {firstNameOf(user?.name, user?.email)}.
         </h1>
-        <p className="mt-3 max-w-md text-sm leading-relaxed text-white/55">
+        <p className="mt-3 max-w-md text-sm leading-relaxed text-ink-muted">
           {isSkipper
             ? "Rolig oversikt over avgangene og samtalene dine. Sjøen venter."
             : "Et stille øyeblikk før turen. Her finner du det viktigste samlet."}
@@ -199,38 +215,38 @@ function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) 
 
         {/* Next-trip hero widget */}
         <div className="mt-8">
-          <h2 className="px-1 text-xs font-semibold uppercase tracking-wider text-white/40">
+          <h2 className="px-1 text-xs font-semibold uppercase tracking-wider text-ink-muted">
             {isSkipper ? "Neste avgang" : "Neste tur"}
           </h2>
           {isLoading ? (
-            <div className="material-card shadow-widget mt-3 rounded-3xl px-6 py-7 text-sm text-white/40">
+            <div className="mt-3 rounded-card border border-hairline bg-surface px-6 py-7 text-sm text-ink-muted shadow-soft">
               Laster …
             </div>
           ) : next ? (
             <button
               type="button"
               onClick={() => onNavigate("trips")}
-              className="material-card shadow-widget mt-3 flex w-full items-center justify-between gap-4 rounded-3xl px-6 py-7 text-left transition-[transform,background-color] hover:bg-white/[0.09] active:scale-[0.99]"
+              className="mt-3 flex w-full items-center justify-between gap-4 rounded-card border border-hairline bg-surface px-6 py-7 text-left shadow-soft transition-[transform,background-color] hover:bg-page active:scale-[0.99]"
             >
               <div className="min-w-0">
                 <div className="flex items-baseline gap-2">
-                  <span className="font-mono text-base font-semibold text-white">{next.code}</span>
-                  <span className="text-xs text-white/45">{formatTripDate(next.tripDate)}</span>
+                  <span className="font-mono text-base font-semibold text-ink">{next.code}</span>
+                  <span className="text-xs text-ink-muted">{formatTripDate(next.tripDate)}</span>
                 </div>
-                <div className="mt-1.5 truncate text-sm text-white/60">
-                  <span className="text-white/40">{contactLabel}: </span>
+                <div className="mt-1.5 truncate text-sm text-ink-muted">
+                  <span className="text-ink-muted">{contactLabel}: </span>
                   {next.contactName ?? "—"}
                   {next.guests != null && (
-                    <span className="text-white/40"> · {next.guests} gjester</span>
+                    <span className="text-ink-muted"> · {next.guests} gjester</span>
                   )}
                 </div>
               </div>
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[#ead27e]/15 text-[#ead27e]">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-input bg-gold/15 text-gold">
                 <Compass className="size-5" />
               </span>
             </button>
           ) : (
-            <div className="material-card shadow-widget mt-3 rounded-3xl px-6 py-7 text-sm leading-relaxed text-white/45">
+            <div className="mt-3 rounded-card border border-hairline bg-surface px-6 py-7 text-sm leading-relaxed text-ink-muted shadow-soft">
               {isSkipper
                 ? "Ingen kommende avganger ennå. Når noen bestiller, dukker den opp her."
                 : "Ingen kommende turer ennå. Når en reservasjon kobles til kontoen din, ser du den her."}
@@ -240,7 +256,7 @@ function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) 
 
         {/* Shortcut widget grid */}
         <div className="mt-8">
-          <h2 className="px-1 text-xs font-semibold uppercase tracking-wider text-white/40">
+          <h2 className="px-1 text-xs font-semibold uppercase tracking-wider text-ink-muted">
             Snarveier
           </h2>
           <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -249,9 +265,9 @@ function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) 
                 key={key}
                 type="button"
                 onClick={() => onNavigate(key)}
-                className="material-card shadow-widget flex flex-col gap-3 rounded-2xl p-4 text-left text-sm font-medium text-white/75 transition-[transform,background-color] hover:bg-white/[0.09] hover:text-white active:scale-[0.98]"
+                className="flex flex-col gap-3 rounded-card border border-hairline bg-surface p-4 text-left text-sm font-medium text-ink shadow-soft transition-[transform,background-color] hover:bg-page active:scale-[0.98]"
               >
-                <span className="flex size-9 items-center justify-center rounded-xl bg-[#ead27e]/15 text-[#ead27e]">
+                <span className="flex size-9 items-center justify-center rounded-input bg-gold/15 text-gold">
                   <Icon className="size-4" />
                 </span>
                 <span className="truncate">{label}</span>
@@ -285,9 +301,9 @@ function ProfileField({
   onChange: (v: string) => void;
 }) {
   return (
-    <label className="flex items-center gap-3 px-4 py-3.5 transition-colors focus-within:bg-white/[0.03]">
-      <Icon className="size-4 shrink-0 text-[#ead27e]/70" />
-      <span className="w-28 shrink-0 text-sm text-white/55">{label}</span>
+    <label className="flex items-center gap-3 px-4 py-3.5 transition-colors focus-within:bg-page">
+      <Icon className="size-4 shrink-0 text-gold" />
+      <span className="w-28 shrink-0 text-sm text-ink-muted">{label}</span>
       <input
         type={type}
         inputMode={inputMode}
@@ -295,7 +311,7 @@ function ProfileField({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="min-w-0 flex-1 bg-transparent text-right text-sm text-white placeholder:text-white/30 focus:outline-none"
+        className="min-w-0 flex-1 bg-transparent text-right text-sm text-ink placeholder:text-ink-muted focus:outline-none"
       />
     </label>
   );
@@ -347,16 +363,16 @@ function ProfileSection() {
   return (
     <SectionFrame title="Profil">
       {isLoading ? (
-        <p className="px-1 py-8 text-sm text-white/40">Laster …</p>
+        <p className="px-1 py-8 text-sm text-ink-muted">Laster …</p>
       ) : isError ? (
-        <p className="px-1 py-8 text-sm text-red-300">Kunne ikke laste profilen.</p>
+        <p className="px-1 py-8 text-sm text-red-600">Kunne ikke laste profilen.</p>
       ) : (
         <div className="mx-auto w-full max-w-md">
-          <p className="text-sm leading-relaxed text-white/55">
+          <p className="text-sm leading-relaxed text-ink-muted">
             Detaljene dine. Legg til eller endre, og lagre — så når skipperen deg lett.
           </p>
 
-          <div className="inset-list shadow-widget mt-8">
+          <div className={`mt-8 ${GROUP_CLASS}`}>
             <ProfileField
               icon={User}
               label="Navn"
@@ -397,17 +413,17 @@ function ProfileSection() {
           </div>
 
           {save.isError && (
-            <p className="mt-4 text-sm text-red-300">{(save.error as Error).message}</p>
+            <p className="mt-4 text-sm text-red-600">{(save.error as Error).message}</p>
           )}
           {saved && !save.isPending && (
-            <p className="mt-4 text-sm text-[#ead27e]">Lagret.</p>
+            <p className="mt-4 text-sm text-gold">Lagret.</p>
           )}
 
           <button
             type="button"
             onClick={onSave}
             disabled={save.isPending}
-            className="mt-6 w-full rounded-full bg-[#ead27e] px-5 py-3 text-sm font-semibold text-[#07182a] shadow-widget transition-[transform,background-color] hover:bg-[#f0dd9a] active:scale-[0.98] disabled:opacity-50"
+            className="btn-ink mt-6 w-full"
           >
             {save.isPending ? "Lagrer …" : "Lagre endringer"}
           </button>
@@ -415,7 +431,7 @@ function ProfileSection() {
           <button
             type="button"
             onClick={onLogout}
-            className="mt-8 flex w-full items-center justify-center gap-2 rounded-full border border-white/10 px-5 py-3 text-sm text-white/55 transition-colors hover:border-white/20 hover:bg-white/[0.04] hover:text-white active:scale-[0.98]"
+            className="mt-8 flex w-full items-center justify-center gap-2 rounded-pill border border-hairline px-5 py-3 text-sm text-ink-muted transition-colors hover:bg-surface hover:text-ink active:scale-[0.98]"
           >
             <LogOut className="size-4" />
             Logg ut
@@ -432,8 +448,8 @@ function ProfileSection() {
 function SettingsGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="mt-8 first:mt-6">
-      <h2 className="px-1 text-xs font-semibold uppercase tracking-wider text-white/40">{title}</h2>
-      <div className="inset-list shadow-widget mt-3">{children}</div>
+      <h2 className="px-1 text-xs font-semibold uppercase tracking-wider text-ink-muted">{title}</h2>
+      <div className={`mt-3 ${GROUP_CLASS}`}>{children}</div>
     </div>
   );
 }
@@ -441,15 +457,15 @@ function SettingsGroup({ title, children }: { title: string; children: React.Rea
 /** A single labelled row holding an arbitrary control (input/select/etc.), right-aligned. */
 function SettingRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="flex items-center gap-3 px-4 py-3.5 transition-colors focus-within:bg-white/[0.03]">
-      <span className="w-32 shrink-0 text-sm text-white/55">{label}</span>
+    <label className="flex items-center gap-3 px-4 py-3.5 transition-colors focus-within:bg-page">
+      <span className="w-32 shrink-0 text-sm text-ink-muted">{label}</span>
       <div className="flex min-w-0 flex-1 items-center justify-end gap-2">{children}</div>
     </label>
   );
 }
 
 const FIELD_CLASS =
-  "min-w-0 flex-1 bg-transparent text-right text-sm text-white placeholder:text-white/30 focus:outline-none";
+  "min-w-0 flex-1 bg-transparent text-right text-sm text-ink placeholder:text-ink-muted focus:outline-none";
 
 const BACKGROUNDS: { key: ThemeBackground; label: string }[] = [
   { key: "bay", label: "Bukt" },
@@ -549,12 +565,12 @@ function SiteSection() {
   return (
     <SectionFrame title="Min side">
       {isLoading ? (
-        <p className="px-1 py-8 text-sm text-white/40">Laster …</p>
+        <p className="px-1 py-8 text-sm text-ink-muted">Laster …</p>
       ) : isError || !data ? (
-        <p className="px-1 py-8 text-sm text-red-300">Kunne ikke laste innstillingene.</p>
+        <p className="px-1 py-8 text-sm text-red-600">Kunne ikke laste innstillingene.</p>
       ) : (
         <div className="mx-auto w-full max-w-md pb-4">
-          <p className="text-sm leading-relaxed text-white/55">
+          <p className="text-sm leading-relaxed text-ink-muted">
             Dette er kontrollpanelet ditt. Det du endrer her, styrer den offentlige landingssiden.
           </p>
 
@@ -598,7 +614,7 @@ function SiteSection() {
                   dirtied();
                 }}
               />
-              <span className="shrink-0 text-sm text-white/40">€</span>
+              <span className="shrink-0 text-sm text-ink-muted">€</span>
             </SettingRow>
             <SettingRow label="Maks gjester">
               <input
@@ -620,14 +636,14 @@ function SiteSection() {
             {departures.map((dep, i) => (
               <div key={dep.key} className="flex items-center gap-2 px-4 py-3">
                 <input
-                  className="min-w-0 flex-1 bg-transparent text-sm text-white placeholder:text-white/30 focus:outline-none"
+                  className="min-w-0 flex-1 bg-transparent text-sm text-ink placeholder:text-ink-muted focus:outline-none"
                   placeholder="Navn"
                   value={dep.label}
                   onChange={(e) => setDeparture(i, { label: e.target.value })}
                 />
                 <input
                   type="time"
-                  className="shrink-0 bg-transparent text-sm text-white/85 [color-scheme:dark] focus:outline-none"
+                  className="shrink-0 bg-transparent text-sm text-ink [color-scheme:light] focus:outline-none"
                   value={dep.time}
                   onChange={(e) => setDeparture(i, { time: e.target.value })}
                 />
@@ -635,7 +651,7 @@ function SiteSection() {
                   type="button"
                   onClick={() => removeDeparture(i)}
                   aria-label="Fjern avgang"
-                  className="flex size-7 shrink-0 items-center justify-center rounded-full text-white/35 transition-colors hover:bg-white/[0.06] hover:text-red-300"
+                  className="flex size-7 shrink-0 items-center justify-center rounded-pill text-ink-muted transition-colors hover:bg-surface hover:text-red-600"
                 >
                   <Trash2 className="size-3.5" />
                 </button>
@@ -644,7 +660,7 @@ function SiteSection() {
             <button
               type="button"
               onClick={addDeparture}
-              className="flex w-full items-center gap-2 px-4 py-3 text-sm text-[#ead27e]/90 transition-colors hover:bg-white/[0.03]"
+              className="flex w-full items-center gap-2 px-4 py-3 text-sm text-gold transition-colors hover:bg-page"
             >
               <Plus className="size-4" />
               Legg til avgang
@@ -654,7 +670,7 @@ function SiteSection() {
           {/* Utseende */}
           <SettingsGroup title="Utseende">
             <div className="px-4 py-4">
-              <p className="text-sm text-white/55">Bakgrunn</p>
+              <p className="text-sm text-ink-muted">Bakgrunn</p>
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {BACKGROUNDS.map((bg) => (
                   <button
@@ -664,14 +680,14 @@ function SiteSection() {
                       setBackground(bg.key);
                       dirtied();
                     }}
-                    className={`flex items-center gap-2.5 rounded-xl border p-2 text-left text-sm transition-colors ${
+                    className={`flex items-center gap-2.5 rounded-input border p-2 text-left text-sm transition-colors ${
                       background === bg.key
-                        ? "border-[#ead27e]/60 bg-[#ead27e]/10 text-white"
-                        : "border-white/10 text-white/70 hover:bg-white/[0.04]"
+                        ? "border-transparent bg-surface text-gold ring-1 ring-inset ring-gold/30"
+                        : "border-hairline text-ink-muted hover:bg-surface"
                     }`}
                   >
                     <span
-                      className="size-7 shrink-0 rounded-lg shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
+                      className="size-7 shrink-0 rounded-lg shadow-[inset_0_0_0_1px_rgba(0,0,0,0.08)]"
                       style={{ background: BACKGROUND_SWATCH[bg.key] }}
                     />
                     <span className="truncate">{bg.label}</span>
@@ -680,7 +696,7 @@ function SiteSection() {
               </div>
             </div>
             <div className="px-4 py-4">
-              <p className="text-sm text-white/55">Farge</p>
+              <p className="text-sm text-ink-muted">Farge</p>
               <div className="mt-3 flex items-center gap-2.5">
                 {ACCENT_PRESETS.map((c) => (
                   <button
@@ -693,13 +709,13 @@ function SiteSection() {
                     aria-label={`Velg farge ${c}`}
                     className={`size-8 rounded-full transition-transform active:scale-90 ${
                       accent.toLowerCase() === c.toLowerCase()
-                        ? "ring-2 ring-white/80 ring-offset-2 ring-offset-[#0a1f33]"
+                        ? "ring-2 ring-ink ring-offset-2 ring-offset-page"
                         : ""
                     }`}
                     style={{ backgroundColor: c }}
                   />
                 ))}
-                <label className="ml-1 flex size-8 cursor-pointer items-center justify-center rounded-full border border-white/15 text-white/50 hover:bg-white/[0.06]">
+                <label className="ml-1 flex size-8 cursor-pointer items-center justify-center rounded-full border border-hairline text-ink-muted hover:bg-surface">
                   <input
                     type="color"
                     value={accent}
@@ -716,15 +732,15 @@ function SiteSection() {
           </SettingsGroup>
 
           {save.isError && (
-            <p className="mt-4 text-sm text-red-300">{(save.error as Error).message}</p>
+            <p className="mt-4 text-sm text-red-600">{(save.error as Error).message}</p>
           )}
-          {saved && !save.isPending && <p className="mt-4 text-sm text-[#ead27e]">Lagret.</p>}
+          {saved && !save.isPending && <p className="mt-4 text-sm text-gold">Lagret.</p>}
 
           <button
             type="button"
             onClick={onSave}
             disabled={save.isPending}
-            className="mt-6 w-full rounded-full bg-[#ead27e] px-5 py-3 text-sm font-semibold text-[#07182a] shadow-widget transition-[transform,background-color] hover:bg-[#f0dd9a] active:scale-[0.98] disabled:opacity-50"
+            className="btn-ink mt-6 w-full"
           >
             {save.isPending ? "Lagrer …" : "Lagre endringer"}
           </button>
@@ -732,14 +748,14 @@ function SiteSection() {
           {/* Blogg */}
           <SettingsGroup title="Blogg">
             {data.blogPosts.length === 0 ? (
-              <p className="px-4 py-4 text-sm text-white/40">Ingen innlegg ennå.</p>
+              <p className="px-4 py-4 text-sm text-ink-muted">Ingen innlegg ennå.</p>
             ) : (
               data.blogPosts.map((post) => (
                 <div key={post.id} className="flex items-start gap-3 px-4 py-3.5">
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-white/85">{post.title}</p>
+                    <p className="truncate text-sm font-medium text-ink">{post.title}</p>
                     {post.body && (
-                      <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-white/45">
+                      <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-ink-muted">
                         {post.body}
                       </p>
                     )}
@@ -749,7 +765,7 @@ function SiteSection() {
                     type="button"
                     onClick={() => deletePost.mutate(post.id)}
                     aria-label="Slett innlegg"
-                    className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full text-white/35 transition-colors hover:bg-white/[0.06] hover:text-red-300"
+                    className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-pill text-ink-muted transition-colors hover:bg-surface hover:text-red-600"
                   >
                     <Trash2 className="size-3.5" />
                   </button>
@@ -759,10 +775,10 @@ function SiteSection() {
           </SettingsGroup>
 
           <div className="mt-3">
-            <div className="inset-list shadow-widget">
+            <div className={GROUP_CLASS}>
               <div className="px-4 py-3">
                 <input
-                  className="w-full bg-transparent text-sm text-white placeholder:text-white/30 focus:outline-none"
+                  className="w-full bg-transparent text-sm text-ink placeholder:text-ink-muted focus:outline-none"
                   placeholder="Tittel på nytt innlegg"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
@@ -771,7 +787,7 @@ function SiteSection() {
               <div className="px-4 py-3">
                 <textarea
                   rows={3}
-                  className="w-full resize-none bg-transparent text-sm leading-relaxed text-white placeholder:text-white/30 focus:outline-none"
+                  className="w-full resize-none bg-transparent text-sm leading-relaxed text-ink placeholder:text-ink-muted focus:outline-none"
                   placeholder="Skriv litt …"
                   value={newBody}
                   onChange={(e) => setNewBody(e.target.value)}
@@ -782,7 +798,7 @@ function SiteSection() {
               type="button"
               onClick={onAddPost}
               disabled={!newTitle.trim() || addPost.isPending}
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-white/10 px-5 py-3 text-sm font-semibold text-white/70 transition-colors hover:border-[#ead27e]/40 hover:bg-[#ead27e]/10 hover:text-[#ead27e] active:scale-[0.98] disabled:opacity-50"
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-pill border border-hairline px-5 py-3 text-sm font-semibold text-ink-muted transition-colors hover:bg-surface hover:text-ink active:scale-[0.98] disabled:opacity-50"
             >
               <Plus className="size-4" />
               {addPost.isPending ? "Legger til …" : "Nytt innlegg"}
@@ -809,10 +825,10 @@ function PublishToggle({ post }: { post: SiteSettings["blogPosts"][number] }) {
     <button
       type="button"
       onClick={toggle}
-      className={`mt-0.5 shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+      className={`mt-0.5 shrink-0 rounded-pill px-3 py-1 text-xs font-medium transition-colors ${
         post.published
-          ? "bg-[#ead27e]/15 text-[#ead27e]"
-          : "bg-white/[0.06] text-white/55 hover:bg-white/[0.1]"
+          ? "bg-gold/15 text-gold ring-1 ring-inset ring-gold/30"
+          : "bg-surface text-ink-muted ring-1 ring-inset ring-hairline hover:text-ink"
       }`}
     >
       {post.published ? "Publisert" : "Skjult"}

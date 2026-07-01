@@ -67,7 +67,7 @@ export function JoinPage() {
     return (
       <AuthLayout subtitle={null}>
         <AuthHeading title="Mangler invitasjon" subtitle="Denne lenken har ingen invitasjon" />
-        <p className="text-center text-sm text-white/60">
+        <p className="text-center text-sm text-ink-muted">
           Be den som inviterte deg om å sende lenken på nytt.
         </p>
       </AuthLayout>
@@ -79,7 +79,7 @@ export function JoinPage() {
     return (
       <AuthLayout subtitle={null}>
         <AuthHeading title="Ugyldig invitasjon" subtitle="Vi fant ikke turen denne lenken peker på" />
-        <p className="text-center text-sm text-white/60">
+        <p className="text-center text-sm text-ink-muted">
           Lenken kan være feilskrevet. Be om en ny fra reisefølget ditt.
         </p>
       </AuthLayout>
@@ -98,33 +98,33 @@ export function JoinPage() {
 
       {/* Which trip this invite is for */}
       {preview.data && (
-        <div className="mb-6 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 shadow-widget">
-          <Ship className="size-4 shrink-0 text-[#ead27e]/80" />
+        <div className="mb-6 flex items-center gap-3 rounded-card border border-hairline bg-surface px-4 py-3 shadow-soft">
+          <Ship className="size-4 shrink-0 text-gold" />
           <div className="min-w-0">
-            <div className="font-mono text-sm font-semibold text-white">
+            <div className="font-mono text-sm font-semibold text-ink">
               {preview.data.reservationCode}
             </div>
             {preview.data.tripDate && (
-              <div className="text-xs text-white/50">{formatTripDate(preview.data.tripDate)}</div>
+              <div className="text-xs text-ink-muted">{formatTripDate(preview.data.tripDate)}</div>
             )}
           </div>
         </div>
       )}
 
       {alreadyUsed ? (
-        <p className="text-center text-sm text-white/60">
+        <p className="text-center text-sm text-ink-muted">
           Denne invitasjonen er allerede brukt. Be om en ny fra reisefølget ditt.
         </p>
       ) : (
         <Form {...form}>
           <form onSubmit={onJoin} className="space-y-5" noValidate>
             {needsPassword ? (
-              <p className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-center text-sm text-white/80">
+              <p className="rounded-input border border-hairline bg-surface px-4 py-3 text-center text-sm text-ink-muted">
                 Denne kontoen er sikret med passord.{" "}
                 <button
                   type="button"
                   onClick={() => navigate("/login")}
-                  className="text-white underline transition-colors hover:text-white/80"
+                  className="text-gold underline underline-offset-2 transition-opacity hover:opacity-80"
                 >
                   Logg inn med passord
                 </button>{" "}
@@ -149,7 +149,7 @@ export function JoinPage() {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage className="ml-4 text-red-400" />
+                  <FormMessage className="ml-4 text-red-600" />
                 </FormItem>
               )}
             />

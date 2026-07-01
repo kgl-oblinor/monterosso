@@ -56,7 +56,7 @@ export function SkippersTab() {
         <button
           type="button"
           onClick={() => setView({ mode: "new" })}
-          className="inline-flex h-10 shrink-0 items-center gap-2 rounded-lg bg-[#ead27e] px-4 text-sm font-semibold text-[#07182a] transition-opacity hover:bg-[#f0dd9a]"
+          className="btn-ink shrink-0 gap-2 text-sm"
         >
           <Plus className="size-4" /> Legg til skipper
         </button>
@@ -69,37 +69,37 @@ export function SkippersTab() {
       ) : isError ? (
         <ErrorBox>Kunne ikke laste skippere.</ErrorBox>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-white/10">
+        <div className="overflow-x-auto rounded-card border border-hairline shadow-soft">
           <table className="w-full min-w-[760px] text-left text-sm">
             <Thead cols={["#", "Skipper / båt", "Tjeneste", "Kontakt", "Pris", "Status", "Handling"]} />
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-hairline">
               {filtered.map((s, i) => (
-                <tr key={s.id} className="transition-colors hover:bg-white/[0.04]">
+                <tr key={s.id} className="transition-colors hover:bg-black/[0.04]">
                   <RowNum n={i + 1} />
                   <td className="px-4 py-2.5">
                     <div className="flex items-center gap-3">
                       <Initials name={s.name ?? s.boat_name} fallback={s.boat_name ?? "?"} />
                       <div className="min-w-0">
-                        <div className="font-medium text-white">{s.name || "—"}</div>
-                        {s.boat_name && <div className="text-xs text-white/45">{s.boat_name}</div>}
+                        <div className="font-medium text-ink">{s.name || "—"}</div>
+                        {s.boat_name && <div className="text-xs text-ink-muted">{s.boat_name}</div>}
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-2.5 text-white/70">
+                  <td className="px-4 py-2.5 text-ink-muted">
                     {SERVICE_LABEL[s.service_type] ?? s.service_type}
-                    {s.location && <span className="text-white/40"> · {s.location}</span>}
+                    {s.location && <span className="text-ink-muted"> · {s.location}</span>}
                   </td>
-                  <td className="px-4 py-2.5 text-white/70">
-                    {s.email || s.phone || <span className="text-white/30">—</span>}
+                  <td className="px-4 py-2.5 text-ink-muted">
+                    {s.email || s.phone || <span className="text-ink-muted">—</span>}
                   </td>
-                  <td className="px-4 py-2.5 text-white/70">{formatPrice(s)}</td>
+                  <td className="px-4 py-2.5 text-ink-muted">{formatPrice(s)}</td>
                   <td className="px-4 py-2.5">
                     <span
                       className={cn(
                         "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset",
                         s.active
-                          ? "bg-emerald-500/15 text-emerald-300 ring-emerald-500/30"
-                          : "bg-white/5 text-white/40 ring-white/10"
+                          ? "bg-emerald-500/10 text-emerald-700 ring-emerald-600/20"
+                          : "bg-surface text-ink-muted ring-hairline"
                       )}
                     >
                       {s.active ? "Aktiv" : "Skjult"}
@@ -110,7 +110,7 @@ export function SkippersTab() {
                       <button
                         type="button"
                         onClick={() => setView({ mode: "edit", skipper: s })}
-                        className="inline-flex h-8 items-center gap-1 rounded-lg border border-white/15 px-3 text-xs font-medium text-white/70 transition-colors hover:bg-white/5"
+                        className="inline-flex h-8 items-center gap-1 rounded-pill border border-hairline px-3 text-xs font-medium text-ink-muted transition-colors hover:bg-black/[0.04]"
                       >
                         <Pencil className="size-3.5" /> Rediger
                       </button>
@@ -148,12 +148,12 @@ export function SearchBox({
 }) {
   return (
     <div className="relative mb-4 max-w-sm">
-      <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-white/40" />
+      <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-ink-muted" />
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-10 w-full rounded-xl border border-white/10 bg-white/[0.04] pl-10 pr-3 text-sm text-white placeholder:text-white/40 focus:border-[#ead27e]/50 focus:outline-none"
+        className="h-10 w-full rounded-input border border-hairline bg-white pl-10 pr-3 text-sm text-ink placeholder:text-ink-muted focus:border-gold/50 focus:outline-none"
       />
     </div>
   );
@@ -161,7 +161,7 @@ export function SearchBox({
 
 export function Thead({ cols }: { cols: string[] }) {
   return (
-    <thead className="border-b border-white/10 bg-white/[0.03] text-xs uppercase tracking-wide text-white/45">
+    <thead className="border-b border-hairline bg-surface text-xs uppercase tracking-wide text-ink-muted">
       <tr>
         {cols.map((c, i) => (
           <th
@@ -183,14 +183,14 @@ export function Thead({ cols }: { cols: string[] }) {
 /** Leading row-number cell (continuous across pages). */
 export function RowNum({ n }: { n: number }) {
   return (
-    <td className="w-12 px-4 py-2.5 text-center text-xs tabular-nums text-white/35">{n}</td>
+    <td className="w-12 px-4 py-2.5 text-center text-xs tabular-nums text-ink-muted">{n}</td>
   );
 }
 
 export function EmptyRow({ cols, label }: { cols: number; label: string }) {
   return (
     <tr>
-      <td colSpan={cols} className="px-4 py-10 text-center text-sm text-white/40">
+      <td colSpan={cols} className="px-4 py-10 text-center text-sm text-ink-muted">
         {label}
       </td>
     </tr>
@@ -198,12 +198,12 @@ export function EmptyRow({ cols, label }: { cols: number; label: string }) {
 }
 
 export function Centered({ children }: { children: React.ReactNode }) {
-  return <div className="flex items-center gap-2 py-16 text-sm text-white/50">{children}</div>;
+  return <div className="flex items-center gap-2 py-16 text-sm text-ink-muted">{children}</div>;
 }
 
 export function ErrorBox({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+    <div className="rounded-input border border-red-600/20 bg-red-500/10 px-4 py-3 text-sm text-red-700">
       {children}
     </div>
   );
@@ -230,7 +230,7 @@ export function Pager({
   isFetching?: boolean;
 }) {
   return (
-    <div className="mt-3 flex items-center justify-between text-xs text-white/45">
+    <div className="mt-3 flex items-center justify-between text-xs text-ink-muted">
       <span className="flex items-center gap-2">
         {total > 0 ? `Viser ${from}–${to} av ${total.toLocaleString("nb-NO")}` : "—"}
         {isFetching && <Loader2 className="size-3 animate-spin" />}
@@ -261,7 +261,7 @@ export function PageButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="flex size-8 items-center justify-center rounded-lg border border-white/10 text-white/70 transition-colors hover:bg-white/5 disabled:opacity-30"
+      className="flex size-8 items-center justify-center rounded-input border border-hairline text-ink-muted transition-colors hover:bg-black/[0.04] disabled:opacity-30"
     >
       {children}
     </button>

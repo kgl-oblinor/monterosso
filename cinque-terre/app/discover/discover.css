@@ -1,11 +1,21 @@
 /* ============================================================
    Discover / SEO micro-notes — Monterosso · Cinque Terre
-   Own stylesheet, SAME design system as content.css / landing.css:
-   spacing 4px-base · type 1.2 minor-third · sharp corners (radius 0,
-   with a 4px softening on cards) · separation by AIR not lines ·
-   ink #07182a / cream #f7f1e3 / gold #ead27e / terracotta #a8743f.
-   Fonts are already loaded globally in layout.js.
+   Clean Apple reading design (same tokens as content.css):
+   clean white background · solid white surfaces, no blur · neutral
+   hairlines rgba(0,0,0,.08) · gold #C49A34 as a restrained accent
+   only · ink #2A1810 / muted rgba(42,24,16,.6) · SF Pro / system
+   font · soft small shadows · 16px card radius.
    ============================================================ */
+
+/* clean white reading page; scrolls and uses the native cursor
+   (globals.css locks the booking app). */
+body:has(.discover) {
+  overflow-y: auto;
+  overflow-x: clip;
+  height: auto;
+  cursor: auto;
+  background: #fffefc;
+}
 
 .discover {
   /* spacing — 4px base */
@@ -16,17 +26,19 @@
   --t-lg: 23px; --t-xl: 28px; --t-2xl: 33px;
   /* letter-spacing */
   --ls-1: 0.02em; --ls-2: 0.08em; --ls-3: 0.14em;
-  /* colour — fasit palette */
-  --ink: #07182a;
-  --ink-soft: rgba(7, 24, 42, 0.62);
-  --cream: #f7f1e3;
-  --cream-deep: #efe6d2;
-  --gold: #ead27e;
-  --terracotta: #a8743f;
+  /* colour — clean Apple tokens */
+  --ink: #2A1810;
+  --ink-soft: rgba(42, 24, 16, 0.60);
+  --gold: #C49A34;
+  --gold-line: rgba(0, 0, 0, 0.08);
+  --glass: #ffffff;
+  --glass-2: #f6f5f3;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 6px 18px rgba(0, 0, 0, 0.06);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
 
-  background: var(--cream);
+  background: transparent;
   color: var(--ink);
-  font-family: "Fraunces", Georgia, serif;
+  font-family: var(--font);
   font-weight: 400;
   line-height: 1.6;
   min-height: 100svh;
@@ -42,27 +54,29 @@
   padding: 0 var(--s5);
 }
 
-/* ---------- top bar ---------- */
+/* ---------- top bar — clean, transparent, hairline divider ---------- */
 .discover__nav {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: var(--s4);
+  margin: 0;
   padding: var(--s5) 0;
+  background: transparent;
+  border-bottom: 1px solid var(--gold-line);
 }
 .discover__brand {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font);
+  font-weight: 600;
   font-size: var(--t-base);
-  letter-spacing: var(--ls-3);
-  text-transform: uppercase;
+  letter-spacing: -0.01em;
   color: var(--ink);
   text-decoration: none;
 }
 .discover__navlink {
   font-size: var(--t-sm);
-  letter-spacing: var(--ls-2);
-  color: var(--terracotta);
+  letter-spacing: 0;
+  color: var(--ink-soft);
   text-decoration: none;
 }
 .discover__navlink:hover { color: var(--gold); }
@@ -70,18 +84,21 @@
 /* ---------- hero ---------- */
 .discover__hero { padding: var(--s7) 0 var(--s2); }
 .discover__eyebrow {
-  font-family: "Great Vibes", cursive;
-  font-size: var(--t-xl);
+  font-family: var(--font);
+  font-weight: 600;
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-3);
+  text-transform: uppercase;
   color: var(--gold);
-  margin: 0 0 var(--s2);
+  margin: 0 0 var(--s3);
   line-height: 1;
 }
 .discover h1 {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font);
+  font-weight: 600;
   font-size: clamp(33px, 6vw, 52px);
   line-height: 1.08;
-  letter-spacing: var(--ls-1);
+  letter-spacing: -0.02em;
   margin: 0 0 var(--s4);
 }
 .discover__lede {
@@ -92,7 +109,7 @@
   max-width: 60ch;
 }
 
-/* ---------- listing — air between notes, no grid lines ---------- */
+/* ---------- listing — restrained white cards, hairline ---------- */
 .discover__list {
   display: flex;
   flex-direction: column;
@@ -104,20 +121,25 @@
 .discover__item { margin: 0; }
 .discover__card {
   display: block;
-  background: var(--cream-deep);
+  background: var(--glass);
+  border: 1px solid var(--gold-line);
   padding: var(--s5);
-  border-radius: 4px;
+  border-radius: 16px;
   text-decoration: none;
   color: var(--ink);
-  transition: filter 0.2s ease, transform 0.1s ease;
+  box-shadow: var(--shadow);
+  transition: transform 0.18s ease, box-shadow 0.2s ease;
 }
-.discover__card:hover { filter: brightness(0.98); }
+.discover__card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), 0 12px 28px rgba(0, 0, 0, 0.09);
+}
 .discover__card:active { transform: translateY(1px); }
 .discover__card-title {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font);
+  font-weight: 600;
   font-size: var(--t-lg);
-  letter-spacing: var(--ls-1);
+  letter-spacing: -0.01em;
   margin: 0 0 var(--s2);
   color: var(--ink);
 }
@@ -168,17 +190,19 @@
 }
 .discover__body p:last-child { margin-bottom: 0; }
 .discover__body a {
-  color: var(--terracotta);
+  color: var(--ink);
   text-decoration: underline;
+  text-decoration-color: var(--gold);
   text-underline-offset: 3px;
 }
 .discover__body a:hover { color: var(--gold); }
 .discover__body em { font-style: italic; }
 
-/* ---------- internal link ledge — gold, no boxing lines ---------- */
+/* ---------- internal link ledge — barely-tinted tile, hairline ---------- */
 .discover__cta {
-  background: var(--cream-deep);
-  border-left: 3px solid var(--gold);
+  background: var(--glass-2);
+  border: 1px solid var(--gold-line);
+  border-radius: 16px;
   padding: var(--s5);
   margin: var(--s6) 0 0;
 }
@@ -188,15 +212,15 @@
   color: var(--ink-soft);
 }
 .discover__cta a {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font);
+  font-weight: 600;
   font-size: var(--t-md);
-  color: var(--terracotta);
+  color: var(--ink);
   text-decoration: none;
 }
 .discover__cta a:hover { color: var(--gold); }
 
-/* ---------- tags ---------- */
+/* ---------- tags — quiet hairline pills ---------- */
 .discover__tags {
   display: flex;
   flex-wrap: wrap;
@@ -210,7 +234,9 @@
   letter-spacing: var(--ls-2);
   text-transform: uppercase;
   color: var(--ink-soft);
-  background: var(--cream-deep);
+  background: var(--glass-2);
+  border: 1px solid var(--gold-line);
+  border-radius: 999px;
   padding: var(--s1) var(--s3);
 }
 
@@ -221,7 +247,7 @@
 .discover__back {
   font-size: var(--t-sm);
   letter-spacing: var(--ls-2);
-  color: var(--terracotta);
+  color: var(--ink-soft);
   text-decoration: none;
 }
 .discover__back:hover { color: var(--gold); }

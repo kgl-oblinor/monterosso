@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uber for båter · Monterosso — pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Limelight&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#07182a; --ink2:#0a1f33; --cream:#fdf6ea; --gold:#ead27e;
+    --teal:#5ec8c8; --green:#8fc46b; --coral:#e8896b; --sky:#6ba8e8; --violet:#b79ae8;
+    --accent:var(--gold);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Fraunces",Georgia,serif; color:var(--cream);
+    background:radial-gradient(120% 120% at 50% 0%, #0e2740 0%, var(--ink2) 45%, var(--ink) 100%);
+    overflow:hidden;
+  }
+  /* progress + counter */
+  #bar{position:fixed;top:0;left:0;height:3px;background:var(--accent);width:0;z-index:50;transition:width .35s ease, background .4s ease}
+  #counter{position:fixed;bottom:18px;right:22px;font-size:13px;letter-spacing:.14em;color:rgba(253,246,234,.5);z-index:50}
+  #hint{position:fixed;bottom:16px;left:22px;font-size:12px;letter-spacing:.1em;color:rgba(253,246,234,.32);z-index:50}
+  .nav{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:50}
+  .nav button{font-family:inherit;background:rgba(253,246,234,.06);border:1px solid rgba(253,246,234,.14);color:var(--cream);
+    width:42px;height:38px;border-radius:0;cursor:pointer;font-size:17px;transition:.2s}
+  .nav button:hover{background:rgba(234,210,126,.16);border-color:var(--accent);color:var(--accent)}
+
+  /* slides */
+  .slide{position:fixed;inset:0;display:none;flex-direction:column;justify-content:center;
+    padding:clamp(28px,6vw,96px);opacity:0;transition:opacity .4s ease}
+  .slide.on{display:flex;opacity:1}
+  .wrap{width:100%;max-width:1040px;margin:0 auto}
+  .kicker{font-size:13px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:18px}
+  h1{font-family:"Limelight",serif;font-weight:400;font-size:clamp(40px,8vw,92px);line-height:1.02;letter-spacing:.01em}
+  h2{font-size:clamp(28px,4.4vw,52px);font-weight:600;line-height:1.08;letter-spacing:-.01em;margin-bottom:8px}
+  .lede{font-size:clamp(17px,2.1vw,23px);font-weight:300;line-height:1.5;color:rgba(253,246,234,.82);max-width:760px;margin-top:14px}
+  .sub{font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:rgba(253,246,234,.55);margin-top:26px}
+
+  .grid{display:grid;gap:14px;margin-top:30px}
+  .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:760px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:rgba(253,246,234,.05);border:1px solid rgba(253,246,234,.1);padding:18px 20px}
+  .card h3{font-size:18px;font-weight:600;margin-bottom:6px;color:var(--cream);display:flex;align-items:center;gap:8px}
+  .card p{font-size:14.5px;line-height:1.5;color:rgba(253,246,234,.66);font-weight:300}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:34px}
+  @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{padding:18px 16px;border-left:3px solid var(--accent);background:rgba(253,246,234,.04)}
+  .stat .n{font-size:clamp(30px,5vw,46px);font-weight:600;color:var(--accent);line-height:1}
+  .stat .l{font-size:13.5px;color:rgba(253,246,234,.6);margin-top:8px;line-height:1.35}
+
+  .badge{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+    padding:3px 9px;border-radius:0;vertical-align:middle}
+  .live{background:var(--green);color:#0b2410}
+  .road{background:transparent;border:1px solid var(--gold);color:var(--gold)}
+  .pilot{background:var(--gold);color:var(--ink)}
+
+  ul.clean{list-style:none;margin-top:24px;display:flex;flex-direction:column;gap:13px}
+  ul.clean li{font-size:17px;line-height:1.45;font-weight:300;padding-left:26px;position:relative;color:rgba(253,246,234,.85)}
+  ul.clean li:before{content:"";position:absolute;left:0;top:9px;width:11px;height:11px;background:var(--accent)}
+
+  .demos{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:30px}
+  @media(max-width:760px){.demos{grid-template-columns:1fr}}
+  a.demo{display:block;text-decoration:none;background:rgba(234,210,126,.08);border:1px solid rgba(234,210,126,.3);
+    padding:20px 22px;color:var(--cream);transition:.2s}
+  a.demo:hover{background:rgba(234,210,126,.16);border-color:var(--gold);transform:translateY(-2px)}
+  a.demo .t{font-size:20px;font-weight:600;color:var(--gold)}
+  a.demo .u{font-size:12.5px;color:rgba(253,246,234,.5);margin-top:6px;word-break:break-all;font-weight:300}
+  a.demo .d{font-size:14px;color:rgba(253,246,234,.7);margin-top:8px;font-weight:300}
+
+  /* the 2x2 customer dashboard mock */
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px;max-width:560px}
+  .tile{background:rgba(253,246,234,.05);border:1px solid rgba(253,246,234,.12);padding:22px;text-align:center}
+  .tile .ic{font-size:30px} .tile .nm{font-size:18px;font-weight:600;margin-top:8px}
+  .tile .hl{font-size:12.5px;color:rgba(253,246,234,.5);margin-top:4px;font-weight:300}
+  .num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--accent);color:var(--ink);font-size:12px;font-weight:700;margin-right:8px;border-radius:50%}
+
+  .flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:30px}
+  .step{background:rgba(253,246,234,.05);border:1px solid rgba(253,246,234,.12);padding:13px 16px;font-size:15px;font-weight:300}
+  .step b{font-weight:600;color:var(--accent)}
+  .arr{color:var(--accent);font-size:20px}
+
+  .heart{color:var(--coral)}
+  .foot{margin-top:30px;font-size:14px;color:rgba(253,246,234,.45);font-weight:300}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div id="counter"></div>
+<div id="hint">← → for å bla · eller klikk pilene</div>
+<div class="nav"><button onclick="go(-1)">‹</button><button onclick="go(1)">›</button></div>
+
+<!-- 1 TITLE -->
+<section class="slide" data-accent="gold">
+  <div class="wrap">
+    <div class="kicker">Oblinor · pilot Monterosso al Mare</div>
+    <h1>Uber for båter</h1>
+    <p class="lede">En levende markedsplass som kobler reisende med lokale skippere — og en pilot som allerede er <b>live</b> i Cinque Terre.</p>
+    <div class="sub">Presentasjon laget av Krin · juni 2026</div>
+    <p class="foot">Alt i denne presentasjonen er hentet fra prosjektets ekte tilstand. <span class="badge live">Live</span> = bygget og oppe i dag &nbsp; <span class="badge road">Roadmap</span> = designet, ikke bygget ennå.</p>
+  </div>
+</section>
+
+<!-- 2 VISJON -->
+<section class="slide" data-accent="gold">
+  <div class="wrap">
+    <div class="kicker">Visjonen</div>
+    <h2>Smart Uber — for sjøen</h2>
+    <p class="lede">To-sidig markedsplass: <b>skippere</b> (sjåførene) ↔ <b>reisende</b> (passasjerene). Modellert på Uber, startet i Italia med Monterosso som levende pilot, Kristian som plattform-admin.</p>
+    <ul class="clean">
+      <li><b>Nordstjernen:</b> en pensjonist bestiller fra mobil på ~3 trykk — og chatter rett med skipperen.</li>
+      <li>Appens ekte inngang er et <b>levende kart</b> over de 5 landsbyene med sanntids-GPS.</li>
+      <li>Skalerer til mange båter og havner: ingenting er hardkodet til Monterosso.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 3 ARKITEKTUR -->
+<section class="slide" data-accent="teal">
+  <div class="wrap">
+    <div class="kicker">Arkitektur · alt på Cloudflare-kanten</div>
+    <h2>To kodebaser, to databaser, én sjel</h2>
+    <div class="grid g2">
+      <div class="card"><h3>🌊 Landingen <span class="badge live">Live</span></h3><p>Next.js / OpenNext. Hav-scene + SEO-sider + bestilling. Worker: <i>monterosso-cinque-terre-v2</i>.</p></div>
+      <div class="card"><h3>💬 App / dashbord <span class="badge live">Live</span></h3><p>Vite React SPA + Hono-worker. Kunde / skipper / admin. Workers: <i>monterosso-app</i> (+ <i>-preview</i> for demo).</p></div>
+      <div class="card"><h3>🗄️ monterosso_chat <span class="badge live">Live</span></h3><p>D1 (edge-SQLite): markedsplass + meldinger — skippers, customers, reservations, threads, messages.</p></div>
+      <div class="card"><h3>🗄️ monterosso-events <span class="badge live">Live</span></h3><p>D1: innhold + analyse — events (funnel), news, seo_notes.</p></div>
+    </div>
+    <p class="foot">Innhold publiseres ved <b>INSERT</b> i databasen — ingen redeploy. /discover og /news vokser i det uendelige.</p>
+  </div>
+</section>
+
+<!-- 4 DATABASE / EKTE DATA -->
+<section class="slide" data-accent="teal">
+  <div class="wrap">
+    <div class="kicker">Databasen · ekte data, ikke mock</div>
+    <h2>Piloten lever allerede</h2>
+    <div class="stats">
+      <div class="stat"><div class="n">1</div><div class="l">skipper — Andrea Berio, Tiburon Boat Services</div></div>
+      <div class="stat"><div class="n">2</div><div class="l">kunder</div></div>
+      <div class="stat"><div class="n">1</div><div class="l">reservasjon + 3 ekte meldinger</div></div>
+      <div class="stat"><div class="n">633</div><div class="l">innholds-/analyse-rader (608 funnel · 8 news · 17 SEO)</div></div>
+    </div>
+    <p class="lede" style="margin-top:30px"><b>Reservasjonskoden</b> er tillitsnøkkelen: å dele en booking er det som låser opp en privat chat mellom skipper og reisende.</p>
+    <p class="foot">Allerede skjema-bygget og venter: gruppe-chat, invite-lenker, lesekvitteringer, moderering og Stripe Connect-utbetalinger. <span class="badge road">Roadmap</span></p>
+  </div>
+</section>
+
+<!-- 5 LANDING -->
+<section class="slide" data-accent="gold">
+  <div class="wrap">
+    <div class="kicker">Landingssiden · fargerik &amp; levende</div>
+    <h2>Bestilling er en kvittering du bekrefter — ikke et skjema</h2>
+    <div class="grid g3">
+      <div class="card"><h3>🌅 Levende hav-scene</h3><p>Dag/natt-himmel med 20 ekte stjernebilder, levende «aurora»-sjø, 5-landsby-skyline og en <b>ekte 3D-gozzo</b> (three.js) som seiler.</p></div>
+      <div class="card"><h3>🎟️ ~3 trykk til WhatsApp</h3><p>Kvittering-først: to seter gjettet på neste avgang (Europe/Rome) → Continue → WhatsApp ferdig utfylt → kode + møtepunkt + kalender.</p></div>
+      <div class="card"><h3>🪟 8 glass-popups</h3><p>book · boat · hub · captain · news · service · 5 bysider — dyplenkbare via <i>?screen=</i>, scenen stilner bak glasset.</p></div>
+    </div>
+    <p class="foot">Palett: dyp blå sjø · cream/glass · én gull-aksent #ead27e. Fonter: Fraunces · Limelight · Great Vibes. Skarpe kanter (radius 0), 4px-rytme.</p>
+  </div>
+</section>
+
+<!-- 6 SEO -->
+<section class="slide" data-accent="green">
+  <div class="wrap">
+    <div class="kicker">SEO · skipperens kundepipeline</div>
+    <h2>Turister googler — og havner hos skipperen</h2>
+    <div class="flow">
+      <span class="step">🔍 «cinque terre boat tour»</span><span class="arr">→</span>
+      <span class="step">📄 kildebelagt <b>SEO-side</b></span><span class="arr">→</span>
+      <span class="step">🔗 intern lenke</span><span class="arr">→</span>
+      <span class="step">🎟️ <b>bestilling</b></span><span class="arr">→</span>
+      <span class="step">⚓ skipper får en kunde</span>
+    </div>
+    <ul class="clean">
+      <li><b>8 eviggrønne sider</b> (guide, Monterosso, strender, restauranter, 4 landsbyer) — hub-and-spoke, JSON-LD, alt med kilder.</li>
+      <li><b>/discover: 17 mikronotater</b> + <b>/news: 8 poster</b> — lest rett fra D1, publiseres uten redeploy.</li>
+      <li>Hver side ender på <b>én rolig CTA</b>: «See the private sea tour →».</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 7 KOMMUNIKASJON -->
+<section class="slide" data-accent="sky">
+  <div class="wrap">
+    <div class="kicker">Kommunikasjon</div>
+    <h2>Chatten <i>er</i> bestillingssystemet</h2>
+    <p class="lede">En reservasjon dukker opp i skipperens dashbord. <b>Kun skipperen</b> kan åpne og styre handelen.</p>
+    <div class="flow">
+      <span class="step">kunde signaliserer ønske</span><span class="arr">→</span>
+      <span class="step"><b>skipper</b> sender tilbud (tid/lengde/pris)</span><span class="arr">→</span>
+      <span class="step">kunde <b>Godtar</b> / <b>Motbyr</b></span><span class="arr">→</span>
+      <span class="step">enighet ✓</span>
+    </div>
+    <ul class="clean">
+      <li>Listepris flat <b>$100/gjest</b> — rabatt gis kun inne i forhandlingen.</li>
+      <li>1-til-1-tråd i dag; gruppe-tråd for «turfølget» er skjema-klar. <span class="badge road">Roadmap</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 8 KUNDE-APP -->
+<section class="slide" data-accent="coral">
+  <div class="wrap">
+    <div class="kicker">Kunde-appen · bygget for pensjonister</div>
+    <h2>To-og-to store knapper, logisk rekkefølge</h2>
+    <p class="lede">Forslag til kundens hjem-skjerm: partall knapper, kun ekte mål, viktigst øverst til venstre.</p>
+    <div class="tiles">
+      <div class="tile"><div class="ic">💬</div><div class="nm"><span class="num">1</span>Snakk med skipperen</div><div class="hl">Spør, avtal tid, bestill</div></div>
+      <div class="tile"><div class="ic">🧭</div><div class="nm"><span class="num">2</span>Turen min</div><div class="hl">Dato, sted og kode</div></div>
+      <div class="tile"><div class="ic">☎️</div><div class="nm"><span class="num">3</span>Kundeservice</div><div class="hl">Ring eller skriv — vi svarer</div></div>
+      <div class="tile"><div class="ic">👤</div><div class="nm"><span class="num">4</span>Min profil</div><div class="hl">Navn, e-post og telefon</div></div>
+    </div>
+    <p class="foot">Live i dag: Hjem · Chat · Turer · Profil. <span class="badge road">Roadmap</span> Kvitteringer · Andre reiser · Andre land (ærlige «kommer snart»-kort).</p>
+  </div>
+</section>
+
+<!-- 9 SKIPPER-APP -->
+<section class="slide" data-accent="gold">
+  <div class="wrap">
+    <div class="kicker">Skipper-appen · «Min side»</div>
+    <h2>Skipperen styrer sin egen landingsside</h2>
+    <div class="grid g3">
+      <div class="card"><h3>🛥️ Tilbud &amp; pris <span class="badge live">Live</span></h3><p>Tittel, undertittel, pris per gjest, maks gjester — endrer den offentlige siden.</p></div>
+      <div class="card"><h3>🕐 Tider <span class="badge live">Live</span></h3><p>Legg til/fjern avganger. (Knyttes til faste kalendertider — <span class="badge road">roadmap</span>.)</p></div>
+      <div class="card"><h3>🎨 Utseende &amp; blogg <span class="badge live">Live</span></h3><p>Bakgrunn + aksent-farge, egne blogginnlegg (publiser/skjul).</p></div>
+      <div class="card"><h3>🧭 Mine avganger <span class="badge live">Live</span></h3><p>Hvem er ombord, status, inviter reisefølget.</p></div>
+      <div class="card"><h3>🟢 På jobb / ikke <span class="badge road">Roadmap</span></h3><p>En bryter på profilen som tar skipperen av/på det kundevendte kartet.</p></div>
+      <div class="card"><h3>📈 Flere kunder <span class="badge road">Roadmap</span></h3><p>Selv-onboarding genererer skipperens egen side fra hans konfig.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 ADMIN -->
+<section class="slide" data-accent="violet">
+  <div class="wrap">
+    <div class="kicker">Admin · Kristians gudeblikk</div>
+    <h2>Godkjenn, administrer, hold oppsyn</h2>
+    <div class="grid g4">
+      <div class="card"><h3>✅ Til godkjenning</h3><p>Skipper-kø (Godkjenn / Sperr). Kunder er instant-aktive.</p></div>
+      <div class="card"><h3>🛥️ Skippere</h3><p>Opprett/endre oppføringer: båt, tjeneste, tider, pris.</p></div>
+      <div class="card"><h3>👥 Kunder</h3><p>Katalog med reservasjons-antall.</p></div>
+      <div class="card"><h3>💬 Samtaler</h3><p>Les-oppsyn over alle skipper↔kunde-tråder.</p></div>
+    </div>
+    <p class="foot">Asymmetrisk tillit: kunde = ingen verifisering · skipper = admin godkjenner før siden er live.</p>
+  </div>
+</section>
+
+<!-- 11 KART + PRESENCE -->
+<section class="slide" data-accent="coral">
+  <div class="wrap">
+    <div class="kicker">Hjertet i Uber-modellen</div>
+    <h2>Det levende Cinque Terre-kartet <span class="badge road">Roadmap</span></h2>
+    <p class="lede">Sanntids-GPS over de 5 landsbyene, rollebasert synlighet — markedsplassen <i>er</i> kartet.</p>
+    <div class="grid g3">
+      <div class="card"><h3>🍪 Presence steg 1 <span class="badge live">Live</span></h3><p>Anonym førsteparts visitor-ID på begge kodebaser (GDPR-ren, robust på iOS/Android). <i>window.cinqueVisitor</i> med setRole + setLocation — krokene kartet henger på.</p></div>
+      <div class="card"><h3>📍 Track via telefon <span class="badge road">Roadmap</span></h3><p>Skipperen spores via posisjon ved onboarding, så kunden ser ham på kartet.</p></div>
+      <div class="card"><h3>👁️ Rollebasert <span class="badge road">Roadmap</span></h3><p>Admin ser alle · kunde ser kun skippere · skipper ser kun kunder. Ingen kunde ser andre kunder.</p></div>
+    </div>
+    <p class="foot">Knyttes til resten: på/av-jobb-bryteren (skipper) styrer synlighet · faste kalendertider booker man mot · alt henger på den samme visitor-ID-en.</p>
+  </div>
+</section>
+
+<!-- 12 ÅPNE UTEN INNLOGGING -->
+<section class="slide" data-accent="gold">
+  <div class="wrap">
+    <div class="kicker">Åpne alt — uten koder</div>
+    <h2>Klikk deg gjennom hele flyten</h2>
+    <div class="demos">
+      <a class="demo" href="https://monterosso-cinque-terre-v2.kgl-56a.workers.dev/" target="_blank" rel="noopener">
+        <div class="t">🌊 Landingssiden</div><div class="d">Hav-scene + bestilling (offentlig)</div>
+        <div class="u">monterosso-cinque-terre-v2.kgl-56a.workers.dev</div></a>
+      <a class="demo" href="https://monterosso-app-preview.kgl-56a.workers.dev/?preview=customer" target="_blank" rel="noopener">
+        <div class="t">👤 Kunde-dashbord</div><div class="d">Uten innlogging (mock-sesjon)</div>
+        <div class="u">…app-preview…/?preview=customer</div></a>
+      <a class="demo" href="https://monterosso-app-preview.kgl-56a.workers.dev/?preview=skipper" target="_blank" rel="noopener">
+        <div class="t">⚓ Skipper-dashbord</div><div class="d">Uten innlogging — «Min side» m.m.</div>
+        <div class="u">…app-preview…/?preview=skipper</div></a>
+      <a class="demo" href="https://monterosso-app-preview.kgl-56a.workers.dev/?preview=admin" target="_blank" rel="noopener">
+        <div class="t">🛡️ Admin-konsoll</div><div class="d">Uten innlogging — godkjenning + oppsyn</div>
+        <div class="u">…app-preview…/?preview=admin</div></a>
+    </div>
+    <p class="foot">Trygt: hele preview-bypassen er gated på <i>env.useMocks</i> — i ekte produksjon er den en no-op, og ekte innlogging svekkes aldri.</p>
+  </div>
+</section>
+
+<!-- 13 DOMENER / NESTE -->
+<section class="slide" data-accent="green">
+  <div class="wrap">
+    <div class="kicker">Veien videre</div>
+    <h2>Hva som står for tur</h2>
+    <ul class="clean">
+      <li><b>Booking-backend</b> (POST /bookings) + faste kalendertider — den ekte penge-stien.</li>
+      <li><b>Det levende kartet</b> + GPS-presence + på/av-jobb-bryter.</li>
+      <li><b>Skipper selv-onboarding</b> → auto-generert landingsside, admin godkjenner.</li>
+      <li><b>Stripe</b> Connect/Identity/Billing (mock i dag — vi lagrer aldri ekte kort/PII selv).</li>
+      <li><b>Domener:</b> $1000-budsjett, minst 10 stk — <i>helt til slutt</i>.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 14 SLUTT -->
+<section class="slide" data-accent="coral">
+  <div class="wrap" style="text-align:center">
+    <div class="kicker">Takk</div>
+    <h1>Laget med <span class="heart">♥</span></h1>
+    <p class="lede" style="margin:18px auto 0">Sannhet før glans. En ekte pilot, en varm idé, og en plattform som vokser.</p>
+    <p class="foot">Krin · for Kristian &amp; Oblinor · Monterosso al Mare</p>
+  </div>
+</section>
+
+<script>
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var i=0;
+  var accents={gold:'var(--gold)',teal:'var(--teal)',green:'var(--green)',coral:'var(--coral)',sky:'var(--sky)',violet:'var(--violet)'};
+  function render(){
+    slides.forEach(function(s,n){s.classList.toggle('on',n===i);});
+    var a=accents[slides[i].dataset.accent]||'var(--gold)';
+    document.documentElement.style.setProperty('--accent',a);
+    document.getElementById('bar').style.width=((i+1)/slides.length*100)+'%';
+    document.getElementById('counter').textContent=(i+1)+' / '+slides.length;
+  }
+  function go(d){i=Math.max(0,Math.min(slides.length-1,i+d));render();}
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){go(1);e.preventDefault();}
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){go(-1);e.preventDefault();}
+    if(e.key==='Home'){i=0;render();} if(e.key==='End'){i=slides.length-1;render();}
+  });
+  // swipe
+  var x0=null;
+  document.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;},{passive:true});
+  document.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)go(dx<0?1:-1);x0=null;});
+  render();
+</script>
+</body>
+</html>

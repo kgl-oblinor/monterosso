@@ -1962,7 +1962,6 @@ body {
 .landing-v2.popup-open .boat3d,
 .landing-v2.popup-open .shell,
 .landing-v2.popup-open .bg-switch,
-.landing-v2.popup-open .sea-clock,
 .landing-v2.popup-open .theme-toggle {
   display: none !important;
 }
@@ -2013,7 +2012,6 @@ body {
 
 /* ── Scene-only sandbox (?scene in URL) — just the living background, no text/UI ── */
 .landing-v2.scene-only .hero,
-.landing-v2.scene-only .sea-clock,
 .landing-v2.scene-only .bg-switch,
 .landing-v2.scene-only .style-switch,
 .landing-v2.scene-only .village-signs,
@@ -2021,4 +2019,1068 @@ body {
 .landing-v2.scene-only .vp-nav,
 .landing-v2.scene-only .grain {
   display: none !important;
+}
+
+/* ============================================================
+   GUIDED BOOKING WIZARD — 5 steps in our glass / sharp design.
+   01 Tour · 02 Date · 03 Departure · 04 Guests · 05 Summary.
+   Reuses .book-form (glass card), .choice tiles, .conf-row rows.
+   ============================================================ */
+
+/* numbered progress header + gold bar */
+.landing-v2 .wiz-steps {
+  margin: 0 0 var(--s6);
+}
+.landing-v2 .wiz-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s2);
+  margin-bottom: var(--s4);
+}
+.landing-v2 .wiz-step {
+  flex: 1;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  -webkit-tap-highlight-color: transparent;
+}
+.landing-v2 .wiz-step__num {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  font-size: var(--t-lg);
+  line-height: 1;
+  letter-spacing: var(--ls-1);
+  color: rgba(255, 246, 236, 0.35);
+  transition: color 0.3s ease;
+}
+.landing-v2 .wiz-step__lbl {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-1);
+  color: rgba(255, 246, 236, 0.5);
+  transition: color 0.3s ease;
+}
+.landing-v2 .wiz-step.is-done .wiz-step__num {
+  color: var(--cream);
+}
+.landing-v2 .wiz-step.is-active .wiz-step__num {
+  color: var(--gold);
+}
+.landing-v2 .wiz-step.is-active .wiz-step__lbl {
+  color: var(--cream);
+}
+.landing-v2 .wiz-bar {
+  position: relative;
+  height: 2px;
+  background: rgba(255, 246, 236, 0.18);
+}
+.landing-v2 .wiz-bar__fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 2px;
+  background: var(--gold);
+  transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* the active step grows so the footer stays pinned to the card bottom */
+.landing-v2 .wiz-body {
+  flex: 1 1 auto;
+}
+
+/* 01 — tour card: left-aligned, richer than a plain choice tile */
+.landing-v2 .choice--tour {
+  align-items: flex-start;
+  text-align: left;
+  gap: var(--s2);
+  min-height: 0;
+  padding: var(--s4) var(--s5);
+}
+.landing-v2 .choice--tour .choice-label {
+  font-size: var(--t-md);
+}
+
+/* 02 — month calendar */
+.landing-v2 .wiz-cal {
+  max-width: 380px;
+  margin: var(--s3) auto 0;
+}
+.landing-v2 .wiz-cal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--s4);
+}
+.landing-v2 .wiz-cal__title {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  font-size: var(--t-md);
+  color: var(--cream);
+}
+.landing-v2 .wiz-cal__nav {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--cream);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  font-size: 1.2rem;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease;
+}
+.landing-v2 .wiz-cal__nav:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+}
+.landing-v2 .wiz-cal__nav:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.landing-v2 .wiz-cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.landing-v2 .wiz-cal__wd {
+  text-align: center;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: var(--t-xs);
+  color: rgba(255, 246, 236, 0.45);
+  padding-bottom: var(--s1);
+}
+.landing-v2 .wiz-cal__day {
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: var(--t-base);
+  color: var(--cream);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.landing-v2 .wiz-cal__day:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14);
+}
+.landing-v2 .wiz-cal__day:disabled {
+  color: rgba(255, 246, 236, 0.18);
+  background: transparent;
+  cursor: default;
+}
+.landing-v2 .wiz-cal__day.is-sel {
+  background: var(--gold);
+  color: var(--plum);
+  font-weight: 600;
+}
+.landing-v2 .wiz-cal__day--blank {
+  background: transparent;
+  cursor: default;
+}
+
+/* 04 — guests stepper (sharp corners, not the mockup's pills) */
+.landing-v2 .wiz-guests {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s6);
+  padding: var(--s5) 0 var(--s4);
+}
+.landing-v2 .wiz-pm {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--cream);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease;
+}
+.landing-v2 .wiz-pm:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+}
+.landing-v2 .wiz-pm:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.landing-v2 .wiz-count {
+  text-align: center;
+  min-width: 90px;
+}
+.landing-v2 .wiz-count__n {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  font-size: 3.6rem;
+  line-height: 1;
+  color: var(--cream);
+}
+.landing-v2 .wiz-count__w {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: var(--t-xs);
+  letter-spacing: var(--ls-2);
+  text-transform: uppercase;
+  color: rgba(255, 246, 236, 0.5);
+  margin-top: var(--s2);
+}
+
+/* 05 — summary total + contact choice */
+.landing-v2 .conf-row--total {
+  margin-top: var(--s2);
+}
+.landing-v2 .conf-row--total strong {
+  color: var(--gold);
+  font-size: 1.5rem;
+}
+.landing-v2 .conf-row--code strong {
+  color: var(--gold);
+  letter-spacing: var(--ls-1);
+}
+.landing-v2 .wiz-contact {
+  display: flex;
+  gap: var(--s3);
+  margin-top: var(--s5);
+}
+.landing-v2 .wiz-contact__btn {
+  flex: 1;
+  text-align: center;
+  padding: var(--s4) var(--s3);
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  font-size: var(--t-sm);
+  color: var(--gold);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.landing-v2 .wiz-contact__btn.is-sel {
+  background: var(--gold);
+  color: var(--plum);
+  border-color: var(--gold);
+}
+.landing-v2 .wiz-saved-note {
+  font-size: var(--t-sm);
+  color: rgba(255, 246, 236, 0.7);
+  margin: var(--s3) 0 0;
+  line-height: 1.5;
+}
+.landing-v2 .wiz-email {
+  margin-top: var(--s3);
+}
+.landing-v2 .wiz-email input {
+  width: 100%;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 12px 16px;
+  border-radius: var(--r-md);
+}
+
+/* footer: Back (left) · Continue / Check availability (right) */
+.landing-v2 .wiz-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
+  margin-top: auto;
+  padding-top: var(--s6);
+}
+.landing-v2 .wiz-back {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: var(--t-sm);
+  letter-spacing: var(--ls-1);
+  color: rgba(255, 246, 236, 0.6);
+  padding: var(--s2) var(--s1);
+  -webkit-tap-highlight-color: transparent;
+}
+.landing-v2 .wiz-back:hover {
+  color: var(--cream);
+}
+/* reuse the gold ticket .pay look, but content-sized in the footer */
+.landing-v2 .book-form .pay.wiz-next {
+  display: inline-block;
+  width: auto;
+  margin-top: 0;
+}
+.landing-v2 .book-form .pay.wiz-next:disabled {
+  filter: none;
+  cursor: default;
+  color: rgba(255, 246, 236, 0.4);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: none;
+}
+.landing-v2 .book-form .pay.wiz-next:disabled::before {
+  border-color: rgba(255, 246, 236, 0.18);
+}
+
+/* confirmation — heading + WhatsApp fallback (script link, in gold) */
+.landing-v2 .wiz-done__h {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(var(--t-lg), 5vw, var(--t-xl));
+  color: var(--cream);
+  margin: 0 0 var(--s3);
+  text-align: center;
+}
+.landing-v2 .wiz-wa {
+  display: block;
+  text-align: center;
+  margin-top: var(--s5);
+  font-family: "Great Vibes", cursive;
+  font-size: 1.6rem;
+  color: var(--gold);
+  text-decoration: none;
+}
+.landing-v2 .wiz-wa:hover {
+  filter: brightness(1.08);
+}
+
+/* phones: keep the step numbers/labels from crowding */
+@media (max-width: 480px) {
+  .landing-v2 .wiz-step__num {
+    font-size: var(--t-md);
+  }
+  .landing-v2 .wiz-step__lbl {
+    font-size: 10px;
+  }
+  .landing-v2 .wiz-guests {
+    gap: var(--s5);
+  }
+}
+
+/* ============================================================
+   APPLE WHITE-GLASS RE-SKIN — scoped to the booking wizard only.
+   .wiz-apple sits on the wizard's .book-form root, so every rule
+   here is nested under it and no other popup/screen is touched.
+   White frosted glass · thin antique-gold rim · SF Pro system type
+   · rounded cards/pills/inputs. Source of truth: public/apple-style.html
+   (body.bg-white). The card surface is kept near-white so it reads as
+   frosted glass even over the dark overlay behind it.
+   ============================================================ */
+.landing-v2 .wiz-apple {
+  --wa-ink: #2a1810;
+  --wa-muted: rgba(42, 24, 16, 0.6);
+  --wa-gold: #c49a34;                       /* restrained accent only */
+  --wa-glass: #ffffff;                       /* solid white card surface */
+  --wa-white: #f6f5f3;                       /* barely-tinted stronger/hover/selected surface */
+  --wa-border: rgba(0, 0, 0, 0.08);          /* neutral hairline */
+  --wa-border-soft: rgba(0, 0, 0, 0.06);
+  --wa-cta-border: var(--wa-gold);           /* thin gold ring on selected */
+  --wa-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 6px 18px rgba(0, 0, 0, 0.06);
+  --wa-track: rgba(0, 0, 0, 0.05);
+  color: var(--wa-ink);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--wa-border);
+  border-radius: 24px;
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  backdrop-filter: blur(30px) saturate(180%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+/* SF Pro / system stack across the whole wizard scope */
+.landing-v2 .wiz-apple,
+.landing-v2 .wiz-apple * {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "SF Pro Display", system-ui, sans-serif;
+}
+
+/* progress header — ink/muted numbers, gold active + bar */
+.landing-v2 .wiz-apple .wiz-step__num {
+  color: rgba(42, 24, 16, 0.32);
+}
+.landing-v2 .wiz-apple .wiz-step__lbl {
+  color: var(--wa-muted);
+}
+.landing-v2 .wiz-apple .wiz-step.is-done .wiz-step__num {
+  color: var(--wa-ink);
+}
+.landing-v2 .wiz-apple .wiz-step.is-active .wiz-step__num {
+  color: var(--wa-gold);
+}
+.landing-v2 .wiz-apple .wiz-step.is-active .wiz-step__lbl {
+  color: var(--wa-ink);
+}
+.landing-v2 .wiz-apple .wiz-bar {
+  background: var(--wa-track);
+}
+.landing-v2 .wiz-apple .wiz-bar__fill {
+  background: var(--wa-gold);
+}
+
+/* step question + field labels → warm ink */
+.landing-v2 .wiz-apple .field-head.step-q {
+  color: var(--wa-ink);
+}
+.landing-v2 .wiz-apple .field-head {
+  color: var(--wa-muted);
+}
+
+/* 01 / 03 — tour + departure choice tiles: frosted glass, gold rim */
+.landing-v2 .wiz-apple .choice {
+  color: var(--wa-ink);
+  background: var(--wa-glass);
+  border: 1px solid var(--wa-border);
+  border-radius: 16px;
+  box-shadow: var(--wa-shadow);
+}
+.landing-v2 .wiz-apple .choice.is-sel {
+  background: var(--wa-white);
+  border-color: var(--wa-cta-border);
+  box-shadow: var(--wa-shadow);
+}
+.landing-v2 .wiz-apple .choice-sub {
+  color: var(--wa-muted);
+}
+
+/* 02 — calendar: frosted nav pills, gold-rimmed day tiles */
+.landing-v2 .wiz-apple .wiz-cal__title {
+  color: var(--wa-ink);
+}
+.landing-v2 .wiz-apple .wiz-cal__nav {
+  color: var(--wa-ink);
+  background: var(--wa-glass);
+  border: 1px solid var(--wa-border);
+  border-radius: 999px;
+}
+.landing-v2 .wiz-apple .wiz-cal__nav:hover:not(:disabled) {
+  background: var(--wa-white);
+}
+.landing-v2 .wiz-apple .wiz-cal__wd {
+  color: var(--wa-muted);
+}
+.landing-v2 .wiz-apple .wiz-cal__day {
+  color: var(--wa-ink);
+  background: var(--wa-glass);
+  border: 1px solid var(--wa-border-soft);
+  border-radius: 14px;
+}
+.landing-v2 .wiz-apple .wiz-cal__day:hover:not(:disabled) {
+  background: var(--wa-white);
+}
+.landing-v2 .wiz-apple .wiz-cal__day:disabled {
+  color: rgba(42, 24, 16, 0.25);
+  background: transparent;
+  border-color: transparent;
+}
+.landing-v2 .wiz-apple .wiz-cal__day.is-sel {
+  color: var(--wa-ink);
+  background: var(--wa-white);
+  border-color: var(--wa-cta-border);
+  font-weight: 600;
+  box-shadow: var(--wa-shadow);
+}
+.landing-v2 .wiz-apple .wiz-cal__day--blank {
+  background: transparent;
+  border-color: transparent;
+}
+
+/* 04 — guests stepper: gold-rimmed glass pills + ink count */
+.landing-v2 .wiz-apple .wiz-pm {
+  color: var(--wa-ink);
+  background: var(--wa-glass);
+  border: 1px solid var(--wa-border);
+  border-radius: 999px;
+}
+.landing-v2 .wiz-apple .wiz-pm:hover:not(:disabled) {
+  background: var(--wa-white);
+}
+.landing-v2 .wiz-apple .wiz-count__n {
+  color: var(--wa-ink);
+}
+.landing-v2 .wiz-apple .wiz-count__w {
+  color: var(--wa-muted);
+}
+
+/* 05 — summary receipt + contact toggles */
+.landing-v2 .wiz-apple .conf-row span {
+  color: var(--wa-muted);
+}
+.landing-v2 .wiz-apple .conf-row strong {
+  color: var(--wa-ink);
+}
+.landing-v2 .wiz-apple .conf-row--total strong {
+  color: var(--wa-ink);
+}
+.landing-v2 .wiz-apple .conf-row--code strong {
+  color: var(--wa-gold);
+}
+.landing-v2 .wiz-apple .wiz-contact__btn {
+  color: var(--wa-ink);
+  background: var(--wa-glass);
+  border: 1px solid var(--wa-border);
+  border-radius: 999px;
+}
+.landing-v2 .wiz-apple .wiz-contact__btn.is-sel {
+  color: var(--wa-ink);
+  background: var(--wa-white);
+  border-color: var(--wa-cta-border);
+  box-shadow: var(--wa-shadow);
+}
+.landing-v2 .wiz-apple .wiz-saved-note {
+  color: var(--wa-muted);
+}
+.landing-v2 .wiz-apple input {
+  color: var(--wa-ink);
+  background: var(--wa-glass);
+  border: 1px solid var(--wa-border);
+  border-radius: 16px;
+  color-scheme: light;
+}
+.landing-v2 .wiz-apple input::placeholder {
+  color: var(--wa-muted);
+}
+
+/* primary CTA ("Continue" / "Check availability") — frosted white pill
+   with gold rim + bold ink text (no solid fill, no ticket frame) */
+.landing-v2 .wiz-apple .pay {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "SF Pro Display", system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #fff;
+  background: var(--wa-ink);
+  border: 1px solid var(--wa-ink);
+  border-radius: 999px;
+  box-shadow: var(--wa-shadow);
+}
+.landing-v2 .wiz-apple .pay::before {
+  display: none;
+}
+.landing-v2 .wiz-apple .pay.wiz-next:disabled {
+  color: var(--wa-muted);
+  background: var(--wa-white);
+  border-color: var(--wa-border);
+  box-shadow: none;
+  filter: none;
+}
+@media (hover: hover) {
+  .landing-v2 .wiz-apple .pay:hover {
+    filter: none;
+    opacity: 0.9;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 10px 24px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* WhatsApp ghost button — frosted pill, gold rim, ink */
+.landing-v2 .wiz-apple .wiz-wa {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--wa-ink);
+  background: var(--wa-glass);
+  border: 1px solid var(--wa-border);
+  border-radius: 999px;
+  padding: 14px;
+  text-decoration: none;
+}
+.landing-v2 .wiz-apple .wiz-wa:hover {
+  filter: none;
+  background: var(--wa-white);
+}
+
+/* "More than N? Ask us" escape link → quiet SF link */
+.landing-v2 .wiz-apple .cs-link {
+  font-size: 14px;
+  color: var(--wa-muted);
+  text-decoration-color: var(--wa-gold);
+  text-underline-offset: 3px;
+}
+.landing-v2 .wiz-apple .cs-link:hover {
+  color: var(--wa-ink);
+}
+
+/* confirmation — heading + lead + add-to-calendar pills */
+.landing-v2 .wiz-apple .wiz-done__h {
+  color: var(--wa-ink);
+}
+.landing-v2 .wiz-apple .confirm-lead {
+  color: var(--wa-muted);
+}
+.landing-v2 .wiz-apple .cal-label {
+  color: var(--wa-muted) !important;
+}
+.landing-v2 .wiz-apple .cal-btn {
+  min-height: 44px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--wa-ink);
+  background: var(--wa-glass);
+  border: 1px solid var(--wa-border);
+  border-radius: 999px;
+  box-shadow: var(--wa-shadow);
+}
+.landing-v2 .wiz-apple .cal-btn:hover {
+  filter: none;
+  background: var(--wa-white);
+}
+
+/* ============================================================
+   APPLE WHITE-GLASS RE-SKIN — scoped to the reading popups only.
+   .vp-apple sits on each popup's .village-page root (boat, hub,
+   captain, news, customer service, and the five village pages),
+   so every rule here is nested under it and never touches the
+   booking wizard (.wiz-apple / .book-form) or the live scene.
+   White frosted glass · thin antique-gold rim · SF Pro system type
+   · rounded cards/pills/tiles. Same tokens as .wiz-apple, source of
+   truth: public/apple-style.html (body.bg-white).
+   ============================================================ */
+.landing-v2 .vp-apple {
+  --wa-ink: #2a1810;
+  --wa-muted: rgba(42, 24, 16, 0.6);
+  --wa-gold: #c49a34;                       /* restrained accent only */
+  --wa-glass: #ffffff;                       /* solid white card surface */
+  --wa-white: #f6f5f3;                       /* barely-tinted stronger/hover surface */
+  --wa-border: rgba(0, 0, 0, 0.08);          /* neutral hairline */
+  --wa-border-soft: rgba(0, 0, 0, 0.06);
+  --wa-cta-border: var(--wa-gold);           /* thin gold ring on selected */
+  --wa-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 6px 18px rgba(0, 0, 0, 0.06);
+  color: var(--wa-ink);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--wa-border);
+  border-radius: 24px;
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  backdrop-filter: blur(30px) saturate(180%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+/* SF Pro / system stack across the whole popup scope */
+.landing-v2 .vp-apple,
+.landing-v2 .vp-apple * {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "SF Pro Display", system-ui, sans-serif;
+}
+
+/* eyebrow + headings + body → gold kicker, ink title, muted body */
+.landing-v2 .vp-apple .vp-eyebrow {
+  color: var(--wa-gold);
+}
+.landing-v2 .vp-apple .vp-title {
+  color: var(--wa-ink);
+}
+.landing-v2 .vp-apple .vp-lede {
+  color: rgba(42, 24, 16, 0.7);
+}
+.landing-v2 .vp-apple .vp-body {
+  color: rgba(42, 24, 16, 0.8);
+}
+
+/* facts — ink values, muted keys, no lines */
+.landing-v2 .vp-apple .vp-fact dt {
+  color: var(--wa-muted);
+}
+.landing-v2 .vp-apple .vp-fact dd {
+  color: var(--wa-ink);
+}
+
+/* boat page — "Included" subhead + list dots in gold, ink text */
+.landing-v2 .vp-apple .vp-subhead {
+  color: var(--wa-gold);
+}
+.landing-v2 .vp-apple .vp-incl li {
+  color: rgba(42, 24, 16, 0.8);
+}
+.landing-v2 .vp-apple .vp-incl li::before {
+  color: var(--wa-gold);
+}
+
+/* Wikipedia link → antique gold */
+.landing-v2 .vp-apple .wiki-link {
+  color: var(--wa-gold);
+}
+
+/* prev / next / back nav → quiet ink links */
+.landing-v2 .vp-apple .vp-nav button {
+  color: var(--wa-muted);
+}
+.landing-v2 .vp-apple .vp-nav button:hover {
+  color: var(--wa-ink);
+}
+
+/* primary CTA — frosted white pill, gold rim, bold ink (no solid fill,
+   no ticket frame) */
+.landing-v2 .vp-apple .vp-cta {
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #fff;
+  padding: 15px 22px;
+  border: 1px solid var(--wa-ink);
+  border-radius: 999px;
+  background: var(--wa-ink);
+  box-shadow: var(--wa-shadow);
+}
+.landing-v2 .vp-apple .vp-cta::before {
+  display: none;
+}
+@media (hover: hover) {
+  .landing-v2 .vp-apple .vp-cta:hover {
+    filter: none;
+    opacity: 0.9;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 10px 24px rgba(0, 0, 0, 0.1);
+  }
+}
+.landing-v2 .vp-apple .vp-cta:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* secondary "Explore" — lighter frosted pill, gold rim, ink (arrow uses
+   currentColor, so it follows the ink) */
+.landing-v2 .vp-apple .vp-read {
+  min-height: 44px;
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--wa-ink);
+  padding: 13px var(--s4);
+  border: 1px solid var(--wa-border);
+  border-radius: 999px;
+  background-color: var(--wa-glass);
+}
+.landing-v2 .vp-apple .vp-read:hover {
+  filter: none;
+  background-color: var(--wa-white);
+}
+
+/* customer-service link → quiet SF link, gold underline */
+.landing-v2 .vp-apple .cs-link {
+  font-size: 15px;
+  color: var(--wa-muted);
+  text-decoration: underline;
+  text-decoration-color: var(--wa-gold);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.landing-v2 .vp-apple .cs-link:hover {
+  color: var(--wa-ink);
+}
+@media (min-width: 760px) {
+  .landing-v2 .vp-apple .cs-link {
+    font-size: 15px;
+  }
+}
+
+/* hub — frosted gold-rimmed tiles, ink glyphs + labels */
+.landing-v2 .vp-apple .hub-tile {
+  color: var(--wa-ink);
+}
+.landing-v2 .vp-apple .hub-tile__ic {
+  background: var(--wa-glass);
+  border: 1px solid var(--wa-border);
+  border-radius: 16px;
+  box-shadow: var(--wa-shadow);
+}
+.landing-v2 .vp-apple .hub-tile__ic svg {
+  stroke: var(--wa-ink);
+}
+.landing-v2 .vp-apple .hub-tile:hover .hub-tile__ic {
+  background: var(--wa-white);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 10px 24px rgba(0, 0, 0, 0.09);
+}
+.landing-v2 .vp-apple .hub-tile__lbl {
+  color: var(--wa-ink);
+}
+
+/* customer-service option rows → frosted glass, gold rim, ink */
+.landing-v2 .vp-apple .cs-opt {
+  color: var(--wa-ink);
+  background: var(--wa-glass);
+  border: 1px solid var(--wa-border);
+  border-radius: 16px;
+}
+.landing-v2 .vp-apple .cs-opt:hover {
+  background: var(--wa-white);
+}
+.landing-v2 .vp-apple .cs-opt b {
+  color: var(--wa-ink);
+}
+.landing-v2 .vp-apple .cs-opt span span {
+  color: var(--wa-muted);
+}
+
+/* ============================================================
+   CLEAN APPLE HERO — the retired scene's replacement.
+   The animated sea scene (sky/aurora/boat/skyline/signs + the
+   theme/photo/style switchers) is no longer rendered in Landing.js;
+   this is a calm white Apple front page that sits over the same
+   popups + booking wizard (.vp-apple / .wiz-apple). Same tokens as
+   the Apple re-skin above — ink #2A1810 · gold #C49A34 (restrained)
+   · neutral hairline rgba(0,0,0,.08) · SF Pro system stack.
+   Reversible: re-render the scene components to bring it all back.
+   ============================================================ */
+.landing-v2 {
+  --lp-ink: #2a1810;
+  --lp-muted: rgba(42, 24, 16, 0.6);
+  --lp-gold: #c49a34;                 /* restrained accent only */
+  --lp-line: rgba(0, 0, 0, 0.08);     /* neutral hairline */
+  --lp-font: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "SF Pro Display", system-ui, sans-serif;
+  background: #fffefc;                 /* barely-warm clean white */
+}
+/* globals.css washes <body> deep-navy for the home page; the landing
+   page is clean white instead, with the native cursor back. */
+body:has(.landing-v2) {
+  background: #fffefc;
+  cursor: auto;
+}
+
+/* full-height, centred, generous-whitespace Apple composition */
+.landing-v2 .lp {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(48px, 10vh, 120px) var(--s5);
+  font-family: var(--lp-font);
+  color: var(--lp-ink);
+}
+.landing-v2 .lp-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 720px;
+}
+
+/* eyebrow — gold, uppercase, tracked */
+.landing-v2 .lp-eyebrow {
+  font-family: var(--lp-font);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lp-gold);
+  margin: 0 0 var(--s4);
+}
+/* the big SF Pro display title — bold, tight negative tracking */
+.landing-v2 .lp-title {
+  font-family: var(--lp-font);
+  font-weight: 700;
+  font-size: clamp(3rem, 11vw, 7rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  color: var(--lp-ink);
+  text-shadow: none;
+  margin: 0;
+}
+.landing-v2 .lp-tagline {
+  font-family: var(--lp-font);
+  font-weight: 400;
+  font-size: clamp(1.1rem, 2.4vw, 1.45rem);
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--lp-muted);
+  margin: var(--s5) 0 0;
+  max-width: 32ch;
+}
+
+/* primary CTA — clean ink-filled pill (white text), opens the wizard */
+.landing-v2 .lp-cta-row {
+  margin: var(--s7) 0 0;
+}
+.landing-v2 .lp-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--lp-font);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #fff;
+  background: var(--lp-ink);
+  border: 1px solid var(--lp-ink);
+  border-radius: 999px;
+  padding: 15px 34px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 6px 18px rgba(0, 0, 0, 0.06);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: transform 0.18s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+}
+@media (hover: hover) {
+  .landing-v2 .lp-cta:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 10px 24px rgba(0, 0, 0, 0.1);
+  }
+}
+.landing-v2 .lp-cta:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* section nav — quiet Apple text links (gold underline) to the popups
+   the scene used to gate */
+.landing-v2 .lp-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s3) var(--s6);
+  margin: var(--s7) 0 0;
+}
+.landing-v2 .lp-link {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--lp-font);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0;
+  color: var(--lp-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--lp-gold);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color 0.2s ease;
+}
+.landing-v2 .lp-link:hover {
+  color: var(--lp-gold);
+}
+
+/* the five villages — a restrained hairline-topped link row */
+.landing-v2 .lp-villages {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--s2) var(--s4);
+  margin: var(--s6) 0 0;
+  padding-top: var(--s5);
+  border-top: 1px solid var(--lp-line);
+  max-width: 560px;
+}
+.landing-v2 .lp-village {
+  background: none;
+  border: 0;
+  padding: var(--s1) var(--s2);
+  cursor: pointer;
+  font-family: var(--lp-font);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  color: var(--lp-muted);
+  transition: color 0.2s ease;
+}
+.landing-v2 .lp-village:hover {
+  color: var(--lp-ink);
+}
+
+/* quiet top-right "Log in" — restrained muted-ink text, gold on hover; a
+   returning customer's way into their dashboard (the separate app). Understated:
+   never competes with the ink-filled "Come aboard" CTA. */
+.landing-v2 .lp-login {
+  position: absolute;
+  top: clamp(20px, 4vh, 40px);
+  right: clamp(20px, 4vw, 48px);
+  z-index: 11;
+  font-family: var(--lp-font);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0;
+  color: var(--lp-muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.landing-v2 .lp-login:hover {
+  color: var(--lp-gold);
+}
+
+/* hide the hero behind any open popup — the scrim already blurs, this
+   keeps it clean and matches the old .shell hide-on-popup behaviour */
+.landing-v2.popup-open .lp {
+  display: none;
+}
+
+/* 🤍 Mandy — a few faint gold hearts drifting up, carried over from the
+   retired scene's hidden falling-hearts layer (they quietly carry her name
+   via data-letter: M·A·N·D·Y). Subtle, never loud. */
+.landing-v2 .lp-hearts {
+  position: absolute;
+  left: 50%;
+  bottom: -58px;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 90px;
+  pointer-events: none;
+}
+.landing-v2 .lp-heart {
+  position: absolute;
+  bottom: 0;
+  left: calc(50% + (var(--i) - 2) * 22px);
+  font-size: 0.9rem;
+  line-height: 1;
+  color: var(--lp-gold);
+  opacity: 0;
+  animation: lpHeartRise 13s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 2.1s);
+}
+@keyframes lpHeartRise {
+  0% {
+    transform: translate(-50%, 10px) scale(0.85);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.42;
+  }
+  70% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: translate(-50%, -74px) scale(1.05);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-v2 .lp-heart {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* mobile — tighten the hero rhythm */
+@media (max-width: 640px) {
+  .landing-v2 .lp {
+    padding: clamp(40px, 8vh, 72px) var(--s4);
+  }
+  .landing-v2 .lp-title {
+    font-size: clamp(2.6rem, 17vw, 4.4rem);
+  }
+  .landing-v2 .lp-nav {
+    gap: var(--s2) var(--s5);
+  }
+  .landing-v2 .lp-login {
+    top: 16px;
+    right: 16px;
+    font-size: 14px;
+  }
 }

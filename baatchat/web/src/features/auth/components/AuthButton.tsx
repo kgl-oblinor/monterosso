@@ -4,22 +4,22 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AuthButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  /** "primary" = solid gray CTA; "outline" = transparent with white border. */
+  /** "primary" = ink-filled pill CTA; "outline" = hairline-outlined white pill. */
   variant?: "primary" | "outline";
   loading?: boolean;
 }
 
-/** Pill CTA used across the auth screens — matches the branded gray/outline buttons. */
+/** Pill CTA used across the auth screens — shared Apple system (ink primary / hairline secondary). */
 export const AuthButton = React.forwardRef<HTMLButtonElement, AuthButtonProps>(
   ({ variant = "primary", loading, disabled, className, children, ...props }, ref) => (
     <button
       ref={ref}
       disabled={disabled || loading}
       className={cn(
-        "inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full border-2 px-6 py-2.5 text-base font-semibold shadow-widget transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50",
+        "inline-flex w-full items-center justify-center gap-2 whitespace-nowrap text-base",
         variant === "primary"
-          ? "border-white bg-[#ddd0b0] text-black"
-          : "border-white/50 bg-transparent text-white hover:border-white",
+          ? "btn-ink"
+          : "min-h-[44px] rounded-pill border border-hairline bg-white px-6 font-medium text-ink transition-colors hover:bg-surface disabled:cursor-not-allowed disabled:opacity-40",
         className
       )}
       {...props}
