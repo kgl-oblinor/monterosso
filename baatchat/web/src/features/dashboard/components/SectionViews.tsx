@@ -8,6 +8,7 @@ import {
   Globe,
   LogOut,
   Mail,
+  MessageSquare,
   Phone,
   Plus,
   Receipt,
@@ -187,6 +188,16 @@ function nextTripOf(trips: MyReservation[] | undefined): MyReservation | null {
   return upcoming[0] ?? null;
 }
 
+/** The customer home is a large, elderly-friendly 2×2 grid of real destinations —
+ *  reading order, most important first. No "coming soon" dead ends. Kundeservice routes
+ *  to Chat, which is the direct line to the skipper (our support channel). */
+const CUSTOMER_TILES: { id: string; key: SectionKey; icon: LucideIcon; label: string; hint: string }[] = [
+  { id: "chat", key: "chat", icon: MessageSquare, label: "Snakk med skipperen", hint: "Spør, avtal tid, bestill" },
+  { id: "trips", key: "trips", icon: Compass, label: "Turen min", hint: "Dato, sted og kode" },
+  { id: "support", key: "chat", icon: Phone, label: "Kundeservice", hint: "Ring eller skriv – vi svarer" },
+  { id: "profile", key: "profile", icon: User, label: "Min profil", hint: "Navn, e-post og telefon" },
+];
+
 /** "Hjem": a calm overview shown on sign-in for both roles — a warm greeting, the next
  *  trip (if any), and discreet shortcuts into the role's sections. Minimal, on-theme. */
 function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) {
@@ -254,26 +265,46 @@ function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) 
           )}
         </div>
 
-        {/* Shortcut widget grid */}
+        {/* Shortcuts. Skippers keep their compact section grid; customers get a large,
+            elderly-friendly 2×2 of real destinations (no "coming soon" dead ends). */}
         <div className="mt-8">
           <h2 className="px-1 text-xs font-semibold uppercase tracking-wider text-ink-muted">
             Snarveier
           </h2>
-          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {shortcuts.map(({ key, icon: Icon, label }) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => onNavigate(key)}
-                className="flex flex-col gap-3 rounded-card border border-hairline bg-surface p-4 text-left text-sm font-medium text-ink shadow-soft transition-[transform,background-color] hover:bg-page active:scale-[0.98]"
-              >
-                <span className="flex size-9 items-center justify-center rounded-input bg-gold/15 text-gold">
-                  <Icon className="size-4" />
-                </span>
-                <span className="truncate">{label}</span>
-              </button>
-            ))}
-          </div>
+          {isSkipper ? (
+            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {shortcuts.map(({ key, icon: Icon, label }) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => onNavigate(key)}
+                  className="flex flex-col gap-3 rounded-card border border-hairline bg-surface p-4 text-left text-sm font-medium text-ink shadow-soft transition-[transform,background-color] hover:bg-page active:scale-[0.98]"
+                >
+                  <span className="flex size-9 items-center justify-center rounded-input bg-gold/15 text-gold">
+                    <Icon className="size-4" />
+                  </span>
+                  <span className="truncate">{label}</span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-3 grid grid-cols-2 gap-3">
+              {CUSTOMER_TILES.map(({ id, key, icon: Icon, label, hint }) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => onNavigate(key)}
+                  className="flex min-h-[96px] flex-col justify-center gap-2 rounded-card border border-hairline bg-surface p-5 text-left shadow-soft transition-[transform,background-color] hover:bg-page active:scale-[0.98]"
+                >
+                  <span className="flex size-12 items-center justify-center rounded-input bg-gold/15 text-gold">
+                    <Icon className="size-6" />
+                  </span>
+                  <span className="text-base font-semibold leading-snug text-ink">{label}</span>
+                  <span className="text-sm leading-relaxed text-ink-muted">{hint}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>

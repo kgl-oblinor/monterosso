@@ -4,49 +4,48 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sidekart · rutenett (dra for å bytte plass)</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700&display=swap" rel="stylesheet">
 <style>
-  :root{--ink:#07182a;--ink2:#0a1f33;--cream:#fdf6ea;--gold:#ead27e;
+  :root{--ink:#2A1810;--muted:rgba(42,24,16,.6);--gold:#C49A34;
+    --page:#fffefc;--line:rgba(0,0,0,.08);--surf:#f6f5f3;
+    --shadow:0 1px 2px rgba(0,0,0,.04),0 6px 18px rgba(0,0,0,.06);
     --land:#ead27e;--book:#e8896b;--seo:#8fc46b;--kunde:#6ba8e8;--skipper:#5ec8c8;--admin:#b79ae8;}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:"Fraunces",Georgia,serif;color:var(--cream);
-    background:radial-gradient(120% 120% at 50% 0%,#0e2740 0%,var(--ink2) 45%,var(--ink) 100%);min-height:100vh}
+  body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",system-ui,sans-serif;color:var(--ink);
+    background:var(--page);min-height:100vh}
   header{position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);
-    background:rgba(7,24,42,.82);border-bottom:1px solid rgba(253,246,234,.1);
+    background:rgba(255,254,252,.85);border-bottom:1px solid var(--line);
     padding:16px clamp(16px,3vw,36px);display:flex;align-items:center;gap:18px;flex-wrap:wrap}
   header h1{font-size:20px;font-weight:600;letter-spacing:-.01em}
-  header .sub{font-size:13px;color:rgba(253,246,234,.55);font-weight:300}
+  header .sub{font-size:13px;color:var(--muted);font-weight:400}
   .spacer{flex:1}
-  .btn{font-family:inherit;background:rgba(253,246,234,.06);border:1px solid rgba(253,246,234,.16);
-    color:var(--cream);padding:8px 14px;font-size:13px;cursor:pointer;transition:.18s}
-  .btn:hover{background:rgba(234,210,126,.16);border-color:var(--gold);color:var(--gold)}
-  .legend{display:flex;gap:14px;flex-wrap:wrap;padding:12px clamp(16px,3vw,36px) 0;font-size:12px;color:rgba(253,246,234,.6)}
+  .btn{font-family:inherit;background:#fff;border:1px solid var(--line);border-radius:999px;
+    color:var(--ink);padding:8px 14px;font-size:13px;cursor:pointer;transition:.18s;box-shadow:var(--shadow)}
+  .btn:hover{border-color:var(--gold);color:var(--gold)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;padding:12px clamp(16px,3vw,36px) 0;font-size:12px;color:var(--muted)}
   .legend span{display:inline-flex;align-items:center;gap:6px}
-  .dot{width:11px;height:11px;display:inline-block}
+  .dot{width:11px;height:11px;border-radius:50%;display:inline-block}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
     gap:14px;padding:18px clamp(16px,3vw,36px) 80px}
-  .tile{background:rgba(253,246,234,.05);border:1px solid rgba(253,246,234,.12);
-    border-left:3px solid var(--c);cursor:grab;user-select:none;position:relative;
+  .tile{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+    border-left:3px solid var(--c);cursor:grab;user-select:none;position:relative;box-shadow:var(--shadow);
     display:flex;flex-direction:column;transition:transform .12s,box-shadow .12s,opacity .12s}
-  .tile:hover{box-shadow:0 6px 22px rgba(0,0,0,.35)}
+  .tile:hover{box-shadow:0 2px 4px rgba(0,0,0,.06),0 10px 26px rgba(0,0,0,.1)}
   .tile.dragging{opacity:.4;cursor:grabbing}
   .tile.over{outline:2px dashed var(--gold);outline-offset:2px}
-  .thumb{position:relative;height:150px;overflow:hidden;background:rgba(0,0,0,.25);border-bottom:1px solid rgba(253,246,234,.08)}
+  .thumb{position:relative;height:150px;overflow:hidden;background:var(--surf);border-bottom:1px solid var(--line)}
   .thumb iframe{position:absolute;top:0;left:0;width:1100px;height:750px;border:0;
-    transform:scale(.2);transform-origin:top left;pointer-events:none;background:#0a1f33}
+    transform:scale(.2);transform-origin:top left;pointer-events:none;background:#fff}
   .thumb .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    font-size:30px;color:var(--c);opacity:.5}
+    font-size:30px;color:var(--c);opacity:.7}
   .meta{padding:11px 13px;display:flex;align-items:center;justify-content:space-between;gap:8px}
   .meta .nm{font-size:14.5px;font-weight:600;line-height:1.2}
-  .meta .cat{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--c);font-weight:600}
-  .meta a{color:rgba(253,246,234,.5);text-decoration:none;font-size:12px;flex-shrink:0}
+  .meta .cat{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600}
+  .meta a{color:var(--muted);text-decoration:none;font-size:12px;flex-shrink:0}
   .meta a:hover{color:var(--gold)}
   .pos{position:absolute;top:7px;left:9px;font-size:11px;font-weight:700;color:var(--ink);
-    background:var(--c);width:20px;height:20px;display:flex;align-items:center;justify-content:center;z-index:2}
-  #out{position:fixed;bottom:0;left:0;right:0;background:rgba(7,24,42,.95);border-top:1px solid var(--gold);
-    padding:14px clamp(16px,3vw,36px);font-size:12px;color:rgba(253,246,234,.8);display:none;max-height:40vh;overflow:auto}
+    background:var(--c);border-radius:7px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;z-index:2;box-shadow:var(--shadow)}
+  #out{position:fixed;bottom:0;left:0;right:0;background:rgba(255,254,252,.97);border-top:1px solid var(--line);
+    padding:14px clamp(16px,3vw,36px);font-size:12px;color:var(--ink);display:none;max-height:40vh;overflow:auto;box-shadow:0 -6px 18px rgba(0,0,0,.06)}
   #out pre{white-space:pre-wrap;word-break:break-all;font-family:ui-monospace,monospace;font-size:11.5px;margin-top:8px}
 </style>
 </head>

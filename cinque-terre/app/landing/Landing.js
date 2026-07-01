@@ -935,6 +935,12 @@ function BookingForm({ onClose }) {
             <strong>${total}</strong>
           </div>
         </div>
+        <a
+          className="conf-cta"
+          href="https://monterosso-app.kgl-56a.workers.dev/login"
+        >
+          Go to your conversation
+        </a>
         <p className="cal-label">Add me to your calendar</p>
         <div className="cal-row">
           <a

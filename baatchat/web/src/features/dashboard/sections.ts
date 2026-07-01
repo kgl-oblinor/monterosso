@@ -1,10 +1,12 @@
 // Role-differentiated navigation for the web-app shell. The icon rail and the section
 // views both read from here so the two roles never drift.
 //
-// MÅL menu order (customer-facing): Chat · Turer · Kvitteringer · Andre reiser · Andre land.
+// MÅL menu order (customer-facing): Chat · Turer. The old "coming soon" entries
+// (Kvitteringer / Andre reiser / Andre land) were dropped from the customer rail — they
+// were dead ends that confused older users; the sections stay defined but off the nav.
 // On sign-in we land on a calm "Hjem" overview (not straight into chat) — Hjem sits at the
 // top of the rail, with Chat right below it. The profile avatar lives at the bottom (IconRail).
-import { Anchor, Compass, Globe, LayoutPanelLeft, MessageSquare, Receipt, Ship, Users } from "lucide-react";
+import { Anchor, Compass, LayoutPanelLeft, MessageSquare, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import type { UserRole } from "@/features/auth/api/types";
@@ -36,9 +38,6 @@ const CUSTOMER_NAV: NavItem[] = [
   HOME,
   CHAT,
   { key: "trips", icon: Compass, label: "Turer" },
-  { key: "receipts", icon: Receipt, label: "Kvitteringer" },
-  { key: "otherTrips", icon: Ship, label: "Andre reiser" },
-  { key: "otherCountries", icon: Globe, label: "Andre land" },
 ];
 
 const SKIPPER_NAV: NavItem[] = [
