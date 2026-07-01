@@ -3036,12 +3036,12 @@ body:has(.landing-v2) {
     position: sticky;
     top: 0;
     overflow-y: auto;
-    background: rgba(255, 255, 255, 0.86);
-    -webkit-backdrop-filter: blur(28px) saturate(160%);
-    backdrop-filter: blur(28px) saturate(160%);
+    background: rgba(243, 246, 250, 0.42); /* cool, almost-invisible surround */
+    -webkit-backdrop-filter: blur(26px) saturate(150%);
+    backdrop-filter: blur(26px) saturate(150%);
     border-top: 0;
-    border-left: 1px solid var(--dk-line);
-    box-shadow: -20px 0 50px rgba(60, 40, 10, 0.06);
+    border-left: 1px solid rgba(20, 40, 70, 0.05);
+    box-shadow: -16px 0 44px rgba(40, 50, 70, 0.035);
     padding: 26px 26px 34px;
   }
 }
@@ -3096,6 +3096,41 @@ body:has(.landing-v2) {
 }
 
 /* Express — next-available departure */
+/* Live availability status for Paolona (green pulse = available now) */
+.landing-v2 .lp-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--dk-muted, rgba(42, 24, 16, 0.6));
+  margin-bottom: 16px;
+}
+.landing-v2 .lp-status b {
+  color: var(--dk-ink);
+  font-weight: 600;
+}
+.landing-v2 .lp-status__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #37b26b;
+  box-shadow: 0 0 0 0 rgba(55, 178, 107, 0.5);
+  animation: lp-beat 1.9s infinite;
+  flex: none;
+}
+@keyframes lp-beat {
+  0% { box-shadow: 0 0 0 0 rgba(55, 178, 107, 0.5); }
+  70% { box-shadow: 0 0 0 7px rgba(55, 178, 107, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(55, 178, 107, 0); }
+}
+.landing-v2 .lp-rating {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dk-ink);
+  margin-top: 16px;
+}
+
 .landing-v2 .lp-eyebrow2 {
   display: flex;
   align-items: center;

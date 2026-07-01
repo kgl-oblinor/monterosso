@@ -1434,6 +1434,12 @@ function ExpressBooking() {
   // white-glass styling; .lp-dock flattens this wrapper's own card chrome.
   return (
     <div className="lp-express wiz-apple">
+      {/* Live availability for Paolona — this front page is tied to the one
+          skipper (Andrea). TODO: wire to real reservation status (booked/free). */}
+      <div className="lp-status">
+        <span className="lp-status__dot" aria-hidden="true" />
+        <b>Paolona</b> · available now
+      </div>
       <div className="lp-eyebrow2">
         <span className="lp-dot" aria-hidden="true" />
         Next available departure
@@ -1600,6 +1606,7 @@ function ExpressBooking() {
       >
         {submitting ? "Sending…" : "Reserve"}
       </button>
+      <div className="lp-rating">4.98 ⭐</div>
     </div>
   );
 }
