@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen, Smartphone } from "lucide-react";
 
 import { useT } from "@/i18n";
 import { cn, initialsOf } from "@/lib/utils";
@@ -7,6 +7,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { useAuthStore } from "@/features/auth/store";
 import logoUrl from "@/monterosso-mark.svg";
 import { navForRole, type SectionKey } from "../sections";
+import { GetAppDialog } from "./GetAppDialog";
 
 const RAIL_STATE_KEY = "monterosso.rail.expanded";
 
@@ -39,6 +40,7 @@ export function IconRail({ active, onSelect }: IconRailProps) {
   const user = useAuthStore((s) => s.user);
   const nav = navForRole(user?.role);
   const [expanded, setExpanded] = useRailExpanded();
+  const [getAppOpen, setGetAppOpen] = useState(false);
 
   // On mobile, selecting a section collapses the overlay so the content is visible.
   const handleSelect = (key: SectionKey) => {
@@ -120,8 +122,25 @@ export function IconRail({ active, onSelect }: IconRailProps) {
           })}
         </div>
 
+        {/* Quiet "Get the app" trigger — unobtrusive, sits above the profile. */}
+        <div className={cn("mt-auto px-2", expanded ? "" : "flex justify-center")}>
+          <button
+            type="button"
+            onClick={() => setGetAppOpen(true)}
+            aria-label={t("getapp.link")}
+            title={expanded ? undefined : t("getapp.link")}
+            className={cn(
+              "flex h-10 items-center gap-3 rounded-xl text-ink-muted transition-colors hover:bg-black/[0.04] hover:text-ink",
+              expanded ? "w-full px-3" : "size-10 justify-center px-0"
+            )}
+          >
+            <Smartphone className="size-5 shrink-0" />
+            {expanded && <span className="truncate text-sm">{t("getapp.link")}</span>}
+          </button>
+        </div>
+
         {/* Profile: the avatar at the bottom opens the user's own profile section. */}
-        <div className={cn("mt-auto flex", expanded ? "px-3" : "justify-center")}>
+        <div className={cn("mt-3 flex", expanded ? "px-3" : "justify-center")}>
           <button
             type="button"
             onClick={() => handleSelect("profile")}
@@ -149,6 +168,8 @@ export function IconRail({ active, onSelect }: IconRailProps) {
           </button>
         </div>
       </nav>
+
+      {getAppOpen && <GetAppDialog onClose={() => setGetAppOpen(false)} />}
     </>
   );
 }

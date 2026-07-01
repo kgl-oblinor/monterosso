@@ -31,9 +31,11 @@ import {
   useDeleteBlogPost,
   useSiteSettings,
   useUpdateSiteSettings,
+  THEME_PREVIEWS,
   type Departure,
+  type DayNightMode,
   type SiteSettings,
-  type ThemeBackground,
+  type ThemeId,
 } from "../api/site";
 import { InviteDialog } from "./InviteDialog";
 import { shortcutsForRole, type SectionKey } from "../sections";
@@ -542,21 +544,11 @@ function SettingRow({ label, children }: { label: string; children: React.ReactN
 const FIELD_CLASS =
   "min-w-0 flex-1 bg-transparent text-right text-sm text-ink placeholder:text-ink-muted focus:outline-none";
 
-const BACKGROUNDS: { key: ThemeBackground; labelKey: TranslationKey }[] = [
-  { key: "bay", labelKey: "site.background.bay" },
-  { key: "deepblue", labelKey: "site.background.deepblue" },
-  { key: "villages", labelKey: "site.background.villages" },
-  { key: "scene", labelKey: "site.background.scene" },
+const DAYNIGHT_MODES: { key: DayNightMode; labelKey: TranslationKey }[] = [
+  { key: "day", labelKey: "site.mode.day" },
+  { key: "night", labelKey: "site.mode.night" },
+  { key: "auto", labelKey: "site.mode.auto" },
 ];
-
-const BACKGROUND_SWATCH: Record<ThemeBackground, string> = {
-  bay: "linear-gradient(135deg,#2a7d8c,#0f2740)",
-  deepblue: "linear-gradient(135deg,#0f2740,#07182a)",
-  villages: "linear-gradient(135deg,#c46b3f,#7a3b2a)",
-  scene: "linear-gradient(135deg,#5f7a43,#2a3b1f)",
-};
-
-const ACCENT_PRESETS = ["#ead27e", "#c46b3f", "#5f7a43", "#2a7d8c", "#b04a3a"];
 
 /** "Min side": the editor where a skipper shapes their public landing. Grouped inset cards
  *  (Tilbud · Pris & gjester · Tider · Utseende · Blogg). Persists via siteApi (mock → localStorage
@@ -573,8 +565,8 @@ function SiteSection() {
   const [pricePerGuest, setPricePerGuest] = useState(0);
   const [maxGuests, setMaxGuests] = useState(0);
   const [departures, setDepartures] = useState<Departure[]>([]);
-  const [background, setBackground] = useState<ThemeBackground>("deepblue");
-  const [accent, setAccent] = useState("#ead27e");
+  const [themeId, setThemeId] = useState<ThemeId>("deepsea");
+  const [dayNight, setDayNight] = useState<DayNightMode>("auto");
   const [saved, setSaved] = useState(false);
 
   const [newTitle, setNewTitle] = useState("");
@@ -588,8 +580,8 @@ function SiteSection() {
       setPricePerGuest(data.pricePerGuest);
       setMaxGuests(data.maxGuests);
       setDepartures(data.departures);
-      setBackground(data.theme.background);
-      setAccent(data.theme.accent);
+      setThemeId(data.theme.id);
+      setDayNight(data.theme.dayNight);
     }
   }, [data]);
 
@@ -604,7 +596,7 @@ function SiteSection() {
         pricePerGuest,
         maxGuests,
         departures,
-        theme: { background, accent },
+        theme: { id: themeId, dayNight },
       },
       { onSuccess: () => setSaved(true) }
     );
@@ -741,70 +733,73 @@ function SiteSection() {
             </button>
           </SettingsGroup>
 
-          {/* Utseende */}
+          {/* Utseende — a calm gallery of ten curated themes + a day/night mode.
+              The swatches preview the (expressive) public palettes; the admin chrome
+              itself stays strict-white per DESIGN-HIG. */}
           <SettingsGroup title={t("site.group.appearance")}>
             <div className="px-4 py-4">
-              <p className="text-sm text-ink-muted">{t("site.appearance.background")}</p>
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                {BACKGROUNDS.map((bg) => (
-                  <button
-                    key={bg.key}
-                    type="button"
-                    onClick={() => {
-                      setBackground(bg.key);
-                      dirtied();
-                    }}
-                    className={`flex items-center gap-2.5 rounded-input border p-2 text-left text-sm transition-colors ${
-                      background === bg.key
-                        ? "border-transparent bg-surface text-gold ring-1 ring-inset ring-gold/30"
-                        : "border-hairline text-ink-muted hover:bg-surface"
-                    }`}
-                  >
-                    <span
-                      className="size-7 shrink-0 rounded-lg shadow-[inset_0_0_0_1px_rgba(0,0,0,0.08)]"
-                      style={{ background: BACKGROUND_SWATCH[bg.key] }}
-                    />
-                    <span className="truncate">{t(bg.labelKey)}</span>
-                  </button>
-                ))}
+              <p className="text-sm text-ink-muted">{t("site.appearance.theme")}</p>
+              <div className="mt-3 grid grid-cols-2 gap-2.5">
+                {THEME_PREVIEWS.map((th) => {
+                  const selected = themeId === th.id;
+                  return (
+                    <button
+                      key={th.id}
+                      type="button"
+                      onClick={() => {
+                        setThemeId(th.id);
+                        dirtied();
+                      }}
+                      aria-pressed={selected}
+                      className={`group flex flex-col gap-2 rounded-card border p-2 text-left transition-colors ${
+                        selected
+                          ? "border-transparent ring-1 ring-inset ring-gold/40"
+                          : "border-hairline hover:bg-surface"
+                      }`}
+                    >
+                      <span
+                        className="relative flex h-12 items-end justify-start overflow-hidden rounded-input px-2 py-2 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.06)]"
+                        style={{ background: th.bg }}
+                      >
+                        {/* accent chip + a legibility bar, so each swatch reads as a whole palette */}
+                        <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: th.accent }} />
+                        <span
+                          className="ml-1.5 h-2.5 w-8 rounded-full opacity-70"
+                          style={{ backgroundColor: th.ink }}
+                        />
+                      </span>
+                      <span
+                        className={`truncate px-0.5 text-sm ${selected ? "font-medium text-ink" : "text-ink-muted"}`}
+                      >
+                        {t(th.nameKey)}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
             <div className="px-4 py-4">
-              <p className="text-sm text-ink-muted">{t("site.appearance.color")}</p>
-              <div className="mt-3 flex items-center gap-2.5">
-                {ACCENT_PRESETS.map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    onClick={() => {
-                      setAccent(c);
-                      dirtied();
-                    }}
-                    aria-label={t("site.color.pick", { color: c })}
-                    className="flex size-11 items-center justify-center rounded-full transition-transform active:scale-90"
-                  >
-                    <span
-                      className={`size-8 rounded-full ${
-                        accent.toLowerCase() === c.toLowerCase()
-                          ? "ring-2 ring-ink ring-offset-2 ring-offset-page"
-                          : ""
+              <p className="text-sm text-ink-muted">{t("site.appearance.mode")}</p>
+              <div className="mt-3 inline-flex w-full rounded-input border border-hairline p-0.5">
+                {DAYNIGHT_MODES.map((m) => {
+                  const selected = dayNight === m.key;
+                  return (
+                    <button
+                      key={m.key}
+                      type="button"
+                      onClick={() => {
+                        setDayNight(m.key);
+                        dirtied();
+                      }}
+                      aria-pressed={selected}
+                      className={`min-h-[40px] flex-1 rounded-[calc(var(--r-input,10px)-2px)] px-3 text-sm font-medium transition-colors ${
+                        selected ? "bg-ink text-white" : "text-ink-muted hover:text-ink"
                       }`}
-                      style={{ backgroundColor: c }}
-                    />
-                  </button>
-                ))}
-                <label className="ml-1 flex size-11 cursor-pointer items-center justify-center rounded-full border border-hairline text-ink-muted hover:bg-surface">
-                  <input
-                    type="color"
-                    value={accent}
-                    onChange={(e) => {
-                      setAccent(e.target.value);
-                      dirtied();
-                    }}
-                    className="size-0 opacity-0"
-                  />
-                  <Plus className="size-4" />
-                </label>
+                    >
+                      {t(m.labelKey)}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </SettingsGroup>

@@ -11,22 +11,24 @@ import { delay } from "./fixtures";
 
 const STORAGE_KEY = "baatchat.mock.siteSettings";
 
+// Seeded with the pilot skipper's real details — Andrea Berio, "Tiburon Boat Services",
+// the gozzo Paolona out of Monterosso al Mare (see ANDREA-DATA.md for the sourcing).
 const DEFAULTS: SiteSettings = {
-  listingTitle: "Paolona · Monterosso",
-  tagline: "Stille morgener og gylne kvelder langs Cinque Terre.",
+  listingTitle: "Tiburon Boat Services",
+  tagline: "The Cinque Terre, seen from the water.",
   pricePerGuest: 100,
-  maxGuests: 8,
+  maxGuests: 6,
   departures: [
-    { key: "sunrise", label: "Soloppgang", time: "06:00" },
-    { key: "sunshine", label: "Sol", time: "11:00" },
-    { key: "sunset", label: "Solnedgang", time: "18:30" },
+    { key: "coastal2h", label: "Coastal · 2 hours", time: "10:00" },
+    { key: "swim3h", label: "Swim stop · 3 hours", time: "14:00" },
+    { key: "sunset", label: "Sunset", time: "18:30" },
   ],
-  theme: { background: "deepblue", accent: "#ead27e" },
+  theme: { id: "deepsea", dayNight: "auto" },
   blogPosts: [
     {
       id: "b1",
-      title: "Velkommen ombord",
-      body: "Vi gleder oss til å vise dere kysten — fra Molo dei Pescatori til de fem landsbyene.",
+      title: "Welcome aboard the Paolona",
+      body: "Davide and I take you the whole coast — from Molo dei Pescatori past all five villages, into the quiet coves the ferries never reach.",
       published: true,
       createdAt: "2026-06-01T08:00:00.000Z",
     },

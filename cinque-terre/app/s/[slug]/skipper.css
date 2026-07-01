@@ -1,0 +1,301 @@
+/* ============================================================
+   Config-driven skipper landing — scoped styles.
+   Everything is nested under `.skipper`, so it never touches the
+   ornate home page. Clean SF Pro, generous whitespace, hairline
+   rules, ONE accent — an Apple-restrained but warmer public page.
+   Palette comes from CSS vars (--bg/--surface/--ink/--muted/
+   --accent/--on-accent/--line) set inline per the chosen theme.
+   ============================================================ */
+.skipper {
+  --sk-max: 760px;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0 24px 96px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background-attachment: fixed;
+}
+
+.skipper a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ---------- Hero ---------- */
+.sk-hero {
+  max-width: var(--sk-max);
+  margin: 0 auto;
+  padding: 128px 0 72px;
+  text-align: center;
+}
+
+.sk-eyebrow {
+  margin: 0 0 20px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.sk-title {
+  margin: 0;
+  font-size: clamp(40px, 8vw, 68px);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+.sk-tagline {
+  margin: 22px auto 0;
+  max-width: 30ch;
+  font-size: clamp(19px, 3vw, 23px);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.sk-intro {
+  margin: 20px auto 0;
+  max-width: 52ch;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.sk-meta {
+  margin: 34px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.sk-meta em {
+  font-style: normal;
+  color: var(--muted);
+}
+.sk-dot {
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.4;
+}
+
+/* ---------- CTA buttons ---------- */
+.sk-cta-row {
+  margin-top: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.sk-hero .sk-cta-row {
+  justify-content: center;
+}
+.sk-cta-center {
+  justify-content: center;
+}
+
+.sk-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 30px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.sk-cta:hover {
+  opacity: 0.92;
+}
+.sk-cta:active {
+  transform: scale(0.98);
+}
+
+.sk-cta-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 26px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 500;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.sk-cta-ghost:hover {
+  background: var(--surface);
+}
+.sk-cta-ghost:active {
+  transform: scale(0.98);
+}
+
+/* ---------- Sections ---------- */
+.sk-section {
+  max-width: var(--sk-max);
+  margin: 0 auto;
+  padding: 56px 0 0;
+}
+.sk-section-h {
+  margin: 0 0 28px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------- Tours ---------- */
+.sk-tours {
+  display: grid;
+  gap: 16px;
+}
+.sk-tour {
+  padding: 26px 28px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.sk-tour-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+.sk-tour-name {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.sk-tour-price {
+  flex-shrink: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent);
+}
+.sk-tour-price em {
+  font-style: normal;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.sk-tour-dur {
+  margin: 6px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.sk-tour-desc {
+  margin: 14px 0 0;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ink);
+  opacity: 0.92;
+}
+
+/* ---------- Detail row ---------- */
+.sk-detail {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.sk-detail-item {
+  padding: 22px 0 0;
+  border-top: 1px solid var(--line);
+}
+.sk-detail-k {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.sk-detail-v {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+/* ---------- Booking band ---------- */
+.sk-book {
+  max-width: var(--sk-max);
+  margin: 80px auto 0;
+  padding: 56px 32px;
+  border-radius: 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  text-align: center;
+}
+.sk-book-h {
+  margin: 0;
+  font-size: clamp(28px, 5vw, 38px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.sk-book-sub {
+  margin: 16px auto 0;
+  max-width: 46ch;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* ---------- Footer ---------- */
+.sk-foot {
+  max-width: var(--sk-max);
+  margin: 64px auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.sk-foot a:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .skipper {
+    padding: 0 20px 72px;
+  }
+  .sk-hero {
+    padding: 92px 0 56px;
+  }
+  .sk-detail {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .sk-detail-item {
+    padding: 18px 0;
+  }
+  .sk-detail-item + .sk-detail-item {
+    border-top: 1px solid var(--line);
+  }
+  .sk-cta,
+  .sk-cta-ghost {
+    flex: 1 1 auto;
+  }
+}

@@ -7,6 +7,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { env } from "@/lib/env";
+import type { TranslationKey } from "@/i18n";
 import { mockSiteApi } from "@/mocks/mockSite";
 
 // --- data model -------------------------------------------------------------
@@ -18,13 +19,51 @@ export interface Departure {
   time: string; // "HH:MM"
 }
 
-/** The four landing backgrounds a skipper can pick from. */
-export type ThemeBackground = "bay" | "deepblue" | "villages" | "scene";
+/** The ten curated landing themes a skipper can pick from. Each `id` maps to a coherent,
+ *  tasteful palette (background treatment + accent + text tone) held by the public landing.
+ *  The editor only needs a preview swatch per theme — see THEME_PREVIEWS below. */
+export type ThemeId =
+  | "linen" // minimal white
+  | "sand" // warm sand
+  | "deepsea" // deep sea / navy
+  | "goldenhour" // sunset / golden hour
+  | "terracotta" // coastal terracotta
+  | "slate" // cool slate
+  | "riviera" // lemon / Riviera azure
+  | "coral" // soft coral
+  | "editorial" // editorial mono
+  | "notte"; // night
+
+/** How the public page resolves its palette: pinned to day, pinned to night, or `auto`
+ *  (switch by the *viewer's* local time). */
+export type DayNightMode = "day" | "night" | "auto";
 
 export interface Theme {
-  background: ThemeBackground;
-  accent: string; // hex, e.g. "#ead27e"
+  id: ThemeId;
+  dayNight: DayNightMode;
 }
+
+/** Editor-side preview for each theme — just enough colour to render a tasteful swatch
+ *  gallery in "Min side". The full day/night palettes live with the public landing
+ *  (cinque-terre/lib/skippers.js), so the two stay in sync by shared `ThemeId`. */
+export const THEME_PREVIEWS: {
+  id: ThemeId;
+  nameKey: TranslationKey;
+  bg: string; // swatch background (may be a gradient)
+  accent: string;
+  ink: string; // a legibility dot on the swatch
+}[] = [
+  { id: "linen", nameKey: "site.theme.linen", bg: "#fbfaf7", accent: "#b08d57", ink: "#1c1b19" },
+  { id: "sand", nameKey: "site.theme.sand", bg: "linear-gradient(135deg,#f3e9d8,#e7d6ba)", accent: "#c08a4a", ink: "#2f2a20" },
+  { id: "deepsea", nameKey: "site.theme.deepsea", bg: "linear-gradient(135deg,#0f2740,#07182a)", accent: "#ead27e", ink: "#eaf1f7" },
+  { id: "goldenhour", nameKey: "site.theme.goldenhour", bg: "linear-gradient(135deg,#f6d9a8,#e9a15c)", accent: "#c85a2b", ink: "#3a2416" },
+  { id: "terracotta", nameKey: "site.theme.terracotta", bg: "linear-gradient(135deg,#e7c8b0,#d3a488)", accent: "#a8492e", ink: "#3d2419" },
+  { id: "slate", nameKey: "site.theme.slate", bg: "linear-gradient(135deg,#e7ebef,#d3dae1)", accent: "#4a6274", ink: "#202730" },
+  { id: "riviera", nameKey: "site.theme.riviera", bg: "linear-gradient(135deg,#f6f0d8,#eae6c6)", accent: "#1f7a8c", ink: "#23303a" },
+  { id: "coral", nameKey: "site.theme.coral", bg: "linear-gradient(135deg,#fce4dd,#f6cabf)", accent: "#e0674f", ink: "#3a201c" },
+  { id: "editorial", nameKey: "site.theme.editorial", bg: "#f4f3f1", accent: "#0d0d0d", ink: "#0d0d0d" },
+  { id: "notte", nameKey: "site.theme.notte", bg: "linear-gradient(135deg,#0e1420,#05070c)", accent: "#aab6c8", ink: "#e8ecf2" },
+];
 
 export interface BlogPost {
   id: string;
