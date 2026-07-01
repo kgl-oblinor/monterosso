@@ -654,7 +654,7 @@ function SiteSection() {
                 rel="noopener noreferrer"
                 className="mt-4 inline-flex min-h-[44px] items-center gap-1.5 text-sm font-semibold text-gold underline decoration-gold/40 underline-offset-4 transition-colors hover:decoration-gold"
               >
-                View your public page
+                {t("site.viewPublic")}
                 <span aria-hidden="true">→</span>
               </a>
             );
@@ -812,7 +812,7 @@ function SiteSection() {
                         dirtied();
                       }}
                       aria-pressed={selected}
-                      className={`min-h-[40px] flex-1 rounded-[calc(var(--r-input,10px)-2px)] px-3 text-sm font-medium transition-colors ${
+                      className={`min-h-[44px] flex-1 rounded-[calc(var(--r-input,10px)-2px)] px-3 text-sm font-medium transition-colors ${
                         selected ? "bg-ink text-white" : "text-ink-muted hover:text-ink"
                       }`}
                     >

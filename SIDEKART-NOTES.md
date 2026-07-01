@@ -22,9 +22,15 @@
 - **Tre linjer fra Landingpage:** (1) **les mer / SEO**, (2) **Log in** — disse to ender **samme sted: web-dashboardet** (SEO ligger der, login lander der), (3) **Book**.
 
 ## Web-dashboard (ikke-innlogget) — spec
+> **Internt navn: `web-app`.** Login-sidens lenke peker til web-app (= dette web-dashboardet).
 - **Fullskjerm, én skjerm, ingen scroll** (i hvert fall på mobil).
 - **Sidebar togglet ut**, enkelt lukkbar → lenker ut til **SEO-sidene**.
 - Herfra kan kunden: **logge inn** · **bestille** · **se kart over aktive båter i området** · laste ned app.
+
+### Kontakt skipper — faset (traveler)
+- **START (launch):** helt OK at kunden får **WhatsApp-info** (+ SMS) og *ikke* chatter i appen. Lav friksjon — Andrea er allerede på WhatsApp.
+- **SENERE:** **ingen valg** — kun **chat i app**. Da eier vi relasjonen + dataen.
+- Konto for in-app-chat lages *automatisk* ved booking (så det er klart når vi slår over). Ikke overkompliser.
 
 ### Live kart (aktive båter) — spec
 - **Ekte kart** (ikke stilisert) — Leaflet/OSM (eller Mapbox).
@@ -44,8 +50,23 @@
   - `SEO · Underkategori` — Restauranter, Vin, Strender …
 - Kategori-forslag: Steder · Gjøremål · Reviews (+ Mat & drikke · Praktisk/reiseplanlegging · Dagsplaner · Foto · Historie/festivaler · FAQ).
 
+### SEO → konvertering (primær-CTA på alle SEO-sider)
+Alle SEO-sider (unntatt meny + innlogget side) linker i hovedsak til konvertering:
+- **Sjekk ledig tur nær deg** (stedsbasert, bruker posisjon → live-kart/proximity)
+- **Se turene du kan oppleve** (browse)
+- Tillegg (kandidater): «Aktive båter nær deg nå» (live-kart) · «Snakk med skipperen» (WhatsApp) · «Priser & neste ledige».
+
+### Mobil hamburger-meny (traveler) — godkjent
+Festet **Check availability** øverst + 4 bøtter: (1) Opplevelsen (tur/båt/skipper/priser/reviews), (2) Utforsk Cinque Terre (SEO), (3) Din tur (kontekstuell: Log in ↔ Mine turer/Chat/Profil), (4) Hjelp (slik funker det/FAQ/WhatsApp). Bunn: EN/IT. Maks ett nivå dypt, ≥44px, glass-sheet.
+
 ### A/B-testing (annonsering)
 - SEO-/landingssidene skal kunne **A/B-testes** — og **multivariat A/B/C/D/E/F** — når vi **annonserer på Google og Facebook**. Test varianter for konvertering per kampanje.
+
+## Roller & datastrøm (viktig korreksjon)
+- **Skipper = admin for *sine* båter/turer/tilbud.** «Min side» = config (tider · fra hvor · turtyper · priser · beskrivelser · tilbud) → skrives til **D1**.
+- **D1 = sannhetskilde** → driver: reisende-frontend (riktige priser/tilbud), booking + **kvittering**, skipper-dashboard.
+- Skipper **eier bekreft/avslå** av forespørsler (PATCH status → booked/cancelled).
+- **Platform-admin = ren observatør (read-only):** all historikk · samtaler · hvor langt hver kunde kom (funnel) · hvem lagde konto. **Godkjenner INGENTING** (verken kontoer eller forespørsler).
 
 ## Kort-grammatikk (universell)
 Hvert kort, i denne rekkefølgen: (1) **navn på side-type øverst**, (2) **gruppe med linker** (dersom den har), (3) **CTA-valg nederst**. Startet med landingssidene (BoatUber + Andrea).

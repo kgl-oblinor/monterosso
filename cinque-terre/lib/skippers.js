@@ -126,7 +126,7 @@ const SKIPPERS = {
       tripadvisorReviews: 216,
     },
     // The chosen appearance — one of the ten shared themes + day/night mode.
-    theme: { id: "deepsea", dayNight: "auto" },
+    theme: { id: "linen", dayNight: "day" },
   },
 };
 

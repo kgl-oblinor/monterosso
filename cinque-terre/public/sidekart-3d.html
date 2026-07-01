@@ -85,7 +85,7 @@
     gap: 300,            // X-avstand i "row"-klynger (luftig)
     colGap: 180,         // Y-avstand i "col"-klynger (kolonner)
     stagger: 16,         // liten forskyvning annenhver node
-    view: { rx: 0, ry: 0, s: 0.34 },   // flat 2D for oversikt
+    view: { rx: 0, ry: 0, s: 0.3 },   // flat 2D top-down for oversikt
     scale: { min: 0.28, max: 1.5, step: 0.12 },
     rotSpeed: 0.3,
     cat: { gate:'--gate', land:'--land', book:'--book', kunde:'--kunde',
@@ -97,16 +97,16 @@
   /* ---------- 2) DATA ---------- */
   // Top-down: y = nivå (nedover), x = horisontalt. dir:'col' = stable nedover (kolonne), ellers rad i X.
   var CLUSTERS = {
-    root:    { x:0,     y:-1160, z:0 },
-    consent: { x:0,     y:-980,  z:0 },
-    landing: { x:0,     y:-780,  z:0 },
-    platform:{ x:-1400, y:-780,  z:0 },
-    booking: { x:-380,  y:-520,  z:0, dir:'col' },
-    login:   { x:340,   y:-520,  z:0, dir:'col' },
-    spublic: { x:1850,  y:160,   z:0 },
-    customer:{ x:-560,  y:80,    z:0, dir:'col' },
-    skipper: { x:560,   y:80,    z:0, dir:'col' },
-    admin:   { x:-2200, y:80,    z:0, dir:'col' }
+    root:    { x:0,     y:-1300, z:0 },              // Cookies (Landingsside 0) — ØVERST
+    consent: { x:0,     y:-1080, z:0 },              // Yes / No
+    landing: { x:0,     y:-840,  z:0 },              // Landingpage (Landingsside 1)
+    platform:{ x:-1700, y:-840,  z:0 },              // BoatUber — venstre, dempet
+    booking: { x:-560,  y:-560,  z:0, dir:'col' },   // Booking → Check availability → Request sent
+    login:   { x:560,   y:-560,  z:0, dir:'col' },   // Log in → Web dashboard
+    customer:{ x:-1200, y:160,   z:0, dir:'col' },   // Kunde-dashboard
+    skipper: { x:180,   y:160,   z:0, dir:'col' },   // Skipper-dashboard
+    admin:   { x:-2500, y:160,   z:0, dir:'col' },   // Admin — helt til venstre
+    spublic: { x:900,   y:160,   z:0 }               // /s/andrea
   };
 
   // node: { id, title, cl, cat?, route?, links?[], ctas?[], hot?, mini?, tag? }
@@ -120,14 +120,14 @@
     { id:'landing', title:'Landingpage', cl:'landing', type:'Landing', cat:'land',
       links:['Read more'], ctas:['Check availability'] },
 
-    { id:'booking', title:'Booking', cl:'booking', type:'Booking', cat:'book', links:['Tour','Date','Guests'] },
+    { id:'booking', title:'Booking', cl:'booking', type:'Booking', cat:'book', links:['Tour','Date','Time','Guests','Summary'] },
     { id:'contact', title:'Check availability', cl:'booking', type:'Booking', cat:'logic', meta:'Har allerede konto?', links:['Log in'] },
     { id:'confirm', title:'Request sent', cl:'booking', type:'Booking', cat:'book', ctas:['Open my account','WhatsApp'] },
 
     // SEO-nodene ligger nå i SEO_TREE (rekursivt tre) — merges inn i init()
 
     { id:'login', title:'Log in', cl:'login', type:'Login', cat:'gate', ctas:['Continue'] },
-    { id:'webdash', title:'Web dashboard', cl:'login', type:'Dashboard (web)', cat:'kunde', meta:'Fullskjerm · sidebar · ingen scroll (mobil)', links:['SEO-sider (sidebar)'], ctas:['Log in','Book','Kart: aktive båter','Last ned app'] },
+    { id:'webdash', title:'web-app', cl:'login', type:'Web-app (internt navn)', cat:'kunde', meta:'Fullskjerm · sidebar · ingen scroll (mobil)', links:['SEO-sider (sidebar)'], ctas:['Log in','Book','Kart: aktive båter','Last ned app'] },
     { id:'sandrea', title:'/s/andrea', cl:'spublic', type:'Landing', cat:'skipper', ctas:['Check availability','WhatsApp'] },
 
     { id:'c_home', title:'Customer · Home', cl:'customer', type:'Dashboard', cat:'kunde', links:['2×2'] },
@@ -175,11 +175,11 @@
   // opp (forelder) · til siden (søsken) · ned (barn/artikler) · + alltid → Dashboard og → Book.
   // Uendelig antall informative sider (steder/turer/mat/restauranter) — samme link-mønster overalt.
   var CARD_TYPES = {
-    'seo-hoved': { label:'SEO · Hovedkategori', links:['Underkat.','Andre kategorier'], ctas:['Dashboard','Book'] },
-    'seo-under': { label:'SEO · Underkategori', links:['Artikler','Søsken','Hovedkat.'], ctas:['Dashboard','Book'] }
+    'seo-hoved': { label:'SEO · Hovedkategori', links:['Underkat.','Andre kategorier'], ctas:['Ledig tur nær deg','Se turer'] },
+    'seo-under': { label:'SEO · Underkategori', links:['Artikler','Søsken','Hovedkat.'], ctas:['Ledig tur nær deg','Se turer'] }
   };
-  var TREECFG = { sibGap:230, depthGap:240 };
-  var TREE_ANCHOR = { x:1500, y:-660, z:0 };   // egen kolonne til høyre, mellom landing og web-dashboard
+  var TREECFG = { sibGap:190, depthGap:230 };
+  var TREE_ANCHOR = { x:1800, y:-450, z:0 };   // egen kolonne til høyre, henger på web-app
 
   /* ---------- 3) LAYOUT ENGINE ---------- */
   function layout(nodes, clusters, cfg) {

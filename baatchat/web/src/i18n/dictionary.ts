@@ -38,6 +38,9 @@ export const dictionary = {
   "nav.closeDrawer": { en: "Close menu", it: "Chiudi menu", nb: "Lukk meny" },
   "nav.hideMenu": { en: "Hide menu", it: "Nascondi menu", nb: "Skjul meny" },
 
+  // --- skipper "Min side" ---------------------------------------------------
+  "site.viewPublic": { en: "View your public page", it: "Vedi la tua pagina pubblica", nb: "Se den offentlige siden din" },
+
   // --- get the app (PWA install) --------------------------------------------
   "getapp.link": { en: "Get the app", it: "Scarica l'app", nb: "Hent appen" },
   "getapp.title": { en: "Get the app", it: "Scarica l'app", nb: "Hent appen" },

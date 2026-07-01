@@ -146,7 +146,7 @@ export function SupportThread({
               type="submit"
               aria-label={t("chat.support.placeholder")}
               disabled={!draft.trim() || sending || tooLong}
-              className="flex size-11 shrink-0 items-center justify-center rounded-full bg-ink text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+              className="flex size-11 shrink-0 items-center justify-center rounded-full bg-ink text-white transition hover:opacity-90 active:scale-95 disabled:opacity-40"
             >
               {sending ? (
                 <Loader2 className="size-5 animate-spin" />

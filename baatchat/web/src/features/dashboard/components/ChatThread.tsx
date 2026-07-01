@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ChevronDown, Loader2, SendHorizontal, Ship, Users } from "lucide-react";
 
+import { Message } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { ApiError } from "@/lib/apiClient";
 import { useAuthStore } from "@/features/auth/store";
@@ -138,9 +139,15 @@ export function ChatThread({
         {isLoading && threadId != null ? (
           <MessagesSkeleton />
         ) : !messages?.length ? (
-          <p className="pt-10 text-center text-sm text-ink-muted">
-            Ingen meldinger ennå. Send den første meldingen for å starte samtalen.
-          </p>
+          <div className="flex flex-col items-center gap-3 py-20 text-center">
+            <div className="flex size-12 items-center justify-center rounded-full bg-gold/15 text-gold">
+              <Message className="size-6" />
+            </div>
+            <div>
+              <p className="font-medium text-ink">Ingen meldinger ennå</p>
+              <p className="mt-1 text-sm text-ink-muted">Send den første meldingen for å starte samtalen.</p>
+            </div>
+          </div>
         ) : (
           <>
             <div className="flex justify-center">
@@ -192,7 +199,7 @@ export function ChatThread({
               type="submit"
               aria-label="Send melding"
               disabled={!draft.trim() || sending || tooLong}
-              className="flex size-11 shrink-0 items-center justify-center rounded-full bg-ink text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+              className="flex size-11 shrink-0 items-center justify-center rounded-full bg-ink text-white transition hover:opacity-90 active:scale-95 disabled:opacity-40"
             >
               {sending ? (
                 <Loader2 className="size-5 animate-spin" />

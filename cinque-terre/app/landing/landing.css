@@ -263,7 +263,10 @@
   letter-spacing: var(--ls-1);
   cursor: pointer;
   opacity: 0.85;
-  padding: var(--s2) var(--s1);
+  padding: 10px 10px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   transition: opacity 0.2s ease;
 }
 .landing-v2 .vp-nav button:hover {
@@ -2194,7 +2197,10 @@ body {
   font-size: var(--t-sm);
   letter-spacing: var(--ls-1);
   color: rgba(255, 246, 236, 0.6);
-  padding: var(--s2) var(--s1);
+  padding: 12px 10px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   -webkit-tap-highlight-color: transparent;
 }
 .landing-v2 .wiz-back:hover {
@@ -2684,6 +2690,9 @@ body {
 
 /* customer-service link → quiet SF link, gold underline */
 .landing-v2 .vp-apple .cs-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   font-size: 15px;
   color: var(--wa-muted);
   text-decoration: underline;

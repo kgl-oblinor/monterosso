@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sidekart · Booking (orgkart)</title>
+<style>
+  :root{
+    --ink:#2A1810; --muted:rgba(42,24,16,.6); --gold:#C49A34;
+    --line:rgba(0,0,0,.10); --surf:#f6f5f3; --conn:#c9bfa8;
+    --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",system-ui,sans-serif;
+    --gate:#c9a15a; --book:#e8896b; --kunde:#6ba8e8; --skipper:#5ec8c8; --seo:#8fc46b; --logic:#b07cc6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);color:var(--ink);overflow:hidden;background:#fbfaf8}
+  header{position:fixed;inset:0 0 auto 0;z-index:30;padding:15px 22px;pointer-events:none;background:linear-gradient(#fbfaf8f2,#fbfaf800)}
+  header h1{font-size:18px;font-weight:600;letter-spacing:-.01em}
+  header .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .legend{position:fixed;bottom:14px;left:22px;z-index:30;display:flex;gap:11px;flex-wrap:wrap;font-size:11.5px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:5px}.legend i{width:10px;height:10px;border-radius:3px}
+  .hint{position:fixed;bottom:14px;right:22px;z-index:30;font-size:11.5px;color:var(--muted)}
+  .ctrl{position:fixed;top:14px;right:22px;z-index:30;display:flex;gap:6px}
+  .ctrl button{font-family:inherit;min-width:34px;height:32px;padding:0 8px;border:1px solid var(--line);background:#fff;border-radius:9px;cursor:pointer;font-size:15px;color:var(--ink)}
+
+  .scene{position:fixed;inset:0;cursor:grab;touch-action:none;overflow:hidden}
+  .scene.grabbing{cursor:grabbing}
+  .world{position:absolute;left:50%;top:70px;transform-origin:0 0;will-change:transform;
+    transform:translate(var(--tx,0px),var(--ty,0px)) scale(var(--s,.72))}
+  svg.edges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+
+  .node{position:absolute;width:216px;background:#fff;border:1px solid var(--line);border-top:3px solid var(--c,var(--book));
+    border-radius:11px;padding:10px 13px 11px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 20px rgba(60,40,10,.07)}
+  .node .top{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+  .node .top i{width:6px;height:6px;border-radius:50%;background:var(--c,var(--book))}
+  .node h2{font-size:15px;font-weight:600;letter-spacing:-.01em;margin:4px 0 0}
+  .node .meta{font-size:10px;line-height:1.45;color:var(--muted);margin-top:5px}
+  .node .cta{display:inline-block;margin-top:7px;font-size:10.5px;font-weight:600;background:var(--ink);color:#fff;border-radius:999px;padding:2px 10px}
+  .node.hot{border:1.5px solid var(--gold);border-top-width:3px;box-shadow:0 0 0 3px rgba(196,154,52,.14),0 10px 24px rgba(120,80,10,.14)}
+</style>
+</head>
+<body>
+<header><div><h1>Sidekart · Booking</h1><div class="sub" id="sub">Orgkart — hele booking-flyten, grunnet i koden. Dra = panorer · rull = zoom.</div></div></header>
+<div class="ctrl"><button data-z="in">＋</button><button data-z="out">－</button><button data-z="reset">⟲</button></div>
+<div class="scene" id="scene"><div class="world" id="world"><svg class="edges" id="edges"></svg></div></div>
+<div class="legend">
+  <span><i style="background:var(--gate)"></i>Entry/bekreftelse</span>
+  <span><i style="background:var(--book)"></i>Veiviser-steg</span>
+  <span><i style="background:var(--logic)"></i>Kontakt-valg</span>
+  <span><i style="background:var(--kunde)"></i>Konto/backend</span>
+  <span><i style="background:var(--skipper)"></i>WhatsApp</span>
+  <span><i style="background:var(--seo)"></i>Analytics</span>
+</div>
+<div class="hint">🖱️ dra · rull zoom</div>
+
+<script>
+"use strict";
+(function(){
+  var CATC={gate:'--gate',book:'--book',kunde:'--kunde',skipper:'--skipper',seo:'--seo',logic:'--logic'};
+  var CW=216, HH=46;                     // kort-bredde + halv-høyde (for koblingspunkt)
+  // x = kolonne, y = nivå. Grunnet i Landing.js (BookingForm).
+  var N=[
+    {id:'entry', t:'Entry (åpner veiviser)', h:'Check availability', c:'gate', x:0, y:0, m:'Fra Landingpage · ?screen=book · deep-link ?step='},
+    {id:'s0', t:'Steg 1', h:'Tour', c:'book', x:0, y:180, m:'Velg tur (tourIdx) · validering: tour valgt'},
+    {id:'s1', t:'Steg 2', h:'Date', c:'book', x:0, y:360, m:'Kalender (prev/next måned) · validering: date satt'},
+    {id:'s2', t:'Steg 3', h:'Departure', c:'book', x:0, y:540, m:'Sunrise ×1.5 · Sunshine ×1 · Sunset ×1 (+ vindu) · validering: slot'},
+    {id:'s3', t:'Steg 4', h:'Guests', c:'book', x:0, y:720, m:'1–maxGuests · validering: i intervall'},
+    {id:'s4', t:'Steg 5', h:'Your reservation', c:'book', x:0, y:900, m:'Tour · Date · Departure · Guests · <b>Total $</b>'},
+    {id:'saved', t:'Kontakt A', h:'Use saved details', c:'logic', x:-260, y:1090, m:'Returnerende (mtr_returning) → auto-valgt'},
+    {id:'email', t:'Kontakt B', h:'Enter email', c:'logic', x:260, y:1090, m:'Ny kunde → e-post-felt (validEmail())'},
+    {id:'submit', t:'CTA', h:'Check availability', c:'book', hot:1, x:0, y:1280, m:'canSubmit = tour+date+slot+guests + (saved / gyldig e-post)', cta:'onCheck() · «Sending…»'},
+    {id:'backend', t:'Backend', h:'Opprett konto + reservasjon', c:'kunde', x:-260, y:1470, m:'POST /public/bookings → customer + chat_account(active) + reservation <b>status=requested</b>, skipper=1'},
+    {id:'lead', t:'Analytics', h:'Lead capture', c:'seo', x:260, y:1470, m:'saveLead → /api/track (D1, sendBeacon) + localStorage mtr_returning/mtr_email'},
+    {id:'sent', t:'Bekreftelse', h:'Request sent', c:'gate', x:0, y:1660, m:'«Checking with the skipper» · kode + oppsummering (+ <b>Meeting point</b>: Molo dei Pescatori) · synced → «account ready», ellers «noted»'},
+    {id:'cal', t:'Kalender', h:'Add to calendar', c:'seo', x:-300, y:1850, m:'Google · Apple (.ics) · Outlook'},
+    {id:'account', t:'CTA', h:'Open my account', c:'kunde', x:0, y:1850, m:'→ web-app / login (innlogget dashboard)', cta:'→ web-app'},
+    {id:'contact', t:'Kontakt skipper', h:'Message the skipper', c:'skipper', x:300, y:1850, m:'<b>START:</b> WhatsApp/SMS helt OK (ingen app-tvang). <b>SENERE:</b> kun chat i app — ingen valg (eier relasjon + data).'}
+  ];
+  var E=[
+    ['entry','s0'],['s0','s1'],['s1','s2'],['s2','s3'],['s3','s4'],
+    ['s4','saved'],['s4','email'],['saved','submit'],['email','submit'],
+    ['submit','backend'],['submit','lead'],['backend','sent'],['lead','sent'],
+    ['sent','cal'],['sent','account'],['sent','contact']
+  ];
+  var byId={}; N.forEach(function(n){byId[n.id]=n});
+  var esc=function(s){return String(s).replace(/[<>]/g,function(m){return m==='<'?'&lt;':'&gt;'})};
+  var world=document.getElementById('world'), svg=document.getElementById('edges');
+
+  // orgkart-albuer: fra forelder-bunn → ned til midt → bort → ned til barn-topp
+  var paths='';
+  E.forEach(function(e){
+    var a=byId[e[0]], b=byId[e[1]]; if(!a||!b) return;
+    var px=a.x, py=a.y+HH, cx=b.x, cy=b.y-HH, mid=(py+cy)/2;
+    var d='M '+px+' '+py+' V '+mid+' H '+cx+' V '+cy;
+    paths+='<path d="'+d+'" fill="none" stroke="var(--conn)" stroke-width="1.5"'+(e[2]==='dash'?' stroke-dasharray="5 5"':'')+'/>';
+  });
+  svg.innerHTML=paths;
+
+  N.forEach(function(n){
+    var el=document.createElement('div'); el.className='node'+(n.hot?' hot':'');
+    el.style.left=(n.x-CW/2)+'px'; el.style.top=(n.y-HH)+'px'; el.style.setProperty('--c','var('+CATC[n.c]+')');
+    el.innerHTML='<div class="top"><i></i>'+esc(n.t)+'</div><h2>'+esc(n.h)+'</h2>'+
+      (n.m?'<div class="meta">'+n.m+'</div>':'')+(n.cta?'<div class="cta">'+esc(n.cta)+'</div>':'');
+    world.appendChild(el);
+  });
+
+  // pan + zoom
+  var s=.72,tx=0,ty=0,drag=false,lx=0,ly=0,raf=0;
+  function draw(){raf=0;var w=world.style;w.setProperty('--s',s);w.setProperty('--tx',tx+'px');w.setProperty('--ty',ty+'px');}
+  function go(){if(!raf)raf=requestAnimationFrame(draw);}
+  var scene=document.getElementById('scene');
+  scene.addEventListener('pointerdown',function(e){drag=true;lx=e.clientX;ly=e.clientY;scene.classList.add('grabbing');scene.setPointerCapture&&scene.setPointerCapture(e.pointerId);});
+  scene.addEventListener('pointermove',function(e){if(!drag)return;tx+=e.clientX-lx;ty+=e.clientY-ly;lx=e.clientX;ly=e.clientY;go();});
+  function end(){drag=false;scene.classList.remove('grabbing');}
+  scene.addEventListener('pointerup',end);scene.addEventListener('pointercancel',end);
+  scene.addEventListener('wheel',function(e){e.preventDefault();s=Math.max(.3,Math.min(1.6,s+(e.deltaY<0?.1:-.1)));go();},{passive:false});
+  document.querySelector('.ctrl').addEventListener('click',function(e){var z=e.target.getAttribute('data-z');if(!z)return;if(z==='in')s=Math.min(1.6,s+.1);else if(z==='out')s=Math.max(.3,s-.1);else{s=.72;tx=0;ty=0;}go();});
+  // start litt opp/ned-sentrert
+  ty=20; draw();
+})();
+</script>
+</body>
+</html>

@@ -72,7 +72,7 @@ export default function SkipperLanding({ config }) {
         </div>
 
         <div className="sk-cta-row">
-          <a className="sk-cta" href="/">
+          <a className="sk-cta" href="/?screen=book">
             Check availability
           </a>
           {waHref && (
@@ -89,7 +89,7 @@ export default function SkipperLanding({ config }) {
           The tours
         </h2>
         <div className="sk-tours">
-          {config.tours.map((t) => (
+          {(config.tours ?? []).map((t) => (
             <article key={t.key ?? t.name} className="sk-tour">
               <div className="sk-tour-head">
                 <h3 className="sk-tour-name">{t.name}</h3>
@@ -136,12 +136,12 @@ export default function SkipperLanding({ config }) {
           {fromPrice} per guest. Tell {config.captain} the day and the hour.
         </p>
         <div className="sk-cta-row sk-cta-center">
-          <a className="sk-cta" href="/">
+          <a className="sk-cta" href="/?screen=book">
             Check availability
           </a>
           {waHref && (
             <a className="sk-cta-ghost" href={waHref} target="_blank" rel="noopener noreferrer">
-              WhatsApp {config.phone}
+              Message {config.captain}
             </a>
           )}
         </div>

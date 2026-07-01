@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sidekart · Flyt — Skipper vs Reisende</title>
+<style>
+  :root{
+    --ink:#2A1810; --muted:rgba(42,24,16,.6); --gold:#C49A34;
+    --line:rgba(0,0,0,.10); --conn:#c9bfa8;
+    --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",system-ui,sans-serif;
+    --kunde:#6ba8e8; --skipper:#5ec8c8; --admin:#b79ae8; --gate:#c9a15a; --book:#e8896b; --shared:#8fbf8f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);color:var(--ink);overflow:hidden;background:#fbfaf8}
+  header{position:fixed;inset:0 0 auto 0;z-index:30;padding:15px 22px;pointer-events:none;background:linear-gradient(#fbfaf8f2,#fbfaf800)}
+  header h1{font-size:18px;font-weight:600;letter-spacing:-.01em}
+  header .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .legend{position:fixed;bottom:14px;left:22px;z-index:30;display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:5px}.legend i{width:10px;height:10px;border-radius:3px}
+  .hint{position:fixed;bottom:14px;right:22px;z-index:30;font-size:11.5px;color:var(--muted)}
+  .ctrl{position:fixed;top:14px;right:22px;z-index:30;display:flex;gap:6px}
+  .ctrl button{font-family:inherit;min-width:34px;height:32px;padding:0 8px;border:1px solid var(--line);background:#fff;border-radius:9px;cursor:pointer;font-size:15px;color:var(--ink)}
+
+  .scene{position:fixed;inset:0;cursor:grab;touch-action:none;overflow:hidden}
+  .scene.grabbing{cursor:grabbing}
+  .world{position:absolute;left:50%;top:110px;transform-origin:0 0;will-change:transform;transform:translate(var(--tx,0px),var(--ty,0px)) scale(var(--s,.82))}
+  svg.edges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+  svg .lbl{font:600 11px var(--font);fill:var(--muted)}
+
+  .node{position:absolute;width:230px;background:#fff;border:1px solid var(--line);border-top:3px solid var(--c,var(--book));
+    border-radius:11px;padding:10px 13px 11px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 20px rgba(60,40,10,.07)}
+  .node .top{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+  .node .top i{width:6px;height:6px;border-radius:50%;background:var(--c,var(--book))}
+  .node h2{font-size:15px;font-weight:600;letter-spacing:-.01em;margin:4px 0 0}
+  .node .meta{font-size:10px;line-height:1.45;color:var(--muted);margin-top:5px}
+  .node.head{width:180px;text-align:center;background:var(--c);border:none;color:#fff;padding:8px}
+  .node.head h2{margin:0;font-size:14px;letter-spacing:.06em;text-transform:uppercase}
+  .node.head .top{display:none}
+</style>
+</head>
+<body>
+<header><div><h1>Sidekart · Flyt — Skipper vs Reisende</h1><div class="sub" id="sub">To-sidig swimlane. Kryss-linjer = der de møtes. Dra = panorer · rull = zoom.</div></div></header>
+<div class="ctrl"><button data-z="in">＋</button><button data-z="out">－</button><button data-z="reset">⟲</button></div>
+<div class="scene" id="scene"><div class="world" id="world"><svg class="edges" id="edges"></svg></div></div>
+<div class="legend">
+  <span><i style="background:var(--kunde)"></i>Reisende</span>
+  <span><i style="background:var(--skipper)"></i>Skipper</span>
+  <span><i style="background:var(--shared)"></i>Møtes</span>
+  <span><i style="background:var(--admin)"></i>Admin</span>
+</div>
+<div class="hint">🖱️ dra · rull zoom</div>
+
+<script>
+"use strict";
+(function(){
+  var CATC={kunde:'--kunde',skipper:'--skipper',admin:'--admin',shared:'--shared',gate:'--gate',book:'--book'};
+  var CW=230, HH=46;
+  var LX=-360, RX=360;   // reisende venstre, skipper høyre
+  var N=[
+    {id:'h_t', head:1, h:'Reisende', c:'kunde', x:LX, y:-165},
+    {id:'admin', head:1, h:'Admin · observatør', c:'admin', x:0, y:-165},
+    {id:'h_s', head:1, h:'Skipper', c:'skipper', x:RX, y:-165},
+
+    {id:'t_disc', t:'Reisende', h:'Oppdager', c:'kunde', x:LX, y:60, m:'Ser skipperens turer / priser / tilbud (fra D1)'},
+    {id:'d1', t:'Data', h:'Database (D1)', c:'gate', x:0, y:60, m:'Sannhet: skipper-config + reservasjoner + kontoer + meldinger → powrer reisende-frontend, dashboard og kvittering'},
+    {id:'s_site', t:'Skipper', h:'Min side · config', c:'skipper', x:RX, y:60, m:'Tider · fra hvor · turtyper · priser · beskrivelser · tilbud. Skipper = admin for egne båter.'},
+
+    {id:'t_book', t:'Reisende', h:'Booker → kvittering', c:'kunde', x:LX, y:300, m:'Pris låst fra config → reservasjon (requested). Request sent m/ riktig pris/tilbud. Konto auto.'},
+    {id:'s_req', t:'Skipper', h:'Får forespørsel', c:'skipper', x:RX, y:300, m:'Mine avganger: requested øverst (gull-badge)'},
+
+    {id:'t_await', t:'Reisende', h:'Venter på svar', c:'kunde', x:LX, y:520, m:'Får beskjed når skipper svarer'},
+    {id:'s_conf', t:'Skipper', h:'Bekreft / Avslå', c:'skipper', x:RX, y:520, m:'PATCH status → booked / cancelled. Skipper eier dette.'},
+
+    {id:'chat', t:'Møtes', h:'Chat', c:'shared', x:0, y:720, m:'Kunde ↔ skipper. START: WhatsApp/SMS · SENERE: kun app'},
+    {id:'tour', t:'Møtes', h:'Turen', c:'shared', x:0, y:900, m:'De møtes fysisk — Molo dei Pescatori, Monterosso'}
+  ];
+  var E=[
+    ['h_t','t_disc','dash'],['h_s','s_site','dash'],['admin','d1','dash'],
+    ['s_site','d1','cross','config →'],['d1','t_disc','cross','← viser'],
+    ['t_disc','t_book'],['s_site','s_req'],
+    ['t_book','s_req','cross','forespørsel →'],
+    ['t_book','t_await'],['s_req','s_conf'],
+    ['s_conf','t_await','cross','← bekreft / avslå'],
+    ['t_await','chat'],['s_conf','chat'],['chat','tour']
+  ];
+  var byId={}; N.forEach(function(n){byId[n.id]=n});
+  var esc=function(s){return String(s).replace(/[<>]/g,function(m){return m==='<'?'&lt;':'&gt;'})};
+  var world=document.getElementById('world'), svg=document.getElementById('edges');
+
+  var g='';
+  E.forEach(function(e){
+    var a=byId[e[0]], b=byId[e[1]], opt=(e[2]||'')+' '+(e[3]||''), lbl=e[3];
+    var cross=/cross/.test(opt), dash=/dash/.test(opt), d, lx, ly;
+    if(cross){
+      var x1=a.x<b.x?a.x+CW/2:a.x-CW/2, x2=a.x<b.x?b.x-CW/2:b.x+CW/2;
+      d='M '+x1+' '+a.y+' H '+x2; lx=(x1+x2)/2; ly=a.y-8;
+    } else {
+      var px=a.x, py=a.y+HH, cx=b.x, cy=b.y-HH, mid=(py+cy)/2;
+      d='M '+px+' '+py+' V '+mid+' H '+cx+' V '+cy;
+    }
+    g+='<path d="'+d+'" fill="none" stroke="var(--conn)" stroke-width="1.5"'+(dash?' stroke-dasharray="5 5"':'')+'/>';
+    if(lbl && cross) g+='<text class="lbl" x="'+lx+'" y="'+ly+'" text-anchor="middle">'+esc(lbl)+'</text>';
+  });
+  svg.innerHTML=g;
+
+  N.forEach(function(n){
+    var el=document.createElement('div'); el.className='node'+(n.head?' head':'');
+    el.style.left=(n.x-(n.head?90:CW/2))+'px'; el.style.top=(n.y-HH)+'px'; el.style.setProperty('--c','var('+CATC[n.c]+')');
+    el.innerHTML=n.head?('<h2>'+esc(n.h)+'</h2>'):('<div class="top"><i></i>'+esc(n.t)+'</div><h2>'+esc(n.h)+'</h2>'+(n.m?'<div class="meta">'+esc(n.m)+'</div>':''));
+    world.appendChild(el);
+  });
+
+  var s=.82,tx=0,ty=0,drag=false,lx=0,ly=0,raf=0;
+  function draw(){raf=0;var w=world.style;w.setProperty('--s',s);w.setProperty('--tx',tx+'px');w.setProperty('--ty',ty+'px');}
+  function go(){if(!raf)raf=requestAnimationFrame(draw);}
+  var scene=document.getElementById('scene');
+  scene.addEventListener('pointerdown',function(e){drag=true;lx=e.clientX;ly=e.clientY;scene.classList.add('grabbing');scene.setPointerCapture&&scene.setPointerCapture(e.pointerId);});
+  scene.addEventListener('pointermove',function(e){if(!drag)return;tx+=e.clientX-lx;ty+=e.clientY-ly;lx=e.clientX;ly=e.clientY;go();});
+  function end(){drag=false;scene.classList.remove('grabbing');}
+  scene.addEventListener('pointerup',end);scene.addEventListener('pointercancel',end);
+  scene.addEventListener('wheel',function(e){e.preventDefault();s=Math.max(.3,Math.min(1.6,s+(e.deltaY<0?.1:-.1)));go();},{passive:false});
+  document.querySelector('.ctrl').addEventListener('click',function(e){var z=e.target.getAttribute('data-z');if(!z)return;if(z==='in')s=Math.min(1.6,s+.1);else if(z==='out')s=Math.max(.3,s-.1);else{s=.82;tx=0;ty=0;}go();});
+  draw();
+})();
+</script>
+</body>
+</html>
