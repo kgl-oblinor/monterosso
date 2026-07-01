@@ -39,6 +39,7 @@ import {
   type SiteSettings,
   type ThemeId,
 } from "../api/site";
+import { useMyStatus, useSetAvailable, type SkipperStatus } from "../api/presence";
 import { InviteDialog } from "./InviteDialog";
 import { shortcutsForRole, type SectionKey } from "../sections";
 
@@ -241,6 +242,60 @@ const CUSTOMER_TILES: {
   { id: "profile", key: "profile", icon: Profile, labelKey: "home.tile.profile.label", hintKey: "home.tile.profile.hint" },
 ];
 
+/** The dot colour + status label for a skipper's live status. Honest: green only when truly
+ *  available now, amber while out on a tour, grey when away. */
+const PRESENCE_UI: Record<SkipperStatus["status"], { dot: string; labelKey: TranslationKey }> = {
+  available: { dot: "#37b26b", labelKey: "presence.status.available" },
+  booked: { dot: "#d9a441", labelKey: "presence.status.booked" },
+  away: { dot: "#9aa3ad", labelKey: "presence.status.away" },
+};
+
+/** Skipper-only presence control on the home screen. Shows the live status (from the same
+ *  computation the public landing reads) and a manual "I'm at the boat · available" toggle —
+ *  the second presence method alongside the app's automatic GPS reporting. */
+function PresenceCard() {
+  const t = useT();
+  const { data, isLoading } = useMyStatus();
+  const setAvailable = useSetAvailable();
+  const ui = data ? PRESENCE_UI[data.status] : PRESENCE_UI.away;
+  const on = data?.manualAvailable ?? false;
+
+  return (
+    <div className="mt-8">
+      <h2 className="px-1 text-xs font-semibold uppercase tracking-wider text-ink-muted">
+        {t("presence.title")}
+      </h2>
+      <div className="mt-3 rounded-card border border-hairline bg-surface px-6 py-5 shadow-soft">
+        <div className="flex items-center gap-2.5">
+          <span
+            className="size-2.5 shrink-0 rounded-full"
+            style={{ backgroundColor: ui.dot }}
+            aria-hidden="true"
+          />
+          <span className="text-sm font-semibold text-ink">
+            {isLoading ? t("common.loading") : t(ui.labelKey)}
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={() => setAvailable.mutate(!on)}
+          disabled={setAvailable.isPending}
+          aria-pressed={on}
+          className={`mt-4 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-pill px-5 text-sm font-semibold transition-colors active:scale-[0.98] disabled:opacity-50 ${
+            on
+              ? "bg-ink text-white"
+              : "border border-hairline text-ink-muted hover:bg-page hover:text-ink"
+          }`}
+        >
+          {on && <span className="size-1.5 rounded-full bg-white" />}
+          {t("presence.atBoat")}
+        </button>
+        <p className="mt-3 text-xs leading-relaxed text-ink-muted">{t("presence.hint")}</p>
+      </div>
+    </div>
+  );
+}
+
 /** "Hjem": a calm overview shown on sign-in for both roles — a warm greeting, the next
  *  trip (if any), and discreet shortcuts into the role's sections. Minimal, on-theme. */
 function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) {
@@ -266,6 +321,9 @@ function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) 
         <p className="mt-3 max-w-md text-sm leading-relaxed text-ink-muted">
           {isSkipper ? t("home.subtitle.skipper") : t("home.subtitle.customer")}
         </p>
+
+        {/* Skipper-only: live availability + the manual "at the boat" toggle. */}
+        {isSkipper && <PresenceCard />}
 
         {/* Next-trip hero widget */}
         <div className="mt-8">

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useT } from "@/i18n";
 import { useAuthStore } from "@/features/auth/store";
 import { useConversations } from "../api/threads";
+import { usePresenceReporter } from "../api/presence";
 import { DEFAULT_SECTION, type SectionKey } from "../sections";
 import { previewSection } from "@/app/preview";
 import { IconRail } from "./IconRail";
@@ -31,6 +32,8 @@ export function DashboardLayout() {
         ? t("chat.contacts.customers")
         : t("chat.contacts.default");
   const { conversations, isLoading, isError } = useConversations();
+  // AUTO presence: report the skipper's GPS while the app is open (no-op for customers).
+  usePresenceReporter();
   // Which top-level section is shown. On sign-in everyone lands on the calm Hjem overview
   // (unless the flow-overview board deep-links a section via ?section=).
   const [section, setSection] = useState<SectionKey>(() => previewSection() ?? DEFAULT_SECTION);

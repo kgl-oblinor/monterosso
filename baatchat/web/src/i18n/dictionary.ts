@@ -25,6 +25,22 @@ export const dictionary = {
   "common.saving": { en: "Saving …", it: "Salvataggio …", nb: "Lagrer …" },
   "common.saved": { en: "Saved.", it: "Salvato.", nb: "Lagret." },
 
+  // --- skipper presence / live availability ---------------------------------
+  "presence.title": { en: "Availability", it: "Disponibilità", nb: "Tilgjengelighet" },
+  "presence.status.available": { en: "Available now", it: "Disponibile ora", nb: "Tilgjengelig nå" },
+  "presence.status.booked": { en: "Out on a tour right now", it: "In tour in questo momento", nb: "På tur akkurat nå" },
+  "presence.status.away": { en: "Away", it: "Assente", nb: "Borte" },
+  "presence.atBoat": {
+    en: "I'm at the boat · available",
+    it: "Sono alla barca · disponibile",
+    nb: "Jeg er ved båten · tilgjengelig",
+  },
+  "presence.hint": {
+    en: "Your location is shared automatically while the app is open. Turn this on to show you're at the boat even if location is off.",
+    it: "La tua posizione è condivisa automaticamente quando l'app è aperta. Attiva questo per mostrare che sei alla barca anche senza posizione.",
+    nb: "Posisjonen din deles automatisk mens appen er åpen. Slå på dette for å vise at du er ved båten selv om posisjon er av.",
+  },
+
   // --- nav / icon rail ------------------------------------------------------
   "nav.home": { en: "Home", it: "Home", nb: "Hjem" },
   "nav.chat": { en: "Chat", it: "Chat", nb: "Chat" },

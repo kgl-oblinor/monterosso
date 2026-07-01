@@ -1336,6 +1336,32 @@ function ExpressBooking() {
   const [resCode, setResCode] = useState("");
   const [synced, setSynced] = useState(false);
 
+  // Live skipper status ("available" | "booked" | "away"), or null while loading / on error —
+  // null means we render NOTHING (never claim a status we don't truthfully have). Backed by the
+  // real presence endpoint (skipper 1 = Andrea), polled every ~45s.
+  const [liveStatus, setLiveStatus] = useState(null);
+  useEffect(() => {
+    let active = true;
+    async function load() {
+      try {
+        const res = await fetch(`${CHAT_API_BASE}/public/skippers/1/status`);
+        if (!res.ok) throw new Error("status");
+        const data = await res.json();
+        const s = data && data.status;
+        if (active && (s === "available" || s === "booked" || s === "away")) setLiveStatus(s);
+        else if (active) setLiveStatus(null);
+      } catch {
+        if (active) setLiveStatus(null); // on error, claim nothing
+      }
+    }
+    load();
+    const id = setInterval(load, 45000);
+    return () => {
+      active = false;
+      clearInterval(id);
+    };
+  }, []);
+
   // Returning visitor → offer saved details first (same marker as the wizard).
   useEffect(() => {
     try {
@@ -1434,12 +1460,26 @@ function ExpressBooking() {
   // white-glass styling; .lp-dock flattens this wrapper's own card chrome.
   return (
     <div className="lp-express wiz-apple">
-      {/* Live availability for Paolona — this front page is tied to the one
-          skipper (Andrea). TODO: wire to real reservation status (booked/free). */}
-      <div className="lp-status">
-        <span className="lp-status__dot" aria-hidden="true" />
-        <b>Paolona</b> · available now
-      </div>
+      {/* Live availability for Paolona — this front page is tied to the one skipper (Andrea).
+          Real status from the presence endpoint; render nothing until we truthfully know it. */}
+      {liveStatus && (
+        <div className={`lp-status lp-status--${liveStatus}`}>
+          <span className="lp-status__dot" aria-hidden="true" />
+          {liveStatus === "available" ? (
+            <span>
+              <b>Paolona</b> · available now
+            </span>
+          ) : liveStatus === "booked" ? (
+            <span>
+              <b>Paolona</b> · out on a tour right now
+            </span>
+          ) : (
+            <span>
+              <b>Paolona</b> · send a message to check
+            </span>
+          )}
+        </div>
+      )}
       <div className="lp-eyebrow2">
         <span className="lp-dot" aria-hidden="true" />
         Next available departure

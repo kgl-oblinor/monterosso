@@ -9,6 +9,7 @@ import type { SkipperInput } from "./admin";
 import { adminOpenSupportThread, adminListSupportThreads, adminSupportMessages, adminPostSupportMessage, skipperSupportThread, skipperSupportMessages, skipperPostSupportMessage } from "./adminChat";
 import { createPublicBooking } from "./public";
 import { getMySite, saveMySite, getPublicSite } from "./site";
+import { reportPresence, setManualAvailable, computeStatus } from "./presence";
 
 export interface Env {
   DB: D1Database;
@@ -96,6 +97,19 @@ app.get("/public/sites/:slug", async (c) => {
   const config = await getPublicSite(c.env, c.req.param("slug"));
   if (!config) return c.json({ ok: false, error: "Ikke funnet" }, 404);
   return c.json(config);
+});
+
+// --- public live skipper status (landing "available now" badge) -------------
+// UNAUTHENTICATED read of a skipper's TRUTHFUL live status, by id. The cinque-terre landing
+// polls this to render an honest badge (available / booked / away). CORS is handled by the
+// global middleware above (landing origin allow-listed) — same as /public/sites/:slug.
+// PRIVACY: returns ONLY the status enum + booleans — NEVER the skipper's raw coordinates.
+app.get("/public/skippers/:id/status", async (c) => {
+  const id = Number(c.req.param("id"));
+  if (!Number.isInteger(id) || id <= 0) return c.json({ ok: false, error: "Ugyldig id" }, 400);
+  const s = await computeStatus(c.env, id);
+  // Explicitly pick ONLY the public fields — never leak coordinates or the manual toggle state.
+  return c.json({ status: s.status, booked: s.booked, present: s.present });
 });
 
 // --- auth: account claim (onboarding) + password login ---------------------
@@ -314,6 +328,43 @@ chat.put("/me/site", async (c) => {
   const config = await c.req.json<Record<string, unknown>>().catch(() => null);
   if (!config || typeof config !== "object") return c.json({ ok: false, error: "Ugyldig konfigurasjon" }, 400);
   return c.json({ ok: true, config: await saveMySite(c.env, user.id, config) });
+});
+
+// --- skipper presence + live status ----------------------------------------
+// Truthful "available now" inputs. Skipper-only (a customer JWT is rejected); the chat
+// middleware already gated an active account. user.id is the skipper_id for the skipper role.
+
+// Report a GPS ping (AUTO presence). Body {lat,lng}; validated to real coordinate ranges.
+chat.post("/me/presence", async (c) => {
+  const user = c.get("user");
+  if (user.role !== "skipper") return c.json({ ok: false, error: "Kun for skippere" }, 403);
+  const { lat, lng } = await c.req.json<{ lat?: number; lng?: number }>().catch(() => ({ lat: undefined, lng: undefined }));
+  if (
+    typeof lat !== "number" || typeof lng !== "number" ||
+    !Number.isFinite(lat) || !Number.isFinite(lng) ||
+    lat < -90 || lat > 90 || lng < -180 || lng > 180
+  ) {
+    return c.json({ ok: false, error: "Ugyldige koordinater" }, 400);
+  }
+  await reportPresence(c.env, user.id, lat, lng);
+  return c.json({ ok: true });
+});
+
+// Flip the manual "I'm at the boat · available" toggle (MANUAL presence). Body {available}.
+chat.post("/me/available", async (c) => {
+  const user = c.get("user");
+  if (user.role !== "skipper") return c.json({ ok: false, error: "Kun for skippere" }, 403);
+  const { available } = await c.req.json<{ available?: boolean }>().catch(() => ({ available: undefined }));
+  if (typeof available !== "boolean") return c.json({ ok: false, error: "available (boolean) er påkrevd" }, 400);
+  await setManualAvailable(c.env, user.id, available);
+  return c.json({ ok: true });
+});
+
+// The skipper's own computed live status (for the dashboard UI).
+chat.get("/me/status", async (c) => {
+  const user = c.get("user");
+  if (user.role !== "skipper") return c.json({ ok: false, error: "Kun for skippere" }, 403);
+  return c.json({ ok: true, ...(await computeStatus(c.env, user.id)) });
 });
 
 // --- group chat ("turfølget") ----------------------------------------------

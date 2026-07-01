@@ -3113,10 +3113,22 @@ body:has(.landing-v2) {
   width: 9px;
   height: 9px;
   border-radius: 50%;
+  background: #9aa3ad; /* default: grey (away / unknown) — no false "live" green */
+  flex: none;
+}
+/* Available now → green pulse. */
+.landing-v2 .lp-status--available .lp-status__dot {
   background: #37b26b;
   box-shadow: 0 0 0 0 rgba(55, 178, 107, 0.5);
   animation: lp-beat 1.9s infinite;
-  flex: none;
+}
+/* Out on a tour → steady amber (present, but not free right now). */
+.landing-v2 .lp-status--booked .lp-status__dot {
+  background: #d9a441;
+}
+/* Away → steady grey (no green, no false "now"). */
+.landing-v2 .lp-status--away .lp-status__dot {
+  background: #9aa3ad;
 }
 @keyframes lp-beat {
   0% { box-shadow: 0 0 0 0 rgba(55, 178, 107, 0.5); }
