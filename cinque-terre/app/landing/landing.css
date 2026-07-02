@@ -2790,16 +2790,19 @@ body {
     "SF Pro Display", system-ui, sans-serif;
   /* Water behind everything (proof of glass): the deep-blue sea, veiled by a soft
      white radial so the hero text stays readable while the glass panels refract it. */
+  /* the backdrop image is swapped by the selected sun (--lp-bg-image); lighter
+     veil so the near-transparent glass clearly shows each scene through it. */
   background:
-    radial-gradient(120% 95% at 50% 42%, rgba(255, 254, 252, 0.82), rgba(255, 254, 252, 0.55) 62%, rgba(255, 254, 252, 0.42)),
-    url(/backgrounds/aerial-deepblue.webp) center / cover fixed no-repeat;
+    radial-gradient(120% 95% at 50% 42%, rgba(255, 254, 252, 0.6), rgba(255, 254, 252, 0.4) 62%, rgba(255, 254, 252, 0.3)),
+    var(--lp-bg-image, url(/backgrounds/aerial-deepblue.webp)) center / cover fixed no-repeat;
+  transition: background-image 0.5s ease;
 
   /* Layered glass material scale — depth by stacking. Each layer up the stack
      gains white + frost: L1 base (most transparent) → L2 elements on it → L3
      raised/selected on top of those. Nested backdrop-filters compound. */
-  --glass-1: rgba(255, 255, 255, 0.36);
-  --glass-2: rgba(255, 255, 255, 0.55);
-  --glass-3: rgba(255, 255, 255, 0.72);
+  --glass-1: rgba(255, 255, 255, 0.14); /* TEST: almost transparent — glass by blur alone */
+  --glass-2: rgba(255, 255, 255, 0.4);
+  --glass-3: rgba(255, 255, 255, 0.6);
   --frost-1: blur(14px) saturate(155%);
   --frost-2: blur(18px) saturate(170%);
   --frost-3: blur(22px) saturate(185%);

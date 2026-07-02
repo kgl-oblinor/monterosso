@@ -1465,6 +1465,18 @@ function ExpressBooking() {
     };
   }, []);
 
+  // TEST: each sun swaps the backdrop — proving the near-transparent glass holds
+  // on three different scenes. Sets a CSS var the .landing-v2 background reads.
+  useEffect(() => {
+    const bg =
+      {
+        sunrise: "/backgrounds/village-panorama.webp",
+        sunshine: "/backgrounds/aerial-bay.webp",
+        sunset: "/backgrounds/aerial-deepblue.webp",
+      }[slot] || "/backgrounds/aerial-deepblue.webp";
+    document.documentElement.style.setProperty("--lp-bg-image", `url(${bg})`);
+  }, [slot]);
+
   // Returning visitor → offer saved details first (same marker as the wizard).
   useEffect(() => {
     try {
