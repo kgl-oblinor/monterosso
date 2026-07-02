@@ -3591,12 +3591,14 @@ body:has(.landing-v2) {
   display: flex;
   justify-content: center;
   color: #d19a3e; /* warm sun gold */
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 .landing-v2 .lp-exp__sun svg {
   width: 100%;
-  max-width: 30px; /* fluid vector, capped — never wider than its cell */
+  max-width: 40px; /* bigger suns; fluid vector, capped */
   height: auto;
+  /* a soft white halo — island vibes */
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.6));
 }
 .landing-v2 .lp-exp.sel .lp-exp__sun {
   color: #c58a2a;
