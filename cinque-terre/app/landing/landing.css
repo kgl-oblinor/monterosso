@@ -3137,6 +3137,16 @@ body:has(.landing-v2) {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 14px 34px rgba(60, 40, 10, 0.08);
   padding: 22px 22px 26px;
 }
+/* The booking is five separate parts inside the one card, divided by hairlines:
+   experience · when · guests · you · reserve. */
+.landing-v2 .lp-part + .lp-part {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--dk-line);
+}
+.landing-v2 .lp-part > :first-child {
+  margin-top: 0;
+}
 .landing-v2 .lp-dock,
 .landing-v2 .lp-dock * {
   font-family: var(--lp-font); /* SF Pro system stack, not the hero's Fraunces */

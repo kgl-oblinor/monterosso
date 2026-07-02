@@ -1576,6 +1576,8 @@ function ExpressBooking() {
           )}
         </div>
       )}
+      {/* Part 1 · The experience (which sun) */}
+      <div className="lp-part">
       <div className="lp-label">Choose your experience</div>
       <div className="lp-exps">
         {SLOT_ORDER.map((v) => (
@@ -1590,6 +1592,9 @@ function ExpressBooking() {
           </button>
         ))}
       </div>
+      </div>
+      {/* Part 2 · When (date & time) */}
+      <div className="lp-part">
       <div className="lp-eyebrow2">
         <span className="lp-dot" aria-hidden="true" />
         Next available departure
@@ -1673,7 +1678,9 @@ function ExpressBooking() {
           </div>
         </div>
       )}
-
+      </div>
+      {/* Part 3 · How many guests */}
+      <div className="lp-part">
       <div className="lp-grow">
         <div>
           <div className="lp-label lp-label--tight">How many guests?</div>
@@ -1704,8 +1711,9 @@ function ExpressBooking() {
           <div className="lp-total__val">${total}</div>
         </div>
       </div>
-
-      <hr className="lp-hr" />
+      </div>
+      {/* Part 4 · You (contact / identity) */}
+      <div className="lp-part">
       <div className="lp-contact">
         <button
           type="button"
@@ -1733,6 +1741,9 @@ function ExpressBooking() {
           />
         </div>
       )}
+      </div>
+      {/* Part 5 · Reserve (confirm & send) */}
+      <div className="lp-part">
       <button
         type="button"
         className={"lp-reserve" + (canSubmit ? " on" : "")}
@@ -1741,6 +1752,7 @@ function ExpressBooking() {
       >
         {submitting ? "Sending…" : "Reserve"}
       </button>
+      </div>
       {/* TODO: live-reflect the company's Google Reviews (Places API — needs the
           Google Business place-id + an API key; cache server-side). Hardcoded for now. */}
       <div className="lp-rating">
