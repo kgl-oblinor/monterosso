@@ -1595,6 +1595,26 @@ function ExpressBooking() {
           )}
         </div>
       )}
+      {/* Little map sub-card — a very simplified view of the Monterosso dock
+          (Molo dei Pescatori) where Paolona lies. The boat marker reflects the
+          live status (green + pulse when available). */}
+      <div className={"lp-map" + (liveStatus ? ` lp-map--${liveStatus}` : "")}>
+        <svg className="lp-map__svg" viewBox="0 0 320 118" fill="none" aria-hidden="true">
+          {/* the coast / old town of Monterosso along the top, water below */}
+          <path
+            className="lp-map__land"
+            d="M0 0 H320 V40 Q252 56 188 47 Q128 39 72 55 Q34 65 0 60 Z"
+          />
+          {/* a hint of the village — a few rooftops */}
+          <path className="lp-map__town" d="M96 20 l8 -7 8 7 M120 24 l8 -7 8 7 M144 19 l8 -7 8 7" />
+          {/* Molo dei Pescatori — the pier reaching into the sea */}
+          <path className="lp-map__pier" d="M175 46 V92" />
+          {/* Paolona — the live boat marker at the end of the pier */}
+          <circle className="lp-map__pulse" cx="175" cy="94" r="9" />
+          <circle className="lp-map__boat" cx="175" cy="94" r="5" />
+        </svg>
+        <span className="lp-map__cap">Molo dei Pescatori · Monterosso</span>
+      </div>
       {/* Part 1 · When — heading, the three suns right under it, then the departure */}
       <div className="lp-part">
       <div className="lp-eyebrow2">
