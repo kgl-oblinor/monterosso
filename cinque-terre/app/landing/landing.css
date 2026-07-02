@@ -3477,21 +3477,17 @@ body:has(.landing-v2) {
   background: var(--glass-2); /* L2 on the card: more white + frost */
   -webkit-backdrop-filter: var(--frost-2);
   backdrop-filter: var(--frost-2);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 0; /* no border around the cards */
   border-radius: 12px;
   padding: 10px 6px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: border-color 0.15s ease, background 0.15s ease;
-}
-.landing-v2 .lp-exp:hover {
-  border-color: rgba(196, 154, 52, 0.5);
+  transition: background 0.15s ease;
 }
 .landing-v2 .lp-exp.sel {
-  background: var(--glass-3); /* L3 selected: most white + frost */
+  background: var(--glass-3); /* L3 selected: most white + frost — the selection cue */
   -webkit-backdrop-filter: var(--frost-3);
   backdrop-filter: var(--frost-3);
-  border: 1.5px solid var(--dk-gold);
 }
 .landing-v2 .lp-exp__sun {
   display: flex;
@@ -3513,10 +3509,8 @@ body:has(.landing-v2) {
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.15;
-  color: var(--ink-2); /* L2 element title */
-}
-.landing-v2 .lp-exp.sel .lp-exp__n {
-  color: var(--ink-3); /* L3 selected: full ink */
+  color: #fff; /* same very-white on all three */
+  text-shadow: var(--shine);
 }
 .landing-v2 .lp-exp__p {
   display: block;
