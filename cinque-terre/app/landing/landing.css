@@ -2788,7 +2788,11 @@ body {
   --lp-line: rgba(0, 0, 0, 0.08);     /* neutral hairline */
   --lp-font: -apple-system, BlinkMacSystemFont, "SF Pro Text",
     "SF Pro Display", system-ui, sans-serif;
-  background: #fffefc;                 /* barely-warm clean white */
+  /* Water behind everything (proof of glass): the deep-blue sea, veiled by a soft
+     white radial so the hero text stays readable while the glass panels refract it. */
+  background:
+    radial-gradient(120% 95% at 50% 42%, rgba(255, 254, 252, 0.82), rgba(255, 254, 252, 0.55) 62%, rgba(255, 254, 252, 0.42)),
+    url(/backgrounds/aerial-deepblue.webp) center / cover fixed no-repeat;
 }
 /* globals.css washes <body> deep-navy for the home page; the landing
    page is clean white instead, with the native cursor back. */
@@ -3016,6 +3020,10 @@ body:has(.landing-v2) {
     width: 90px;
     padding: 20px 8px;
     transition: width 0.24s ease;
+    background: rgba(255, 255, 255, 0.5); /* frosted glass panel over the water */
+    -webkit-backdrop-filter: blur(26px) saturate(170%);
+    backdrop-filter: blur(26px) saturate(170%);
+    border-right: 1px solid rgba(255, 255, 255, 0.45);
   }
   .landing-v2 .lp-sidebar--collapsed {
     width: 48px;
@@ -3131,10 +3139,12 @@ body:has(.landing-v2) {
 /* the booking box itself — a distinct framed card floating on the dock's
    cool, almost-invisible surround */
 .landing-v2 .lp-box {
-  background: #ffffff;
-  border: 1px solid var(--dk-line);
+  background: rgba(255, 255, 255, 0.62); /* frosted glass — refracts the water behind */
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 22px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 14px 34px rgba(60, 40, 10, 0.08);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 14px 40px rgba(30, 50, 80, 0.12);
   padding: 22px 22px 26px;
 }
 /* The booking is five separate parts inside the one card, divided by hairlines:
@@ -3158,12 +3168,9 @@ body:has(.landing-v2) {
     align-self: flex-start; /* hug the card's height so it floats, not a full column */
     position: sticky;
     top: 0;
-    background: rgba(243, 246, 250, 0.42); /* cool, almost-invisible surround */
-    -webkit-backdrop-filter: blur(26px) saturate(150%);
-    backdrop-filter: blur(26px) saturate(150%);
+    background: transparent; /* let the water show; the .lp-box is the glass panel */
     border-top: 0;
-    border-left: 1px solid rgba(20, 40, 70, 0.05);
-    box-shadow: -16px 0 44px rgba(40, 50, 70, 0.035);
+    border-left: 0;
     padding: 16px;
   }
   /* the card sizes to content and scrolls inside itself if it ever exceeds the
