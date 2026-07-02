@@ -2793,6 +2793,16 @@ body {
   background:
     radial-gradient(120% 95% at 50% 42%, rgba(255, 254, 252, 0.82), rgba(255, 254, 252, 0.55) 62%, rgba(255, 254, 252, 0.42)),
     url(/backgrounds/aerial-deepblue.webp) center / cover fixed no-repeat;
+
+  /* Layered glass material scale — depth by stacking. Each layer up the stack
+     gains white + frost: L1 base (most transparent) → L2 elements on it → L3
+     raised/selected on top of those. Nested backdrop-filters compound. */
+  --glass-1: rgba(255, 255, 255, 0.36);
+  --glass-2: rgba(255, 255, 255, 0.55);
+  --glass-3: rgba(255, 255, 255, 0.72);
+  --frost-1: blur(14px) saturate(155%);
+  --frost-2: blur(18px) saturate(170%);
+  --frost-3: blur(22px) saturate(185%);
 }
 /* globals.css washes <body> deep-navy for the home page; the landing
    page is clean white instead, with the native cursor back. */
@@ -3139,10 +3149,10 @@ body:has(.landing-v2) {
 /* the booking box itself — a distinct framed card floating on the dock's
    cool, almost-invisible surround */
 .landing-v2 .lp-box {
-  background: rgba(255, 255, 255, 0.62); /* frosted glass — refracts the water behind */
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  backdrop-filter: blur(30px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: var(--glass-1); /* L1 base: high transparency, light frost — still glass */
+  -webkit-backdrop-filter: var(--frost-1);
+  backdrop-filter: var(--frost-1);
+  border: 1px solid rgba(255, 255, 255, 0.45);
   border-radius: 22px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 14px 40px rgba(30, 50, 80, 0.12);
   padding: 22px 22px 26px;
@@ -3201,7 +3211,7 @@ body:has(.landing-v2) {
 .landing-v2 .lp-modebar {
   display: flex;
   justify-content: center;
-  border-bottom: 1px solid var(--dk-line);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
   padding-bottom: 14px;
   margin-bottom: 20px;
 }
@@ -3211,8 +3221,10 @@ body:has(.landing-v2) {
   gap: 7px;
   min-height: 44px;
   padding: 9px 17px;
-  background: var(--dk-surf);
-  border: 1px solid var(--dk-line);
+  background: var(--glass-2); /* L2 on the card */
+  -webkit-backdrop-filter: var(--frost-2);
+  backdrop-filter: var(--frost-2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 999px;
   font-weight: 600;
   font-size: 13.5px;
@@ -3342,7 +3354,9 @@ body:has(.landing-v2) {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  background: var(--dk-cream);
+  background: var(--glass-3); /* L3 raised: most white + frost */
+  -webkit-backdrop-filter: var(--frost-3);
+  backdrop-filter: var(--frost-3);
   border: 1.5px solid var(--dk-gold);
   border-radius: 15px;
   padding: 18px 20px;
@@ -3411,8 +3425,10 @@ body:has(.landing-v2) {
 .landing-v2 .lp-exp {
   min-width: 0; /* honour the track's computed width; content lives within it */
   text-align: center;
-  background: var(--dk-card);
-  border: 1px solid var(--dk-line);
+  background: var(--glass-2); /* L2 on the card: more white + frost */
+  -webkit-backdrop-filter: var(--frost-2);
+  backdrop-filter: var(--frost-2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 12px;
   padding: 10px 6px;
   cursor: pointer;
@@ -3423,7 +3439,9 @@ body:has(.landing-v2) {
   border-color: rgba(196, 154, 52, 0.5);
 }
 .landing-v2 .lp-exp.sel {
-  background: var(--dk-cream);
+  background: var(--glass-3); /* L3 selected: most white + frost */
+  -webkit-backdrop-filter: var(--frost-3);
+  backdrop-filter: var(--frost-3);
   border: 1.5px solid var(--dk-gold);
 }
 .landing-v2 .lp-exp__sun {
@@ -3471,8 +3489,10 @@ body:has(.landing-v2) {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--dk-card);
-  border: 1px solid var(--dk-line);
+  background: var(--glass-2); /* L2 on the card */
+  -webkit-backdrop-filter: var(--frost-2);
+  backdrop-filter: var(--frost-2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   font-size: 20px;
   color: var(--dk-ink);
   display: flex;
@@ -3517,14 +3537,16 @@ body:has(.landing-v2) {
 /* contact + reserve */
 .landing-v2 .lp-contact {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* never overflow the card */
   gap: 11px;
   margin-bottom: 12px;
 }
 .landing-v2 .lp-cbtn {
   min-height: 44px;
-  background: var(--dk-card);
-  border: 1px solid var(--dk-line);
+  background: var(--glass-2); /* L2 on the card */
+  -webkit-backdrop-filter: var(--frost-2);
+  backdrop-filter: var(--frost-2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 11px;
   padding: 13px 10px;
   font-size: 13.5px;
@@ -3536,7 +3558,9 @@ body:has(.landing-v2) {
 }
 .landing-v2 .lp-cbtn.sel {
   border: 1.5px solid var(--dk-gold);
-  background: var(--dk-cream);
+  background: var(--glass-3); /* L3 selected */
+  -webkit-backdrop-filter: var(--frost-3);
+  backdrop-filter: var(--frost-3);
 }
 .landing-v2 .lp-email {
   margin-bottom: 12px;
@@ -3546,8 +3570,10 @@ body:has(.landing-v2) {
   font-size: 15px;
   padding: 13px 14px;
   border-radius: 11px;
-  background: #fff;
-  border: 1px solid var(--dk-line);
+  background: var(--glass-2); /* L2 on the card */
+  -webkit-backdrop-filter: var(--frost-2);
+  backdrop-filter: var(--frost-2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   color: var(--dk-ink);
   color-scheme: light;
 }
