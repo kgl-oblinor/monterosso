@@ -3632,21 +3632,28 @@ body:has(.landing-v2) {
   color: var(--dk-ink);
   color-scheme: light;
 }
+/* frosted but transparent background; "Reserve" text 100% transparent (invisible).
+   on = the one solid ink peak (category D). */
 .landing-v2 .lp-reserve {
   width: 100%;
-  border: 0;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 12px;
   padding: 17px;
   font-size: 15.5px;
   font-weight: 600;
-  background: var(--dk-surf);
-  color: var(--dk-muted);
+  background: rgba(255, 255, 255, 0.1); /* transparent, frosted */
+  -webkit-backdrop-filter: var(--frost-2);
+  backdrop-filter: var(--frost-2);
+  color: transparent; /* 100% transparent text */
   cursor: not-allowed;
   -webkit-tap-highlight-color: transparent;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 .landing-v2 .lp-reserve.on {
   background: var(--dk-ink);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-color: var(--dk-ink);
   color: #fff;
   cursor: pointer;
 }
