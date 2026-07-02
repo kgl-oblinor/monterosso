@@ -3595,10 +3595,11 @@ body:has(.landing-v2) {
 }
 .landing-v2 .lp-exp__sun svg {
   width: 100%;
-  max-width: 52px; /* bigger suns; fluid vector, capped */
+  max-width: 68px; /* bigger suns; fluid vector, capped */
   height: auto;
-  /* a soft white halo — island vibes */
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+  /* more light — layered white glow, island vibes */
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.85))
+    drop-shadow(0 0 18px rgba(255, 255, 255, 0.5));
 }
 .landing-v2 .lp-exp.sel .lp-exp__sun {
   color: #c58a2a;
