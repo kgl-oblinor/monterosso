@@ -3369,6 +3369,19 @@ body:has(.landing-v2) {
   background: var(--dk-cream);
   border: 1.5px solid var(--dk-gold);
 }
+.landing-v2 .lp-exp__sun {
+  display: block;
+  color: #d19a3e; /* warm sun gold */
+  margin-bottom: 9px;
+}
+.landing-v2 .lp-exp__sun svg {
+  display: block;
+  width: 42px;
+  height: auto;
+}
+.landing-v2 .lp-exp.sel .lp-exp__sun {
+  color: #c58a2a;
+}
 .landing-v2 .lp-exp__n {
   display: block;
   font-size: 15px;

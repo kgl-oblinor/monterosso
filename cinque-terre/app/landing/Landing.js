@@ -1334,6 +1334,42 @@ function Confirmation({ tourName, date, slot, guests, total, resCode, synced }) 
 // whose start hasn't passed yet, else the first slot tomorrow. Pre-selecting it
 // is the whole point of Express — near-zero friction.
 const SLOT_ORDER = ["sunrise", "sunshine", "sunset"];
+
+// The whole point of this section: three suns across the day — a morning sun low
+// on the left, a high midday sun in the middle, an evening sun low on the right.
+const SUNS = {
+  sunrise: (
+    <svg viewBox="0 0 46 26" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+      <line x1="3" y1="21" x2="43" y2="21" strokeOpacity="0.35" />
+      <circle cx="14" cy="21" r="5.5" fill="currentColor" stroke="none" />
+      <line x1="14" y1="10" x2="14" y2="7" />
+      <line x1="7" y1="13.5" x2="5.5" y2="12" />
+      <line x1="21" y1="13.5" x2="22.5" y2="12" />
+    </svg>
+  ),
+  sunshine: (
+    <svg viewBox="0 0 46 26" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+      <circle cx="23" cy="13" r="5" fill="currentColor" stroke="none" />
+      <line x1="23" y1="3" x2="23" y2="5.5" />
+      <line x1="23" y1="20.5" x2="23" y2="23" />
+      <line x1="13" y1="13" x2="15.5" y2="13" />
+      <line x1="30.5" y1="13" x2="33" y2="13" />
+      <line x1="16" y1="6" x2="17.8" y2="7.8" />
+      <line x1="28.2" y1="18.2" x2="30" y2="20" />
+      <line x1="30" y1="6" x2="28.2" y2="7.8" />
+      <line x1="17.8" y1="18.2" x2="16" y2="20" />
+    </svg>
+  ),
+  sunset: (
+    <svg viewBox="0 0 46 26" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+      <line x1="3" y1="21" x2="43" y2="21" strokeOpacity="0.35" />
+      <circle cx="32" cy="21" r="5.5" fill="currentColor" stroke="none" />
+      <line x1="32" y1="10" x2="32" y2="7" />
+      <line x1="25" y1="13.5" x2="23.5" y2="12" />
+      <line x1="39" y1="13.5" x2="40.5" y2="12" />
+    </svg>
+  ),
+};
 function nextDeparture() {
   const now = new Date();
   const nowMin = now.getHours() * 60 + now.getMinutes();
@@ -1622,6 +1658,7 @@ function ExpressBooking() {
             className={"lp-exp" + (slot === v ? " sel" : "")}
             onClick={() => setSlot(v)}
           >
+            <span className="lp-exp__sun">{SUNS[v]}</span>
             <span className="lp-exp__n">{tour.slots[v].label}</span>
             <span className="lp-exp__p">${slotPriceUsd(v)} / guest</span>
           </button>
