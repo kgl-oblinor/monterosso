@@ -3473,6 +3473,7 @@ body:has(.landing-v2) {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr)); /* three suns, always fits */
   gap: 7px;
+  margin-bottom: 14px; /* breathing room above the departure box */
 }
 .landing-v2 .lp-exp {
   min-width: 0; /* honour the track's computed width; content lives within it */

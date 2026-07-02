@@ -1595,9 +1595,12 @@ function ExpressBooking() {
           )}
         </div>
       )}
-      {/* Part 1 · The experience (which sun) */}
+      {/* Part 1 · When — heading, the three suns right under it, then the departure */}
       <div className="lp-part">
-      <div className="lp-label">Choose your experience</div>
+      <div className="lp-eyebrow2">
+        <span className="lp-dot" aria-hidden="true" />
+        Next available departure
+      </div>
       <div className="lp-exps">
         {SLOT_ORDER.map((v) => (
           <button
@@ -1610,13 +1613,6 @@ function ExpressBooking() {
             <span className="lp-exp__n">{tour.slots[v].label}</span>
           </button>
         ))}
-      </div>
-      </div>
-      {/* Part 2 · When (date & time) */}
-      <div className="lp-part">
-      <div className="lp-eyebrow2">
-        <span className="lp-dot" aria-hidden="true" />
-        Next available departure
       </div>
       <div className="lp-dep">
         <div>
