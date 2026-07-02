@@ -3644,20 +3644,17 @@ body:has(.landing-v2) {
   background: rgba(255, 255, 255, 0.1); /* transparent, frosted */
   -webkit-backdrop-filter: var(--frost-2);
   backdrop-filter: var(--frost-2);
-  color: transparent; /* text fill stays transparent — visible only via etched shine */
-  /* etched-glass letters: a light highlight + dark relief let the glass shine
-     through the transparent text so "Reserve" reads as engraved, not painted. */
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75), 0 -1px 1px rgba(30, 50, 70, 0.32);
+  color: #fff; /* very white text */
+  text-shadow: var(--shine);
   cursor: not-allowed;
   -webkit-tap-highlight-color: transparent;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 .landing-v2 .lp-reserve.on {
-  /* active: still frosted + transparent, text still 100% transparent — only a
-     slightly firmer glass + pointer signals it's ready. */
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.5);
-  color: transparent;
+  /* active: a firmer glass + brighter whisper text signals it's ready. */
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #fff;
   cursor: pointer;
 }
 .landing-v2 .lp-reserve.on:active {
