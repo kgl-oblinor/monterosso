@@ -2825,6 +2825,28 @@ body {
   --whisper: rgba(255, 255, 255, 0.9);       /* C: whisper-white text/glyph */
   --whisper-soft: rgba(255, 255, 255, 0.64);
   --shine: 0 1px 2px rgba(20, 40, 60, 0.28);  /* the faint "skin"/relief shine */
+
+  /* Type scale — six deliberate steps (was 15 arbitrary sizes). Every element in
+     the card snaps to one: 1 caption · 2 body/label/button · 3 emphasis ·
+     4 stepper · 5 guest count · 6 the big numbers. */
+  --fs-1: 11px;  /* category labels (UPPERCASE) + captions */
+  --fs-2: 13px;  /* body / buttons */
+  --fs-3: 15px;  /* emphasis */
+  --fs-4: 19px;  /* stepper +/- */
+  --fs-5: 22px;  /* guest count */
+  --fs-6: 27px;  /* the big values (Today · 07:00, Total) */
+
+  /* Category label colour — one shared muted tone for every UPPERCASE label. */
+  --cat: rgba(42, 24, 16, 0.52);
+}
+/* CATEGORY LABEL — every section/field label shares this: UPPERCASE, one size,
+   one colour, one tracking. */
+.landing-v2 .lp-cat {
+  font-size: var(--fs-1);
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--cat);
 }
 /* globals.css washes <body> deep-navy for the home page; the landing
    page is clean white instead, with the native cursor back. */
@@ -3433,9 +3455,13 @@ body:has(.landing-v2) {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13.5px;
-  color: var(--dk-ink);
   margin-bottom: 12px;
+  /* CATEGORY LABEL */
+  font-size: var(--fs-1);
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--cat);
 }
 .landing-v2 .lp-dot {
   width: 10px;
@@ -3457,7 +3483,7 @@ body:has(.landing-v2) {
   padding: 18px 20px;
 }
 .landing-v2 .lp-dep__h {
-  font-size: 28px;
+  font-size: var(--fs-6);
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1;
@@ -3518,10 +3544,13 @@ body:has(.landing-v2) {
 }
 
 .landing-v2 .lp-label {
-  font-size: 12px;
-  letter-spacing: 0.03em;
-  color: var(--ink-1); /* base-layer label: recessed */
   margin: 22px 0 10px;
+  /* CATEGORY LABEL */
+  font-size: var(--fs-1);
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--cat);
 }
 .landing-v2 .lp-label--tight {
   margin: 0 0 8px;
@@ -3605,7 +3634,7 @@ body:has(.landing-v2) {
   -webkit-backdrop-filter: var(--frost-2);
   backdrop-filter: var(--frost-2);
   border: 1px solid rgba(255, 255, 255, 0.4);
-  font-size: 20px;
+  font-size: var(--fs-4);
   color: var(--dk-ink);
   display: flex;
   align-items: center;
@@ -3621,7 +3650,7 @@ body:has(.landing-v2) {
   transform: scale(0.95);
 }
 .landing-v2 .lp-gcount {
-  font-size: 24px;
+  font-size: var(--fs-5);
   font-weight: 700;
   min-width: 22px;
   text-align: center;
@@ -3631,11 +3660,15 @@ body:has(.landing-v2) {
   text-align: right;
 }
 .landing-v2 .lp-total__lbl {
-  font-size: 13px;
-  color: var(--ink-1); /* base-layer label: recessed */
+  /* CATEGORY LABEL */
+  font-size: var(--fs-1);
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--cat);
 }
 .landing-v2 .lp-total__val {
-  font-size: 30px;
+  font-size: var(--fs-6);
   font-weight: 700;
   letter-spacing: -0.02em;
   margin-top: 2px;
