@@ -3360,17 +3360,22 @@ body:has(.landing-v2) {
 }
 
 /* experience cards — the three departures with their per-guest price */
+/* Width budget at the narrow bound (300px dock): 300 − 32 dock-pad − 2 border
+   − 44 card-pad = 222px inner; minus 2×7 gaps = 208 / 3 ≈ 69px per track.
+   minmax(0,1fr) lets a track shrink below its content's min-width, so a card
+   can never push past the box edge (the bug that clipped "Sunset"). */
 .landing-v2 .lp-exps {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr; /* the three departures side by side, never 2+1 */
-  gap: 9px;
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* three suns, always fits */
+  gap: 7px;
 }
 .landing-v2 .lp-exp {
-  text-align: left;
+  min-width: 0; /* honour the track's computed width; content lives within it */
+  text-align: center;
   background: var(--dk-card);
   border: 1px solid var(--dk-line);
-  border-radius: 13px;
-  padding: 13px 14px;
+  border-radius: 12px;
+  padding: 10px 6px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: border-color 0.15s ease, background 0.15s ease;
@@ -3383,13 +3388,14 @@ body:has(.landing-v2) {
   border: 1.5px solid var(--dk-gold);
 }
 .landing-v2 .lp-exp__sun {
-  display: block;
+  display: flex;
+  justify-content: center;
   color: #d19a3e; /* warm sun gold */
-  margin-bottom: 9px;
+  margin-bottom: 6px;
 }
 .landing-v2 .lp-exp__sun svg {
-  display: block;
-  width: 42px;
+  width: 100%;
+  max-width: 30px; /* fluid vector, capped — never wider than its cell */
   height: auto;
 }
 .landing-v2 .lp-exp.sel .lp-exp__sun {
@@ -3397,9 +3403,10 @@ body:has(.landing-v2) {
 }
 .landing-v2 .lp-exp__n {
   display: block;
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: -0.01em;
+  line-height: 1.15;
 }
 .landing-v2 .lp-exp__p {
   display: block;
