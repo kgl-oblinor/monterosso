@@ -246,17 +246,28 @@ export default function Landing() {
             </button>
           ))}
         </div>
+        <div className="lp-sb-foot">
+          <a
+            className="lp-sb-item"
+            href="https://monterosso-app.kgl-56a.workers.dev/login"
+          >
+            <svg
+              className="lp-sb-ic"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 12a3.4 3.4 0 1 0 0-6.8 3.4 3.4 0 0 0 0 6.8zM5.5 19.5a6.5 6.5 0 0 1 13 0" />
+            </svg>
+            <span className="lp-sb-lbl">Log in</span>
+          </a>
+        </div>
       </nav>
       <main className="lp">
-        {/* quiet top-right entry for returning customers — into the separate
-            dashboard app's login. Understated, never competes with "Come aboard". */}
-        <a
-          className="lp-login"
-          href="https://monterosso-app.kgl-56a.workers.dev/login"
-        >
-          Log in
-        </a>
-
         <p className="sr-only">
           A private sea tour of the Cinque Terre from Monterosso al Mare,
           Liguria — three unhurried hours along the coast, ${tour.priceUsd} per
