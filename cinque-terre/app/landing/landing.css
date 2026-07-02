@@ -3260,11 +3260,11 @@ body:has(.landing-v2) {
   transition: border-color 0.15s ease, color 0.15s ease;
 }
 .landing-v2 .lp-toggle:hover {
-  border-color: var(--dk-gold);
-  color: var(--dk-gold);
+  border-color: rgba(255, 255, 255, 0.55);
+  color: var(--dk-ink);
 }
 .landing-v2 .lp-toggle__ic {
-  color: var(--dk-gold);
+  color: var(--dk-ink);
   font-size: 15px;
 }
 
@@ -3378,7 +3378,7 @@ body:has(.landing-v2) {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--dk-gold);
+  background: rgba(255, 255, 255, 0.85);
   flex: none;
 }
 .landing-v2 .lp-dep {
@@ -3389,7 +3389,7 @@ body:has(.landing-v2) {
   background: var(--glass-3); /* L3 raised: most white + frost */
   -webkit-backdrop-filter: var(--frost-3);
   backdrop-filter: var(--frost-3);
-  border: 1.5px solid var(--dk-gold);
+  border: 0;
   border-radius: 15px;
   padding: 18px 20px;
 }
@@ -3409,8 +3409,8 @@ body:has(.landing-v2) {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: var(--dk-gold);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--dk-ink);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3423,10 +3423,11 @@ body:has(.landing-v2) {
   min-height: 44px;
   background: none;
   border: 0;
-  color: var(--dk-gold);
+  color: #fff;
+  text-shadow: var(--shine);
   font-size: 13.5px;
   text-decoration: underline;
-  text-decoration-color: rgba(196, 154, 52, 0.5);
+  text-decoration-color: rgba(255, 255, 255, 0.55);
   text-underline-offset: 4px;
   cursor: pointer;
 }
@@ -3600,13 +3601,14 @@ body:has(.landing-v2) {
   padding: 13px 10px;
   font-size: 13.5px;
   font-weight: 600;
-  color: var(--dk-gold);
+  color: #fff;
+  text-shadow: var(--shine);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
 .landing-v2 .lp-cbtn.sel {
-  border: 1.5px solid var(--dk-gold);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   background: var(--glass-3); /* L3 selected */
   -webkit-backdrop-filter: var(--frost-3);
   backdrop-filter: var(--frost-3);
