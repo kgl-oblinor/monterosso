@@ -3083,12 +3083,12 @@ body:has(.landing-v2) {
        toward the bottom — still transparent throughout. */
     background: linear-gradient(
       to bottom,
-      rgba(255, 255, 255, 0.1),
-      rgba(255, 255, 255, 0.34)
+      rgba(255, 255, 255, 0.04),
+      rgba(255, 255, 255, 0.15)
     );
-    -webkit-backdrop-filter: blur(26px) saturate(170%);
-    backdrop-filter: blur(26px) saturate(170%);
-    border-right: 1px solid rgba(255, 255, 255, 0.4);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    backdrop-filter: blur(16px) saturate(140%);
+    border-right: 1px solid rgba(255, 255, 255, 0.14);
   }
   .landing-v2 .lp-sidebar--collapsed {
     width: 48px;
@@ -3161,18 +3161,11 @@ body:has(.landing-v2) {
   line-height: 1.1;
   letter-spacing: 0.01em;
 }
+/* no pill, no border — hover/selected is just the icon darkening */
 .landing-v2 .lp-sb-item:hover {
-  background: var(--glass-2); /* L2 glass over the water */
-  -webkit-backdrop-filter: var(--frost-2);
-  backdrop-filter: var(--frost-2);
-  border-color: rgba(255, 255, 255, 0.4);
   color: var(--ink-3);
 }
 .landing-v2 .lp-sb-item.sel {
-  background: var(--glass-3); /* L3 selected: most white + frost */
-  -webkit-backdrop-filter: var(--frost-3);
-  backdrop-filter: var(--frost-3);
-  border-color: rgba(255, 255, 255, 0.5);
   color: var(--ink-3);
 }
 .landing-v2 .lp-sidebar--collapsed .lp-sb-lbl {
