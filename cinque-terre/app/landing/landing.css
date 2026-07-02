@@ -3140,9 +3140,9 @@ body:has(.landing-v2) {
 /* The booking is five separate parts inside the one card, divided by hairlines:
    experience · when · guests · you · reserve. */
 .landing-v2 .lp-part + .lp-part {
-  margin-top: 18px;
-  padding-top: 18px;
-  border-top: 1px solid var(--dk-line);
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.045); /* white + glass: the faintest possible skille */
 }
 .landing-v2 .lp-part > :first-child {
   margin-top: 0;
