@@ -3074,6 +3074,11 @@ body:has(.landing-v2) {
     width: 90px;
     padding: 20px 8px;
     transition: width 0.24s ease;
+    /* full height, top to bottom — a fixed rail that always spans the viewport */
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
     background: rgba(255, 255, 255, 0.6); /* frosted glass panel — a touch more opacity so it doesn't vanish */
     -webkit-backdrop-filter: blur(26px) saturate(170%);
     backdrop-filter: blur(26px) saturate(170%);
