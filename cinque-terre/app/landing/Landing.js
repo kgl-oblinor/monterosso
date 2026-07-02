@@ -1427,6 +1427,7 @@ function ExpressBooking() {
   const [calM, setCalM] = useState(now.getMonth());
   const [contactMode, setContactMode] = useState(""); // "saved" | "email"
   const [email, setEmail] = useState("");
+  const [agreed, setAgreed] = useState(false); // the front checkbox — must be ticked
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [resCode, setResCode] = useState("");
@@ -1487,10 +1488,7 @@ function ExpressBooking() {
   const maxGuests = tour.maxGuests;
   const total = totalFor(guests, slot);
   const canSubmit =
-    !!date &&
-    !!slot &&
-    guests >= 1 &&
-    (contactMode === "saved" || (contactMode === "email" && validEmail(email)));
+    !!date && !!slot && guests >= 1 && validEmail(email) && agreed;
 
   const atCurrentMonth = calY === now.getFullYear() && calM === now.getMonth();
   function prevMonth() {
@@ -1749,33 +1747,31 @@ function ExpressBooking() {
       </div>
       {/* Part 4 · You (contact / identity) */}
       <div className="lp-part">
-      <div className="lp-contact">
-        <button
-          type="button"
-          className={"lp-cbtn" + (contactMode === "saved" ? " sel" : "")}
-          onClick={() => setContactMode("saved")}
-        >
-          Use my saved details
-        </button>
-        <button
-          type="button"
-          className={"lp-cbtn" + (contactMode === "email" ? " sel" : "")}
-          onClick={() => setContactMode("email")}
-        >
-          Enter email
-        </button>
+      <div className="lp-email">
+        <input
+          type="email"
+          inputMode="email"
+          placeholder="Email address"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setContactMode("email");
+          }}
+        />
       </div>
-      {contactMode === "email" && (
-        <div className="lp-email">
-          <input
-            type="email"
-            inputMode="email"
-            placeholder="Email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-      )}
+      <label className="lp-check">
+        <input
+          type="checkbox"
+          checked={agreed}
+          onChange={(e) => setAgreed(e.target.checked)}
+        />
+        <span className="lp-check__box" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3.5 8.5l3 3 6-6.5" />
+          </svg>
+        </span>
+        <span className="lp-check__txt">I agree to be contacted about this request</span>
+      </label>
       </div>
       {/* Part 5 · Reserve (confirm & send) */}
       <div className="lp-part">

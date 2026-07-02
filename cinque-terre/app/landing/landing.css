@@ -3074,7 +3074,7 @@ body:has(.landing-v2) {
     width: 90px;
     padding: 20px 8px;
     transition: width 0.24s ease;
-    background: rgba(255, 255, 255, 0.5); /* frosted glass panel over the water */
+    background: rgba(255, 255, 255, 0.6); /* frosted glass panel — a touch more opacity so it doesn't vanish */
     -webkit-backdrop-filter: blur(26px) saturate(170%);
     backdrop-filter: blur(26px) saturate(170%);
     border-right: 1px solid rgba(255, 255, 255, 0.45);
@@ -3712,6 +3712,50 @@ body:has(.landing-v2) {
 }
 .landing-v2 .lp-email {
   margin-bottom: 12px;
+}
+/* Front checkbox — glass + white; the customer must tick it to reserve. */
+.landing-v2 .lp-check {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.landing-v2 .lp-check input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.landing-v2 .lp-check__box {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background: var(--glass-2);
+  -webkit-backdrop-filter: var(--frost-2);
+  backdrop-filter: var(--frost-2);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent; /* the check is hidden until ticked */
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.landing-v2 .lp-check__box svg {
+  width: 14px;
+  height: 14px;
+}
+.landing-v2 .lp-check input:checked + .lp-check__box {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(255, 255, 255, 0.88);
+  color: var(--dk-ink); /* dark check on white */
+}
+.landing-v2 .lp-check__txt {
+  font-size: var(--fs-2);
+  color: #fff;
+  text-shadow: var(--shine);
+  line-height: 1.3;
 }
 .landing-v2 .lp-email input {
   width: 100%;
