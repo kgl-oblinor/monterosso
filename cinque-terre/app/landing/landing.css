@@ -3650,11 +3650,11 @@ body:has(.landing-v2) {
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 .landing-v2 .lp-reserve.on {
-  background: var(--dk-ink);
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  border-color: var(--dk-ink);
-  color: #fff;
+  /* active: still frosted + transparent, text still 100% transparent — only a
+     slightly firmer glass + pointer signals it's ready. */
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: transparent;
   cursor: pointer;
 }
 .landing-v2 .lp-reserve.on:active {
