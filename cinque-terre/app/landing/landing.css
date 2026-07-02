@@ -2800,12 +2800,14 @@ body {
   /* Layered glass material scale — depth by stacking. Each layer up the stack
      gains white + frost: L1 base (most transparent) → L2 elements on it → L3
      raised/selected on top of those. Nested backdrop-filters compound. */
-  --glass-1: rgba(255, 255, 255, 0.14); /* TEST: almost transparent — glass by blur alone */
-  --glass-2: rgba(255, 255, 255, 0.4);
-  --glass-3: rgba(255, 255, 255, 0.6);
-  --frost-1: blur(14px) saturate(155%);
-  --frost-2: blur(18px) saturate(170%);
-  --frost-3: blur(22px) saturate(185%);
+  /* interior panels: milder frost than the Reserve button (below) — gentler,
+     more transparent. L1 base → L2 elements → L3 selected/raised, all milder than Reserve. */
+  --glass-1: rgba(255, 255, 255, 0.09);
+  --glass-2: rgba(255, 255, 255, 0.13);
+  --glass-3: rgba(255, 255, 255, 0.17);
+  --frost-1: blur(11px) saturate(150%);
+  --frost-2: blur(14px) saturate(158%);
+  --frost-3: blur(17px) saturate(168%);
   /* Text depth follows the same stack: recessed on the base layer, full ink on
      top. Labels/hints (L1) sit back; element titles (L2) mid; selected/raised (L3) solid. */
   --ink-1: rgba(42, 24, 16, 0.5);
@@ -3474,9 +3476,7 @@ body:has(.landing-v2) {
 .landing-v2 .lp-exp {
   min-width: 0; /* honour the track's computed width; content lives within it */
   text-align: center;
-  background: var(--glass-2); /* L2 on the card: more white + frost */
-  -webkit-backdrop-filter: var(--frost-2);
-  backdrop-filter: var(--frost-2);
+  background: transparent; /* the little sun cards are totally transparent */
   border: 0; /* no border around the cards */
   border-radius: 12px;
   padding: 10px 6px;
@@ -3485,9 +3485,9 @@ body:has(.landing-v2) {
   transition: background 0.15s ease;
 }
 .landing-v2 .lp-exp.sel {
-  background: var(--glass-3); /* L3 selected: most white + frost — the selection cue */
-  -webkit-backdrop-filter: var(--frost-3);
-  backdrop-filter: var(--frost-3);
+  background: var(--glass-2); /* selected: a mild frost is the only selection cue */
+  -webkit-backdrop-filter: var(--frost-2);
+  backdrop-filter: var(--frost-2);
 }
 .landing-v2 .lp-exp__sun {
   display: flex;
@@ -3635,9 +3635,9 @@ body:has(.landing-v2) {
   padding: 17px;
   font-size: 15.5px;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.1); /* transparent, frosted */
-  -webkit-backdrop-filter: var(--frost-2);
-  backdrop-filter: var(--frost-2);
+  background: rgba(255, 255, 255, 0.22); /* a bit whiter than before, the clearest glass */
+  -webkit-backdrop-filter: blur(30px) saturate(185%); /* more glass (stronger frost) */
+  backdrop-filter: blur(30px) saturate(185%);
   color: #fff; /* very white text */
   text-shadow: var(--shine);
   cursor: not-allowed;
@@ -3645,9 +3645,9 @@ body:has(.landing-v2) {
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 .landing-v2 .lp-reserve.on {
-  /* active: a firmer glass + brighter whisper text signals it's ready. */
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.55);
+  /* active: a touch whiter still signals it's ready (keeps the strong base glass). */
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
   color: #fff;
   cursor: pointer;
 }
