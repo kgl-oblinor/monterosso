@@ -2803,6 +2803,11 @@ body {
   --frost-1: blur(14px) saturate(155%);
   --frost-2: blur(18px) saturate(170%);
   --frost-3: blur(22px) saturate(185%);
+  /* Text depth follows the same stack: recessed on the base layer, full ink on
+     top. Labels/hints (L1) sit back; element titles (L2) mid; selected/raised (L3) solid. */
+  --ink-1: rgba(42, 24, 16, 0.5);
+  --ink-2: rgba(42, 24, 16, 0.74);
+  --ink-3: #2a1810;
 }
 /* globals.css washes <body> deep-navy for the home page; the landing
    page is clean white instead, with the native cursor back. */
@@ -3107,14 +3112,18 @@ body:has(.landing-v2) {
   letter-spacing: 0.01em;
 }
 .landing-v2 .lp-sb-item:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(0, 0, 0, 0.05);
-  color: #2a1810;
+  background: var(--glass-2); /* L2 glass over the water */
+  -webkit-backdrop-filter: var(--frost-2);
+  backdrop-filter: var(--frost-2);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: var(--ink-3);
 }
 .landing-v2 .lp-sb-item.sel {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(0, 0, 0, 0.06);
-  color: #2a1810;
+  background: var(--glass-3); /* L3 selected: most white + frost */
+  -webkit-backdrop-filter: var(--frost-3);
+  backdrop-filter: var(--frost-3);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: var(--ink-3);
 }
 .landing-v2 .lp-sidebar--collapsed .lp-sb-lbl {
   display: none;
@@ -3366,6 +3375,7 @@ body:has(.landing-v2) {
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1;
+  color: var(--ink-3); /* L3 raised: full ink */
 }
 .landing-v2 .lp-dep__sub {
   font-size: 13.5px;
@@ -3401,11 +3411,29 @@ body:has(.landing-v2) {
 .landing-v2 .lp-cal {
   margin-top: 14px;
 }
+/* calendar days follow the layer scale too: L2 days, L3 the selected day */
+.landing-v2 .lp-cal .wiz-cal__day {
+  background: var(--glass-2);
+  -webkit-backdrop-filter: var(--frost-2);
+  backdrop-filter: var(--frost-2);
+  color: var(--ink-2);
+}
+.landing-v2 .lp-cal .wiz-cal__day.is-sel {
+  background: var(--glass-3);
+  -webkit-backdrop-filter: var(--frost-3);
+  backdrop-filter: var(--frost-3);
+  color: var(--ink-3);
+}
+.landing-v2 .lp-cal .wiz-cal__day--blank {
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
 
 .landing-v2 .lp-label {
   font-size: 12px;
   letter-spacing: 0.03em;
-  color: var(--dk-muted);
+  color: var(--ink-1); /* base-layer label: recessed */
   margin: 22px 0 10px;
 }
 .landing-v2 .lp-label--tight {
@@ -3464,6 +3492,10 @@ body:has(.landing-v2) {
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.15;
+  color: var(--ink-2); /* L2 element title */
+}
+.landing-v2 .lp-exp.sel .lp-exp__n {
+  color: var(--ink-3); /* L3 selected: full ink */
 }
 .landing-v2 .lp-exp__p {
   display: block;
@@ -3513,19 +3545,21 @@ body:has(.landing-v2) {
   font-weight: 700;
   min-width: 22px;
   text-align: center;
+  color: var(--ink-3); /* L3 raised: full ink */
 }
 .landing-v2 .lp-total {
   text-align: right;
 }
 .landing-v2 .lp-total__lbl {
   font-size: 13px;
-  color: var(--dk-muted);
+  color: var(--ink-1); /* base-layer label: recessed */
 }
 .landing-v2 .lp-total__val {
   font-size: 30px;
   font-weight: 700;
   letter-spacing: -0.02em;
   margin-top: 2px;
+  color: var(--ink-3); /* L3 raised: full ink */
 }
 
 .landing-v2 .lp-hr {
