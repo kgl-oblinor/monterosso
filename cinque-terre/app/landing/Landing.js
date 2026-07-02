@@ -123,7 +123,7 @@ export default function Landing() {
   // The docked booking panel's mode: "express" (default, near-zero friction)
   // ↔ "guided" (the existing 5-step wizard). One toggle flips between them.
   const [bookMode, setBookMode] = useState("express");
-  const [navOpen, setNavOpen] = useState(true); // left sidebar: default expanded, toggles narrow
+  const [navOpen, setNavOpen] = useState(false); // left sidebar: default collapsed
   const [navTab, setNavTab] = useState("home");
   const [villageIdx, setVillageIdx] = useState(null); // open village page (0–4) or null
   const [showBoat, setShowBoat] = useState(false); // "the boat & her captain" page
