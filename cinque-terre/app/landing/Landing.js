@@ -1436,6 +1436,9 @@ function ExpressBooking() {
   // null means we render NOTHING (never claim a status we don't truthfully have). Backed by the
   // real presence endpoint (skipper 1 = Andrea), polled every ~45s.
   const [liveStatus, setLiveStatus] = useState(null);
+  // Verified-boat signal from the same public endpoint. Only ever true when the backend says so
+  // (honest: false while loading / on error — we never fake the verified part).
+  const [boatVerified, setBoatVerified] = useState(false);
   useEffect(() => {
     let active = true;
     async function load() {
@@ -1446,8 +1449,12 @@ function ExpressBooking() {
         const s = data && data.status;
         if (active && (s === "available" || s === "booked" || s === "away")) setLiveStatus(s);
         else if (active) setLiveStatus(null);
+        if (active) setBoatVerified(data?.boatVerified === true);
       } catch {
-        if (active) setLiveStatus(null); // on error, claim nothing
+        if (active) {
+          setLiveStatus(null); // on error, claim nothing
+          setBoatVerified(false);
+        }
       }
     }
     load();
@@ -1753,6 +1760,20 @@ function ExpressBooking() {
         {submitting ? "Sending…" : "Reserve"}
       </button>
       </div>
+      {/* Part 6 · Verified boat (PREMIUM) — the smallest, quietest part. Rendered ONLY when the
+          public endpoint truthfully reports boatVerified; renders nothing otherwise (never faked).
+          Objective, factual tone; white + glass only, no colour fill. */}
+      {boatVerified && (
+        <div className="lp-part lp-verified">
+          <svg className="lp-verified__ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M8.5 12.2l2.4 2.4 4.6-4.8" />
+          </svg>
+          <span className="lp-verified__txt">
+            Verified boat · owner&rsquo;s photos taken within 24&nbsp;h of verification.
+          </span>
+        </div>
+      )}
       {/* TODO: live-reflect the company's Google Reviews (Places API — needs the
           Google Business place-id + an API key; cache server-side). Hardcoded for now. */}
       <div className="lp-rating">

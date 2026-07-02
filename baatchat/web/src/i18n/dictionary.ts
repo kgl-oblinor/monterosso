@@ -41,6 +41,26 @@ export const dictionary = {
     nb: "Posisjonen din deles automatisk mens appen er åpen. Slå på dette for å vise at du er ved båten selv om posisjon er av.",
   },
 
+  // --- boat verification (PREMIUM) ------------------------------------------
+  "boat.title": { en: "Boat verification", it: "Verifica barca", nb: "Båtverifisering" },
+  "boat.premium": { en: "Premium", it: "Premium", nb: "Premium" },
+  "boat.verified": { en: "Boat verified", it: "Barca verificata", nb: "Båt verifisert" },
+  "boat.notVerified": { en: "Not verified yet", it: "Non ancora verificata", nb: "Ikke verifisert ennå" },
+  "boat.hint": {
+    en: "Add a photo of your boat, then verify. Photos must be under 24 h old at the moment you verify — otherwise verification won't stick.",
+    it: "Aggiungi una foto della tua barca, poi verifica. Le foto devono avere meno di 24 h nel momento della verifica, altrimenti la verifica non è valida.",
+    nb: "Legg til et bilde av båten din, og verifiser. Bildene må være under 24 t gamle i det du verifiserer — ellers blir ikke verifiseringen gjeldende.",
+  },
+  "boat.photoUrl": { en: "Photo URL", it: "URL foto", nb: "Bilde-URL" },
+  "boat.addPhoto": { en: "Add photo", it: "Aggiungi foto", nb: "Legg til bilde" },
+  "boat.photoAdded": { en: "Photo added.", it: "Foto aggiunta.", nb: "Bilde lagt til." },
+  "boat.verify": { en: "Verify my boat", it: "Verifica la mia barca", nb: "Verifiser båten min" },
+  "boat.verifyError": {
+    en: "Upload a fresh boat photo (within 24 h) first.",
+    it: "Carica prima una foto recente della barca (entro 24 h).",
+    nb: "Last opp et ferskt båtbilde (innen 24 t) først.",
+  },
+
   // --- nav / icon rail ------------------------------------------------------
   "nav.home": { en: "Home", it: "Home", nb: "Hjem" },
   "nav.chat": { en: "Chat", it: "Chat", nb: "Chat" },

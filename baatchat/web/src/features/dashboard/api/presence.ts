@@ -20,6 +20,8 @@ export interface SkipperStatus {
   present: boolean;
   /** The skipper's own manual-toggle state (their dashboard only; never public). */
   manualAvailable: boolean;
+  /** PREMIUM: verified boat — a fresh (< 24 h) owner photo existed at the verification moment. */
+  boatVerified: boolean;
 }
 
 /** The skipper's own live status, for the dashboard badge. Skipper-only; polls gently. */
@@ -36,6 +38,7 @@ export function useMyStatus() {
         booked: r.booked,
         present: r.present,
         manualAvailable: r.manualAvailable,
+        boatVerified: r.boatVerified,
       } as SkipperStatus;
     },
   });

@@ -40,6 +40,7 @@ import {
   type ThemeId,
 } from "../api/site";
 import { useMyStatus, useSetAvailable, type SkipperStatus } from "../api/presence";
+import { useAddBoatPhoto, useVerifyBoat } from "../api/boat";
 import { InviteDialog } from "./InviteDialog";
 import { shortcutsForRole, type SectionKey } from "../sections";
 
@@ -296,6 +297,78 @@ function PresenceCard() {
   );
 }
 
+/** Skipper-only PREMIUM control: add a photo of the boat, then verify it. Verification only
+ *  sticks when a photo was uploaded within the last 24 h (the Worker enforces this and returns
+ *  400 otherwise). The verified state is read from the same status the public landing uses.
+ *  TODO(premium): no premium flag exists on the skipper record yet — when one is added, render
+ *  this only for premium skippers (and the Worker should gate the writes to match). */
+function BoatVerifyCard() {
+  const t = useT();
+  const { data } = useMyStatus();
+  const verified = data?.boatVerified ?? false;
+  const addPhoto = useAddBoatPhoto();
+  const verify = useVerifyBoat();
+  const [url, setUrl] = useState("");
+
+  return (
+    <div className="mt-8">
+      <h2 className="flex items-center gap-2 px-1 text-xs font-semibold uppercase tracking-wider text-ink-muted">
+        {t("boat.title")}
+        <span className="rounded-pill border border-hairline px-2 py-0.5 text-[10px] font-semibold tracking-wide text-gold">
+          {t("boat.premium")}
+        </span>
+      </h2>
+      <div className="mt-3 rounded-card border border-hairline bg-surface px-6 py-5 shadow-soft">
+        <div className="flex items-center gap-2.5">
+          <span
+            className="size-2.5 shrink-0 rounded-full"
+            style={{ backgroundColor: verified ? "#37b26b" : "#9aa3ad" }}
+            aria-hidden="true"
+          />
+          <span className="text-sm font-semibold text-ink">
+            {verified ? t("boat.verified") : t("boat.notVerified")}
+          </span>
+        </div>
+        <div className="mt-4 flex gap-2">
+          <input
+            type="url"
+            inputMode="url"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder={t("boat.photoUrl")}
+            className="min-w-0 flex-1 rounded-pill border border-hairline bg-page px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted"
+          />
+          <button
+            type="button"
+            onClick={() =>
+              addPhoto.mutate(url.trim(), { onSuccess: () => setUrl("") })
+            }
+            disabled={!url.trim() || addPhoto.isPending}
+            className="min-h-[44px] shrink-0 rounded-pill border border-hairline px-4 text-sm font-semibold text-ink-muted transition-colors hover:bg-page hover:text-ink disabled:opacity-50"
+          >
+            {t("boat.addPhoto")}
+          </button>
+        </div>
+        {addPhoto.isSuccess && (
+          <p className="mt-2 text-xs text-ink-muted">{t("boat.photoAdded")}</p>
+        )}
+        <button
+          type="button"
+          onClick={() => verify.mutate()}
+          disabled={verify.isPending}
+          className="mt-3 inline-flex min-h-[44px] w-full items-center justify-center rounded-pill bg-ink px-5 text-sm font-semibold text-white transition-colors active:scale-[0.98] disabled:opacity-50"
+        >
+          {t("boat.verify")}
+        </button>
+        {verify.isError && (
+          <p className="mt-2 text-xs text-gold">{t("boat.verifyError")}</p>
+        )}
+        <p className="mt-3 text-xs leading-relaxed text-ink-muted">{t("boat.hint")}</p>
+      </div>
+    </div>
+  );
+}
+
 /** "Hjem": a calm overview shown on sign-in for both roles — a warm greeting, the next
  *  trip (if any), and discreet shortcuts into the role's sections. Minimal, on-theme. */
 function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) {
@@ -324,6 +397,9 @@ function HomeSection({ onNavigate }: { onNavigate: (key: SectionKey) => void }) 
 
         {/* Skipper-only: live availability + the manual "at the boat" toggle. */}
         {isSkipper && <PresenceCard />}
+
+        {/* Skipper-only PREMIUM: add a boat photo + verify (photos must be < 24 h fresh). */}
+        {isSkipper && <BoatVerifyCard />}
 
         {/* Next-trip hero widget */}
         <div className="mt-8">

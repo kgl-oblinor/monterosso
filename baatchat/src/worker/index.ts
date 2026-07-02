@@ -10,6 +10,7 @@ import { adminOpenSupportThread, adminListSupportThreads, adminSupportMessages, 
 import { createPublicBooking } from "./public";
 import { getMySite, saveMySite, getPublicSite } from "./site";
 import { reportPresence, setManualAvailable, computeStatus } from "./presence";
+import { addBoatPhoto, verifyBoat, isBoatVerified } from "./boat";
 
 export interface Env {
   DB: D1Database;
@@ -108,8 +109,10 @@ app.get("/public/skippers/:id/status", async (c) => {
   const id = Number(c.req.param("id"));
   if (!Number.isInteger(id) || id <= 0) return c.json({ ok: false, error: "Ugyldig id" }, 400);
   const s = await computeStatus(c.env, id);
-  // Explicitly pick ONLY the public fields — never leak coordinates or the manual toggle state.
-  return c.json({ status: s.status, booked: s.booked, present: s.present });
+  const { boatVerified, boatVerifiedAt } = await isBoatVerified(c.env, id);
+  // Explicitly pick ONLY the public fields — never leak coordinates, the manual toggle state,
+  // or any boat-photo URLs/counts. boatVerified is the sole boat signal exposed publicly.
+  return c.json({ status: s.status, booked: s.booked, present: s.present, boatVerified, boatVerifiedAt });
 });
 
 // --- auth: account claim (onboarding) + password login ---------------------
@@ -364,7 +367,34 @@ chat.post("/me/available", async (c) => {
 chat.get("/me/status", async (c) => {
   const user = c.get("user");
   if (user.role !== "skipper") return c.json({ ok: false, error: "Kun for skippere" }, 403);
-  return c.json({ ok: true, ...(await computeStatus(c.env, user.id)) });
+  const { boatVerified, boatVerifiedAt } = await isBoatVerified(c.env, user.id);
+  return c.json({ ok: true, ...(await computeStatus(c.env, user.id)), boatVerified, boatVerifiedAt });
+});
+
+// --- boat verification (PREMIUM) -------------------------------------------
+// A truthful "verified boat" signal: the skipper uploads photos of THEIR boat, then verifies —
+// verification only sticks if a photo was fresh (< 24 h) at that moment. Skipper-only.
+// TODO(premium): this is a PREMIUM feature, but the skippers table has no premium flag yet.
+// When one is added, gate both routes below on it. Allowed for all skippers for now.
+
+// Record one uploaded boat photo/reference (uploaded_at = now). v1 stores the provided
+// URL/reference + timestamp only — actual image hosting to R2 is out of scope for v1.
+chat.post("/me/boat-photos", async (c) => {
+  const user = c.get("user");
+  if (user.role !== "skipper") return c.json({ ok: false, error: "Kun for skippere" }, 403);
+  const { url } = await c.req.json<{ url?: string }>().catch(() => ({ url: undefined }));
+  if (typeof url !== "string" || !url.trim()) return c.json({ ok: false, error: "url er påkrevd" }, 400);
+  await addBoatPhoto(c.env, user.id, url.trim());
+  return c.json({ ok: true });
+});
+
+// Verify the boat: stamps boat_verified_at only if a boat photo was uploaded in the last 24 h.
+chat.post("/me/verify-boat", async (c) => {
+  const user = c.get("user");
+  if (user.role !== "skipper") return c.json({ ok: false, error: "Kun for skippere" }, 403);
+  const r = await verifyBoat(c.env, user.id);
+  if (!r.ok) return c.json({ ok: false, error: "upload a fresh boat photo (within 24h) first" }, 400);
+  return c.json({ ok: true, boatVerified: r.boatVerified });
 });
 
 // --- group chat ("turfølget") ----------------------------------------------
