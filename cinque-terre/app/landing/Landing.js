@@ -1565,6 +1565,20 @@ function ExpressBooking() {
           )}
         </div>
       )}
+      <div className="lp-label">Choose your experience</div>
+      <div className="lp-exps">
+        {SLOT_ORDER.map((v) => (
+          <button
+            type="button"
+            key={v}
+            className={"lp-exp" + (slot === v ? " sel" : "")}
+            onClick={() => setSlot(v)}
+          >
+            <span className="lp-exp__sun">{SUNS[v]}</span>
+            <span className="lp-exp__n">{tour.slots[v].label}</span>
+          </button>
+        ))}
+      </div>
       <div className="lp-eyebrow2">
         <span className="lp-dot" aria-hidden="true" />
         Next available departure
@@ -1648,22 +1662,6 @@ function ExpressBooking() {
           </div>
         </div>
       )}
-
-      <div className="lp-label">Choose your experience</div>
-      <div className="lp-exps">
-        {SLOT_ORDER.map((v) => (
-          <button
-            type="button"
-            key={v}
-            className={"lp-exp" + (slot === v ? " sel" : "")}
-            onClick={() => setSlot(v)}
-          >
-            <span className="lp-exp__sun">{SUNS[v]}</span>
-            <span className="lp-exp__n">{tour.slots[v].label}</span>
-            <span className="lp-exp__p">${slotPriceUsd(v)} / guest</span>
-          </button>
-        ))}
-      </div>
 
       <div className="lp-grow">
         <div>
